@@ -1,5 +1,13 @@
 <resources>
-    <string name="app_name">EventPlanner</string>
+    <string name="app_name">Event Planner</string>
     <string name="open_drawer">Open Navigation Drawer</string>
     <string name="close_drawer">Close Navigation Drawer</string>
+    <string name="events">MOST POPULAR EVENTS IN YOUR CITY</string>
+    <string name="event_1">Event 1</string>
+    <string name="event_2">Event 2</string>
+    <string name="event_3">Event 3</string>
+    <string name="event_4">Event 4</string>
+    <string name="event_5">Event 5</string>
+    <string name="view_details_buttton">View Details</string>
+
 </resources>

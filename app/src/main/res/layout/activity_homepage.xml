@@ -11,28 +11,211 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Navigation View sa zaglavljem i menijem -->
-
-        <com.google.android.material.navigation.NavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="131dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            app:headerLayout="@layout/nav_header"
-            app:menu="@menu/drawer_menu" />
-
+        <!-- Toolbar sa ikonom za otvaranje drawer-a -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/tool_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+            android:background="@color/black"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:title="@string/app_name" />
 
+        <TextView
+            android:id="@+id/popular_events_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/events"
+            android:textSize="18sp"
+            android:textStyle="bold|italic"
+            android:gravity="center"
+            android:padding="16dp" />
+
+        <!-- Horizontal ScrollView za slike -->
+        <android.widget.HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Slika 1 sa nazivom i dugmetom -->
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="170dp"
+                        android:layout_height="200dp"
+                        android:layout_margin="1dp"
+                        android:src="@drawable/event1"
+                        android:contentDescription="@string/event_1" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/event_1"
+                        android:textSize="14sp"
+                        android:gravity="center"
+                        android:paddingTop="8dp" />
+
+                    <Button
+                        android:layout_width="110dp"
+                        android:layout_height="48dp"
+                        android:text="@string/view_details_buttton"
+                        android:textSize="11sp"
+                        android:layout_marginTop="4dp"
+                        android:backgroundTint="@android:color/black"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+
+                <!-- Slika 2 sa nazivom i dugmetom -->
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="170dp"
+                        android:layout_height="200dp"
+                        android:layout_margin="1dp"
+                        android:src="@drawable/event2"
+                        android:contentDescription="@string/event_2" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/event_2"
+                        android:textSize="14sp"
+                        android:gravity="center"
+                        android:paddingTop="8dp" />
+
+                    <Button
+                        android:layout_width="110dp"
+                        android:layout_height="48dp"
+                        android:text="@string/view_details_buttton"
+                        android:textSize="11sp"
+                        android:layout_marginTop="4dp"
+                        android:backgroundTint="@android:color/black"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+
+                <!-- Slika 3 sa nazivom i dugmetom -->
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="170dp"
+                        android:layout_height="200dp"
+                        android:layout_margin="1dp"
+                        android:src="@drawable/event3"
+                        android:contentDescription="@string/event_3" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/event_3"
+                        android:textSize="14sp"
+                        android:gravity="center"
+                        android:paddingTop="8dp" />
+
+                    <Button
+                        android:layout_width="110dp"
+                        android:layout_height="48dp"
+                        android:text="@string/view_details_buttton"
+                        android:textSize="11sp"
+                        android:layout_marginTop="4dp"
+                        android:backgroundTint="@android:color/black"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+
+                <!-- Slika 4 sa nazivom i dugmetom -->
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="170dp"
+                        android:layout_height="200dp"
+                        android:layout_margin="1dp"
+                        android:src="@drawable/event4"
+                        android:contentDescription="@string/event_4" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/event_4"
+                        android:textSize="14sp"
+                        android:gravity="center"
+                        android:paddingTop="8dp" />
+
+                    <Button
+                        android:layout_width="110dp"
+                        android:layout_height="48dp"
+                        android:text="@string/view_details_buttton"
+                        android:textSize="11sp"
+                        android:layout_marginTop="4dp"
+                        android:backgroundTint="@android:color/black"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+
+                <!-- Slika 5 sa nazivom i dugmetom -->
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="170dp"
+                        android:layout_height="200dp"
+                        android:layout_margin="1dp"
+                        android:src="@drawable/event5"
+                        android:contentDescription="@string/event_5" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/event_5"
+                        android:textSize="14sp"
+                        android:gravity="center"
+                        android:paddingTop="8dp" />
+
+                    <Button
+                        android:layout_width="110dp"
+                        android:layout_height="48dp"
+                        android:text="@string/view_details_buttton"
+                        android:textSize="11sp"
+                        android:layout_marginTop="4dp"
+                        android:backgroundTint="@android:color/black"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </android.widget.HorizontalScrollView>
+
+        <!-- RecyclerView za prikazivanje sadržaja -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
 
-
+    <!-- Navigation View (sidebar menu) -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu"/>
 </androidx.drawerlayout.widget.DrawerLayout>
