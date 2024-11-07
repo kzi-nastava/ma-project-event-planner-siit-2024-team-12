@@ -23,36 +23,50 @@
         <TextView
             android:id="@+id/popular_events_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="96dp"
+            android:gravity="center"
+            android:padding="16dp"
             android:text="@string/events"
             android:textSize="18sp"
-            android:textStyle="bold|italic"
-            android:gravity="center"
-            android:padding="16dp" />
+            android:textStyle="bold|italic" />
 
         <!-- Horizontal ScrollView za slike -->
         <android.widget.HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:background="@android:color/transparent">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <!-- Kartica 1 -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp"
+                    >
+
                 <!-- Slika 1 sa nazivom i dugmetom -->
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:padding="8dp">
 
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:layout_width="170dp"
                         android:layout_height="200dp"
                         android:layout_margin="1dp"
                         android:src="@drawable/event1"
-                        android:contentDescription="@string/event_1" />
+                        android:contentDescription="@string/event_1"
+                        app:shapeAppearanceOverlay="@style/RoundedImageView" />
+
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -62,29 +76,40 @@
                         android:gravity="center"
                         android:paddingTop="8dp" />
 
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="110dp"
                         android:layout_height="48dp"
                         android:text="@string/view_details_buttton"
                         android:textSize="11sp"
                         android:layout_marginTop="4dp"
-                        android:backgroundTint="@android:color/black"
                         android:background="@drawable/rounded_button"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:textAllCaps="false"/>
                 </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Kartica 2 -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
 
                 <!-- Slika 2 sa nazivom i dugmetom -->
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:padding="8dp">
 
                     <ImageView
                         android:layout_width="170dp"
                         android:layout_height="200dp"
                         android:layout_margin="1dp"
                         android:src="@drawable/event2"
+                        android:layout_gravity="center"
                         android:contentDescription="@string/event_2" />
 
                     <TextView
@@ -95,29 +120,40 @@
                         android:gravity="center"
                         android:paddingTop="8dp" />
 
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="110dp"
                         android:layout_height="48dp"
                         android:text="@string/view_details_buttton"
                         android:textSize="11sp"
                         android:layout_marginTop="4dp"
-                        android:backgroundTint="@android:color/black"
                         android:background="@drawable/rounded_button"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:textAllCaps="false"/>
                 </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Kartica 3 -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
 
                 <!-- Slika 3 sa nazivom i dugmetom -->
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:padding="8dp">
 
                     <ImageView
                         android:layout_width="170dp"
                         android:layout_height="200dp"
                         android:layout_margin="1dp"
                         android:src="@drawable/event3"
+                        android:layout_gravity="center"
                         android:contentDescription="@string/event_3" />
 
                     <TextView
@@ -128,29 +164,40 @@
                         android:gravity="center"
                         android:paddingTop="8dp" />
 
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="110dp"
                         android:layout_height="48dp"
                         android:text="@string/view_details_buttton"
                         android:textSize="11sp"
                         android:layout_marginTop="4dp"
-                        android:backgroundTint="@android:color/black"
                         android:background="@drawable/rounded_button"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:textAllCaps="false"/>
                 </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Kartica 4 -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
 
                 <!-- Slika 4 sa nazivom i dugmetom -->
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:padding="8dp">
 
                     <ImageView
                         android:layout_width="170dp"
                         android:layout_height="200dp"
                         android:layout_margin="1dp"
                         android:src="@drawable/event4"
+                        android:layout_gravity="center"
                         android:contentDescription="@string/event_4" />
 
                     <TextView
@@ -161,29 +208,39 @@
                         android:gravity="center"
                         android:paddingTop="8dp" />
 
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="110dp"
                         android:layout_height="48dp"
                         android:text="@string/view_details_buttton"
                         android:textSize="11sp"
                         android:layout_marginTop="4dp"
-                        android:backgroundTint="@android:color/black"
                         android:background="@drawable/rounded_button"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:textAllCaps="false"/>
                 </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
+                <!-- Kartica 5 -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
                 <!-- Slika 5 sa nazivom i dugmetom -->
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:padding="8dp">
 
                     <ImageView
                         android:layout_width="170dp"
                         android:layout_height="200dp"
                         android:layout_margin="1dp"
                         android:src="@drawable/event5"
+                        android:layout_gravity="center"
                         android:contentDescription="@string/event_5" />
 
                     <TextView
@@ -194,16 +251,17 @@
                         android:gravity="center"
                         android:paddingTop="8dp" />
 
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="110dp"
                         android:layout_height="48dp"
                         android:text="@string/view_details_buttton"
                         android:textSize="11sp"
                         android:layout_marginTop="4dp"
-                        android:backgroundTint="@android:color/black"
                         android:background="@drawable/rounded_button"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:textAllCaps="false"/>
                 </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
         </android.widget.HorizontalScrollView>
