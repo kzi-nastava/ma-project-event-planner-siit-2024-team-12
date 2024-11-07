@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">EventPlanner</string>
+    <string name="po_services">MY SERVICES</string>
+    <string name="search">Search…</string>
+    <string name="price_list_button">Price list</string>
+    <string name="event1">Event 1</string>
+    <string name="view_details">View details</string>
 </resources>
