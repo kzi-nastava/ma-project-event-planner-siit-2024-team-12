@@ -6,4 +6,6 @@
     <string name="event1">Event 1</string>
     <string name="view_details">View details</string>
     <string name="floatingDesc">Floating button</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
