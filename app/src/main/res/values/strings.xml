@@ -5,4 +5,5 @@
     <string name="price_list_button">Price list</string>
     <string name="event1">Event 1</string>
     <string name="view_details">View details</string>
+    <string name="floatingDesc">Floating button</string>
 </resources>
