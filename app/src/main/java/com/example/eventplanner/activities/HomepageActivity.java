@@ -67,6 +67,10 @@ public class HomepageActivity extends AppCompatActivity {
                     Intent intent = new Intent(HomepageActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }
+                else if (id == R.id.nav_signup) {
+                    Intent intent = new Intent(HomepageActivity.this, SignUpActivity.class);
+                    startActivity(intent);
+                }
 
                 // Close the drawer after an item is selected
                 drawerLayout.closeDrawers();
