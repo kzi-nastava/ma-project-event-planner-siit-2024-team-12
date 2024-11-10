@@ -43,54 +43,55 @@
                 android:orientation="horizontal">
 
                 <!-- Kartica 1 -->
+
                 <androidx.cardview.widget.CardView
-                    android:layout_width="200dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    >
+                    app:cardElevation="4dp">
 
-                <!-- Slika 1 sa nazivom i dugmetom -->
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="8dp">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="170dp"
-                        android:layout_height="200dp"
-                        android:layout_margin="1dp"
-                        android:src="@drawable/event1"
-                        android:contentDescription="@string/event_1"
-                        app:shapeAppearanceOverlay="@style/RoundedImageView" />
-
-
-                    <TextView
+                    <!-- Slika 1 sa nazivom i dugmetom -->
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/event_1"
-                        android:textSize="14sp"
                         android:gravity="center"
-                        android:paddingTop="8dp" />
+                        android:orientation="vertical"
+                        android:padding="10dp">
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:layout_width="110dp"
-                        android:layout_height="48dp"
-                        android:text="@string/view_details_buttton"
-                        android:textSize="11sp"
-                        android:layout_marginTop="4dp"
-                        android:background="@drawable/rounded_button"
-                        android:textColor="@android:color/white"
-                        android:textAllCaps="false"/>
-                </LinearLayout>
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:layout_width="150dp"
+                            android:layout_height="200dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="1dp"
+                            android:contentDescription="@string/event_1"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/event1"
+                            app:shapeAppearanceOverlay="@style/roundedImageView" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:paddingTop="8dp"
+                            android:text="@string/event_1"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:layout_width="110dp"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="4dp"
+                            android:background="@drawable/rounded_button"
+                            android:text="@string/view_details_buttton"
+                            android:textAllCaps="false"
+                            android:textColor="@android:color/white"
+                            android:textSize="11sp" />
+                    </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- Kartica 2 -->
                 <androidx.cardview.widget.CardView
-                    android:layout_width="200dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     app:cardCornerRadius="8dp"
@@ -102,15 +103,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:padding="8dp">
+                    android:padding="10dp">
 
-                    <ImageView
-                        android:layout_width="170dp"
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="150dp"
                         android:layout_height="200dp"
-                        android:layout_margin="1dp"
-                        android:src="@drawable/event2"
                         android:layout_gravity="center"
-                        android:contentDescription="@string/event_2" />
+                        android:layout_margin="1dp"
+                        android:contentDescription="@string/event_2"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/event2"
+                        app:shapeAppearanceOverlay="@style/roundedImageView" />
+
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -134,7 +138,7 @@
 
                 <!-- Kartica 3 -->
                 <androidx.cardview.widget.CardView
-                    android:layout_width="200dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     app:cardCornerRadius="8dp"
@@ -146,15 +150,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:padding="8dp">
+                    android:padding="10dp">
 
-                    <ImageView
-                        android:layout_width="170dp"
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="150dp"
                         android:layout_height="200dp"
-                        android:layout_margin="1dp"
-                        android:src="@drawable/event3"
                         android:layout_gravity="center"
-                        android:contentDescription="@string/event_3" />
+                        android:layout_margin="1dp"
+                        android:contentDescription="@string/event_3"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/event3"
+                        app:shapeAppearanceOverlay="@style/roundedImageView" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -178,7 +184,7 @@
 
                 <!-- Kartica 4 -->
                 <androidx.cardview.widget.CardView
-                    android:layout_width="200dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     app:cardCornerRadius="8dp"
@@ -190,15 +196,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:padding="8dp">
+                    android:padding="10dp">
 
-                    <ImageView
-                        android:layout_width="170dp"
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="150dp"
                         android:layout_height="200dp"
-                        android:layout_margin="1dp"
-                        android:src="@drawable/event4"
                         android:layout_gravity="center"
-                        android:contentDescription="@string/event_4" />
+                        android:layout_margin="1dp"
+                        android:contentDescription="@string/event_4"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/event4"
+                        app:shapeAppearanceOverlay="@style/roundedImageView" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -222,7 +230,7 @@
 
                 <!-- Kartica 5 -->
                 <androidx.cardview.widget.CardView
-                    android:layout_width="200dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     app:cardCornerRadius="8dp"
@@ -233,15 +241,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:padding="8dp">
+                    android:padding="10dp">
 
-                    <ImageView
-                        android:layout_width="170dp"
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="150dp"
                         android:layout_height="200dp"
-                        android:layout_margin="1dp"
-                        android:src="@drawable/event5"
                         android:layout_gravity="center"
-                        android:contentDescription="@string/event_5" />
+                        android:layout_margin="1dp"
+                        android:contentDescription="@string/event_5"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/event5"
+                        app:shapeAppearanceOverlay="@style/roundedImageView" />
 
                     <TextView
                         android:layout_width="wrap_content"
