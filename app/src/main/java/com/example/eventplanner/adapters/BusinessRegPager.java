@@ -1,18 +1,20 @@
-package com.example.eventplanner.activities;
+package com.example.eventplanner.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.example.eventplanner.fragments.BusinessRegistration1;
+import com.example.eventplanner.fragments.BusinessRegistration2;
 import com.example.eventplanner.fragments.SignUp1;
 import com.example.eventplanner.fragments.SignUp2;
 import com.example.eventplanner.fragments.SignUp3;
 
 
-public class SignUpPagerAdapter extends FragmentStateAdapter {
+public class BusinessRegPager extends FragmentStateAdapter {
 
-    public SignUpPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+    public BusinessRegPager(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
 
@@ -21,16 +23,14 @@ public class SignUpPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 1:
-                return new SignUp2();
-            case 2:
-                return new SignUp3();
+                return new BusinessRegistration2();
             default:
-                return new SignUp1();
+                return new BusinessRegistration1();
         }
     }
 
     @Override
     public int getItemCount() {
-        return 3; // steps
+        return 2; // steps
     }
 }

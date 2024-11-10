@@ -10,6 +10,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.MyAdapter;
 import com.example.eventplanner.fragments.HomepageFragment;
 import com.google.android.material.navigation.NavigationView;
 
