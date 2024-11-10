@@ -1,12 +1,14 @@
-package com.example.eventplanner.activities.fragments;
+package com.example.eventplanner.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.SignUpActivity;
 
