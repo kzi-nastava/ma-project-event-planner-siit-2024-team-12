@@ -7,14 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.fragments.HomepageFragment;
 import com.google.android.material.navigation.NavigationView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HomepageActivity extends AppCompatActivity {
 
@@ -41,19 +38,7 @@ public class HomepageActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Initialize RecyclerView
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Sample data for RecyclerView
-        List<String> itemList = new ArrayList<>();
-        itemList.add("Event 1");
-        itemList.add("Event 2");
-        itemList.add("Event 3");
-
-        // Initialize adapter with the data
-        myAdapter = new MyAdapter(itemList);
-        recyclerView.setAdapter(myAdapter);
 
         // Initialize NavigationView and set listener for menu items
         navigationView = findViewById(R.id.nav_view);
@@ -77,5 +62,12 @@ public class HomepageActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        // Load fragment into the container
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new HomepageFragment())
+                    .commit();
+        }
     }
 }
