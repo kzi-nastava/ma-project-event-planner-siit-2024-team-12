@@ -25,10 +25,10 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/login"
+            android:text="@string/business_reg"
             android:textAlignment="center"
             android:textColor="@color/dark_gray"
-            android:textSize="35sp"
+            android:textSize="25sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +43,7 @@
             android:layout_height="32dp"
             android:background="@drawable/input_field"
             android:ems="10"
-            android:hint="@string/email"
+            android:hint="@string/phone"
             android:inputType="text"
             android:paddingStart="12dp"
             android:textSize="12sp"
@@ -60,74 +60,64 @@
             android:layout_height="32dp"
             android:background="@drawable/input_field"
             android:ems="10"
-            android:hint="@string/password"
+            android:hint="@string/images"
+            android:inputType="text"
+            android:paddingStart="12dp"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.566"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.771" />
+
+        <EditText
+            android:id="@+id/editTextText3"
+            android:layout_width="237dp"
+            android:layout_height="92dp"
+            android:background="@drawable/input_field"
+            android:ems="10"
+            android:hint="@string/description"
             android:inputType="text"
             android:paddingStart="12dp"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.583" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/appCompatButton"
+            android:id="@+id/register"
             android:layout_width="121dp"
             android:layout_height="42dp"
             android:background="@drawable/form_button"
-            android:text="@string/login"
+            android:text="@string/register"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.503"
+            app:layout_constraintHorizontal_bias="0.912"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.683" />
+            app:layout_constraintVertical_bias="0.957" />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dont_have_acc"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/back2"
+            android:layout_width="121dp"
+            android:layout_height="42dp"
+            android:background="@drawable/form_button"
+            android:text="@string/back"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.318"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.944" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/forgot_pass"
-            android:textSize="11sp"
-            android:onClick="openResetPassword"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.763" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/sign_up"
-            android:textSize="11sp"
-            android:textStyle="bold"
-            android:onClick="openSignUp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.72"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.942" />
-
-
+            app:layout_constraintVertical_bias="0.957" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

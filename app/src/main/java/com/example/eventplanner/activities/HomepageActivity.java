@@ -10,6 +10,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.MyAdapter;
 import com.example.eventplanner.fragments.HomepageFragment;
 import com.google.android.material.navigation.NavigationView;
 
@@ -50,6 +51,10 @@ public class HomepageActivity extends AppCompatActivity {
                 if (id == R.id.nav_login) {
                     // Open LoginActivity
                     Intent intent = new Intent(HomepageActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+                else if (id == R.id.nav_signup) {
+                    Intent intent = new Intent(HomepageActivity.this, SignUpActivity.class);
                     startActivity(intent);
                 }
 
