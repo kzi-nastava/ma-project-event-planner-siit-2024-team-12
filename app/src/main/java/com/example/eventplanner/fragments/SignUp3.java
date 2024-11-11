@@ -34,7 +34,7 @@ public class SignUp3 extends Fragment {
         String[] rolesArray = getResources().getStringArray(R.array.roles_spinner);
         String providerRole = rolesArray[1];
 
-        String registration_success = getString(R.string.registration_success);
+        String registrationSuccess = getString(R.string.registration_success);
 
 
         backButton.setOnClickListener(v -> {
@@ -63,7 +63,7 @@ public class SignUp3 extends Fragment {
                 Intent intent = new Intent(getActivity(), BusinessRegistrationActivity.class);
                 startActivity(intent);
             } else {
-                Toast.makeText(getActivity(), registration_success, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), registrationSuccess, Toast.LENGTH_SHORT).show();
             }
         });
 
