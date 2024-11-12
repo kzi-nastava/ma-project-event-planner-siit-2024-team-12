@@ -12,10 +12,10 @@ import com.example.eventplanner.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link HomepageFragment#newInstance} factory method to
+ * Use the {@link HomepageCardsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomepageFragment extends Fragment {
+public class HomepageCardsFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class HomepageFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public HomepageFragment() {
+    public HomepageCardsFragment() {
         // Required empty public constructor
     }
 
@@ -39,8 +39,8 @@ public class HomepageFragment extends Fragment {
      * @return A new instance of fragment HomeFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HomepageFragment newInstance(String param1, String param2) {
-        HomepageFragment fragment = new HomepageFragment();
+    public static HomepageCardsFragment newInstance(String param1, String param2) {
+        HomepageCardsFragment fragment = new HomepageCardsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class HomepageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_homepage, container, false);
+        return inflater.inflate(R.layout.fragment_homepage_cards, container, false);
     }
 }

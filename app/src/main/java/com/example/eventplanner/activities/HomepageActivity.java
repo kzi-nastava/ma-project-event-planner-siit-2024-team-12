@@ -7,11 +7,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.MyAdapter;
-import com.example.eventplanner.fragments.HomepageFragment;
+import com.example.eventplanner.fragments.HomepageCardsFragment;
+import com.example.eventplanner.fragments.HomepageFilterFragment;
 import com.google.android.material.navigation.NavigationView;
 
 public class HomepageActivity extends AppCompatActivity {
@@ -20,6 +24,7 @@ public class HomepageActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MyAdapter myAdapter;
     private NavigationView navigationView;
+    private ViewPager2 viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +58,6 @@ public class HomepageActivity extends AppCompatActivity {
                     Intent intent = new Intent(HomepageActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }
-                else if (id == R.id.nav_signup) {
-                    Intent intent = new Intent(HomepageActivity.this, SignUpActivity.class);
-                    startActivity(intent);
-                }
 
                 // Close the drawer after an item is selected
                 drawerLayout.closeDrawers();
@@ -64,11 +65,21 @@ public class HomepageActivity extends AppCompatActivity {
             }
         });
 
-        // Load fragment into the container
+
+        // Load fragments into the respective containers
+        FragmentManager fragmentManager = getSupportFragmentManager();
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new HomepageFragment())
+            fragmentManager.beginTransaction()
+                    .replace(R.id.cards_fragment_container, new HomepageCardsFragment())
+                    .commit();
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.filter_fragment_container, new HomepageFilterFragment())
                     .commit();
         }
+
+
     }
+
+
 }
