@@ -6,7 +6,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:layout_marginTop="50dp">
 
         <!-- Naslov za popularne događaje -->
         <TextView
@@ -15,11 +16,11 @@
             android:layout_height="96dp"
             android:gravity="center"
             android:padding="16dp"
-            android:text="@string/events"
+            android:text="@string/products_services"
             android:textSize="18sp"
             android:textStyle="bold|italic" />
 
-        <!-- Horizontal ScrollView za slike događaja -->
+        <!-- Horizontal ScrollView za slike proizvoda -->
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,9 +52,9 @@
                             android:layout_height="200dp"
                             android:layout_gravity="center"
                             android:layout_margin="1dp"
-                            android:contentDescription="@string/event_1"
+                            android:contentDescription="@string/product_1"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/event1"
+                            android:src="@drawable/product1"
                             app:shapeAppearanceOverlay="@style/roundedImageView" />
 
                         <TextView
@@ -61,7 +62,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:paddingTop="8dp"
-                            android:text="@string/event_1"
+                            android:text="@string/product_1"
                             android:textSize="14sp" />
 
                         <androidx.appcompat.widget.AppCompatButton
@@ -96,16 +97,16 @@
                             android:layout_height="200dp"
                             android:layout_gravity="center"
                             android:layout_margin="1dp"
-                            android:contentDescription="@string/event_2"
+                            android:contentDescription="@string/product_2"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/event2"
+                            android:src="@drawable/product2"
                             app:shapeAppearanceOverlay="@style/roundedImageView" />
 
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/event_2"
+                            android:text="@string/product_2"
                             android:textSize="14sp"
                             android:gravity="center"
                             android:paddingTop="8dp" />
@@ -143,15 +144,15 @@
                             android:layout_height="200dp"
                             android:layout_gravity="center"
                             android:layout_margin="1dp"
-                            android:contentDescription="@string/event_3"
+                            android:contentDescription="@string/product_3"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/event3"
+                            android:src="@drawable/product3"
                             app:shapeAppearanceOverlay="@style/roundedImageView" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/event_3"
+                            android:text="@string/product_3"
                             android:textSize="14sp"
                             android:gravity="center"
                             android:paddingTop="8dp" />
@@ -189,15 +190,15 @@
                             android:layout_height="200dp"
                             android:layout_gravity="center"
                             android:layout_margin="1dp"
-                            android:contentDescription="@string/event_4"
+                            android:contentDescription="@string/product_4"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/event4"
+                            android:src="@drawable/product4"
                             app:shapeAppearanceOverlay="@style/roundedImageView" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/event_4"
+                            android:text="@string/product_4"
                             android:textSize="14sp"
                             android:gravity="center"
                             android:paddingTop="8dp" />
@@ -234,15 +235,15 @@
                             android:layout_height="200dp"
                             android:layout_gravity="center"
                             android:layout_margin="1dp"
-                            android:contentDescription="@string/event_5"
+                            android:contentDescription="@string/product_5"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/event5"
+                            android:src="@drawable/product5"
                             app:shapeAppearanceOverlay="@style/roundedImageView" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/event_5"
+                            android:text="@string/product_5"
                             android:textSize="14sp"
                             android:gravity="center"
                             android:paddingTop="8dp" />
@@ -264,7 +265,7 @@
 
         <!-- Fragment za filter -->
         <FrameLayout
-            android:id="@+id/filter_fragment_container"
+            android:id="@+id/filter_fragment_container_products"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

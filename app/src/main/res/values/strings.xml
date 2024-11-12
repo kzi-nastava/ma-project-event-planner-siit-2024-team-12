@@ -32,4 +32,10 @@
     <string name="sort_prompt">Sort</string>
     <string name="filters">Filters</string>
     <string name="reset_filters">Reset filters</string>
+    <string name="products_services">MOST POPULAR PRODUCTS/SERVICES IN YOUR CITY</string>
+    <string name="product_1">Product 1</string>
+    <string name="product_2">Product 2</string>
+    <string name="product_3">Product 3</string>
+    <string name="product_4">Product 4</string>
+    <string name="product_5">Product 5</string>
 </resources>
