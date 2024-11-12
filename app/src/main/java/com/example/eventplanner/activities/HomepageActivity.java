@@ -22,9 +22,7 @@ public class HomepageActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private RecyclerView recyclerView;
-    private MyAdapter myAdapter;
     private NavigationView navigationView;
-    private ViewPager2 viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
