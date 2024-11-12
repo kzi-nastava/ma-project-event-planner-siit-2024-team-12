@@ -41,4 +41,21 @@
     <string name="register">Register</string>
     <string name="registration_success">Successful registration! Visit the link we sent to your email address.</string>
 
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enter_search_criteria">Enter search criteria</string>
+    <string name="apply_filter">Apply Filter</string>
+    <string-array name="sort_options">
+        <item>Highest to lowest</item>
+        <item>Lowest to highest</item>
+    </string-array>
+    <string-array name="category_options">
+        <item>Category 1</item>
+        <item>Category 2</item>
+        <item>Category 3</item>
+        <item>Category 4</item>
+    </string-array>
+    <string name="sort_prompt">Sort</string>
+    <string name="filters">Filters</string>
+    <string name="reset_filters">Reset filters</string>
+
 </resources>
