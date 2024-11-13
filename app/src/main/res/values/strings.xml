@@ -70,4 +70,12 @@
     <string name="product_4">Product 4</string>
     <string name="product_5">Product 5</string>
     <string name="plus_button">Add service</string>
+    <string name="create_service">Create service</string>
+    <string-array name="service_category_spinner">
+        <item>Category 1</item>
+        <item>Category 2</item>
+        <item>Category 3</item>
+    </string-array>
+    <string name="service_name">Service name:</string>
+    <string name="Service_duration">Duration:</string>
 </resources>
