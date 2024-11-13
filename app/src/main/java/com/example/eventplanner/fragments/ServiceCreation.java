@@ -3,12 +3,16 @@ package com.example.eventplanner.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.ServiceCreationActivity;
+import com.example.eventplanner.activities.SignUpActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +65,14 @@ public class ServiceCreation extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_service_creation, container, false);
+        View view = inflater.inflate(R.layout.fragment_service_creation, container, false);
+        Button nextButton = view.findViewById(R.id.nextServiceCreate);
+        nextButton.setOnClickListener(v -> {
+            if (getActivity() instanceof ServiceCreationActivity) {
+                ((ServiceCreationActivity) getActivity()).nextPage();
+            }
+        });
+
+        return view;
     }
 }
