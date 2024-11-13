@@ -69,4 +69,5 @@
     <string name="product_3">Product 3</string>
     <string name="product_4">Product 4</string>
     <string name="product_5">Product 5</string>
+    <string name="plus_button">Add service</string>
 </resources>

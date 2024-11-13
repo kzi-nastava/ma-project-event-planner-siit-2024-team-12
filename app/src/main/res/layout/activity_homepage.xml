@@ -26,6 +26,7 @@
 
 
             <LinearLayout
+                android:id="@+id/homepage_fragment_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -38,11 +39,6 @@
 
         <FrameLayout
             android:id="@+id/cards_products_fragment_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <FrameLayout
-            android:id="@+id/homepage_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
             </LinearLayout>
