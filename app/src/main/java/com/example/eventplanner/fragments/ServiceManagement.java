@@ -70,7 +70,7 @@ public class ServiceManagement extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new ServiceCreation());
+                transaction.replace(R.id.homepage_fragment_container, new ServiceCreation());
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
