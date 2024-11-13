@@ -24,13 +24,13 @@
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintVertical_bias="0.542" />
+        app:layout_constraintVertical_bias="0.2" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="302dp"
         android:layout_height="428dp"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/form_frame"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"

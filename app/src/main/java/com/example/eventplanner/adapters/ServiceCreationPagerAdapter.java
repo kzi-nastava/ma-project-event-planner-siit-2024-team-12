@@ -8,6 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.example.eventplanner.fragments.ServiceCreation;
 import com.example.eventplanner.fragments.ServiceCreation2;
 import com.example.eventplanner.fragments.ServiceCreation3;
+import com.example.eventplanner.fragments.ServiceCreation4;
 
 public class ServiceCreationPagerAdapter extends FragmentStateAdapter {
 
@@ -23,6 +24,8 @@ public class ServiceCreationPagerAdapter extends FragmentStateAdapter {
                 return new ServiceCreation2();
             case 2:
                 return new ServiceCreation3();
+            case 3:
+                return new ServiceCreation4();
             default:
                 return new ServiceCreation();
         }
@@ -30,6 +33,6 @@ public class ServiceCreationPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 3; // steps
+        return 4; // steps
     }
 }
