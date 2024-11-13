@@ -82,4 +82,21 @@
     <string name="create_price">Price:</string>
     <string name="create_discount">Discount:</string>
     <string name="create_res_deadline">Reservation deadline:</string>
+    <string-array name="service_visibility_spinner">
+        <item>Visible</item>
+        <item>Invisible</item>
+    </string-array>
+    <string-array name="service_availability_spinner">
+        <item>Available</item>
+        <item>Unavailable</item>
+    </string-array>
+    <string-array name="service_event_type_spinner">
+        <item>Event 1</item>
+        <item>Event 2</item>
+        <item>Event 3</item>
+    </string-array>
+    <string-array name="service_reservation_confirmation_spinner">
+        <item>Automatic</item>
+        <item>Manual</item>
+    </string-array>
 </resources>
