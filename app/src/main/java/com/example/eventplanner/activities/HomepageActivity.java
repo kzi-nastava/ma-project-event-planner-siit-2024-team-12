@@ -7,17 +7,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.fragments.HomepageFragment;
+import com.example.eventplanner.fragments.HomepageCardsFragment;
+import com.example.eventplanner.fragments.HomepageFilterFragment;
+import com.example.eventplanner.fragments.HomepageProductsServicesFragment;
 import com.google.android.material.navigation.NavigationView;
 
 public class HomepageActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private RecyclerView recyclerView;
-    private MyAdapter myAdapter;
     private NavigationView navigationView;
 
     @Override
@@ -52,6 +54,10 @@ public class HomepageActivity extends AppCompatActivity {
                     Intent intent = new Intent(HomepageActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }
+                else if (id == R.id.nav_signup) {
+                    Intent intent = new Intent(HomepageActivity.this, SignUpActivity.class);
+                    startActivity(intent);
+                }
 
                 // Close the drawer after an item is selected
                 drawerLayout.closeDrawers();
@@ -59,11 +65,29 @@ public class HomepageActivity extends AppCompatActivity {
             }
         });
 
-        // Load fragment into the container
+
+        // Load fragments into the respective containers
+        FragmentManager fragmentManager = getSupportFragmentManager();
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new HomepageFragment())
+            fragmentManager.beginTransaction()
+                    .replace(R.id.cards_fragment_container, new HomepageCardsFragment())
+                    .commit();
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.filter_fragment_container, new HomepageFilterFragment())
+                    .commit();
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.cards_products_fragment_container, new HomepageProductsServicesFragment())
+                    .commit();
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.filter_fragment_container_products, new HomepageFilterFragment())
                     .commit();
         }
+
+
     }
+
+
 }
