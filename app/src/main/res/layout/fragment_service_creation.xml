@@ -10,22 +10,6 @@
 
     <!-- form frame -->
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/newButton"
-        android:layout_width="302dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/form_button"
-        android:text="@string/create_category"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintVertical_bias="0.2" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="302dp"
@@ -122,15 +106,32 @@
 
         <Spinner
             android:id="@+id/spinnerServiceCreate"
-            android:layout_width="240dp"
-            android:layout_height="29dp"
+            android:layout_width="175dp"
+            android:layout_height="40dp"
             android:entries="@array/service_category_spinner"
             android:spinnerMode="dropdown"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.092"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.367" />
+            app:layout_constraintVertical_bias="0.353" />
+
+        <ImageButton
+            android:id="@+id/imageButtonNewCategory"
+            android:layout_width="57dp"
+            android:layout_height="57dp"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_add_circle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.929"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.342" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
