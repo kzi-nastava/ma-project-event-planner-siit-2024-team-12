@@ -1,5 +1,6 @@
 package com.example.eventplanner.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,8 +8,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.BusinessRegistrationActivity;
+import com.example.eventplanner.activities.ServiceCreationActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +66,22 @@ public class ServiceCreation4 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_service_creation4, container, false);
+        View view = inflater.inflate(R.layout.fragment_service_creation4, container, false);
+        Button backButton = view.findViewById(R.id.backServiceCreate4);
+        Button submitButton = view.findViewById(R.id.submitService);
+
+        String ServiceCreatedMessage = getString(R.string.service_created);
+
+        backButton.setOnClickListener(v -> {
+            if (getActivity() instanceof ServiceCreationActivity) {
+                ((ServiceCreationActivity) getActivity()).previousPage();
+            }
+        });
+
+        submitButton.setOnClickListener(v -> {
+            Toast.makeText(getActivity(), ServiceCreatedMessage, Toast.LENGTH_SHORT).show();
+        });
+
+        return view;
     }
 }

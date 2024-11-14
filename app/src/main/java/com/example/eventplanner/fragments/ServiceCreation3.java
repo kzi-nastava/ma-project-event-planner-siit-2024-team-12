@@ -79,5 +79,6 @@ public class ServiceCreation3 extends Fragment {
             }
         });
 
-        return view;    }
+        return view;
+    }
 }

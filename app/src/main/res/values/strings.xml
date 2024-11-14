@@ -99,4 +99,8 @@
         <item>Automatic</item>
         <item>Manual</item>
     </string-array>
+    <string name="service_description">Description:</string>
+    <string name="service_image_url">Image url:</string>
+    <string name="service_specificities">Specificities</string>
+    <string name="service_created">Service created successfully!</string>
 </resources>
