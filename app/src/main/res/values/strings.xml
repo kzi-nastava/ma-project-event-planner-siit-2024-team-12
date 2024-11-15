@@ -71,6 +71,7 @@
     <string name="product_5">Product 5</string>
     <string name="plus_button">Add service</string>
     <string name="create_service">Create service</string>
+    <string name="create_category_title">Create category</string>
     <string-array name="service_category_spinner">
         <item>Category 1</item>
         <item>Category 2</item>
@@ -103,4 +104,5 @@
     <string name="service_image_url">Image url:</string>
     <string name="service_specificities">Specificities</string>
     <string name="service_created">Service created successfully!</string>
+    <string name="category_created">Category created successfully!</string>
 </resources>
