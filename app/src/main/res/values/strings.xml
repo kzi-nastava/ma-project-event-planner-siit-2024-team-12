@@ -16,6 +16,11 @@
     <string name="event_3">Event 3</string>
     <string name="event_4">Event 4</string>
     <string name="event_5">Event 5</string>
+    <string name="service_1">Service 1</string>
+    <string name="service_2">Service 2</string>
+    <string name="service_3">Service 3</string>
+    <string name="service_4">Service 4</string>
+    <string name="service_5">Service 5</string>
     <string name="view_details_buttton">View Details</string>
     <string name="login">Log in</string>
     <string name="email">Email :</string>

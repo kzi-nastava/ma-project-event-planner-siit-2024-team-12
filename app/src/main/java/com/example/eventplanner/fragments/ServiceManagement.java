@@ -3,6 +3,8 @@ package com.example.eventplanner.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -81,5 +83,19 @@ public class ServiceManagement extends Fragment {
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState == null) {
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+
+            transaction.replace(R.id.services_fragment_container, new ProductProviderServices());
+            transaction.replace(R.id.service_filter_fragment_container, new HomepageFilterFragment());
+
+            transaction.commit();
+        }
     }
 }
