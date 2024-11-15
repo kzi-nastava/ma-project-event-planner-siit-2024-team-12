@@ -30,6 +30,8 @@
     <string name="sign_up">Sign up</string>
     <string name="confirm_pass">Confirm password :</string>
     <string name="next">Next</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
     <string name="back">Back</string>
     <string name="name">Name :</string>
     <string name="surname">Surname :</string>
@@ -74,6 +76,9 @@
     <string name="product_3">Product 3</string>
     <string name="product_4">Product 4</string>
     <string name="product_5">Product 5</string>
+    <string name="category1">Category 1</string>
+    <string name="price">Price</string>
+    <string name="discount">Discount</string>
     <string name="plus_button">Add service</string>
     <string name="create_service">Create service</string>
     <string name="create_category_title">Create category</string>
@@ -110,4 +115,7 @@
     <string name="service_specificities">Specificities</string>
     <string name="service_created">Service created successfully!</string>
     <string name="category_created">Category created successfully!</string>
+    <string name="service_edited">Service edited successfully!</string>
+    <string name="service_deleted">Service deleted successfully!</string>
+
 </resources>
