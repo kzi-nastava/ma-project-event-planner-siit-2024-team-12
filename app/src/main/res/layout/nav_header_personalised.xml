@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:background="@color/light_gray">
+
+    <ImageView
+        android:id="@+id/nav_header_image"
+        android:layout_width="80dp"
+        android:layout_height="63dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="-16dp"
+        android:src="@drawable/user_logo" />
+
+    <TextView
+        android:id="@+id/nav_header_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:text="Name Nachname"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

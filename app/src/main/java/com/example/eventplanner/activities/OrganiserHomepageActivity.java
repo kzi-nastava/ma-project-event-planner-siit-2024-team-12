@@ -58,6 +58,8 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
                     Intent intent = new Intent(OrganiserHomepageActivity.this, HomepageActivity.class);
                     startActivity(intent);
                 }
+
+
                 else if(id==R.id.nav_services){
                     FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -78,6 +80,13 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
                             .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container_products))
                             .commit();
                 }
+
+
+                else if (id == R.id.nav_view_profile) {
+                    Intent intent = new Intent(OrganiserHomepageActivity.this, ProfileViewActivity.class);
+                    startActivity(intent);
+                }
+
 
                 // Close the drawer after an item is selected
                 drawerLayout.closeDrawers();
