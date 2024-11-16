@@ -1,5 +1,13 @@
 <resources>
-    <string name="app_name">Event Planner</string>
+    <string name="app_name">EventPlanner</string>
+    <string name="po_services">MY SERVICES</string>
+    <string name="search">Search…</string>
+    <string name="price_list_button">Price list</string>
+    <string name="event1">Event 1</string>
+    <string name="view_details">View details</string>
+    <string name="floatingDesc">Floating button</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="open_drawer">Open Navigation Drawer</string>
     <string name="close_drawer">Close Navigation Drawer</string>
     <string name="events">MOST POPULAR EVENTS IN YOUR CITY</string>
@@ -8,6 +16,12 @@
     <string name="event_3">Event 3</string>
     <string name="event_4">Event 4</string>
     <string name="event_5">Event 5</string>
+    <string name="service_1">Service 1</string>
+    <string name="service_2">Service 2</string>
+    <string name="service_3">Service 3</string>
+    <string name="service_4">Service 4</string>
+    <string name="service_5">Service 5</string>
+    <string name="desc">The best service...</string>
     <string name="view_details_buttton">View Details</string>
     <string name="login">Log in</string>
     <string name="email">Email :</string>
@@ -17,6 +31,8 @@
     <string name="sign_up">Sign up</string>
     <string name="confirm_pass">Confirm password :</string>
     <string name="next">Next</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
     <string name="back">Back</string>
     <string name="name">Name :</string>
     <string name="surname">Surname :</string>
@@ -61,4 +77,46 @@
     <string name="product_3">Product 3</string>
     <string name="product_4">Product 4</string>
     <string name="product_5">Product 5</string>
+    <string name="category1">Category 1</string>
+    <string name="price">Price</string>
+    <string name="discount">Discount</string>
+    <string name="plus_button">Add service</string>
+    <string name="create_service">Create service</string>
+    <string name="create_category_title">Create category</string>
+    <string-array name="service_category_spinner">
+        <item>Category 1</item>
+        <item>Category 2</item>
+        <item>Category 3</item>
+    </string-array>
+    <string name="service_name">Service name:</string>
+    <string name="Service_duration">Duration:</string>
+    <string name="create_category">Create new</string>
+    <string name="create_price">Price:</string>
+    <string name="create_discount">Discount:</string>
+    <string name="create_res_deadline">Reservation deadline:</string>
+    <string-array name="service_visibility_spinner">
+        <item>Visible</item>
+        <item>Invisible</item>
+    </string-array>
+    <string-array name="service_availability_spinner">
+        <item>Available</item>
+        <item>Unavailable</item>
+    </string-array>
+    <string-array name="service_event_type_spinner">
+        <item>Event 1</item>
+        <item>Event 2</item>
+        <item>Event 3</item>
+    </string-array>
+    <string-array name="service_reservation_confirmation_spinner">
+        <item>Automatic</item>
+        <item>Manual</item>
+    </string-array>
+    <string name="service_description">Description:</string>
+    <string name="service_image_url">Image url:</string>
+    <string name="service_specificities">Specificities</string>
+    <string name="service_created">Service created successfully!</string>
+    <string name="category_created">Category created successfully!</string>
+    <string name="service_edited">Service edited successfully!</string>
+    <string name="service_deleted">Service deleted successfully!</string>
+
 </resources>

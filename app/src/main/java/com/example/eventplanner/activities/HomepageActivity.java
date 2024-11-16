@@ -7,13 +7,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.fragments.HomepageCardsFragment;
 import com.example.eventplanner.fragments.HomepageFilterFragment;
 import com.example.eventplanner.fragments.HomepageProductsServicesFragment;
+import com.example.eventplanner.fragments.ServiceManagement;
 import com.google.android.material.navigation.NavigationView;
 
 public class HomepageActivity extends AppCompatActivity {
@@ -57,6 +60,25 @@ public class HomepageActivity extends AppCompatActivity {
                 else if (id == R.id.nav_signup) {
                     Intent intent = new Intent(HomepageActivity.this, SignUpActivity.class);
                     startActivity(intent);
+                }else if(id==R.id.nav_services){
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.homepage_fragment_container, new ServiceManagement())
+                            .commit();
+
+                    fragmentManager.beginTransaction()
+                            .remove(fragmentManager.findFragmentById(R.id.cards_fragment_container))
+                            .commit();
+                    fragmentManager.beginTransaction()
+                            .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container))
+                            .commit();
+                    fragmentManager.beginTransaction()
+                            .remove(fragmentManager.findFragmentById(R.id.cards_products_fragment_container))
+                            .commit();
+                    fragmentManager.beginTransaction()
+                            .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container_products))
+                            .commit();
                 }
 
                 // Close the drawer after an item is selected

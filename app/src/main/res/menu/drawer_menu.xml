@@ -13,9 +13,13 @@
         android:title="Events"
          />
     <item
-        android:id="@+id/nav_solutions"
-        android:title="Solutions"
+        android:id="@+id/nav_products"
+        android:title="Products"
          />
+    <item
+        android:id="@+id/nav_services"
+        android:title="Services"
+        />
     <item
         android:id="@+id/nav_login"
         android:title="Log in"
