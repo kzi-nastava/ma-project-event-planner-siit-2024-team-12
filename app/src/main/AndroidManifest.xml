@@ -13,6 +13,12 @@
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
         <activity
+            android:name=".activities.OrganiserHomepageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ProfileViewActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ServiceEditActivity"
             android:exported="false" />
         <activity

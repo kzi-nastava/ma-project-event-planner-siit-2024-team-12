@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:title="@string/home" />
+
+
+    <group android:id="@+id/events_od">
+        <item
+            android:id="@+id/nav_create_event"
+            android:title="@string/create_event" />
+
+        <item
+            android:id="@+id/nav_fav_events"
+            android:title="@string/fav_events" />
+
+        <item
+            android:id="@+id/nav_calendar"
+            android:title="@string/calendar" />
+    </group>
+
+
+    <group android:id="@+id/solutions">
+        <item
+            android:id="@+id/nav_products"
+            android:title="@string/products" />
+
+        <item
+            android:id="@+id/nav_services"
+            android:title="@string/services" />
+    </group>
+
+
+    <group android:id="@+id/profile">
+        <item
+            android:id="@+id/nav_view_profile"
+            android:title="@string/view_profile" />
+
+        <item
+            android:id="@+id/nav_change_password"
+            android:title="@string/change_pass" />
+
+        <item
+            android:id="@+id/nav_notifications"
+            android:title="@string/notifications" />
+    </group>
+
+    <item
+        android:id="@+id/nav_log_out"
+        android:title="@string/log_out" />
+
+</menu>
