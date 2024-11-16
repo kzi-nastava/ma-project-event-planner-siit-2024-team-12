@@ -94,7 +94,6 @@
             android:background="@drawable/form_button"
             android:text="@string/register"
             android:textAllCaps="false"
-            android:onClick="openActivateAcc"
             android:textColor="@android:color/white"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"

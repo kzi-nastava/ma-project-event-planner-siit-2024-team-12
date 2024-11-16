@@ -33,13 +33,10 @@ public class BusinessRegistration2 extends Fragment {
             }
         });
 
-        /*
         registerButton.setOnClickListener(v -> {
             Toast.makeText(getActivity(), registrationSuccess, Toast.LENGTH_SHORT).show();
 
         });
-
-         */
 
         return view;
 
