@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments;
+package com.example.eventplanner.fragments.signup;
 
 import android.content.Intent;
 import android.os.Bundle;

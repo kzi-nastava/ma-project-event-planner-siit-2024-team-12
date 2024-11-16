@@ -7,16 +7,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.fragments.HomepageCardsFragment;
-import com.example.eventplanner.fragments.HomepageFilterFragment;
-import com.example.eventplanner.fragments.HomepageProductsServicesFragment;
-import com.example.eventplanner.fragments.ServiceManagement;
+import com.example.eventplanner.fragments.homepage.HomepageCardsFragment;
+import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
+import com.example.eventplanner.fragments.homepage.HomepageProductsServicesFragment;
+import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
 import com.google.android.material.navigation.NavigationView;
 
 public class HomepageActivity extends AppCompatActivity {

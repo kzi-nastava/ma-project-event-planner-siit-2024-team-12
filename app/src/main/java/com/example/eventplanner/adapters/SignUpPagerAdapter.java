@@ -5,9 +5,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.eventplanner.fragments.SignUp1;
-import com.example.eventplanner.fragments.SignUp2;
-import com.example.eventplanner.fragments.SignUp3;
+import com.example.eventplanner.fragments.signup.SignUp1;
+import com.example.eventplanner.fragments.signup.SignUp2;
+import com.example.eventplanner.fragments.signup.SignUp3;
 
 
 public class SignUpPagerAdapter extends FragmentStateAdapter {

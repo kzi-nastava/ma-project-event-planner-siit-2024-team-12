@@ -12,7 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.fragments.ResetPasswordFragment;
+import com.example.eventplanner.fragments.others.ResetPasswordFragment;
 
 public class LoginActivity extends AppCompatActivity {
 

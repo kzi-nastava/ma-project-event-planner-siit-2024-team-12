@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments;
+package com.example.eventplanner.fragments.servicecreation;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.ImageButton;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.CategoryCreationActivity;
 import com.example.eventplanner.activities.ServiceCreationActivity;
-import com.example.eventplanner.activities.SignUpActivity;
 
 /**
  * A simple {@link Fragment} subclass.

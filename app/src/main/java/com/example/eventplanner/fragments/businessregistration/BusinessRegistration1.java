@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments;
+package com.example.eventplanner.fragments.businessregistration;
 
 import android.os.Bundle;
 

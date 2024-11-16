@@ -6,8 +6,6 @@
     <string name="event1">Event 1</string>
     <string name="view_details">View details</string>
     <string name="floatingDesc">Floating button</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="open_drawer">Open Navigation Drawer</string>
     <string name="close_drawer">Close Navigation Drawer</string>
     <string name="events">MOST POPULAR EVENTS IN YOUR CITY</string>
@@ -118,5 +116,13 @@
     <string name="category_created">Category created successfully!</string>
     <string name="service_edited">Service edited successfully!</string>
     <string name="service_deleted">Service deleted successfully!</string>
+
+    <string name="activate_acc">Activate your account</string>
+    <string name="verify_acc">Verify your account</string>
+    <string name="thanks">Thanks for signing up!</string>
+    <string name="activate">Activate</string>
+    <string name="verify">Verify</string>
+
+
 
 </resources>
