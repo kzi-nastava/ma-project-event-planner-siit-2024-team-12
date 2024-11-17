@@ -37,10 +37,6 @@
             android:title="@string/view_profile" />
 
         <item
-            android:id="@+id/nav_change_password"
-            android:title="@string/change_pass" />
-
-        <item
             android:id="@+id/nav_notifications"
             android:title="@string/notifications" />
     </group>
