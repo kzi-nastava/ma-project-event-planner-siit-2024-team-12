@@ -172,5 +172,7 @@
     <string name="submit">Submit</string>
     <string name="upload_image">Upload image</string>
     <string name="selected_image">Selected image</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

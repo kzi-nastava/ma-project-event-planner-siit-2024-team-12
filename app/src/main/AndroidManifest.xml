@@ -13,6 +13,9 @@
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
         <activity
+            android:name=".activities.ProfileEditActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.OrganiserHomepageActivity"
             android:exported="false" />
         <activity
