@@ -85,6 +85,12 @@ public class HomepageActivity extends AppCompatActivity {
                     fragmentManager.beginTransaction()
                             .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container_products))
                             .commit();
+                    fragmentManager.beginTransaction()
+                            .remove(fragmentManager.findFragmentById(R.id.events_list_fragment_container))
+                            .commit();
+                    fragmentManager.beginTransaction()
+                            .remove(fragmentManager.findFragmentById(R.id.ps_list_fragment_container))
+                            .commit();
                 }
 
                 // Close the drawer after an item is selected
