@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -44,8 +45,15 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     public void openVerifyAcc(View view) {
-        VerifyAccount activateAccount = new VerifyAccount();
-        activateAccount.show(getSupportFragmentManager(), "activateAccount");
+        VerifyAccount verifyAccount = new VerifyAccount();
+        verifyAccount.show(getSupportFragmentManager(), "verifyAccount");
     }
+
+
+    public void closeForm(View view) {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
+
 }
 

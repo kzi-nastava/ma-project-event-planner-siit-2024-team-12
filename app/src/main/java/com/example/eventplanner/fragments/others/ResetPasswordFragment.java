@@ -9,6 +9,7 @@ import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.eventplanner.R;
 
@@ -18,6 +19,24 @@ public class ResetPasswordFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_reset_password, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_reset_password, container, false);
+
+        Button btn = view.findViewById(R.id.button);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendLink();
+            }
+        });
+
+        return view;
+
+    }
+
+
+    public void sendLink() {
+        dismiss();
     }
 }
