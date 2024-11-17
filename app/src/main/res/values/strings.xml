@@ -175,4 +175,9 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
 
+
+    <!-- password change -->
+    <string name="old_pass">Old password :</string>
+    <string name="new_pass">New password :</string>
+
 </resources>

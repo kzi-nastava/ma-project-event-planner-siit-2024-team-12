@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.fragments.others.ChangePasswordFragment;
 
 public class ProfileEditActivity extends AppCompatActivity {
 
@@ -23,4 +25,10 @@ public class ProfileEditActivity extends AppCompatActivity {
             return insets;
         });
     }
+
+    public void openChangePassword(View view) {
+        ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
+        changePasswordFragment.show(getSupportFragmentManager(), "changePasswordFragment");
+    }
+
 }
