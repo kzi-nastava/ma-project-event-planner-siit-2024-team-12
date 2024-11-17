@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.HomepageCardsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
 import com.example.eventplanner.fragments.homepage.HomepageProductsServicesFragment;
@@ -22,6 +23,7 @@ public class HomepageActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private RecyclerView recyclerView;
     private NavigationView navigationView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +97,11 @@ public class HomepageActivity extends AppCompatActivity {
 
             fragmentManager.beginTransaction()
                     .replace(R.id.filter_fragment_container, new HomepageFilterFragment())
+                    .commit();
+
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.events_list_fragment_container, new EventListFragment())
                     .commit();
 
             fragmentManager.beginTransaction()

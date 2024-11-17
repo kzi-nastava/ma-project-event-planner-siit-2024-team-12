@@ -190,5 +190,6 @@
     <string name="select_recipient">Select recipient</string>
     <string name="inbox">Inbox</string>
     <string name="to">To:</string>
+    <string name="previous">Previous</string>
 
 </resources>
