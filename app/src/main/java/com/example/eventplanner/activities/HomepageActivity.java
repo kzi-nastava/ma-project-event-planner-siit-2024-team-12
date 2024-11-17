@@ -2,9 +2,12 @@ package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.fragment.app.FragmentManager;
@@ -37,6 +40,8 @@ public class HomepageActivity extends AppCompatActivity {
         // Set up the toolbar as an action bar
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+
+        toolbar.setOverflowIcon(null);
 
         // Add a toggle button for opening/closing the drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -119,6 +124,13 @@ public class HomepageActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.drawer_menu, menu);
+        MenuCompat.setGroupDividerEnabled(menu, true);
+        return true;
     }
 
 
