@@ -44,9 +44,8 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         }
     }
 
-    public void openActivateAcc(View view) {
-        ActivateAccount activateAccount = new ActivateAccount();
-        activateAccount.show(getSupportFragmentManager(), "activateAccount");
+    public void closeForm(View view) {
+        setResult(RESULT_CANCELED);
+        finish();
     }
-
 }

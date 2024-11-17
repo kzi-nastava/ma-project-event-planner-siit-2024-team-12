@@ -34,4 +34,9 @@ public class ProfileViewActivity extends AppCompatActivity {
         Intent intent = new Intent(ProfileViewActivity.this, ProfileEditActivity.class);
         startActivity(intent);
     }
+
+    public void closeForm(View view) {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
 }

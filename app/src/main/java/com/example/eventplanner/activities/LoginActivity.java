@@ -56,4 +56,10 @@ public class LoginActivity extends AppCompatActivity {
         resetPasswordFragment.show(getSupportFragmentManager(), "resetPasswordFragment");
     }
 
+    public void closeForm(View view) {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
+
+
 }

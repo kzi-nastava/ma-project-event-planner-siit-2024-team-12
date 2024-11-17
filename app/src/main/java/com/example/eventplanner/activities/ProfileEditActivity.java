@@ -64,4 +64,8 @@ public class ProfileEditActivity extends AppCompatActivity {
         changePasswordFragment.show(getSupportFragmentManager(), "changePasswordFragment");
     }
 
+    public void closeForm(View view) {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
 }

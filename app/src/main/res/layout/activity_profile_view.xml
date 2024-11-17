@@ -38,12 +38,29 @@
             app:layout_constraintVertical_bias="0.147" />
 
         <Button
+            android:id="@+id/editButton5"
+            android:layout_width="78dp"
+            android:layout_height="31dp"
+            android:background="@drawable/form_button"
+            android:onClick="closeForm"
+            android:text="@string/back"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.927"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <Button
             android:id="@+id/button7"
             android:layout_width="78dp"
             android:layout_height="31dp"
             android:background="@drawable/form_button"
             android:backgroundTint="@color/dark_gray"
-            android:text="@string/delete"
+            android:text="@string/deactivate"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="11sp"

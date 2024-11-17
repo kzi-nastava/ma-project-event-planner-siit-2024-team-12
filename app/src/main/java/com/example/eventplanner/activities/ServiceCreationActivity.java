@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,6 +40,11 @@ public class ServiceCreationActivity extends AppCompatActivity {
         if (viewPager.getCurrentItem() > 0) {
             viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
         }
+    }
+
+    public void closeForm(View view) {
+        setResult(RESULT_CANCELED);
+        finish();
     }
 }
 
