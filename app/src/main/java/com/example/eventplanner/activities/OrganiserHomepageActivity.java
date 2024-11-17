@@ -121,6 +121,12 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
                     fragmentManager.beginTransaction()
                             .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container_products))
                             .commit();
+                    fragmentManager.beginTransaction()
+                            .remove(fragmentManager.findFragmentById(R.id.events_list_fragment_container))
+                            .commit();
+                    fragmentManager.beginTransaction()
+                            .remove(fragmentManager.findFragmentById(R.id.ps_list_fragment_container))
+                            .commit();
                 } else if (id == R.id.nav_view_profile) {
                     Intent intent = new Intent(OrganiserHomepageActivity.this, ProfileViewActivity.class);
                     startActivity(intent);
