@@ -180,8 +180,6 @@
     <!-- password change -->
     <string name="old_pass">Old password :</string>
     <string name="new_pass">New password :</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- chat options -->
     <string name="chat">Chat</string>
@@ -190,5 +188,12 @@
     <string name="select_recipient">Select recipient</string>
     <string name="inbox">Inbox</string>
     <string name="to">To:</string>
+
+    <!-- Asterisks -->
+    <string name="name_ast">Name*</string>
+    <string name="surname_ast">Surname*</string>
+    <string name="email_ast">Email*</string>
+    <string name="phone_ast">Phone*</string>
+    <string name="address_ast">Address*</string>
 
 </resources>
