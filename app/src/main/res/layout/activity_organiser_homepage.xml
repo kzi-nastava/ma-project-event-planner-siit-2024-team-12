@@ -38,10 +38,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
+                <!-- Fragment za filter -->
+                <FrameLayout
+                    android:id="@+id/filter_fragment_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
                 <FrameLayout
                     android:id="@+id/cards_products_fragment_container"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+
+                <!-- Fragment za filter -->
+                <FrameLayout
+                    android:id="@+id/filter_fragment_container_products"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
         </ScrollView>

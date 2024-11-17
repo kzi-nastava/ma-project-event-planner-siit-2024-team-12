@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -7,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -94,9 +96,11 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_home) {
-                    Intent intent = new Intent(OrganiserHomepageActivity.this, HomepageActivity.class);
+                    Intent intent = new Intent(OrganiserHomepageActivity.this, OrganiserHomepageActivity.class);
                     startActivity(intent);
-                } else if (id == R.id.nav_services) {
+                }
+                else if (id == R.id.nav_log_out) { logOut();}
+                else if (id == R.id.nav_services) {
                     FragmentManager fragmentManager = getSupportFragmentManager();
 
                     fragmentManager.beginTransaction()
@@ -169,5 +173,31 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void logOut() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+
+        dialog.setTitle("Log out?");
+        dialog.setMessage("Are you sure you want to log out?");
+
+        dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(OrganiserHomepageActivity.this, HomepageActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        dialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Do nothing
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = dialog.create();
+        alert.show();
     }
 }
