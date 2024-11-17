@@ -1,3 +1,204 @@
 <resources>
     <string name="app_name">EventPlanner</string>
+
+
+    <!-- Service management -->
+    <string name="po_services">MY SERVICES</string>
+    <string name="search">Search…</string>
+    <string name="price_list_button">Price list</string>
+    <string name="view_details">View details</string>
+    <string name="floatingDesc">Floating button</string>
+    <string name="service_1">Service 1</string>
+    <string name="service_2">Service 2</string>
+    <string name="service_3">Service 3</string>
+    <string name="service_4">Service 4</string>
+    <string name="service_5">Service 5</string>
+    <string name="desc">The best service...</string>
+
+
+    <!-- Unregistered user homepage -->
+    <string name="open_drawer">Open Navigation Drawer</string>
+    <string name="close_drawer">Close Navigation Drawer</string>
+    <string name="events">MOST POPULAR EVENTS IN YOUR CITY</string>
+    <string name="event_1">Event 1</string>
+    <string name="event_2">Event 2</string>
+    <string name="event_3">Event 3</string>
+    <string name="event_4">Event 4</string>
+    <string name="event_5">Event 5</string>
+    <string name="view_details_buttton">View Details</string>
+
+
+    <!-- Login form -->
+    <string name="login">Log in</string>
+    <string name="email">Email :</string>
+    <string name="password">Password :</string>
+    <string name="forgot_pass">Forgot password?</string>
+    <string name="dont_have_acc">Don\'t have an account?</string>
+
+
+    <!-- Sign up form -->
+    <string name="sign_up">Sign up</string>
+    <string name="confirm_pass">Confirm password :</string>
+    <string name="name">Name :</string>
+    <string name="surname">Surname :</string>
+    <string name="address">Address :</string>
+    <string name="phone">Phone :</string>
+    <string name="role">Role :</string>
+    <string-array name="roles_spinner">
+        <item>Event organiser</item>
+        <item>Service/product provider</item>
+    </string-array>
+
+    <string name="reset_pass">Reset your password</string>
+    <string name="click_send_link">Please click the following button to receive an email with the link
+    for changing your password.</string>
+    <string name="send_link">Send link</string>
+    <string name="key">Key</string>
+
+
+    <!-- Business registration -->
+    <string name="business_reg">Business registration</string>
+    <string name="company_name">Company name :</string>
+    <string name="company_email">Company email :</string>
+    <string name="description">Description :</string>
+    <string name="images">Images :</string>
+    <string name="register">Register</string>
+    <string name="registration_success">Successful registration! Visit the link we sent to your email address.</string>
+
+
+    <!-- Search and filters -->
+    <string name="enter_search_criteria">Enter search criteria</string>
+    <string name="apply_filter">Apply Filter</string>
+    <string-array name="sort_options">
+        <item>Highest to lowest</item>
+        <item>Lowest to highest</item>
+    </string-array>
+    <string-array name="category_options">
+        <item>Category 1</item>
+        <item>Category 2</item>
+        <item>Category 3</item>
+        <item>Category 4</item>
+    </string-array>
+    <string name="sort_prompt">Sort</string>
+    <string name="filters">Filters</string>
+    <string name="reset_filters">Reset filters</string>
+
+
+    <!-- Products and services -->
+    <string name="products_services">MOST POPULAR PRODUCTS/SERVICES IN YOUR CITY</string>
+    <string name="product_1">Product 1</string>
+    <string name="product_2">Product 2</string>
+    <string name="product_3">Product 3</string>
+    <string name="product_4">Product 4</string>
+    <string name="product_5">Product 5</string>
+    <string name="category1">Category 1</string>
+
+
+    <!-- Create service form -->
+    <string name="price">Price</string>
+    <string name="discount">Discount</string>
+    <string name="plus_button">Add service</string>
+    <string name="create_service">Create service</string>
+    <string name="create_category_title">Create category</string>
+    <string-array name="service_category_spinner">
+        <item>Category 1</item>
+        <item>Category 2</item>
+        <item>Category 3</item>
+    </string-array>
+    <string name="service_name">Service name:</string>
+    <string name="Service_duration">Duration:</string>
+    <string name="create_category">Create new</string>
+    <string name="create_price">Price:</string>
+    <string name="create_discount">Discount:</string>
+    <string name="create_res_deadline">Reservation deadline:</string>
+    <string-array name="service_visibility_spinner">
+        <item>Visible</item>
+        <item>Invisible</item>
+    </string-array>
+    <string-array name="service_availability_spinner">
+        <item>Available</item>
+        <item>Unavailable</item>
+    </string-array>
+    <string-array name="service_event_type_spinner">
+        <item>Event 1</item>
+        <item>Event 2</item>
+        <item>Event 3</item>
+    </string-array>
+    <string-array name="service_reservation_confirmation_spinner">
+        <item>Automatic</item>
+        <item>Manual</item>
+    </string-array>
+    <string name="service_description">Description:</string>
+    <string name="service_image_url">Image url:</string>
+    <string name="service_specificities">Specificities</string>
+    <string name="service_created">Service created successfully!</string>
+    <string name="category_created">Category created successfully!</string>
+    <string name="service_edited">Service edited successfully!</string>
+    <string name="service_deleted">Service deleted successfully!</string>
+
+
+    <!-- Account activation/verification -->
+    <string name="activate_acc">Activate your account</string>
+    <string name="verify_acc">Verify your account</string>
+    <string name="thanks">Thanks for signing up!</string>
+    <string name="activate">Activate</string>
+    <string name="verify">Verify</string>
+
+
+    <!-- drawer menu items -->
+    <string name="home">Home</string>
+    <string name="about_us">About us</string>
+    <string name="events_menu">Events</string>
+    <string name="products">Products</string>
+    <string name="services">Services</string>
+
+
+    <!-- organiser menu items -->
+    <string name="create_event">Create event</string>
+    <string name="fav_events">Favourite events</string>
+    <string name="calendar">Calendar</string>
+    <string name="solutions">Solutions</string>
+    <string name="view_profile">View profile</string>
+    <string name="change_pass">Change password</string>
+    <string name="notifications">Notifications</string>
+    <string name="log_out">Log out</string>
+
+
+    <!-- Buttons -->
+    <string name="next">Next</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="back">Back</string>
+    <string name="submit">Submit</string>
+    <string name="upload_image">Upload image</string>
+    <string name="selected_image">Selected image</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="deactivate">Deactivate</string>
+
+
+    <!-- password change -->
+    <string name="old_pass">Old password :</string>
+    <string name="new_pass">New password :</string>
+
+    <!-- chat options -->
+    <string name="chat">Chat</string>
+    <string name="send_message">Send Message</string>
+    <string name="type_a_message">Type a message</string>
+    <string name="select_recipient">Select recipient</string>
+    <string name="inbox">Inbox</string>
+    <string name="to">To:</string>
+    <string name="previous">Previous</string>
+    <string name="product_service_title">Product/Service Title</string>
+    <string name="product_service_description_goes_here">Product/Service description goes here</string>
+    <string name="event_title">Event Title</string>
+    <string name="event_description_goes_here">Event description goes here</string>
+
+    <!-- Asterisks -->
+    <string name="name_ast">Name*</string>
+    <string name="surname_ast">Surname*</string>
+    <string name="email_ast">Email*</string>
+    <string name="phone_ast">Phone*</string>
+    <string name="address_ast">Address*</string>
+
 </resources>

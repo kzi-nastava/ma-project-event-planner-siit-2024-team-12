@@ -13,7 +13,37 @@
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
         <activity
-            android:name=".activities.HomeActivity"
+            android:name=".activities.ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ProfileEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.OrganiserHomepageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ProfileViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ServiceEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CategoryCreationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ServiceCreationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.BusinessRegistrationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.HomepageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".activities.SplashScreenActivity"
