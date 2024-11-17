@@ -20,9 +20,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.HomepageCardsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
 import com.example.eventplanner.fragments.homepage.HomepageProductsServicesFragment;
+import com.example.eventplanner.fragments.homepage.PSListFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
 import com.example.eventplanner.adapters.ChatAdapter;
 import com.google.android.material.navigation.NavigationView;
@@ -142,11 +144,19 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
                     .commit();
 
             fragmentManager.beginTransaction()
+                    .replace(R.id.events_list_fragment_container, new EventListFragment())
+                    .commit();
+
+            fragmentManager.beginTransaction()
                     .replace(R.id.cards_products_fragment_container, new HomepageProductsServicesFragment())
                     .commit();
 
             fragmentManager.beginTransaction()
                     .replace(R.id.filter_fragment_container_products, new HomepageFilterFragment())
+                    .commit();
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.ps_list_fragment_container, new PSListFragment())
                     .commit();
         }
 
