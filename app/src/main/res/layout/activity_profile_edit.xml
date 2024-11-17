@@ -99,7 +99,7 @@
             app:srcCompat="@drawable/user_logo" />
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/addImgBtn"
             android:layout_width="25dp"
             android:layout_height="22dp"
             app:layout_constraintBottom_toBottomOf="parent"
