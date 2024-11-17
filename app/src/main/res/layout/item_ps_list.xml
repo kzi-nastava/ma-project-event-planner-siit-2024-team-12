@@ -11,9 +11,9 @@
         android:id="@+id/eventImage"
         android:layout_width="96dp"
         android:layout_height="96dp"
-        android:contentDescription="@string/event_1"
+        android:contentDescription="@string/product_1"
         android:scaleType="centerCrop"
-        android:src="@drawable/event6"
+        android:src="@drawable/product4"
         app:shapeAppearanceOverlay="@style/roundedImageView"/>
 
     <LinearLayout
@@ -30,7 +30,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@android:color/black"
-            android:text="@string/event_title" />
+            android:text="@string/product_service_title" />
 
         <TextView
             android:id="@+id/eventDescription"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textColor="@android:color/darker_gray"
-            android:text="@string/event_description_goes_here" />
+            android:text="@string/product_service_description_goes_here" />
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton

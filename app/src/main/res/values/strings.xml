@@ -191,5 +191,9 @@
     <string name="inbox">Inbox</string>
     <string name="to">To:</string>
     <string name="previous">Previous</string>
+    <string name="product_service_title">Product/Service Title</string>
+    <string name="product_service_description_goes_here">Product/Service description goes here</string>
+    <string name="event_title">Event Title</string>
+    <string name="event_description_goes_here">Event description goes here</string>
 
 </resources>
