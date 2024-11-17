@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -9,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.SignUpPagerAdapter;
+import com.example.eventplanner.fragments.others.ActivateAccount;
+import com.example.eventplanner.fragments.others.VerifyAccount;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -38,6 +41,11 @@ public class SignUpActivity extends AppCompatActivity {
         if (viewPager.getCurrentItem() > 0) {
             viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
         }
+    }
+
+    public void openVerifyAcc(View view) {
+        VerifyAccount activateAccount = new VerifyAccount();
+        activateAccount.show(getSupportFragmentManager(), "activateAccount");
     }
 }
 

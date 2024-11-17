@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments;
+package com.example.eventplanner.fragments.others;
 
 import android.os.Bundle;
 
@@ -14,11 +14,13 @@ import android.view.ViewGroup;
 import com.example.eventplanner.R;
 
 
-public class ResetPasswordFragment extends DialogFragment {
+public class ActivateAccount extends DialogFragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_reset_password, container, false);
+        return inflater.inflate(R.layout.fragment_activate_account, container, false);
     }
+
+
 }

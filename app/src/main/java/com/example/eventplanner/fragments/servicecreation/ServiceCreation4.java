@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments;
+package com.example.eventplanner.fragments.servicecreation;
 
 import android.os.Bundle;
 
@@ -8,17 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.ServiceCreationActivity;
-import com.example.eventplanner.activities.SignUpActivity;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ServiceCreation2#newInstance} factory method to
+ * Use the {@link ServiceCreation4#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ServiceCreation2 extends Fragment {
+public class ServiceCreation4 extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,7 +29,7 @@ public class ServiceCreation2 extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ServiceCreation2() {
+    public ServiceCreation4() {
         // Required empty public constructor
     }
 
@@ -39,11 +39,11 @@ public class ServiceCreation2 extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ServiceCreation2.
+     * @return A new instance of fragment ServiceCreation4.
      */
     // TODO: Rename and change types and number of parameters
-    public static ServiceCreation2 newInstance(String param1, String param2) {
-        ServiceCreation2 fragment = new ServiceCreation2();
+    public static ServiceCreation4 newInstance(String param1, String param2) {
+        ServiceCreation4 fragment = new ServiceCreation4();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -64,20 +64,20 @@ public class ServiceCreation2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_service_creation2, container, false);
-        Button nextButton = view.findViewById(R.id.nextServiceCreate2);
-        Button backButton = view.findViewById(R.id.backServiceCreate);
+        View view = inflater.inflate(R.layout.fragment_service_creation4, container, false);
+        Button backButton = view.findViewById(R.id.backServiceCreate4);
+        Button submitButton = view.findViewById(R.id.submitService);
 
-        nextButton.setOnClickListener(v -> {
-            if (getActivity() instanceof ServiceCreationActivity) {
-                ((ServiceCreationActivity) getActivity()).nextPage();
-            }
-        });
+        String ServiceCreatedMessage = getString(R.string.service_created);
 
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof ServiceCreationActivity) {
                 ((ServiceCreationActivity) getActivity()).previousPage();
             }
+        });
+
+        submitButton.setOnClickListener(v -> {
+            Toast.makeText(getActivity(), ServiceCreatedMessage, Toast.LENGTH_SHORT).show();
         });
 
         return view;

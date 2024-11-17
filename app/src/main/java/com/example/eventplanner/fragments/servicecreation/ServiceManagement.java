@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments;
+package com.example.eventplanner.fragments.servicecreation;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,10 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.HomepageActivity;
 import com.example.eventplanner.activities.ServiceCreationActivity;
-import com.example.eventplanner.activities.SignUpActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
 
 /**
  * A simple {@link Fragment} subclass.

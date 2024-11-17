@@ -1,13 +1,22 @@
 <resources>
     <string name="app_name">EventPlanner</string>
+
+
+    <!-- Service management -->
     <string name="po_services">MY SERVICES</string>
     <string name="search">Search…</string>
     <string name="price_list_button">Price list</string>
-    <string name="event1">Event 1</string>
     <string name="view_details">View details</string>
     <string name="floatingDesc">Floating button</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="service_1">Service 1</string>
+    <string name="service_2">Service 2</string>
+    <string name="service_3">Service 3</string>
+    <string name="service_4">Service 4</string>
+    <string name="service_5">Service 5</string>
+    <string name="desc">The best service...</string>
+
+
+    <!-- Unregistered user homepage -->
     <string name="open_drawer">Open Navigation Drawer</string>
     <string name="close_drawer">Close Navigation Drawer</string>
     <string name="events">MOST POPULAR EVENTS IN YOUR CITY</string>
@@ -16,24 +25,20 @@
     <string name="event_3">Event 3</string>
     <string name="event_4">Event 4</string>
     <string name="event_5">Event 5</string>
-    <string name="service_1">Service 1</string>
-    <string name="service_2">Service 2</string>
-    <string name="service_3">Service 3</string>
-    <string name="service_4">Service 4</string>
-    <string name="service_5">Service 5</string>
-    <string name="desc">The best service...</string>
     <string name="view_details_buttton">View Details</string>
+
+
+    <!-- Login form -->
     <string name="login">Log in</string>
     <string name="email">Email :</string>
     <string name="password">Password :</string>
     <string name="forgot_pass">Forgot password?</string>
     <string name="dont_have_acc">Don\'t have an account?</string>
+
+
+    <!-- Sign up form -->
     <string name="sign_up">Sign up</string>
     <string name="confirm_pass">Confirm password :</string>
-    <string name="next">Next</string>
-    <string name="delete">Delete</string>
-    <string name="edit">Edit</string>
-    <string name="back">Back</string>
     <string name="name">Name :</string>
     <string name="surname">Surname :</string>
     <string name="address">Address :</string>
@@ -43,12 +48,15 @@
         <item>Event organiser</item>
         <item>Service/product provider</item>
     </string-array>
-    <string name="submit">Submit</string>
+
     <string name="reset_pass">Reset your password</string>
     <string name="click_send_link">Please click the following button to receive an email with the link
     for changing your password.</string>
     <string name="send_link">Send link</string>
     <string name="key">Key</string>
+
+
+    <!-- Business registration -->
     <string name="business_reg">Business registration</string>
     <string name="company_name">Company name :</string>
     <string name="company_email">Company email :</string>
@@ -56,6 +64,9 @@
     <string name="images">Images :</string>
     <string name="register">Register</string>
     <string name="registration_success">Successful registration! Visit the link we sent to your email address.</string>
+
+
+    <!-- Search and filters -->
     <string name="enter_search_criteria">Enter search criteria</string>
     <string name="apply_filter">Apply Filter</string>
     <string-array name="sort_options">
@@ -71,6 +82,9 @@
     <string name="sort_prompt">Sort</string>
     <string name="filters">Filters</string>
     <string name="reset_filters">Reset filters</string>
+
+
+    <!-- Products and services -->
     <string name="products_services">MOST POPULAR PRODUCTS/SERVICES IN YOUR CITY</string>
     <string name="product_1">Product 1</string>
     <string name="product_2">Product 2</string>
@@ -78,6 +92,9 @@
     <string name="product_4">Product 4</string>
     <string name="product_5">Product 5</string>
     <string name="category1">Category 1</string>
+
+
+    <!-- Create service form -->
     <string name="price">Price</string>
     <string name="discount">Discount</string>
     <string name="plus_button">Add service</string>
@@ -118,5 +135,49 @@
     <string name="category_created">Category created successfully!</string>
     <string name="service_edited">Service edited successfully!</string>
     <string name="service_deleted">Service deleted successfully!</string>
+
+
+    <!-- Account activation/verification -->
+    <string name="activate_acc">Activate your account</string>
+    <string name="verify_acc">Verify your account</string>
+    <string name="thanks">Thanks for signing up!</string>
+    <string name="activate">Activate</string>
+    <string name="verify">Verify</string>
+
+
+    <!-- drawer menu items -->
+    <string name="home">Home</string>
+    <string name="about_us">About us</string>
+    <string name="events_menu">Events</string>
+    <string name="products">Products</string>
+    <string name="services">Services</string>
+
+
+    <!-- organiser menu items -->
+    <string name="create_event">Create event</string>
+    <string name="fav_events">Favourite events</string>
+    <string name="calendar">Calendar</string>
+    <string name="solutions">Solutions</string>
+    <string name="view_profile">View profile</string>
+    <string name="change_pass">Change password</string>
+    <string name="notifications">Notifications</string>
+    <string name="log_out">Log out</string>
+
+
+    <!-- Buttons -->
+    <string name="next">Next</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="back">Back</string>
+    <string name="submit">Submit</string>
+    <string name="upload_image">Upload image</string>
+    <string name="selected_image">Selected image</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
+
+    <!-- password change -->
+    <string name="old_pass">Old password :</string>
+    <string name="new_pass">New password :</string>
 
 </resources>

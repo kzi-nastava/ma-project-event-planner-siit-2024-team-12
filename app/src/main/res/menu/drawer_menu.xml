@@ -2,30 +2,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_home"
-        android:title="Home" />
+        android:title="@string/home" />
 
     <item
         android:id="@+id/nav_about_us"
-        android:title="About Us"
+        android:title="@string/about_us"
          />
     <item
         android:id="@+id/nav_events"
-        android:title="Events"
+        android:title="@string/events_menu"
          />
     <item
         android:id="@+id/nav_products"
-        android:title="Products"
+        android:title="@string/products"
          />
     <item
         android:id="@+id/nav_services"
-        android:title="Services"
+        android:title="@string/services"
         />
     <item
         android:id="@+id/nav_login"
-        android:title="Log in"
+        android:title="@string/login"
          />
     <item
         android:id="@+id/nav_signup"
-        android:title="Sign up"
+        android:title="@string/sign_up"
          />
 </menu>

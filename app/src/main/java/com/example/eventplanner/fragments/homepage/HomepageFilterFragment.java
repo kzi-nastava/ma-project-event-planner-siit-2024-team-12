@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments;
+package com.example.eventplanner.fragments.homepage;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,9 +10,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 
 import androidx.fragment.app.Fragment;
 

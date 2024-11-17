@@ -5,10 +5,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.eventplanner.fragments.ServiceCreation;
-import com.example.eventplanner.fragments.ServiceCreation2;
-import com.example.eventplanner.fragments.ServiceCreation3;
-import com.example.eventplanner.fragments.ServiceCreation4;
+import com.example.eventplanner.fragments.servicecreation.ServiceCreation;
+import com.example.eventplanner.fragments.servicecreation.ServiceCreation2;
+import com.example.eventplanner.fragments.servicecreation.ServiceCreation3;
+import com.example.eventplanner.fragments.servicecreation.ServiceCreation4;
 
 public class ServiceCreationPagerAdapter extends FragmentStateAdapter {
 

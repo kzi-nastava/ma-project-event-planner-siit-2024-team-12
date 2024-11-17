@@ -2,9 +2,12 @@ package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.fragment.app.FragmentManager;
@@ -17,7 +20,7 @@ import com.example.eventplanner.fragments.homepage.HomepageProductsServicesFragm
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
 import com.google.android.material.navigation.NavigationView;
 
-public class HomepageActivity extends AppCompatActivity {
+public class OrganiserHomepageActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private RecyclerView recyclerView;
@@ -26,7 +29,7 @@ public class HomepageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_homepage);
+        setContentView(R.layout.activity_organiser_homepage);
 
         // Initialize DrawerLayout
         drawerLayout = findViewById(R.id.navigationView);
@@ -50,15 +53,14 @@ public class HomepageActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
                 int id = item.getItemId();
 
-                if (id == R.id.nav_login) {
-                    // Open LoginActivity
-                    Intent intent = new Intent(HomepageActivity.this, LoginActivity.class);
+
+                if (id == R.id.nav_home) {
+                    Intent intent = new Intent(OrganiserHomepageActivity.this, HomepageActivity.class);
                     startActivity(intent);
                 }
-                else if (id == R.id.nav_signup) {
-                    Intent intent = new Intent(HomepageActivity.this, SignUpActivity.class);
-                    startActivity(intent);
-                }else if(id==R.id.nav_services){
+
+
+                else if(id==R.id.nav_services){
                     FragmentManager fragmentManager = getSupportFragmentManager();
 
                     fragmentManager.beginTransaction()
@@ -78,6 +80,13 @@ public class HomepageActivity extends AppCompatActivity {
                             .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container_products))
                             .commit();
                 }
+
+
+                else if (id == R.id.nav_view_profile) {
+                    Intent intent = new Intent(OrganiserHomepageActivity.this, ProfileViewActivity.class);
+                    startActivity(intent);
+                }
+
 
                 // Close the drawer after an item is selected
                 drawerLayout.closeDrawers();
@@ -109,5 +118,14 @@ public class HomepageActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.organiser_menu, menu);
+
+        MenuCompat.setGroupDividerEnabled(menu, true);
+
+        return true;
+    }
 
 }
