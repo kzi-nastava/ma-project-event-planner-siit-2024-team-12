@@ -203,4 +203,12 @@
         android:background="@android:color/white" />
 
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/eventTypeRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:background="@android:color/white" />
+
+
 </androidx.drawerlayout.widget.DrawerLayout>

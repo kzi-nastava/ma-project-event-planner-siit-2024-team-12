@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.CategoryAdapter;
 import com.example.eventplanner.adapters.ChatAdapter;
+import com.example.eventplanner.adapters.EventTypeAdapter;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.HomepageCardsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
@@ -34,6 +35,7 @@ import com.example.eventplanner.fragments.homepage.HomepageProductsServicesFragm
 import com.example.eventplanner.fragments.homepage.PSListFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
 import com.example.eventplanner.model.Category;
+import com.example.eventplanner.model.EventType;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -113,6 +115,18 @@ public class ProviderHomepageActivity extends AppCompatActivity {
         categoryRecyclerView.setAdapter(adapter2);
 
 
+        // table that displays event types of the current business
+        RecyclerView eventTypecyclerView = findViewById(R.id.eventTypeRecyclerView);
+        eventTypecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        eventTypecyclerView.setVisibility(View.GONE);
+
+        List<EventType> events = new ArrayList<>();
+        events.add(new EventType("1", "Concert", "Active"));
+        events.add(new EventType("2", "Meeting", "Inactive"));
+
+        EventTypeAdapter adapter3 = new EventTypeAdapter(events);
+        eventTypecyclerView.setAdapter(adapter3);
+
 
 
         // Initialize NavigationView and set listener for menu items
@@ -167,6 +181,13 @@ public class ProviderHomepageActivity extends AppCompatActivity {
 
                 else if (id == R.id.nav_categories) {
                     RecyclerView recyclerView = findViewById(R.id.categoryRecyclerView);
+                    recyclerView.setVisibility(View.VISIBLE);
+
+                }
+
+
+                else if (id == R.id.nav_event_types) {
+                    RecyclerView recyclerView = findViewById(R.id.eventTypeRecyclerView);
                     recyclerView.setVisibility(View.VISIBLE);
 
                 }
