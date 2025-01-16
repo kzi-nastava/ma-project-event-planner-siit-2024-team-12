@@ -220,6 +220,8 @@
 
     <string name="event_type_details">Event type details</string>
     <string name="recommended_categories">Recommended categories</string>
+    <string name="recommended_categories_ast">Recommended categories*</string>
+    <string name="event_type_edit">Edit event type</string>
 
 
 </resources>

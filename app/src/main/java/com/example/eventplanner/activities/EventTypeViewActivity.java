@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
@@ -56,5 +57,11 @@ public class EventTypeViewActivity extends AppCompatActivity {
             builder.create().show();
         });
 
+    }
+
+
+    public void closeForm(View view) {
+        setResult(RESULT_CANCELED);
+        finish();
     }
 }
