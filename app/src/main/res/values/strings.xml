@@ -218,5 +218,8 @@
 
     <string name="expand_arrow">Expand arrow</string>
 
+    <string name="event_type_details">Event type details</string>
+    <string name="recommended_categories">Recommended categories</string>
+
 
 </resources>

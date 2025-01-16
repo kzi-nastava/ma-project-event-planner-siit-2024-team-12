@@ -13,10 +13,10 @@
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
         <activity
-            android:name=".activities.EditEventTypeActivity"
+            android:name=".activities.EventTypeEditActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ViewEventTypeActivity"
+            android:name=".activities.EventTypeViewActivity"
             android:exported="false" />
         <activity
             android:name=".activities.BusinessEditActivity"

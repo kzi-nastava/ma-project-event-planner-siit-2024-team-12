@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.model.EventType;
-import com.example.eventplanner.activities.ViewEventTypeActivity;
-import com.example.eventplanner.activities.EditEventTypeActivity;
+import com.example.eventplanner.activities.EventTypeViewActivity;
+import com.example.eventplanner.activities.EventTypeEditActivity;
 
 import java.util.List;
 
@@ -68,13 +68,13 @@ public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeAdapter.Even
         // Set click listeners for the buttons
         holder.viewButton.setOnClickListener(v -> {
             Context context = v.getContext();
-            Intent intent = new Intent(context, ViewEventTypeActivity.class);
+            Intent intent = new Intent(context, EventTypeViewActivity.class);
             context.startActivity(intent);
         });
 
         holder.editButton.setOnClickListener(v -> {
             Context context = v.getContext();
-            Intent intent = new Intent(context, EditEventTypeActivity.class);
+            Intent intent = new Intent(context, EventTypeEditActivity.class);
             context.startActivity(intent);
         });
     }
