@@ -151,6 +151,12 @@ public class ProviderHomepageActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
 
+
+                else if (id == R.id.nav_calendar_od) {
+                    Intent intent = new Intent(ProviderHomepageActivity.this, CalendarActivity.class);
+                    startActivity(intent);
+                }
+
                 else if (id == R.id.nav_log_out) { logOut();}
                 else if (id == R.id.nav_services) {
                     FragmentManager fragmentManager = getSupportFragmentManager();

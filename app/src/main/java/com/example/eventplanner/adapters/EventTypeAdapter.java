@@ -12,13 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.viewholders.EventTypeViewHolder;
 import com.example.eventplanner.model.EventType;
 import com.example.eventplanner.activities.EventTypeViewActivity;
 import com.example.eventplanner.activities.EventTypeEditActivity;
 
 import java.util.List;
 
-public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeAdapter.EventTypeViewHolder> {
+public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeViewHolder> {
     private List<EventType> eventTypeList;
 
     public EventTypeAdapter(List<EventType> eventTypeList) {
@@ -84,19 +85,4 @@ public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeAdapter.Even
         return eventTypeList.size();
     }
 
-    public static class EventTypeViewHolder extends RecyclerView.ViewHolder {
-        TextView idTextView, nameTextView, statusTextView;
-        ImageView expandArrow;
-        Button viewButton, editButton;
-
-        public EventTypeViewHolder(@NonNull View itemView) {
-            super(itemView);
-            idTextView = itemView.findViewById(R.id.eventTypeId);
-            nameTextView = itemView.findViewById(R.id.eventTypeName);
-            statusTextView = itemView.findViewById(R.id.eventTypeStatus);
-            expandArrow = itemView.findViewById(R.id.expandArrow);
-            viewButton = itemView.findViewById(R.id.viewButton);
-            editButton = itemView.findViewById(R.id.editButton);
-        }
-    }
 }
