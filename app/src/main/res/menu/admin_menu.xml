@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:title="@string/home" />
+
+    <group android:id="@+id/event_types">
+        <item
+            android:id="@+id/nav_create_event_type"
+            android:title="@string/create_event_type" />
+
+        <item
+            android:id="@+id/nav_event_types_overview"
+            android:title="@string/event_types_overview" />
+    </group>
+
+
+
+    <group android:id="@+id/notify">
+        <item
+            android:id="@+id/nav_notifications"
+            android:title="@string/notifications" />
+
+    </group>
+
+
+    <group android:id="@+id/cat">
+        <item
+            android:id="@+id/nav_categories"
+            android:title="@string/categories" />
+    </group>
+
+
+
+    <group android:id="@+id/cal">
+        <item
+            android:id="@+id/nav_calendar_od"
+            android:title="@string/calendar" />
+    </group>
+
+
+
+
+    <item
+        android:id="@+id/nav_log_out"
+        android:title="@string/log_out" />
+
+
+</menu>

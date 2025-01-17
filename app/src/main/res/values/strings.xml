@@ -222,6 +222,10 @@
     <string name="recommended_categories">Recommended categories</string>
     <string name="recommended_categories_ast">Recommended categories*</string>
     <string name="event_type_edit">Edit event type</string>
+    <string name="create_event_type">Create event type</string>
+    <string name="event_types_overview">Event types overview</string>
+
+    <string name="create">Create</string>
 
 
 </resources>

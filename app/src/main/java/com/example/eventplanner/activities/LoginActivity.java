@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void openHomePage() {
-        Intent intent = new Intent(LoginActivity.this, ProviderHomepageActivity.class);
+        Intent intent = new Intent(LoginActivity.this, AdminHomepageActivity.class);
         startActivity(intent);
     }
 

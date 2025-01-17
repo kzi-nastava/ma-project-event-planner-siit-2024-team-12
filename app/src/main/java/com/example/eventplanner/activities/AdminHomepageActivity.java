@@ -4,35 +4,44 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.CategoryAdapter;
+import com.example.eventplanner.adapters.ChatAdapter;
+import com.example.eventplanner.adapters.EventTypeAdapter;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.HomepageCardsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
 import com.example.eventplanner.fragments.homepage.HomepageProductsServicesFragment;
 import com.example.eventplanner.fragments.homepage.PSListFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
-import com.example.eventplanner.adapters.ChatAdapter;
+import com.example.eventplanner.model.Category;
+import com.example.eventplanner.model.EventType;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrganiserHomepageActivity extends AppCompatActivity {
+public class AdminHomepageActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -41,7 +50,7 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_organiser_homepage);
+        setContentView(R.layout.activity_admin_homepage);
 
         // Initialize DrawerLayout
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -90,6 +99,36 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
 
         userSpinner.setAdapter(adapter);
 
+
+
+        // table that displays solution categories offered by the current business
+        RecyclerView categoryRecyclerView = findViewById(R.id.categoryRecyclerView);
+        categoryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        categoryRecyclerView.setVisibility(View.GONE);
+
+        List<Category> categories = new ArrayList<>();
+        categories.add(new Category("1", "Category A", "Description A", "Active"));
+        categories.add(new Category("2", "Category B", "Description B", "Inactive"));
+        categories.add(new Category("3", "Category C", "Description C", "Active"));
+
+        CategoryAdapter adapter2 = new CategoryAdapter(categories);
+        categoryRecyclerView.setAdapter(adapter2);
+
+
+        // table that displays event types of the current business
+        RecyclerView eventTypecyclerView = findViewById(R.id.eventTypeRecyclerView);
+        eventTypecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        eventTypecyclerView.setVisibility(View.GONE);
+
+        List<EventType> events = new ArrayList<>();
+        events.add(new EventType("1", "Concert", "Active"));
+        events.add(new EventType("2", "Meeting", "Inactive"));
+
+        EventTypeAdapter adapter3 = new EventTypeAdapter(events);
+        eventTypecyclerView.setAdapter(adapter3);
+
+
+
         // Initialize NavigationView and set listener for menu items
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -98,44 +137,39 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_home) {
-                    Intent intent = new Intent(OrganiserHomepageActivity.this, OrganiserHomepageActivity.class);
+                    Intent intent = new Intent(AdminHomepageActivity.this, AdminHomepageActivity.class);
                     startActivity(intent);
                 }
-                else if (id == R.id.nav_log_out) { logOut();}
-                else if (id == R.id.nav_services) {
-                    FragmentManager fragmentManager = getSupportFragmentManager();
 
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.homepage_fragment_container, new ServiceManagement())
-                            .commit();
-
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.cards_fragment_container))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.cards_products_fragment_container))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container_products))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.events_list_fragment_container))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.ps_list_fragment_container))
-                            .commit();
+                else if (id == R.id.nav_create_event_type) {
+                    Intent intent = new Intent(AdminHomepageActivity.this, EventTypeCreationActivity.class);
+                    startActivity(intent);
                 }
 
-                else if (id == R.id.nav_view_profile) {
-                    Intent intent = new Intent(OrganiserHomepageActivity.this, ProfileViewActivity.class);
-                    startActivity(intent);
+                else if (id == R.id.nav_event_types_overview) {
+                    RecyclerView recyclerView = findViewById(R.id.eventTypeRecyclerView);
+                    recyclerView.setVisibility(View.VISIBLE);
                 }
 
                 else if (id == R.id.nav_calendar_od) {
-                    Intent intent = new Intent(OrganiserHomepageActivity.this, CalendarActivity.class);
+                    Intent intent = new Intent(AdminHomepageActivity.this, CalendarActivity.class);
+                    startActivity(intent);
+                }
+
+                else if (id == R.id.nav_log_out) { logOut();}
+
+
+
+                else if (id == R.id.nav_categories) {
+                    RecyclerView recyclerView = findViewById(R.id.categoryRecyclerView);
+                    recyclerView.setVisibility(View.VISIBLE);
+
+                }
+
+
+
+                else if (id == R.id.nav_view_profile) {
+                    Intent intent = new Intent(AdminHomepageActivity.this, ProfileViewActivity.class);
                     startActivity(intent);
                 }
 
@@ -207,7 +241,7 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
         dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(OrganiserHomepageActivity.this, HomepageActivity.class);
+                Intent intent = new Intent(AdminHomepageActivity.this, HomepageActivity.class);
                 startActivity(intent);
             }
         });

@@ -94,7 +94,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
         return daysInMonthArray;
     }
 
-    
+
 
 
     private String monthYearFromDate(LocalDate date) {
