@@ -139,6 +139,11 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
 
+                else if (id == R.id.nav_create_event) {
+                    Intent intent = new Intent(OrganiserHomepageActivity.this, EventCreationActivity.class);
+                    startActivity(intent);
+                }
+
                 // Close the drawer after an item is selected
                 drawerLayout.closeDrawers();
                 return true;

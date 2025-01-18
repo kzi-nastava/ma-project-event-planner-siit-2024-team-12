@@ -226,6 +226,16 @@
     <string name="event_types_overview">Event types overview</string>
 
     <string name="create">Create</string>
+    <string name="max_guests">Max number of guests :</string>
+    <string name="date">Date [ yyyy-mm-dd ] :</string>
+    <string name="location">Location</string>
+
+    <string name="privacy_type">Privacy type*</string>
+    <string-array name="privacy_types">
+        <item>Open</item>
+        <item>Closed</item>
+    </string-array>
+    <string name="add_agenda">Add agenda</string>
 
 
 </resources>

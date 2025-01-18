@@ -64,7 +64,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.294" />
+            app:layout_constraintVertical_bias="0.277" />
 
 
         <EditText
@@ -80,7 +80,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.592" />
+            app:layout_constraintVertical_bias="0.543" />
 
         <TextView
             android:id="@+id/textView7"
@@ -93,7 +93,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.489" />
+            app:layout_constraintVertical_bias="0.45" />
 
         <EditText
             android:id="@+id/name"
@@ -108,8 +108,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.338" />
-
+            app:layout_constraintVertical_bias="0.317" />
 
         <TextView
             android:id="@+id/textView77"
@@ -122,13 +121,13 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.744" />
+            app:layout_constraintVertical_bias="0.698" />
+
 
         <Button
             android:id="@+id/recommendedCategoriesButton"
             android:layout_width="250dp"
             android:layout_height="40dp"
-            android:layout_marginTop="140dp"
             android:background="@drawable/input_field"
             android:text="@string/recommended_categories"
             android:textAllCaps="false"
@@ -138,14 +137,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/name"
-            app:layout_constraintVertical_bias="0.109" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.794" />
+
 
         <Button
-            android:id="@+id/editButton4"
+            android:id="@+id/deactivateButton"
             android:layout_width="89dp"
             android:layout_height="37dp"
             android:background="@drawable/form_button"
+            android:backgroundTint="@color/dark_gray"
             android:text="@string/edit"
             android:textAllCaps="false"
             android:textColor="@color/white"
@@ -155,7 +156,23 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="0.972" />
+
+        <Button
+            android:id="@+id/editButton"
+            android:layout_width="89dp"
+            android:layout_height="37dp"
+            android:background="@drawable/form_button"
+            android:text="@string/deactivate"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.436"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.972" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

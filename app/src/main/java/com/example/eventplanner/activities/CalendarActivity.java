@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class CalendarActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener {
 
@@ -98,7 +99,8 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
 
 
     private String monthYearFromDate(LocalDate date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
+        // set english month names
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy").withLocale(Locale.ENGLISH);;
         return date.format(formatter);
     }
 
