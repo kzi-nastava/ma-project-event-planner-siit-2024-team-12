@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -52,5 +53,13 @@ public class EventCreationActivity extends AppCompatActivity {
     public void closeForm(View view) {
         setResult(RESULT_CANCELED);
         finish();
+    }
+
+
+
+    public void openLocationForm(View view) {
+        Intent intent = new Intent(EventCreationActivity.this, LocationDetailsActivity.class);
+        startActivity(intent);
+
     }
 }

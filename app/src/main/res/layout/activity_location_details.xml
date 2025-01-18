@@ -5,12 +5,10 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.EventCreationActivity">
+    tools:context=".activities.LocationDetailsActivity">
 
 
-    <!-- form frame -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/frame"
         android:layout_width="302dp"
         android:layout_height="428dp"
         android:background="@drawable/form_frame"
@@ -26,10 +24,10 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/create_event"
+            android:text="@string/location_details"
             android:textAlignment="center"
             android:textColor="@color/dark_gray"
-            android:textSize="35sp"
+            android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +58,7 @@
             android:layout_height="32dp"
             android:background="@drawable/input_field"
             android:ems="10"
-            android:hint="@string/date"
+            android:hint="@string/venue_name"
             android:inputType="text"
             android:paddingStart="12dp"
             android:textSize="12sp"
@@ -68,93 +66,71 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.368" />
+            app:layout_constraintVertical_bias="0.337" />
 
-
-
-        <Button
-            android:id="@+id/locationButton"
+        <EditText
+            android:id="@+id/editTextText2"
             android:layout_width="240dp"
             android:layout_height="32dp"
-            android:layout_marginTop="140dp"
             android:background="@drawable/input_field"
-            android:text="@string/location"
-            android:onClick="openLocationForm"
-            android:textAlignment="viewStart"
-            android:gravity="start"
-            android:paddingStart="15dp"
-            android:paddingTop="7dp"
-            android:textAllCaps="false"
-            android:textColor="@color/dark_gray"
-            android:textSize="13sp"
+            android:ems="10"
+            android:hint="@string/city"
+            android:inputType="text"
+            android:paddingStart="12dp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.24" />
+            app:layout_constraintVertical_bias="0.615" />
 
+        <EditText
+            android:id="@+id/editTextText12"
+            android:layout_width="240dp"
+            android:layout_height="32dp"
+            android:background="@drawable/input_field"
+            android:ems="10"
+            android:hint="@string/country"
+            android:inputType="text"
+            android:paddingStart="12dp"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.752" />
+
+        <EditText
+            android:id="@+id/editTextText3"
+            android:layout_width="240dp"
+            android:layout_height="32dp"
+            android:background="@drawable/input_field"
+            android:ems="10"
+            android:hint="@string/address"
+            android:inputType="text"
+            android:paddingStart="12dp"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.472" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/next1"
-            android:layout_width="100dp"
+            android:layout_width="121dp"
             android:layout_height="42dp"
             android:background="@drawable/form_button"
-            android:backgroundTint="@color/dark_gray"
-            android:text="@string/add_agenda"
+            android:text="@string/next"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.899"
+            app:layout_constraintHorizontal_bias="0.503"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.954" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/next3"
-            android:layout_width="100dp"
-            android:layout_height="42dp"
-            android:background="@drawable/form_button"
-            android:text="@string/back"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.088"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.954" />
-
-
-        <TextView
-            android:id="@+id/editTextText11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text"
-            android:text="@string/privacy_type"
-            android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.096"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.649" />
-
-        <Spinner
-            android:id="@+id/mySpinner"
-            android:layout_width="257dp"
-            android:layout_height="29dp"
-            android:entries="@array/privacy_types"
-            android:spinnerMode="dropdown"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.713" />
+            app:layout_constraintVertical_bias="0.949" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

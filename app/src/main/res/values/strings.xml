@@ -237,5 +237,10 @@
     </string-array>
     <string name="add_agenda">Add agenda</string>
 
+    <string name="location_details">Location details</string>
+    <string name="venue_name">Venue name :</string>
+    <string name="city">City :</string>
+    <string name="country">Country :</string>
+
 
 </resources>
