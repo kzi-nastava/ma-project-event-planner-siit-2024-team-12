@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.BusinessRegistrationActivity;
+import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
 
 
 public class BusinessRegistration1 extends Fragment {

@@ -1,6 +1,5 @@
 package com.example.eventplanner.fragments.signup;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.SignUpActivity;
+import com.example.eventplanner.activities.auth.SignUpActivity;
 
 public class SignUp3 extends Fragment {
 

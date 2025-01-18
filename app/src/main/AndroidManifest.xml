@@ -13,70 +13,70 @@
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
         <activity
-            android:name=".activities.LocationDetailsActivity"
+            android:name=".activities.event.LocationDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.EventCreationActivity"
+            android:name=".activities.event.EventCreationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.EventTypeCreationActivity"
+            android:name=".activities.event.eventtype.EventTypeCreationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.AdminHomepageActivity"
+            android:name=".activities.homepage.AdminHomepageActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.CalendarActivity"
+            android:name=".activities.homepage.CalendarActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.EventTypeEditActivity"
+            android:name=".activities.event.eventtype.EventTypeEditActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.EventTypeViewActivity"
+            android:name=".activities.event.eventtype.EventTypeViewActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.BusinessEditActivity"
+            android:name=".activities.business.BusinessEditActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.BusinessInfoActivity"
+            android:name=".activities.business.BusinessInfoActivity"
             android:exported="false" />
         <activity
             android:name=".activities.ChatActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ProfileEditActivity"
+            android:name=".activities.profile.ProfileEditActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.OrganiserHomepageActivity"
+            android:name=".activities.homepage.OrganiserHomepageActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ProfileViewActivity"
+            android:name=".activities.profile.ProfileViewActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ServiceEditActivity"
+            android:name=".activities.service.ServiceEditActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.CategoryCreationActivity"
+            android:name=".activities.service.CategoryCreationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ServiceCreationActivity"
+            android:name=".activities.service.ServiceCreationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.BusinessRegistrationActivity"
+            android:name=".activities.business.BusinessRegistrationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SignUpActivity"
+            android:name=".activities.auth.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.HomepageActivity"
+            android:name=".activities.homepage.HomepageActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".activities.auth.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ProviderHomepageActivity"
+            android:name=".activities.homepage.ProviderHomepageActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SplashScreenActivity"
+            android:name=".activities.homepage.SplashScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

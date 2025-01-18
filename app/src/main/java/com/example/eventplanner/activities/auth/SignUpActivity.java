@@ -1,30 +1,27 @@
-package com.example.eventplanner.activities;
+package com.example.eventplanner.activities.auth;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.ServiceCreationPagerAdapter;
 import com.example.eventplanner.adapters.SignUpPagerAdapter;
+import com.example.eventplanner.fragments.others.VerifyAccount;
 
-public class ServiceCreationActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager;
-    private ServiceCreationPagerAdapter adapter;
+    private SignUpPagerAdapter adapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_service_creation);
+        setContentView(R.layout.activity_sign_up);
 
-        viewPager = findViewById(R.id.serviceCreationPager);
-        adapter = new ServiceCreationPagerAdapter(this);
+        viewPager = findViewById(R.id.viewPager);
+        adapter = new SignUpPagerAdapter(this);
         viewPager.setAdapter(adapter);
 
 
@@ -42,9 +39,16 @@ public class ServiceCreationActivity extends AppCompatActivity {
         }
     }
 
+    public void openVerifyAcc(View view) {
+        VerifyAccount verifyAccount = new VerifyAccount();
+        verifyAccount.show(getSupportFragmentManager(), "verifyAccount");
+    }
+
+
     public void closeForm(View view) {
         setResult(RESULT_CANCELED);
         finish();
     }
+
 }
 

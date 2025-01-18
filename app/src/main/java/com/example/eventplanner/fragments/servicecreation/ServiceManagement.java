@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.ServiceCreationActivity;
+import com.example.eventplanner.activities.service.ServiceCreationActivity;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
 
 /**

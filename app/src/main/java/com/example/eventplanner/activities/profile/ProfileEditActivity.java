@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities;
+package com.example.eventplanner.activities.profile;
 
 import android.content.Intent;
 import android.net.Uri;

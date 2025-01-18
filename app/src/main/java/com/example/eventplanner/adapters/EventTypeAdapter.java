@@ -5,17 +5,15 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.viewholders.EventTypeViewHolder;
 import com.example.eventplanner.model.EventType;
-import com.example.eventplanner.activities.EventTypeViewActivity;
-import com.example.eventplanner.activities.EventTypeEditActivity;
+import com.example.eventplanner.activities.event.eventtype.EventTypeViewActivity;
+import com.example.eventplanner.activities.event.eventtype.EventTypeEditActivity;
 
 import java.util.List;
 

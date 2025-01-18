@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities;
+package com.example.eventplanner.activities.business;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.Fragment;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 
 public class BusinessInfoActivity extends AppCompatActivity {
 

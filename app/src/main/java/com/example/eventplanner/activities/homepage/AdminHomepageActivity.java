@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities;
+package com.example.eventplanner.activities.homepage;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,23 +8,21 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.profile.ProfileViewActivity;
+import com.example.eventplanner.activities.event.eventtype.EventTypeCreationActivity;
 import com.example.eventplanner.adapters.CategoryAdapter;
 import com.example.eventplanner.adapters.ChatAdapter;
 import com.example.eventplanner.adapters.EventTypeAdapter;
@@ -33,7 +31,6 @@ import com.example.eventplanner.fragments.homepage.HomepageCardsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
 import com.example.eventplanner.fragments.homepage.HomepageProductsServicesFragment;
 import com.example.eventplanner.fragments.homepage.PSListFragment;
-import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
 import com.example.eventplanner.model.Category;
 import com.example.eventplanner.model.EventType;
 import com.google.android.material.navigation.NavigationView;

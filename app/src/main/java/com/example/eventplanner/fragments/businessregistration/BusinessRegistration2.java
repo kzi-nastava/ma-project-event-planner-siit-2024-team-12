@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.BusinessRegistrationActivity;
+import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
 
 import java.io.IOException;
 

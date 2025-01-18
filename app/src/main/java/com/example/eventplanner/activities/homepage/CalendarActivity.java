@@ -1,10 +1,7 @@
-package com.example.eventplanner.activities;
+package com.example.eventplanner.activities.homepage;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,8 +16,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 public class CalendarActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener {
