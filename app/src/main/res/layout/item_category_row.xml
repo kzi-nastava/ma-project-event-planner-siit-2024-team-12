@@ -6,7 +6,7 @@
     android:padding="8dp"
     android:background="?attr/selectableItemBackground">
 
-    <!-- ID i naziv kategorije -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,7 +39,8 @@
             android:contentDescription="@string/expand_arrow" />
     </LinearLayout>
 
-    <!-- Dodatne informacije -->
+
+    <!-- Additional information -->
     <TextView
         android:id="@+id/categoryDescription"
         android:layout_width="match_parent"
@@ -47,7 +48,7 @@
         android:text="Description"
         android:visibility="gone"
     android:padding="8dp"
-    android:textColor="@android:color/darker_gray" />
+    android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/categoryStatus"
@@ -56,5 +57,5 @@
         android:text="Status"
         android:visibility="gone"
     android:padding="8dp"
-    android:textColor="@android:color/darker_gray" />
+    android:textColor="@android:color/black" />
 </LinearLayout>

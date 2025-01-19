@@ -21,9 +21,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.event.eventtype.EventTypeTableActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.business.BusinessInfoActivity;
 import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
+import com.example.eventplanner.activities.service.CategoriesTableActivity;
 import com.example.eventplanner.adapters.CategoryAdapter;
 import com.example.eventplanner.adapters.ChatAdapter;
 import com.example.eventplanner.adapters.EventTypeAdapter;
@@ -100,32 +102,6 @@ public class ProviderHomepageActivity extends AppCompatActivity {
 
 
 
-        // table that displays solution categories offered by the current business
-        RecyclerView categoryRecyclerView = findViewById(R.id.categoryRecyclerView);
-        categoryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        categoryRecyclerView.setVisibility(View.GONE);
-
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category("1", "Category A", "Description A", "Active"));
-        categories.add(new Category("2", "Category B", "Description B", "Inactive"));
-        categories.add(new Category("3", "Category C", "Description C", "Active"));
-
-        CategoryAdapter adapter2 = new CategoryAdapter(categories);
-        categoryRecyclerView.setAdapter(adapter2);
-
-
-        // table that displays event types of the current business
-        RecyclerView eventTypecyclerView = findViewById(R.id.eventTypeRecyclerView);
-        eventTypecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        eventTypecyclerView.setVisibility(View.GONE);
-
-        List<EventType> events = new ArrayList<>();
-        events.add(new EventType("1", "Concert", "Active"));
-        events.add(new EventType("2", "Meeting", "Inactive"));
-
-        EventTypeAdapter adapter3 = new EventTypeAdapter(events);
-        eventTypecyclerView.setAdapter(adapter3);
-
 
 
         // Initialize NavigationView and set listener for menu items
@@ -185,15 +161,15 @@ public class ProviderHomepageActivity extends AppCompatActivity {
                 }
 
                 else if (id == R.id.nav_categories) {
-                    RecyclerView recyclerView = findViewById(R.id.categoryRecyclerView);
-                    recyclerView.setVisibility(View.VISIBLE);
+                    Intent intent = new Intent(ProviderHomepageActivity.this, CategoriesTableActivity.class);
+                    startActivity(intent);
 
                 }
 
 
                 else if (id == R.id.nav_event_types) {
-                    RecyclerView recyclerView = findViewById(R.id.eventTypeRecyclerView);
-                    recyclerView.setVisibility(View.VISIBLE);
+                    Intent intent = new Intent(ProviderHomepageActivity.this, EventTypeTableActivity.class);
+                    startActivity(intent);
 
                 }
 

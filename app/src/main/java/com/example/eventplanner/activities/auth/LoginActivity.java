@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
+import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.fragments.others.ResetPasswordFragment;
 
 public class LoginActivity extends AppCompatActivity {
@@ -47,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void openHomePage() {
-        Intent intent = new Intent(LoginActivity.this, OrganiserHomepageActivity.class);
+        Intent intent = new Intent(LoginActivity.this, ProviderHomepageActivity.class);
         startActivity(intent);
     }
 
