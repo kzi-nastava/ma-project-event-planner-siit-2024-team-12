@@ -245,5 +245,12 @@
     <string name="provider_event_types">Event types for your solutions</string>
     <string name="provider_categories">Solution categories you offer</string>
 
+    <string name="activity">Activity</string>
+    <string name="time">Time [ HH:mm - HH:mm ] :</string>
+    <string name="activity_name">Activity name</string>
+    <string name="add">Add</string>
+    <string name="agenda">Agenda</string>
+    <string name="add_activity">Add activity</string>
+
 
 </resources>

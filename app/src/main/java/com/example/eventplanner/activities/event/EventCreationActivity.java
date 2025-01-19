@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.EventCreationPager;
+import com.example.eventplanner.fragments.eventcreation.EventCreation2;
 
 public class EventCreationActivity extends AppCompatActivity {
 
@@ -60,5 +61,10 @@ public class EventCreationActivity extends AppCompatActivity {
         Intent intent = new Intent(EventCreationActivity.this, LocationDetailsActivity.class);
         startActivity(intent);
 
+    }
+
+    public void addAgenda(View view) {
+        Intent intent = new Intent(EventCreationActivity.this, AgendaActivity.class);
+        startActivity(intent);
     }
 }
