@@ -36,6 +36,8 @@ public class EventCreationActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
         adapter = new EventCreationPager(this);
         viewPager.setAdapter(adapter);
+
+
     }
 
     public void nextPage() {

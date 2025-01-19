@@ -252,5 +252,7 @@
     <string name="agenda">Agenda</string>
     <string name="add_activity">Add activity</string>
 
+    <string name="send_invitations">Send invitations</string>
+
 
 </resources>
