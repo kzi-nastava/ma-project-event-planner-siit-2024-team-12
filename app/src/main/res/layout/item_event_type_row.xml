@@ -35,6 +35,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_expand_arrow"
             android:padding="8dp"
+            android:layout_marginRight="50dp"
             android:contentDescription="@string/expand_arrow" />
     </LinearLayout>
 

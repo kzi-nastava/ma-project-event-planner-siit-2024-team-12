@@ -52,9 +52,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
         }
 
         if (position % 2 == 0) {
-            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.even_row_color)); // Postavite boju za parne redove
+            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.even_row_color));
         } else {
-            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.odd_row_color)); // Postavite boju za neparne redove
+            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.odd_row_color));
         }
 
 
