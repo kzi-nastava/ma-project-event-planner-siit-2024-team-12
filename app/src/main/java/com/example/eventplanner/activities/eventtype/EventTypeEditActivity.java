@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities.event.eventtype;
+package com.example.eventplanner.activities.eventtype;
 
 import android.os.Bundle;
 import android.view.View;
@@ -13,19 +13,18 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
 
-public class EventTypeViewActivity extends AppCompatActivity {
+public class EventTypeEditActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_event_type_view);
+        setContentView(R.layout.activity_event_type_edit);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
 
 
         Button categoriesButton = findViewById(R.id.recommendedCategoriesButton);
@@ -57,6 +56,9 @@ public class EventTypeViewActivity extends AppCompatActivity {
             builder.create().show();
         });
 
+
+
+
     }
 
 
@@ -64,4 +66,5 @@ public class EventTypeViewActivity extends AppCompatActivity {
         setResult(RESULT_CANCELED);
         finish();
     }
+
 }

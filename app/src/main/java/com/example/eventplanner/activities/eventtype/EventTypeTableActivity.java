@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities.event.eventtype;
+package com.example.eventplanner.activities.eventtype;
 
 import android.os.Bundle;
 
@@ -9,7 +9,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.fragments.EventTypeTableFragment;
 
 public class EventTypeTableActivity extends AppCompatActivity {
 

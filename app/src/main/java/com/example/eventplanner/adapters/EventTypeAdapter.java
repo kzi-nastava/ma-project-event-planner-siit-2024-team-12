@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.viewholders.EventTypeViewHolder;
 import com.example.eventplanner.model.EventType;
-import com.example.eventplanner.activities.event.eventtype.EventTypeViewActivity;
-import com.example.eventplanner.activities.event.eventtype.EventTypeEditActivity;
+import com.example.eventplanner.activities.eventtype.EventTypeViewActivity;
+import com.example.eventplanner.activities.eventtype.EventTypeEditActivity;
 
 import java.util.List;
 
@@ -44,6 +44,9 @@ public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeViewHolder> 
             holder.statusTextView.setVisibility(View.VISIBLE);
             holder.viewButton.setVisibility(View.VISIBLE);
             holder.editButton.setVisibility(View.VISIBLE);
+
+            holder.statusTextView.setText(eventType.getActive() ? "Active" : "Inactive");
+
             holder.expandArrow.setRotation(180f);
         } else {
             holder.statusTextView.setVisibility(View.GONE);

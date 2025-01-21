@@ -1,15 +1,19 @@
 package com.example.eventplanner.model;
 
+import okhttp3.internal.annotations.EverythingIsNonNull;
+
 public class EventType {
     private String id;
     private String name;
-    private String status;
+    private boolean active;
     private boolean isExpanded;
 
-    public EventType(String id, String name, String status) {
+    public EventType() {}
+
+    public EventType(String id, String name, boolean active) {
         this.id = id;
         this.name = name;
-        this.status = status;
+        this.active = active;
         this.isExpanded = false;
     }
 
@@ -19,9 +23,19 @@ public class EventType {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public boolean getActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 
     public boolean isExpanded() { return isExpanded; }
     public void setExpanded(boolean expanded) { this.isExpanded = expanded; }
+
+    @Override
+    public String toString() {
+        return "GetEventTypeDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", active=" + active +
+                '}';
+    }
+
 }

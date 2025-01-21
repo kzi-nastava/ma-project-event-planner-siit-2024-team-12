@@ -2,7 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+
     <application
+        android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -19,7 +24,7 @@
             android:name=".activities.service.CategoriesTableActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.event.eventtype.EventTypeTableActivity"
+            android:name=".activities.eventtype.EventTypeTableActivity"
             android:exported="false" />
         <activity
             android:name=".activities.event.LocationDetailsActivity"
@@ -28,7 +33,7 @@
             android:name=".activities.event.EventCreationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.event.eventtype.EventTypeCreationActivity"
+            android:name=".activities.eventtype.EventTypeCreationActivity"
             android:exported="false" />
         <activity
             android:name=".activities.homepage.AdminHomepageActivity"
@@ -37,10 +42,10 @@
             android:name=".activities.homepage.CalendarActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.event.eventtype.EventTypeEditActivity"
+            android:name=".activities.eventtype.EventTypeEditActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.event.eventtype.EventTypeViewActivity"
+            android:name=".activities.eventtype.EventTypeViewActivity"
             android:exported="false" />
         <activity
             android:name=".activities.business.BusinessEditActivity"
