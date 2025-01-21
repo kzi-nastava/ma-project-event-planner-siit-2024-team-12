@@ -15,6 +15,7 @@ import com.example.eventplanner.model.EventType;
 import com.example.eventplanner.activities.eventtype.EventTypeViewActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeEditActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeViewHolder> {
@@ -67,12 +68,20 @@ public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeViewHolder> 
             notifyItemChanged(position);
         });
 
+
         // Set click listeners for the buttons
         holder.viewButton.setOnClickListener(v -> {
             Context context = v.getContext();
             Intent intent = new Intent(context, EventTypeViewActivity.class);
+
+            // Pass event type details to EventTypeViewActivity
+            intent.putExtra("eventTypeName", eventType.getName());
+            intent.putExtra("eventTypeDescription", eventType.getDescription());
+            intent.putExtra("suggestedCategoryNames", new ArrayList<>(eventType.getSuggestedCategoryNames()));
+
             context.startActivity(intent);
         });
+
 
         holder.editButton.setOnClickListener(v -> {
             Context context = v.getContext();

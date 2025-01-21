@@ -1,8 +1,12 @@
 package com.example.eventplanner.activities.eventtype;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -12,6 +16,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+
+import java.util.ArrayList;
 
 public class EventTypeViewActivity extends AppCompatActivity {
 
@@ -27,40 +33,70 @@ public class EventTypeViewActivity extends AppCompatActivity {
         });
 
 
+        // receive data passed from EventTypeAdapter
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("eventTypeName");
+        String description = intent.getStringExtra("eventTypeDescription");
+        ArrayList<String> categories = intent.getStringArrayListExtra("suggestedCategoryNames");
+
+
+        EditText nameText = findViewById(R.id.eventTypeName);
+        EditText descriptionText = findViewById(R.id.eventTypeDescription);
+
+        nameText.setText(name);
+        descriptionText.setText(description);
+
 
         Button categoriesButton = findViewById(R.id.recommendedCategoriesButton);
 
-        String[] categories = {"Category 1", "Category 2", "Category 3", "Category 4"};
-        boolean[] selectedCategories = new boolean[categories.length];
+        String[] categoriesArray = new String[categories.size()];
+        categories.toArray(categoriesArray);
+
+        boolean[] selectedCategories = new boolean[categoriesArray.length];
 
         categoriesButton.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Select Categories");
+            // select all suggested categories
+            for (int i = 0; i < selectedCategories.length; i++) {
+                selectedCategories[i] = true;
+            }
 
-            builder.setMultiChoiceItems(categories, selectedCategories, (dialog, which, isChecked) -> {
-                selectedCategories[which] = isChecked;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Recommended categories");
+
+
+            builder.setMultiChoiceItems(categoriesArray, selectedCategories, (dialog, which, isChecked) -> {
+                // do nothing because checkboxes should be disabled
             });
+
 
             builder.setPositiveButton("OK", (dialog, which) -> {
                 StringBuilder selected = new StringBuilder();
-                for (int i = 0; i < categories.length; i++) {
+                for (int i = 0; i < categoriesArray.length; i++) {
                     if (selectedCategories[i]) {
                         if (selected.length() > 0) selected.append(", ");
-                        selected.append(categories[i]);
+                        selected.append(categoriesArray[i]);
                     }
                 }
                 categoriesButton.setText(selected.length() > 0 ? selected.toString() : "Recommended categories");
             });
 
+
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
-            builder.create().show();
+
+            AlertDialog dialog = builder.create();
+
+
+            // disable interaction with checkboxes
+            ListView listView = dialog.getListView();
+            listView.setEnabled(false);
+
+            dialog.show();
         });
 
     }
 
-
-    public void closeForm(View view) {
+        public void closeForm(View view) {
         setResult(RESULT_CANCELED);
         finish();
     }

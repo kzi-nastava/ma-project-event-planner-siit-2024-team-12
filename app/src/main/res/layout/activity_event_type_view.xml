@@ -68,9 +68,9 @@
 
 
         <EditText
-            android:id="@+id/editTextText5"
-            android:layout_width="246dp"
-            android:layout_height="72dp"
+            android:id="@+id/eventTypeName"
+            android:layout_width="243dp"
+            android:layout_height="28dp"
             android:background="@drawable/input_field"
             android:inputType="text"
             android:paddingStart="10dp"
@@ -80,7 +80,8 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.617" />
+            app:layout_constraintVertical_bias="0.338" />
+
 
         <TextView
             android:id="@+id/textView7"
@@ -95,21 +96,24 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.501" />
 
+
         <EditText
-            android:id="@+id/name"
-            android:layout_width="243dp"
-            android:layout_height="28dp"
+            android:id="@+id/eventTypeDescription"
+            android:layout_width="246dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/input_field"
-            android:inputType="text"
+            android:inputType="textMultiLine"
             android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:scrollbars="vertical"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.338" />
-
+            app:layout_constraintVertical_bias="0.579" />
 
         <Button
             android:id="@+id/recommendedCategoriesButton"
@@ -125,7 +129,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@id/eventTypeName"
             app:layout_constraintVertical_bias="0.078" />
 
 
