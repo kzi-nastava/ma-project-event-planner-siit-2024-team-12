@@ -86,6 +86,12 @@ public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeViewHolder> 
         holder.editButton.setOnClickListener(v -> {
             Context context = v.getContext();
             Intent intent = new Intent(context, EventTypeEditActivity.class);
+
+            intent.putExtra("eventTypeId", eventType.getId());
+            intent.putExtra("eventTypeName", eventType.getName());
+            intent.putExtra("eventTypeDescription", eventType.getDescription());
+            intent.putExtra("suggestedCategoryNames", new ArrayList<>(eventType.getSuggestedCategoryNames()));
+
             context.startActivity(intent);
         });
     }

@@ -2,6 +2,7 @@ package com.example.eventplanner.activities.eventtype;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,8 +41,8 @@ public class EventTypeViewActivity extends AppCompatActivity {
         ArrayList<String> categories = intent.getStringArrayListExtra("suggestedCategoryNames");
 
 
-        EditText nameText = findViewById(R.id.eventTypeName);
-        EditText descriptionText = findViewById(R.id.eventTypeDescription);
+        TextView nameText = findViewById(R.id.eventTypeName);
+        TextView descriptionText = findViewById(R.id.eventTypeDescription);
 
         nameText.setText(name);
         descriptionText.setText(description);

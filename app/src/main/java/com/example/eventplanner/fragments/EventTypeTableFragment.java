@@ -43,7 +43,12 @@ public class EventTypeTableFragment extends Fragment {
         eventTypeRecyclerView = view.findViewById(R.id.eventTypeRecyclerView);
         eventTypeRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Prepare data
+        loadEventTypes();
+
+    }
+
+
+    public void loadEventTypes() {
         final List<EventType>[] eventTypes = new List[]{new ArrayList<>()};
 
         Call<ArrayList<EventType>> call = ClientUtils.eventTypeService.getAll();
@@ -70,9 +75,5 @@ public class EventTypeTableFragment extends Fragment {
 
             }
         });
-
-
-
-
     }
 }

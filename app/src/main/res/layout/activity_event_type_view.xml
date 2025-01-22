@@ -67,13 +67,14 @@
             app:layout_constraintVertical_bias="0.294" />
 
 
-        <EditText
+        <TextView
             android:id="@+id/eventTypeName"
             android:layout_width="243dp"
             android:layout_height="28dp"
             android:background="@drawable/input_field"
             android:inputType="text"
             android:paddingStart="10dp"
+            android:paddingTop="5dp"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -97,7 +98,7 @@
             app:layout_constraintVertical_bias="0.501" />
 
 
-        <EditText
+        <TextView
             android:id="@+id/eventTypeDescription"
             android:layout_width="246dp"
             android:layout_height="wrap_content"

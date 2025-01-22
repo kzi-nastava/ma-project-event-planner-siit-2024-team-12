@@ -8,6 +8,7 @@
     tools:context=".activities.eventtype.EventTypeEditActivity">
 
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="302dp"
         android:layout_height="428dp"
@@ -64,13 +65,13 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.277" />
+            app:layout_constraintVertical_bias="0.257" />
 
 
         <EditText
-            android:id="@+id/editTextText5"
-            android:layout_width="246dp"
-            android:layout_height="72dp"
+            android:id="@+id/eventTypeName"
+            android:layout_width="243dp"
+            android:layout_height="28dp"
             android:background="@drawable/input_field"
             android:inputType="text"
             android:paddingStart="10dp"
@@ -80,7 +81,8 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.543" />
+            app:layout_constraintVertical_bias="0.298" />
+
 
         <TextView
             android:id="@+id/textView7"
@@ -93,41 +95,32 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.45" />
+            app:layout_constraintVertical_bias="0.436" />
 
         <EditText
-            android:id="@+id/name"
-            android:layout_width="243dp"
-            android:layout_height="28dp"
+            android:id="@+id/eventTypeDescription"
+            android:layout_width="246dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/input_field"
-            android:inputType="text"
+            android:inputType="textMultiLine"
             android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:scrollbars="vertical"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.317" />
-
-        <TextView
-            android:id="@+id/textView77"
-            android:layout_width="152dp"
-            android:layout_height="21dp"
-            android:text="@string/recommended_categories_ast"
-            android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.698" />
+            app:layout_constraintVertical_bias="0.565" />
 
 
         <Button
             android:id="@+id/recommendedCategoriesButton"
             android:layout_width="250dp"
             android:layout_height="40dp"
+            android:layout_marginTop="140dp"
             android:background="@drawable/input_field"
             android:text="@string/recommended_categories"
             android:textAllCaps="false"
@@ -137,12 +130,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.794" />
-
+            app:layout_constraintTop_toBottomOf="@id/eventTypeName"
+            app:layout_constraintVertical_bias="0.0" />
 
         <Button
-            android:id="@+id/deactivateButton"
+            android:id="@+id/editButton"
             android:layout_width="89dp"
             android:layout_height="37dp"
             android:background="@drawable/form_button"
@@ -159,7 +151,7 @@
             app:layout_constraintVertical_bias="0.972" />
 
         <Button
-            android:id="@+id/editButton"
+            android:id="@+id/deactivateButton"
             android:layout_width="89dp"
             android:layout_height="37dp"
             android:background="@drawable/form_button"
@@ -174,13 +166,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.972" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
 
 
 
