@@ -6,6 +6,7 @@ import com.example.eventplanner.model.EventType;
 
 import java.util.ArrayList;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -34,4 +35,12 @@ public interface EventTypeService {
 
     @PUT("event-types/{id}")
     Call<EventType> updateEventType(@Body UpdateEventTypeDTO updateEventTypeDTO, @Path("id") Long id);
+
+
+    @PUT("event-types/{id}/activate")
+    Call<ResponseBody> activateEventType(@Path("id") Long id);
+
+
+    @PUT("event-types/{id}/deactivate")
+    Call<ResponseBody> deactivateEventType(@Path("id") Long id);
 }

@@ -1,6 +1,8 @@
 package com.example.eventplanner.activities.eventtype;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +11,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.homepage.AdminHomepageActivity;
 
 public class EventTypeTableActivity extends AppCompatActivity {
 
@@ -24,5 +27,10 @@ public class EventTypeTableActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    public void closeForm(View view) {
+        Intent intent = new Intent(EventTypeTableActivity.this, AdminHomepageActivity.class);
+        startActivity(intent);
     }
 }

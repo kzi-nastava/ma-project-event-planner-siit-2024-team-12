@@ -26,6 +26,7 @@ import com.example.eventplanner.model.EventType;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -60,15 +61,27 @@ public class EventTypeEditActivity extends AppCompatActivity {
         nameText.setFocusableInTouchMode(false);
         nameText.setInputType(InputType.TYPE_NULL);
 
-
         descriptionText.setText(description);
 
 
         // set on click listener for categoriesButton
         Button categoriesButton = findViewById(R.id.recommendedCategoriesButton);
-
         categoriesButton.setOnClickListener(v -> {
             loadAcceptedCategories(categoriesButton, selectedCategoryNames);
+        });
+
+
+        Button deactivationButton = findViewById(R.id.deactivateButton);
+        boolean isActive = intent.getBooleanExtra("isActive", true);
+
+        deactivationButton.setText(isActive ? "Deactivate" : "Activate");
+
+        deactivationButton.setOnClickListener(v -> {
+            if (isActive) {
+                deactivateEventType(intent.getStringExtra("eventTypeId"), deactivationButton);
+            } else {
+                activateEventType(intent.getStringExtra("eventTypeId"), deactivationButton);
+            }
         });
 
 
@@ -76,8 +89,6 @@ public class EventTypeEditActivity extends AppCompatActivity {
         Button editButton = findViewById(R.id.editButton);
 
         editButton.setOnClickListener(v -> {
-            Log.d("EventTypeEdit", "Button text before processing: " + categoriesButton.getText());
-
             String[] categoriesFromButton = categoriesButton.getText().toString().split(", ");
             List<String> updatedSelectedCategories = new ArrayList<>();
             for (String category : categoriesFromButton) {
@@ -86,8 +97,6 @@ public class EventTypeEditActivity extends AppCompatActivity {
                 }
             }
 
-            Log.d("EventTypeEdit", "Updated categories: " + updatedSelectedCategories);
-
             selectedCategoryNames.clear();
             selectedCategoryNames.addAll(updatedSelectedCategories);
 
@@ -95,13 +104,78 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
             UpdateEventTypeDTO dto = new UpdateEventTypeDTO();
             dto.setDescription(typeDescription);
-            Log.d("PROSLEDJENOO ", "Cat " + selectedCategoryNames);
             dto.setSuggestedCategoryNames(selectedCategoryNames);
 
             updateEventType(dto);
         });
 
     }
+
+
+
+    private void activateEventType(String id, Button activationButton) {
+        Call<ResponseBody> call = ClientUtils.eventTypeService.activateEventType(Long.parseLong(id));
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(EventTypeEditActivity.this, "Activated event type!", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(EventTypeEditActivity.this, EventTypeTableActivity.class);
+                        startActivity(intent);
+
+                        activationButton.setText("Deactivate");
+                    });
+                } else {
+                    runOnUiThread(() -> {
+                        Toast.makeText(EventTypeEditActivity.this, "Failed to activate: " + response.message(), Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                runOnUiThread(() -> {
+                    Toast.makeText(EventTypeEditActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+    }
+
+    private void deactivateEventType(String id, Button activationButton) {
+        Call<ResponseBody> call = ClientUtils.eventTypeService.deactivateEventType(Long.parseLong(id));
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(EventTypeEditActivity.this, "Deactivated event type!", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(EventTypeEditActivity.this, EventTypeTableActivity.class);
+                        startActivity(intent);
+
+                        activationButton.setText("Activate");
+
+                    });
+                } else {
+                    runOnUiThread(() -> {
+                        Toast.makeText(EventTypeEditActivity.this, "Failed to deactivate: " + response.message(), Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                runOnUiThread(() -> {
+                    Toast.makeText(EventTypeEditActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+    }
+
 
 
     private void loadAcceptedCategories(Button categoriesButton, ArrayList<String> selectedCategoryNames) {
@@ -178,9 +252,6 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
 
 
-
-
-
     private void updateEventType(UpdateEventTypeDTO dto) {
         Intent intent = getIntent();
         String id = intent.getStringExtra("eventTypeId");
@@ -221,7 +292,6 @@ public class EventTypeEditActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
     public void closeForm(View view) {

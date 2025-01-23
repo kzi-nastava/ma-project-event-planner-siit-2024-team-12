@@ -91,6 +91,7 @@ public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeViewHolder> 
             intent.putExtra("eventTypeName", eventType.getName());
             intent.putExtra("eventTypeDescription", eventType.getDescription());
             intent.putExtra("suggestedCategoryNames", new ArrayList<>(eventType.getSuggestedCategoryNames()));
+            intent.putExtra("isActive", eventType.getActive());
 
             context.startActivity(intent);
         });
