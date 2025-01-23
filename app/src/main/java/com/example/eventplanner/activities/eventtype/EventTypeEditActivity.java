@@ -68,7 +68,7 @@ public class EventTypeEditActivity extends AppCompatActivity {
         Button categoriesButton = findViewById(R.id.recommendedCategoriesButton);
 
         categoriesButton.setOnClickListener(v -> {
-            fetchAcceptedCategories(categoriesButton, selectedCategoryNames);
+            loadAcceptedCategories(categoriesButton, selectedCategoryNames);
         });
 
 
@@ -104,7 +104,7 @@ public class EventTypeEditActivity extends AppCompatActivity {
     }
 
 
-    private void fetchAcceptedCategories(Button categoriesButton, ArrayList<String> selectedCategoryNames) {
+    private void loadAcceptedCategories(Button categoriesButton, ArrayList<String> selectedCategoryNames) {
         Call<List<GetSolutionCategoryDTO>> call = ClientUtils.solutionCategoryService.getAllAccepted();
 
         call.enqueue(new Callback<List<GetSolutionCategoryDTO>>() {
@@ -123,7 +123,7 @@ public class EventTypeEditActivity extends AppCompatActivity {
                         Toast.makeText(EventTypeEditActivity.this, "No categories available.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(EventTypeEditActivity.this, "Failed to fetch categories.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EventTypeEditActivity.this, "Failed to load categories.", Toast.LENGTH_SHORT).show();
                 }
             }
 

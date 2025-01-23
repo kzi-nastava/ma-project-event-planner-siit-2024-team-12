@@ -35,7 +35,6 @@
             app:srcCompat="@drawable/exit_form" />
 
 
-
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
@@ -68,9 +67,9 @@
 
 
         <EditText
-            android:id="@+id/editTextText5"
-            android:layout_width="246dp"
-            android:layout_height="72dp"
+            android:id="@+id/name"
+            android:layout_width="243dp"
+            android:layout_height="28dp"
             android:background="@drawable/input_field"
             android:inputType="text"
             android:paddingStart="10dp"
@@ -80,7 +79,8 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.592" />
+            app:layout_constraintVertical_bias="0.338" />
+
 
         <TextView
             android:id="@+id/textView7"
@@ -95,10 +95,12 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.489" />
 
+
+
         <EditText
-            android:id="@+id/name"
-            android:layout_width="243dp"
-            android:layout_height="28dp"
+            android:id="@+id/description"
+            android:layout_width="246dp"
+            android:layout_height="72dp"
             android:background="@drawable/input_field"
             android:inputType="text"
             android:paddingStart="10dp"
@@ -108,7 +110,8 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.338" />
+            app:layout_constraintVertical_bias="0.592" />
+
 
 
         <TextView
@@ -142,7 +145,7 @@
             app:layout_constraintVertical_bias="0.109" />
 
         <Button
-            android:id="@+id/editButton4"
+            android:id="@+id/createButton"
             android:layout_width="89dp"
             android:layout_height="37dp"
             android:background="@drawable/form_button"
