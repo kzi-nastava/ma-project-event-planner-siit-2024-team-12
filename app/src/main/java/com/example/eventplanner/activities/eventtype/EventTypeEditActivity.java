@@ -77,12 +77,25 @@ public class EventTypeEditActivity extends AppCompatActivity {
         deactivationButton.setText(isActive ? "Deactivate" : "Activate");
 
         deactivationButton.setOnClickListener(v -> {
-            if (isActive) {
-                deactivateEventType(intent.getStringExtra("eventTypeId"), deactivationButton);
-            } else {
-                activateEventType(intent.getStringExtra("eventTypeId"), deactivationButton);
-            }
+            // confirmation dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(EventTypeEditActivity.this);
+            builder.setTitle(isActive ? "Deactivate " + nameText.getText() + "?" : "Activate " + nameText.getText() + "?");
+            builder.setMessage(isActive ? "Are you sure you want to deactivate this event type?" : "Are you sure you want to activate this event type?");
+
+            builder.setPositiveButton("Yes", (dialog, which) -> {
+                if (isActive) {
+                    deactivateEventType(intent.getStringExtra("eventTypeId"), deactivationButton);
+                } else {
+                    activateEventType(intent.getStringExtra("eventTypeId"), deactivationButton);
+                }
+            });
+
+            builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
         });
+
 
 
         // set on click listener for edit button
