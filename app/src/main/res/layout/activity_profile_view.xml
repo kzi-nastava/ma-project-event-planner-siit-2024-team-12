@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ProfileViewActivity">
+    tools:context=".activities.profile.ProfileViewActivity">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,39 +20,37 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.498" >
 
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="20dp"
+            android:layout_height="21dp"
+            android:contentDescription="TODO"
+            android:onClick="closeForm"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/exit_form" />
+
         <Button
             android:id="@+id/editButton"
             android:layout_width="78dp"
             android:layout_height="31dp"
             android:background="@drawable/form_button"
+            android:onClick="openProfileEdit"
             android:text="@string/edit"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="11sp"
-            android:onClick="openProfileEdit"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.442"
+            app:layout_constraintHorizontal_bias="0.447"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.147" />
+            app:layout_constraintVertical_bias="0.115" />
 
-        <Button
-            android:id="@+id/editButton5"
-            android:layout_width="78dp"
-            android:layout_height="31dp"
-            android:background="@drawable/form_button"
-            android:onClick="closeForm"
-            android:text="@string/back"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.927"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
 
         <Button
             android:id="@+id/button7"
@@ -61,6 +59,7 @@
             android:background="@drawable/form_button"
             android:backgroundTint="@color/dark_gray"
             android:text="@string/deactivate"
+            android:onClick="deactivateAccount"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="11sp"
@@ -69,7 +68,7 @@
             app:layout_constraintHorizontal_bias="0.927"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.147" />
+            app:layout_constraintVertical_bias="0.115" />
 
         <TextView
             android:id="@+id/textView11"
@@ -98,19 +97,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.352" />
 
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="178dp"
-            android:layout_height="25dp"
-            android:text="Name Nachname"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.026" />
 
         <ImageView
             android:id="@+id/imageView3"

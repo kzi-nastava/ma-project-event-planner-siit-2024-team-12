@@ -1,38 +1,48 @@
-package com.example.eventplanner.activities;
+package com.example.eventplanner.activities.homepage;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
+import com.example.eventplanner.activities.profile.ProfileViewActivity;
+import com.example.eventplanner.activities.business.BusinessInfoActivity;
+import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
+import com.example.eventplanner.activities.service.CategoriesTableActivity;
+import com.example.eventplanner.adapters.CategoryAdapter;
+import com.example.eventplanner.adapters.ChatAdapter;
+import com.example.eventplanner.adapters.EventTypeAdapter;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.HomepageCardsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
 import com.example.eventplanner.fragments.homepage.HomepageProductsServicesFragment;
 import com.example.eventplanner.fragments.homepage.PSListFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
-import com.example.eventplanner.adapters.ChatAdapter;
+import com.example.eventplanner.model.Category;
+import com.example.eventplanner.model.EventType;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrganiserHomepageActivity extends AppCompatActivity {
+public class ProviderHomepageActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -41,7 +51,7 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_organiser_homepage);
+        setContentView(R.layout.activity_provider_homepage);
 
         // Initialize DrawerLayout
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -90,6 +100,10 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
 
         userSpinner.setAdapter(adapter);
 
+
+
+
+
         // Initialize NavigationView and set listener for menu items
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -98,9 +112,26 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_home) {
-                    Intent intent = new Intent(OrganiserHomepageActivity.this, OrganiserHomepageActivity.class);
+                    Intent intent = new Intent(ProviderHomepageActivity.this, ProviderHomepageActivity.class);
                     startActivity(intent);
                 }
+
+                else if (id == R.id.nav_create_business) {
+                    Intent intent = new Intent(ProviderHomepageActivity.this, BusinessRegistrationActivity.class);
+                    startActivity(intent);
+                }
+
+                else if (id == R.id.nav_business_info) {
+                    Intent intent = new Intent(ProviderHomepageActivity.this, BusinessInfoActivity.class);
+                    startActivity(intent);
+                }
+
+
+                else if (id == R.id.nav_calendar_od) {
+                    Intent intent = new Intent(ProviderHomepageActivity.this, CalendarActivity.class);
+                    startActivity(intent);
+                }
+
                 else if (id == R.id.nav_log_out) { logOut();}
                 else if (id == R.id.nav_services) {
                     FragmentManager fragmentManager = getSupportFragmentManager();
@@ -121,8 +152,30 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
                     fragmentManager.beginTransaction()
                             .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container_products))
                             .commit();
-                } else if (id == R.id.nav_view_profile) {
-                    Intent intent = new Intent(OrganiserHomepageActivity.this, ProfileViewActivity.class);
+                    fragmentManager.beginTransaction()
+                            .remove(fragmentManager.findFragmentById(R.id.events_list_fragment_container))
+                            .commit();
+                    fragmentManager.beginTransaction()
+                            .remove(fragmentManager.findFragmentById(R.id.ps_list_fragment_container))
+                            .commit();
+                }
+
+                else if (id == R.id.nav_categories) {
+                    Intent intent = new Intent(ProviderHomepageActivity.this, CategoriesTableActivity.class);
+                    startActivity(intent);
+
+                }
+
+
+                else if (id == R.id.nav_event_types) {
+                    Intent intent = new Intent(ProviderHomepageActivity.this, EventTypeTableActivity.class);
+                    startActivity(intent);
+
+                }
+
+
+                else if (id == R.id.nav_view_profile) {
+                    Intent intent = new Intent(ProviderHomepageActivity.this, ProfileViewActivity.class);
                     startActivity(intent);
                 }
 
@@ -194,7 +247,7 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
         dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(OrganiserHomepageActivity.this, HomepageActivity.class);
+                Intent intent = new Intent(ProviderHomepageActivity.this, HomepageActivity.class);
                 startActivity(intent);
             }
         });

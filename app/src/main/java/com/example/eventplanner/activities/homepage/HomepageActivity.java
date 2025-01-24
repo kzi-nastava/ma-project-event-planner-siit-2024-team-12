@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities;
+package com.example.eventplanner.activities.homepage;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.auth.LoginActivity;
+import com.example.eventplanner.activities.auth.SignUpActivity;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.HomepageCardsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
@@ -84,6 +86,12 @@ public class HomepageActivity extends AppCompatActivity {
                             .commit();
                     fragmentManager.beginTransaction()
                             .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container_products))
+                            .commit();
+                    fragmentManager.beginTransaction()
+                            .remove(fragmentManager.findFragmentById(R.id.events_list_fragment_container))
+                            .commit();
+                    fragmentManager.beginTransaction()
+                            .remove(fragmentManager.findFragmentById(R.id.ps_list_fragment_container))
                             .commit();
                 }
 

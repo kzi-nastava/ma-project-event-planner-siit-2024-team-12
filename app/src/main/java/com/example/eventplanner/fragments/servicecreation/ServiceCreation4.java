@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.ServiceCreationActivity;
+import com.example.eventplanner.activities.service.ServiceCreationActivity;
 
 /**
  * A simple {@link Fragment} subclass.

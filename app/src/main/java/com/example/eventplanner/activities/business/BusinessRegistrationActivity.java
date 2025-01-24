@@ -1,18 +1,14 @@
-package com.example.eventplanner.activities;
+package com.example.eventplanner.activities.business;
 
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.BusinessRegPager;
-import com.example.eventplanner.fragments.others.ActivateAccount;
 
 public class BusinessRegistrationActivity extends AppCompatActivity {
 

@@ -1,0 +1,66 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/activityTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="[ HH:mm - HH:mm ]"
+            android:padding="8dp"
+            android:layout_marginLeft="-8dp"
+            android:textColor="@android:color/black" />
+
+        <ImageView
+            android:id="@+id/expandArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:layout_weight="0"
+            android:contentDescription="@string/expand_arrow"
+            android:padding="8dp"
+            android:src="@drawable/ic_expand_arrow" />
+
+
+    </LinearLayout>
+
+
+    <!-- Additional information -->
+    <TextView
+        android:id="@+id/activityName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Activity name"
+        android:visibility="gone"
+        android:padding="8dp"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/activityDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:visibility="gone"
+        android:padding="8dp"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/activityVenue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Venue name"
+        android:visibility="gone"
+        android:padding="8dp"
+        android:textColor="@android:color/black" />
+</LinearLayout>

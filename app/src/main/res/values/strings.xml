@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EventPlanner</string>
+    <string name="app_name">Event Planner</string>
 
 
     <!-- Service management -->
@@ -63,7 +63,9 @@
     <string name="description">Description :</string>
     <string name="images">Images :</string>
     <string name="register">Register</string>
+    <string name="business_reg_success">Successful business registration!</string>
     <string name="registration_success">Successful registration! Visit the link we sent to your email address.</string>
+    <string name="gallery">Gallery</string>
 
 
     <!-- Search and filters -->
@@ -147,7 +149,6 @@
 
     <!-- drawer menu items -->
     <string name="home">Home</string>
-    <string name="about_us">About us</string>
     <string name="events_menu">Events</string>
     <string name="products">Products</string>
     <string name="services">Services</string>
@@ -155,13 +156,21 @@
 
     <!-- organiser menu items -->
     <string name="create_event">Create event</string>
-    <string name="fav_events">Favourite events</string>
+    <string name="explore_events">Explore events</string>
     <string name="calendar">Calendar</string>
-    <string name="solutions">Solutions</string>
-    <string name="view_profile">View profile</string>
-    <string name="change_pass">Change password</string>
+    <string name="fav_events">Favorite events</string>
+    <string name="fav_services">Favorite services</string>
+    <string name="fav_products">Favorite products</string>
     <string name="notifications">Notifications</string>
+    <string name="view_profile">View profile</string>
     <string name="log_out">Log out</string>
+
+
+    <!-- provider menu -->
+    <string name="create_business">Business registration</string>
+    <string name="view_business">Business info</string>
+    <string name="categories">Categories</string>
+    <string name="event_types">Event types</string>
 
 
     <!-- Buttons -->
@@ -180,6 +189,7 @@
     <!-- password change -->
     <string name="old_pass">Old password :</string>
     <string name="new_pass">New password :</string>
+    <string name="change_pass">Change password</string>
 
     <!-- chat options -->
     <string name="chat">Chat</string>
@@ -200,5 +210,49 @@
     <string name="email_ast">Email*</string>
     <string name="phone_ast">Phone*</string>
     <string name="address_ast">Address*</string>
+
+    <string name="company_name_ast">Company name*</string>
+    <string name="company_email_ast">Company email*</string>
+    <string name="description_ast">Description*</string>
+
+
+    <string name="expand_arrow">Expand arrow</string>
+
+    <string name="event_type_details">Event type details</string>
+    <string name="recommended_categories">Recommended categories</string>
+    <string name="recommended_categories_ast">Recommended categories*</string>
+    <string name="event_type_edit">Edit event type</string>
+    <string name="create_event_type">Create event type</string>
+    <string name="event_types_overview">Event types overview</string>
+
+    <string name="create">Create</string>
+    <string name="max_guests">Max number of guests :</string>
+    <string name="date">Date [ yyyy-mm-dd ] :</string>
+    <string name="location">Location</string>
+
+    <string name="privacy_type">Privacy type*</string>
+    <string-array name="privacy_types">
+        <item>Open</item>
+        <item>Closed</item>
+    </string-array>
+    <string name="add_agenda">Add agenda</string>
+
+    <string name="location_details">Location details</string>
+    <string name="venue_name">Venue name :</string>
+    <string name="city">City :</string>
+    <string name="country">Country :</string>
+
+    <string name="provider_event_types">Event types for your solutions</string>
+    <string name="provider_categories">Solution categories you offer</string>
+
+    <string name="activity">Activity</string>
+    <string name="time">Time [ HH:mm - HH:mm ] :</string>
+    <string name="activity_name">Activity name</string>
+    <string name="add">Add</string>
+    <string name="agenda">Agenda</string>
+    <string name="add_activity">Add activity</string>
+
+    <string name="send_invitations">Send invitations</string>
+
 
 </resources>

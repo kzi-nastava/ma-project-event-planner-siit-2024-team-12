@@ -1,6 +1,5 @@
 package com.example.eventplanner.fragments.signup;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.SignUpActivity;
-import com.example.eventplanner.activities.BusinessRegistrationActivity;
-import com.example.eventplanner.fragments.others.ActivateAccount;
-import com.example.eventplanner.fragments.others.VerifyAccount;
+import com.example.eventplanner.activities.auth.SignUpActivity;
 
 public class SignUp3 extends Fragment {
 
@@ -61,15 +57,9 @@ public class SignUp3 extends Fragment {
 
 
         submitButton.setOnClickListener(v -> {
-            if (selectedRole.equalsIgnoreCase(providerRole)) {
-                Intent intent = new Intent(getActivity(), BusinessRegistrationActivity.class);
-                startActivity(intent);
-            } else {
-                ActivateAccount activateAccount = new ActivateAccount();
-                activateAccount.show(getParentFragmentManager(), "activateAccount");
 
-                //Toast.makeText(getActivity(), registrationSuccess, Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(getActivity(), registrationSuccess, Toast.LENGTH_SHORT).show();
+
         });
 
         return view;

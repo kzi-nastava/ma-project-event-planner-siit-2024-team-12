@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.ServiceEditActivity;
+import com.example.eventplanner.activities.service.ServiceEditActivity;
 
 /**
  * A simple {@link Fragment} subclass.

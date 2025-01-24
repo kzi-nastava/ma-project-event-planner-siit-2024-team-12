@@ -4,4 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="light_gray">#F1F1F1</color>
     <color name="dark_gray">#707070</color>
+    <color name="even_row_color">#f0f0f0</color>
+    <color name="odd_row_color">#d3d3d3</color>
 </resources>

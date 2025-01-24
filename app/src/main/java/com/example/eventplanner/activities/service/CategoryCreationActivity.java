@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities;
+package com.example.eventplanner.activities.service;
 
 import android.content.Intent;
 import android.os.Bundle;

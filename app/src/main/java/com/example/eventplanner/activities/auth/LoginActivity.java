@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities;
+package com.example.eventplanner.activities.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.homepage.AdminHomepageActivity;
+import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
+import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.fragments.others.ResetPasswordFragment;
 
 public class LoginActivity extends AppCompatActivity {
@@ -46,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void openHomePage() {
-        Intent intent = new Intent(LoginActivity.this, OrganiserHomepageActivity.class);
+        Intent intent = new Intent(LoginActivity.this, AdminHomepageActivity.class);
         startActivity(intent);
     }
 

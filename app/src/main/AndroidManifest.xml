@@ -2,7 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+
     <application
+        android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,40 +18,79 @@
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
         <activity
+            android:name=".activities.event.AgendaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.service.CategoriesTableActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.eventtype.EventTypeTableActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.event.LocationDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.event.EventCreationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.eventtype.EventTypeCreationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.homepage.AdminHomepageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.homepage.CalendarActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.eventtype.EventTypeEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.eventtype.EventTypeViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.business.BusinessEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.business.BusinessInfoActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ChatActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ProfileEditActivity"
+            android:name=".activities.profile.ProfileEditActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.OrganiserHomepageActivity"
+            android:name=".activities.homepage.OrganiserHomepageActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ProfileViewActivity"
+            android:name=".activities.profile.ProfileViewActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ServiceEditActivity"
+            android:name=".activities.service.ServiceEditActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.CategoryCreationActivity"
+            android:name=".activities.service.CategoryCreationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ServiceCreationActivity"
+            android:name=".activities.service.ServiceCreationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.BusinessRegistrationActivity"
+            android:name=".activities.business.BusinessRegistrationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SignUpActivity"
+            android:name=".activities.auth.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.HomepageActivity"
+            android:name=".activities.homepage.HomepageActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".activities.auth.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SplashScreenActivity"
+            android:name=".activities.homepage.ProviderHomepageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.homepage.SplashScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
