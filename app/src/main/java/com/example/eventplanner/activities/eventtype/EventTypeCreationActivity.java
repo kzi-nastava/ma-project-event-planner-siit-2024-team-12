@@ -114,9 +114,24 @@ public class EventTypeCreationActivity extends AppCompatActivity {
 
     private void createCategory() {
         EditText nameText = findViewById(R.id.name);
-        String name = nameText.getText().toString();
-
         EditText descriptionText = findViewById(R.id.description);
+
+        // validate input data
+        if (!validateField(nameText, "Name is required!")) return;
+        if (!validateField(descriptionText, "Description is required!")) return;
+
+        // admin doesn't have to select suggested categories when creating event type
+        // in case no appropriate categories are available in that moment
+        // categories can always be added in event type edit
+        /*
+        if (selectedCategoryNames.isEmpty()) {
+            Toast.makeText(this, "Select suggested categories!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+         */
+
+        // if valid, save
+        String name = nameText.getText().toString();
         String description = descriptionText.getText().toString();
 
         CreateEventTypeDTO createEventTypeDTO = new CreateEventTypeDTO();
@@ -148,5 +163,16 @@ public class EventTypeCreationActivity extends AppCompatActivity {
     public void closeForm(View view) {
         setResult(RESULT_CANCELED);
         finish();
+    }
+
+
+    private boolean validateField(EditText field, String errorMessage) {
+        String value = field.getText().toString().trim();
+        if (value.isEmpty()) {
+            field.setError(errorMessage);
+            field.requestFocus();
+            return false;
+        }
+        return true;
     }
 }
