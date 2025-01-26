@@ -17,10 +17,11 @@ import java.util.List;
 // used for setting event attributes across different fragments
 public class EventCreationViewModel extends AndroidViewModel {
     private final MutableLiveData<CreateEventDTO> dto = new MutableLiveData<>(new CreateEventDTO());
-
     public EventCreationViewModel(Application application) { super(application); }
 
     public LiveData<CreateEventDTO> getDto() { return dto; }
+
+    private boolean isLocationSet = false;
 
 
 
@@ -44,6 +45,7 @@ public class EventCreationViewModel extends AndroidViewModel {
     public void updateLocation(CreateLocationDTO locationDTO) {
         CreateEventDTO current = dto.getValue();
         current.setLocation(locationDTO);
+        isLocationSet = true;
 
         dto.setValue(current);
     }
@@ -81,5 +83,7 @@ public class EventCreationViewModel extends AndroidViewModel {
         }
 
     }
+
+    public boolean getLocationSet() { return isLocationSet; }
 
 }

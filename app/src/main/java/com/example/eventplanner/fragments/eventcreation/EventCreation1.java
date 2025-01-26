@@ -18,17 +18,11 @@ import com.example.eventplanner.viewmodels.EventCreationViewModel;
 
 public class EventCreation1 extends Fragment {
 
-
-    public EventCreation1() {
-        // Required empty public constructor
-    }
-
-
+    public EventCreation1() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -40,21 +34,23 @@ public class EventCreation1 extends Fragment {
         EventCreationViewModel viewModel = new ViewModelProvider(requireActivity()).get(EventCreationViewModel.class);
 
         Button nextButton = view.findViewById(R.id.nextBtn);
+        EditText nameField = view.findViewById(R.id.name);
+        EditText maxGuestsField = view.findViewById(R.id.maxGuests);
+        EditText descriptionField = view.findViewById(R.id.description);
+
         nextButton.setOnClickListener(v -> {
             if (getActivity() instanceof EventCreationActivity) {
 
-                // save input data from the form
-                EditText nameField = view.findViewById(R.id.name);
-                EditText maxGuestsField = view.findViewById(R.id.maxGuests);
-                EditText descriptionField = view.findViewById(R.id.description);
+                // validate input data
+                if (!validateField(nameField, "Name is required!")) return;
+                if (!validateField(maxGuestsField, "Max number is required!")) return;
+                if (!validateNumberField(maxGuestsField, "Enter a number!!", "Enter a positive number!!")) return;
+                if (!validateField(descriptionField, "Description is required!")) return;
 
-                String name = nameField.getText().toString();
-                String maxGuests = maxGuestsField.getText().toString();
-                String description = descriptionField.getText().toString();
-
-                viewModel.updateEventAttributes("name", name);
-                viewModel.updateEventAttributes("maxGuests", maxGuests);
-                viewModel.updateEventAttributes("description", description);
+                // save validated data
+                viewModel.updateEventAttributes("name", nameField.getText().toString());
+                viewModel.updateEventAttributes("maxGuests", maxGuestsField.getText().toString());
+                viewModel.updateEventAttributes("description", descriptionField.getText().toString());
 
                 // move to the next form
                 ((EventCreationActivity) getActivity()).nextPage();
@@ -62,5 +58,36 @@ public class EventCreation1 extends Fragment {
         });
 
         return view;
+    }
+
+
+    // check if fields are empty
+    private boolean validateField(EditText field, String errorMessage) {
+        String value = field.getText().toString().trim();
+        if (value.isEmpty()) {
+            field.setError(errorMessage);
+            field.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+
+    // check if number is valid
+    private boolean validateNumberField(EditText field, String invalidNumberMessage, String negativeNumberMessage) {
+        String value = field.getText().toString().trim();
+        try {
+            int number = Integer.parseInt(value);
+            if (number <= 0) {
+                field.setError(negativeNumberMessage);
+                field.requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            field.setError(invalidNumberMessage);
+            field.requestFocus();
+            return false;
+        }
+        return true;
     }
 }

@@ -14,30 +14,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 public class EventCreation2 extends Fragment {
 
-    View view;
-
-    public EventCreation2() {
-        // Required empty public constructor
-    }
-
-
+    public EventCreation2() {}
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_event_creation2, container, false);
+        View view = inflater.inflate(R.layout.fragment_event_creation2, container, false);
 
         EventCreationViewModel viewModel = new ViewModelProvider(requireActivity()).get(EventCreationViewModel.class);
-
 
         Button backButton = view.findViewById(R.id.back2);
         backButton.setOnClickListener(v -> {
@@ -75,8 +72,18 @@ public class EventCreation2 extends Fragment {
 
         Button agendaBtn = view.findViewById(R.id.agendaBtn);
         agendaBtn.setOnClickListener(v -> {
-            // save input data
             EditText dateField = view.findViewById(R.id.date);
+            // check if date field is empty
+            if (!validateField(dateField, "Date is required!")) return;
+
+            // check date format
+            if (!validateDateFormat(dateField)) return;
+
+            if (!viewModel.getLocationSet()) {
+                Toast.makeText(getActivity(), "Fill out location form!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             String date = dateField.getText().toString();
 
             String privacy = privacySpinner.getSelectedItem().toString();
@@ -106,7 +113,7 @@ public class EventCreation2 extends Fragment {
 
 
 
-    public void openLocationForm(View view) {
+    private void openLocationForm(View view) {
         LocationFormFragment locationFormFragment = new LocationFormFragment();
         locationFormFragment.show(getChildFragmentManager(), "locationDetails");
     }
@@ -119,7 +126,50 @@ public class EventCreation2 extends Fragment {
     }
 
 
+    private boolean validateField(EditText field, String errorMessage) {
+        String value = field.getText().toString().trim();
+        if (value.isEmpty()) {
+            field.setError(errorMessage);
+            field.requestFocus();
+            return false;
+        }
+
+        return true;
+    }
 
 
+
+    private boolean validateDateFormat(EditText field) {
+        String datePattern = "^\\d{4}-\\d{2}-\\d{2}$"; // format yyyy-mm-dd
+        String date = field.getText().toString().trim();
+
+        if (!date.matches(datePattern)) {
+            field.setError("Incorrect format!");
+            field.requestFocus();
+            return false;
+        }
+
+        // check if date is valid ( e.g. there is no February 30 )
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            dateFormat.setLenient(false);
+
+            long inputDateMillis = dateFormat.parse(date).getTime();
+            long currentDateMillis = System.currentTimeMillis();
+
+            // check if entered date is in the past
+            if (inputDateMillis < currentDateMillis) {
+                field.setError("Date cannot be in the past!");
+                field.requestFocus();
+                return false;
+            }
+        } catch (ParseException e) {
+            field.setError("Invalid date!");
+            field.requestFocus();
+            return false;
+        }
+
+        return true;
+    }
 
 }
