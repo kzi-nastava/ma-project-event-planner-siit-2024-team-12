@@ -4,6 +4,7 @@ import com.example.eventplanner.dto.eventtype.CreateEventTypeDTO;
 import com.example.eventplanner.dto.eventtype.UpdateEventTypeDTO;
 import com.example.eventplanner.model.EventType;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import okhttp3.ResponseBody;
@@ -43,4 +44,12 @@ public interface EventTypeService {
 
     @PUT("event-types/{id}/deactivate")
     Call<ResponseBody> deactivateEventType(@Path("id") Long id);
+
+
+    @GET("event-types/all-active")
+    Call<ArrayList<EventType>> getAllActive();
+
+
+    @GET("event-types/{eventTypeName}/suggested-categories")
+    Call<ArrayList<String>> getSuggestedCategories(@Path("eventTypeName") String eventTypeName);
 }

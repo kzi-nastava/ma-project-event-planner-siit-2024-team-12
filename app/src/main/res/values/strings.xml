@@ -256,5 +256,6 @@
 
     <string name="plan_budget">Plan budget</string>
     <string name="event_type">Event type :</string>
+    <string name="clearer_view">*Click for clearer view</string>
 
 </resources>

@@ -55,7 +55,12 @@ public class EventCreation2 extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedOption = parent.getItemAtPosition(position).toString();
 
-                if ("Closed".equals(selectedOption)) {
+                // load privacy types
+                String[] privacyTypes = getResources().getStringArray(R.array.privacy_types);
+                String closedValue = privacyTypes[1]; // privacy type CLOSED is at index 1
+
+                // show send invitations option for closed events
+                if (closedValue.equals(selectedOption)) {
                     sendInvitationsText.setVisibility(View.VISIBLE);
                 } else {
                     sendInvitationsText.setVisibility(View.GONE);
