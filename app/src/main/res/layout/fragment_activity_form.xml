@@ -40,7 +40,7 @@
 
 
         <EditText
-            android:id="@+id/editTextText"
+            android:id="@+id/time"
             android:layout_width="240dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
@@ -56,7 +56,7 @@
             app:layout_constraintVertical_bias="0.337" />
 
         <EditText
-            android:id="@+id/editTextText2"
+            android:id="@+id/description"
             android:layout_width="240dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
@@ -72,7 +72,7 @@
             app:layout_constraintVertical_bias="0.615" />
 
         <EditText
-            android:id="@+id/editTextText12"
+            android:id="@+id/venue"
             android:layout_width="240dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
@@ -88,7 +88,7 @@
             app:layout_constraintVertical_bias="0.752" />
 
         <EditText
-            android:id="@+id/editTextText3"
+            android:id="@+id/name"
             android:layout_width="240dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
@@ -104,7 +104,7 @@
             app:layout_constraintVertical_bias="0.472" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/next1"
+            android:id="@+id/addBtn"
             android:layout_width="121dp"
             android:layout_height="42dp"
             android:background="@drawable/form_button"

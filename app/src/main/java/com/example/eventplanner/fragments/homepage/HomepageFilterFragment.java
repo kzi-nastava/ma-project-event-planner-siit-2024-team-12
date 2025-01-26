@@ -110,12 +110,12 @@ public class HomepageFilterFragment extends Fragment {
         }
     }
 
-    // Funkcija za dodavanje novog filter chip-a
+    // Funkcija za dodavanje novog filter chip-a.java
     private void addFilterChip(String filterText, ChipGroup chipGroup) {
         Chip chip = new Chip(getContext());
         chip.setText(filterText);
         chip.setCloseIconVisible(true);
-        chip.setOnCloseIconClickListener(v -> chipGroup.removeView(chip)); // Omogućava uklanjanje chip-a
+        chip.setOnCloseIconClickListener(v -> chipGroup.removeView(chip)); // Omogućava uklanjanje chip-a.java
         chipGroup.addView(chip);
     }
 }

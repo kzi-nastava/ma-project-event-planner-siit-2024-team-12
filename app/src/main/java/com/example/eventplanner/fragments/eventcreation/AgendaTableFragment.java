@@ -41,15 +41,10 @@ public class AgendaTableFragment extends Fragment {
         agendaRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         List<Activity> activities = new ArrayList<>();
-        activities.add(new Activity("[ 10:00 - 12:00 ]", "A1", "desc1", "location1"));
-        activities.add(new Activity("[ 13:00 - 14:00 ]", "A2", "desc2", "location2"));
-        activities.add(new Activity("[ 15:00 - 16:00 ]", "A3", "desc3", "location3"));
-        activities.add(new Activity("[ 17:00 - 18:00 ]", "A4", "desc4", "location4"));
 
         AgendaAdapter adapter = new AgendaAdapter(activities);
         agendaRecyclerView.setAdapter(adapter);
 
     }
-
 
 }

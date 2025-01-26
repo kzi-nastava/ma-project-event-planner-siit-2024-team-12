@@ -39,7 +39,7 @@ public class ProductProviderServices extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this factory method to create a.java new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
@@ -70,7 +70,7 @@ public class ProductProviderServices extends Fragment {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // Obradi rezultat ovde ako je potrebno
                         Intent data = result.getData();
-                        // Na primer, možeš pročitati podatke iz Intent-a ovde
+                        // Na primer, možeš pročitati podatke iz Intent-a.java ovde
                     }
                 }
         );

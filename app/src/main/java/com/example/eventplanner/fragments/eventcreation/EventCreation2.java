@@ -3,21 +3,25 @@ package com.example.eventplanner.fragments.eventcreation;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.auth.SignUpActivity;
 import com.example.eventplanner.activities.event.EventCreationActivity;
+import com.example.eventplanner.viewmodels.EventCreationViewModel;
 
 public class EventCreation2 extends Fragment {
 
+    View view;
 
     public EventCreation2() {
         // Required empty public constructor
@@ -25,27 +29,22 @@ public class EventCreation2 extends Fragment {
 
 
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_event_creation2, container, false);
+        view = inflater.inflate(R.layout.fragment_event_creation2, container, false);
+
+        EventCreationViewModel viewModel = new ViewModelProvider(requireActivity()).get(EventCreationViewModel.class);
+
 
         Button backButton = view.findViewById(R.id.back2);
-
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof EventCreationActivity) {
                 ((EventCreationActivity) getActivity()).previousPage();
             }
         });
-
 
 
         Spinner privacySpinner = view.findViewById(R.id.mySpinner);
@@ -69,8 +68,54 @@ public class EventCreation2 extends Fragment {
         });
 
 
+        Button agendaBtn = view.findViewById(R.id.agendaBtn);
+        agendaBtn.setOnClickListener(v -> {
+            // save input data
+            EditText dateField = view.findViewById(R.id.date);
+            String date = dateField.getText().toString();
+
+            String privacy = privacySpinner.getSelectedItem().toString();
+
+            viewModel.updateEventAttributes("date", date);
+            viewModel.updateEventAttributes("privacy", privacy);
+
+
+            view.findViewById(R.id.frame).setVisibility(View.GONE);
+
+            AgendaFragment agendaFragment = new AgendaFragment();
+
+            // Replace the current fragment with the new one
+            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.main, agendaFragment); // This replaces the entire fragment in the container
+            transaction.addToBackStack(null); // Optional, allows back navigation
+            transaction.commit();
+        });
+
+
+        Button locationBtn = view.findViewById(R.id.locationButton);
+        locationBtn.setOnClickListener(v -> {
+            openLocationForm(view);
+        });
+
         return view;
     }
+
+
+
+    public void openLocationForm(View view) {
+        LocationFormFragment locationFormFragment = new LocationFormFragment();
+        locationFormFragment.show(getChildFragmentManager(), "locationDetails");
+    }
+
+
+    public void closeForm(View view) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.remove(this);
+        transaction.commit();
+    }
+
+
+
 
 
 }
