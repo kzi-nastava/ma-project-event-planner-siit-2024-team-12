@@ -3,9 +3,13 @@ package com.example.eventplanner.fragments.eventcreation;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +19,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.AgendaAdapter;
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
+import com.example.eventplanner.model.Activity;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
 
 import java.util.ArrayList;
@@ -50,7 +56,6 @@ public class ActivityFormFragment extends DialogFragment {
             EditText venueField = view.findViewById(R.id.venue);
             EditText nameField = view.findViewById(R.id.name);
 
-
             String time = timeField.getText().toString();
             String description = descriptionField.getText().toString();
             String venue = venueField.getText().toString();
@@ -58,9 +63,7 @@ public class ActivityFormFragment extends DialogFragment {
 
             CreateActivityDTO newActivity = new CreateActivityDTO(time, name, description, venue);
 
-            List<CreateActivityDTO> singleActivityList = new ArrayList<>();
-            singleActivityList.add(newActivity);
-            viewModel.updateAgenda(singleActivityList);
+            viewModel.updateAgenda(newActivity);
 
             dismiss();
 

@@ -84,10 +84,9 @@ public class EventCreation2 extends Fragment {
 
             AgendaFragment agendaFragment = new AgendaFragment();
 
-            // Replace the current fragment with the new one
             FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.main, agendaFragment); // This replaces the entire fragment in the container
-            transaction.addToBackStack(null); // Optional, allows back navigation
+            transaction.replace(R.id.main, agendaFragment);
+            transaction.addToBackStack(null);
             transaction.commit();
         });
 

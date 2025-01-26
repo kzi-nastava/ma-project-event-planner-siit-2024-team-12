@@ -74,7 +74,7 @@ public class BudgetPlanningFragment extends Fragment {
 
     private void createEvent() {
         String eventType = typeSpinner.getSelectedItem().toString();
-        // u zahtevu poslati samo viewModel.getDto.value kao createeventdto
+
         viewModel.updateEventAttributes("eventType", eventType);
         viewModel.updateEventAttributes("organizer", "organizer3@example.com");
 
@@ -96,8 +96,5 @@ public class BudgetPlanningFragment extends Fragment {
                 Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show();
             }
         });
-
-
-
     }
 }

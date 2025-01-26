@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,14 +15,17 @@ import android.view.ViewGroup;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.AgendaAdapter;
+import com.example.eventplanner.dto.agenda.CreateActivityDTO;
 import com.example.eventplanner.model.Activity;
+import com.example.eventplanner.viewmodels.EventCreationViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class AgendaTableFragment extends Fragment {
-
+    View view;
+    EventCreationViewModel viewModel;
     private RecyclerView agendaRecyclerView;
 
 
@@ -29,7 +33,11 @@ public class AgendaTableFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_agenda_table, container, false);
+        view = inflater.inflate(R.layout.fragment_agenda_table, container, false);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(EventCreationViewModel.class);
+
+        return view;
     }
 
 
@@ -40,11 +48,24 @@ public class AgendaTableFragment extends Fragment {
         agendaRecyclerView = view.findViewById(R.id.agendaRecyclerView);
         agendaRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        List<Activity> activities = new ArrayList<>();
-
-        AgendaAdapter adapter = new AgendaAdapter(activities);
+        List<Activity> tableDisplay = new ArrayList<>();
+        AgendaAdapter adapter = new AgendaAdapter(tableDisplay);
         agendaRecyclerView.setAdapter(adapter);
 
+        // track changes in viewModel to dynamically display them in agenda table
+        viewModel.getDto().observe(getViewLifecycleOwner(), createEventDTO -> {
+            if (createEventDTO != null && createEventDTO.getAgenda() != null) {
+                tableDisplay.clear();
+
+                for (CreateActivityDTO activityDTO : createEventDTO.getAgenda()) {
+                    Activity activity = new Activity(activityDTO.getTime(), activityDTO.getName(),
+                            activityDTO.getDescription(), activityDTO.getLocation());
+                    tableDisplay.add(activity);
+                }
+
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
 }

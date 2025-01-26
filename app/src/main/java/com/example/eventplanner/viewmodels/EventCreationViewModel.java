@@ -22,22 +22,23 @@ public class EventCreationViewModel extends AndroidViewModel {
 
     public LiveData<CreateEventDTO> getDto() { return dto; }
 
-    public void updateAgenda(List<CreateActivityDTO> newActivities) {
+
+
+    public void updateAgenda(CreateActivityDTO newActivity) {
         CreateEventDTO current = dto.getValue();
 
         if (current != null) {
-            // Ako agenda već postoji, dodaj nove aktivnosti
             List<CreateActivityDTO> existingActivities = current.getAgenda();
             if (existingActivities == null) {
                 existingActivities = new ArrayList<>();
             }
-            existingActivities.addAll(newActivities);
+            existingActivities.add(newActivity);
             current.setAgenda(existingActivities);
 
-            // Ažuriraj MutableLiveData
             dto.setValue(current);
         }
     }
+
 
 
     public void updateLocation(CreateLocationDTO locationDTO) {
