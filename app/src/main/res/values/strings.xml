@@ -257,5 +257,6 @@
     <string name="plan_budget">Plan budget</string>
     <string name="event_type">Event type :</string>
     <string name="clearer_view">*Click for clearer view</string>
+    <string name="phone_format">Phone [ + [country code] [local number] ] :</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.example.eventplanner;
 
+import com.example.eventplanner.activities.auth.AuthService;
 import com.example.eventplanner.activities.event.EventService;
 import com.example.eventplanner.activities.eventtype.EventTypeService;
 import com.example.eventplanner.activities.solutioncategory.SolutionCategoryService;
@@ -22,4 +23,6 @@ public class ClientUtils {
     public static SolutionCategoryService solutionCategoryService = retrofit.create(SolutionCategoryService.class);
 
     public static EventService eventService = retrofit.create(EventService.class);
+
+    public static AuthService authService = retrofit.create(AuthService.class);
 }
