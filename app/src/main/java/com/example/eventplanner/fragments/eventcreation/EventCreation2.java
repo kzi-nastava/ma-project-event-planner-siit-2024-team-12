@@ -79,7 +79,7 @@ public class EventCreation2 extends Fragment {
             // check date format
             if (!validateDateFormat(dateField)) return;
 
-            if (!viewModel.getLocationSet()) {
+            if (!viewModel.isLocationSet()) {
                 Toast.makeText(getActivity(), "Fill out location form!", Toast.LENGTH_SHORT).show();
                 return;
             }

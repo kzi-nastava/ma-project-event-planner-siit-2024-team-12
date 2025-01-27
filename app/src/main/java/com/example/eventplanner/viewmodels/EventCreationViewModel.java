@@ -22,7 +22,7 @@ public class EventCreationViewModel extends AndroidViewModel {
     public LiveData<CreateEventDTO> getDto() { return dto; }
 
     private boolean isLocationSet = false;
-
+    private boolean isAgendaSet = false;
 
 
     public void updateAgenda(CreateActivityDTO newActivity) {
@@ -35,7 +35,7 @@ public class EventCreationViewModel extends AndroidViewModel {
             }
             existingActivities.add(newActivity);
             current.setAgenda(existingActivities);
-
+            isAgendaSet = true;
             dto.setValue(current);
         }
     }
@@ -84,6 +84,8 @@ public class EventCreationViewModel extends AndroidViewModel {
 
     }
 
-    public boolean getLocationSet() { return isLocationSet; }
+    public boolean isLocationSet() { return isLocationSet; }
+
+    public boolean isAgendaSet() { return isAgendaSet; }
 
 }

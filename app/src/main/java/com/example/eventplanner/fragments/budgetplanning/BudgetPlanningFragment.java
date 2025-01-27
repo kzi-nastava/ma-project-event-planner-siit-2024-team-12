@@ -1,5 +1,6 @@
 package com.example.eventplanner.fragments.budgetplanning;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
 import com.example.eventplanner.model.EventType;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
 
@@ -131,6 +133,9 @@ public class BudgetPlanningFragment extends Fragment {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getActivity(), "Successfully created event!", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(requireActivity(), OrganiserHomepageActivity.class);
+                    startActivity(intent);
                 }
                 else {
                     Toast.makeText(getActivity(), "Failed to create event!", Toast.LENGTH_SHORT).show();

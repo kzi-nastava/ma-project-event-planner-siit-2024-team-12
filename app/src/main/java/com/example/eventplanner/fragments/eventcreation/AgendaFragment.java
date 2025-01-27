@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.fragments.budgetplanning.BudgetPlanningFragment;
@@ -53,7 +54,12 @@ public class AgendaFragment extends Fragment {
 
         Button budgetBtn = view.findViewById(R.id.budgetBtn);
         budgetBtn.setOnClickListener(v -> {
-            planBudget();
+            if (viewModel.isAgendaSet()) {
+                planBudget();
+            }
+            else {
+                Toast.makeText(getActivity(), "Add activity!", Toast.LENGTH_SHORT).show();
+            }
         });
 
         return view;

@@ -135,7 +135,8 @@ public class SignUp3 extends Fragment {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "We've sent account activation link to" +
+                            " your email address!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(requireActivity(), LoginActivity.class);
                     startActivity(intent);
                 }
