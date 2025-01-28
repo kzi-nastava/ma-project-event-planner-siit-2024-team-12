@@ -45,7 +45,7 @@ public class HomepageActivity extends AppCompatActivity {
 
         toolbar.setOverflowIcon(null);
 
-        // Add a toggle button for opening/closing the drawer
+        // Add a.java toggle button for opening/closing the drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
         drawerLayout.addDrawerListener(toggle);

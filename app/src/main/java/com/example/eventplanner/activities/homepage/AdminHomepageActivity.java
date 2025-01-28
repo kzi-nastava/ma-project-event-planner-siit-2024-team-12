@@ -59,7 +59,7 @@ public class AdminHomepageActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
-        // Add a toggle button for opening/closing the drawer
+        // Add a.java toggle button for opening/closing the drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
         drawerLayout.addDrawerListener(toggle);
@@ -72,7 +72,7 @@ public class AdminHomepageActivity extends AppCompatActivity {
         // Add messages to the chat
         List<String> messages = new ArrayList<>();
         messages.add("Hello, I purchased two tickets for the event, but I now need three. Is there any way to add one more to my order?!");
-        messages.add("Hi, I’m interested in joining your event, but I have a few questions about the schedule. Could you provide more details?");
+        messages.add("Hi, I’m interested in joining your event, but I have a.java few questions about the schedule. Could you provide more details?");
         messages.add("The venue looks amazing in the pictures! Will there be parking available nearby, or should I use public transport?");
 
         // Set the adapter with messages

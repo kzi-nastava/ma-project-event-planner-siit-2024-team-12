@@ -54,7 +54,7 @@
 
 
         <EditText
-            android:id="@+id/editTextText"
+            android:id="@+id/name"
             android:layout_width="240dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
@@ -71,23 +71,24 @@
 
 
         <EditText
-            android:id="@+id/editTextText2"
+            android:id="@+id/description"
             android:layout_width="240dp"
-            android:layout_height="32dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/input_field"
-            android:ems="10"
             android:hint="@string/description"
-            android:inputType="text"
-            android:paddingStart="12dp"
-            android:textSize="12sp"
+            android:inputType="textMultiLine"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.637" />
+            app:layout_constraintVertical_bias="0.707" />
 
         <EditText
-            android:id="@+id/editTextText3"
+            android:id="@+id/maxGuests"
             android:layout_width="240dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
@@ -102,7 +103,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/next1"
+            android:id="@+id/nextBtn"
             android:layout_width="121dp"
             android:layout_height="42dp"
             android:background="@drawable/form_button"

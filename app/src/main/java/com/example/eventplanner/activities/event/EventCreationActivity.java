@@ -3,6 +3,7 @@ package com.example.eventplanner.activities.event;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.EventCreationPager;
 import com.example.eventplanner.fragments.eventcreation.EventCreation2;
+import com.example.eventplanner.fragments.eventcreation.LocationFormFragment;
 
 public class EventCreationActivity extends AppCompatActivity {
 
@@ -57,16 +59,4 @@ public class EventCreationActivity extends AppCompatActivity {
         finish();
     }
 
-
-
-    public void openLocationForm(View view) {
-        Intent intent = new Intent(EventCreationActivity.this, LocationDetailsActivity.class);
-        startActivity(intent);
-
-    }
-
-    public void addAgenda(View view) {
-        Intent intent = new Intent(EventCreationActivity.this, AgendaActivity.class);
-        startActivity(intent);
-    }
 }

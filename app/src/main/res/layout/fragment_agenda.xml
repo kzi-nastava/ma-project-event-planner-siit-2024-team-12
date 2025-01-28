@@ -5,32 +5,47 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.event.AgendaActivity">
+    tools:context=".fragments.eventcreation.AgendaFragment">
 
 
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="132dp"
+        android:layout_marginStart="28dp"
         android:layout_marginTop="24dp"
         android:text="@string/agenda"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/button2"
+        app:layout_constraintBottom_toBottomOf="@+id/activityBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/activityBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="48dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/dark_gray"
-        android:onClick="addActivity"
+        android:textColor="@color/white"
         android:text="@string/add_activity"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.367"
+        app:layout_constraintStart_toEndOf="@id/tvTitle"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/budgetBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/black"
+        android:textColor="@color/white"
+        android:text="@string/plan_budget"
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -40,24 +55,24 @@
     <View
         android:id="@+id/spacer"
         android:layout_width="0dp"
-        android:layout_height="46dp"
+        android:layout_height="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitle"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.051" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/eventTypeFragmentContainer"
         android:name="com.example.eventplanner.fragments.eventcreation.AgendaTableFragment"
         android:layout_width="419dp"
-        android:layout_height="603dp"
+        android:layout_height="643dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/spacer"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@id/spacer"
         app:layout_constraintVertical_bias="0.754" />
 
 
