@@ -86,6 +86,23 @@
         <activity
             android:name=".activities.auth.LoginActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".activities.auth.AccountActivation"
+            android:exported="true">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="http"
+                    android:host="10.0.2.2"
+                     />
+            </intent-filter>
+        </activity>
+
+
+
         <activity
             android:name=".activities.homepage.ProviderHomepageActivity"
             android:exported="false" />

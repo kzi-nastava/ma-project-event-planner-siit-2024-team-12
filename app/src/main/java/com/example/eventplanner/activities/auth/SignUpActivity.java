@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.SignUpPagerAdapter;
-import com.example.eventplanner.fragments.others.VerifyAccount;
+import com.example.eventplanner.fragments.others.AccountVerification;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -39,16 +39,13 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    public void openVerifyAcc(View view) {
-        VerifyAccount verifyAccount = new VerifyAccount();
-        verifyAccount.show(getSupportFragmentManager(), "verifyAccount");
-    }
 
 
     public void closeForm(View view) {
         setResult(RESULT_CANCELED);
         finish();
     }
+
 
 }
 
