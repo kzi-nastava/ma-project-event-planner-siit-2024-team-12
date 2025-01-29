@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +20,10 @@ import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
+import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
+import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.dto.user.GetUserDTO;
+import com.google.gson.Gson;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -51,8 +55,20 @@ public class ProfileViewActivity extends AppCompatActivity {
     }
 
     public void closeForm(View view) {
-        setResult(RESULT_CANCELED);
-        finish();
+        String role = getUserRole();
+
+        if (role.equalsIgnoreCase("role_organizer")) {
+            Intent intent = new Intent(ProfileViewActivity.this, OrganiserHomepageActivity.class);
+            startActivity(intent);
+        }
+        else if (role.equalsIgnoreCase("role_provider")) {
+            Intent intent = new Intent(ProfileViewActivity.this, ProviderHomepageActivity.class);
+            startActivity(intent);
+        }
+        else {
+            Intent intent = new Intent(ProfileViewActivity.this, HomepageActivity.class);
+            startActivity(intent);
+        }
     }
 
 
@@ -99,6 +115,8 @@ public class ProfileViewActivity extends AppCompatActivity {
             public void onResponse(Call<GetUserDTO> call, Response<GetUserDTO> response) {
                 if (response.isSuccessful()) {
                     GetUserDTO user = response.body();
+                    Log.d("API_RESPONSE", "Response: " + new Gson().toJson(user));
+                    saveUserRole(user.getRole());
                     setUpFormDetails(user);
                 } else {
                     Toast.makeText(ProfileViewActivity.this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
@@ -125,11 +143,12 @@ public class ProfileViewActivity extends AppCompatActivity {
         TextView email = findViewById(R.id.email);
         email.setText(getUserDTO.getEmail());
 
+        TextView address = findViewById(R.id.address);
+        address.setText(getUserDTO.getAddress());
+
         TextView phone = findViewById(R.id.phone);
         phone.setText(getUserDTO.getPhone());
 
-        TextView address = findViewById(R.id.address);
-        address.setText(getUserDTO.getAddress());
 
     }
 
@@ -138,5 +157,20 @@ public class ProfileViewActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         return sharedPreferences.getString("token", null);
     }
+
+
+    private void saveUserRole(String userRole) {
+        SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userRole", userRole);
+        editor.apply();
+    }
+
+    private String getUserRole() {
+        SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        return sharedPreferences.getString("userRole", "ROLE_UNREGISTERED_USER");
+    }
+
+
 
 }

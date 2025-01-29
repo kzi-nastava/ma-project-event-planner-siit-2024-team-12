@@ -21,6 +21,9 @@ import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.auth.SignUpActivity;
 import com.example.eventplanner.dto.user.CreateUserDTO;
 import com.example.eventplanner.viewmodels.SignUpViewModel;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -76,7 +79,7 @@ public class SignUp3 extends Fragment {
 
             if (!validateField(addressField, "Address is required!")) return;
             if (!validateField(phoneField, "Phone is required!")) return;
-            if (!validatePhone(phoneField, "Invalid format!")) return;
+            if (!isValidPhoneNumber(phoneField, phoneField.getText().toString())) return;
 
             viewModel.updateSignUpAttributes("address", addressField.getText().toString());
             viewModel.updateSignUpAttributes("phone", phoneField.getText().toString());
@@ -113,18 +116,27 @@ public class SignUp3 extends Fragment {
     }
 
 
-    private boolean validatePhone(EditText phoneField, String errorMessage) {
-        String phone = phoneField.getText().toString().trim();
+    private boolean isValidPhoneNumber(EditText field, String phoneNumber) {
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            return true;
+        }
 
-        String phonePattern = "^\\+\\d{1,4}(\\s\\d+)+$";
-
-        if (!phone.matches(phonePattern)) {
-            phoneField.setError(errorMessage);
-            phoneField.requestFocus();
+        try {
+            Phonenumber.PhoneNumber parsedNumber = phoneUtil.parse(phoneNumber, "");
+            if (!phoneUtil.isValidNumber(parsedNumber)) {
+                field.setError("Invalid phone number format!");
+                field.requestFocus();
+                return false;
+            }
+            return true;
+        } catch (NumberParseException e) {
+            field.setError("Invalid phone number format!");
+            field.requestFocus();
             return false;
         }
-        return true;
     }
+
 
 
 
@@ -139,6 +151,10 @@ public class SignUp3 extends Fragment {
                             " your email address!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(requireActivity(), LoginActivity.class);
                     startActivity(intent);
+                }
+
+                if (response.code() == 409) {
+                    Toast.makeText(getActivity(), "Account with the same email address already exists!", Toast.LENGTH_SHORT).show();
                 }
             }
 

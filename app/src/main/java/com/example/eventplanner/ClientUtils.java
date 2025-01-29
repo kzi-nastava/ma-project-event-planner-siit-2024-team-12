@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import com.example.eventplanner.activities.auth.AuthService;
 import com.example.eventplanner.activities.event.EventService;
 import com.example.eventplanner.activities.eventtype.EventTypeService;
+import com.example.eventplanner.activities.profile.UserService;
 import com.example.eventplanner.activities.solutioncategory.SolutionCategoryService;
 import com.example.eventplanner.model.EventType;
 
@@ -34,5 +35,7 @@ public class ClientUtils {
     public static EventService eventService = retrofit.create(EventService.class);
 
     public static AuthService authService = retrofit.create(AuthService.class);
+
+    public static UserService userService = retrofit.create(UserService.class);
 
 }
