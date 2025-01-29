@@ -84,10 +84,9 @@
             app:layout_constraintVertical_bias="0.316" />
 
         <TextView
-            android:id="@+id/textView12"
+            android:id="@+id/name"
             android:layout_width="107dp"
             android:layout_height="36dp"
-            android:text="Name"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -124,10 +123,9 @@
             app:layout_constraintVertical_bias="0.459" />
 
         <TextView
-            android:id="@+id/textView10"
+            android:id="@+id/surname"
             android:layout_width="107dp"
             android:layout_height="52dp"
-            android:text="Nachname"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -151,10 +149,9 @@
             app:layout_constraintVertical_bias="0.557" />
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="nachname@domen.com"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -178,10 +175,9 @@
             app:layout_constraintVertical_bias="0.696" />
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="000-000-000"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -205,10 +201,9 @@
             app:layout_constraintVertical_bias="0.837" />
 
         <TextView
-            android:id="@+id/textView18"
+            android:id="@+id/address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Adresse"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

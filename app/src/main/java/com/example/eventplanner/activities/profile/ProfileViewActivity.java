@@ -2,8 +2,11 @@ package com.example.eventplanner.activities.profile;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -12,8 +15,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
+import com.example.eventplanner.dto.user.GetUserDTO;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProfileViewActivity extends AppCompatActivity {
 
@@ -29,6 +40,8 @@ public class ProfileViewActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        getCurrentUser();
 
     }
 
@@ -68,4 +81,62 @@ public class ProfileViewActivity extends AppCompatActivity {
         AlertDialog alert = dialog.create();
         alert.show();
     }
+
+
+
+    private void getCurrentUser() {
+        String token = getAuthToken();
+
+        if (token == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Call<GetUserDTO> call = ClientUtils.authService.getCurrentUser("Bearer " + token);
+
+        call.enqueue(new Callback<GetUserDTO>() {
+            @Override
+            public void onResponse(Call<GetUserDTO> call, Response<GetUserDTO> response) {
+                if (response.isSuccessful()) {
+                    GetUserDTO user = response.body();
+                    setUpFormDetails(user);
+                } else {
+                    Toast.makeText(ProfileViewActivity.this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetUserDTO> call, Throwable t) {
+                Toast.makeText(ProfileViewActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+    private void setUpFormDetails(GetUserDTO getUserDTO) {
+
+        TextView name = findViewById(R.id.name);
+        name.setText(getUserDTO.getName());
+
+        TextView surname = findViewById(R.id.surname);
+        surname.setText(getUserDTO.getSurname());
+
+        TextView email = findViewById(R.id.email);
+        email.setText(getUserDTO.getEmail());
+
+        TextView phone = findViewById(R.id.phone);
+        phone.setText(getUserDTO.getPhone());
+
+        TextView address = findViewById(R.id.address);
+        address.setText(getUserDTO.getAddress());
+
+    }
+
+
+    private String getAuthToken() {
+        SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        return sharedPreferences.getString("token", null);
+    }
+
 }
