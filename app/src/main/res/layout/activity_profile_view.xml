@@ -53,7 +53,7 @@
 
 
         <Button
-            android:id="@+id/button7"
+            android:id="@+id/deactivateButton"
             android:layout_width="78dp"
             android:layout_height="31dp"
             android:background="@drawable/form_button"

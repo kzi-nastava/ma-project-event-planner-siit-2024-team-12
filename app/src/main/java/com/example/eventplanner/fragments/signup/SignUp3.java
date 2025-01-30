@@ -153,8 +153,14 @@ public class SignUp3 extends Fragment {
                     startActivity(intent);
                 }
 
-                if (response.code() == 409) {
-                    Toast.makeText(getActivity(), "Account with the same email address already exists!", Toast.LENGTH_SHORT).show();
+                else if (response.code() == 409) {
+                    Toast.makeText(getActivity(), "Already taken email address!", Toast.LENGTH_SHORT).show();
+                }
+                else if (response.code() == 410) {
+                    Toast.makeText(getActivity(), "Your activation link is still valid! Check your email!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getActivity(), "Error! Please try again!", Toast.LENGTH_SHORT).show();
                 }
             }
 

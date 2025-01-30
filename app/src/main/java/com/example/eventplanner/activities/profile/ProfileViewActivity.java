@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ import com.example.eventplanner.dto.user.GetUserDTO;
 import com.google.gson.Gson;
 
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,6 +50,10 @@ public class ProfileViewActivity extends AppCompatActivity {
 
         getCurrentUser();
 
+        Button deactivateBtn = findViewById(R.id.deactivateButton);
+        deactivateBtn.setOnClickListener(v -> {
+            deactivateAccount(v);
+        });
     }
 
     public void openProfileEdit(View view) {
@@ -81,8 +88,7 @@ public class ProfileViewActivity extends AppCompatActivity {
         dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(ProfileViewActivity.this, HomepageActivity.class);
-                startActivity(intent);
+                deactivate();
             }
         });
 
@@ -172,5 +178,35 @@ public class ProfileViewActivity extends AppCompatActivity {
     }
 
 
+
+    private void deactivate() {
+        TextView emailField = findViewById(R.id.email);
+        String email = emailField.getText().toString();
+
+        String token = getAuthToken();
+
+        if (token == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Call<ResponseBody> call = ClientUtils.userService.deleteUser("Bearer " + token, email);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(ProfileViewActivity.this, "Deactivated account!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ProfileViewActivity.this, HomepageActivity.class);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(ProfileViewActivity.this, "Failed to deactivate account!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 }
