@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities.auth;
 
 import com.example.eventplanner.dto.auth.LogInRequest;
+import com.example.eventplanner.dto.auth.PasswordChangeRequest;
 import com.example.eventplanner.dto.auth.UserTokenState;
 import com.example.eventplanner.dto.user.CreateUserDTO;
 import com.example.eventplanner.dto.user.GetUserDTO;
@@ -35,5 +36,8 @@ public interface AuthService {
     @GET("auth/current-user")
     Call<GetUserDTO> getCurrentUser(@Header("Authorization") String token);
 
+
+    @POST("auth/password-change")
+    Call<ResponseBody> changePassword(@Header("Authorization") String token, @Body PasswordChangeRequest request);
 }
 
