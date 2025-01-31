@@ -28,4 +28,9 @@ public class GetBusinessDTO {
     public String getOwner() {return owner;}
     public void setOwner(String owner) {this.owner = owner;}
 
+    @Override
+    public String toString() {
+        return "email= " + companyEmail;
+    }
+
 }
