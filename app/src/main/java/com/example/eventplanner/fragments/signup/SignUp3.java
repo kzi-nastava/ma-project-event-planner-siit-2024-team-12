@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.auth.SignUpActivity;
 import com.example.eventplanner.dto.user.CreateUserDTO;
@@ -77,9 +78,9 @@ public class SignUp3 extends Fragment {
             EditText addressField = view.findViewById(R.id.address);
             EditText phoneField = view.findViewById(R.id.phone);
 
-            if (!validateField(addressField, "Address is required!")) return;
-            if (!validateField(phoneField, "Phone is required!")) return;
-            if (!isValidPhoneNumber(phoneField, phoneField.getText().toString())) return;
+            if (!ValidationUtils.isFieldValid(addressField, "Address is required!")) return;
+            if (!ValidationUtils.isFieldValid(phoneField, "Phone is required!")) return;
+            if (!ValidationUtils.isPhoneValid(phoneField, phoneField.getText().toString())) return;
 
             viewModel.updateSignUpAttributes("address", addressField.getText().toString());
             viewModel.updateSignUpAttributes("phone", phoneField.getText().toString());
@@ -102,39 +103,6 @@ public class SignUp3 extends Fragment {
         });
 
         return view;
-    }
-
-
-    private boolean validateField(EditText field, String errorMessage) {
-        String value = field.getText().toString().trim();
-        if (value.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-
-    private boolean isValidPhoneNumber(EditText field, String phoneNumber) {
-        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-        if (phoneNumber == null || phoneNumber.isEmpty()) {
-            return true;
-        }
-
-        try {
-            Phonenumber.PhoneNumber parsedNumber = phoneUtil.parse(phoneNumber, "");
-            if (!phoneUtil.isValidNumber(parsedNumber)) {
-                field.setError("Invalid phone number format!");
-                field.requestFocus();
-                return false;
-            }
-            return true;
-        } catch (NumberParseException e) {
-            field.setError("Invalid phone number format!");
-            field.requestFocus();
-            return false;
-        }
     }
 
 

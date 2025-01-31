@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.profile.ProfileEditActivity;
 import com.example.eventplanner.dto.auth.PasswordChangeRequest;
@@ -50,26 +51,7 @@ public class ChangePasswordFragment extends DialogFragment {
 
 
 
-    private boolean validateField(EditText field, String errorMessage) {
-        String value = field.getText().toString().trim();
-        if (value.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
-            return false;
-        }
-        return true;
-    }
 
-
-    private boolean validatePasswords(String password, String confirmation, EditText confirmationField) {
-        if (password.equalsIgnoreCase(confirmation)) {
-            return true;
-        }
-
-        confirmationField.setError("Passwords do not match!");
-        confirmationField.requestFocus();
-        return false;
-    }
 
 
 
@@ -113,19 +95,19 @@ public class ChangePasswordFragment extends DialogFragment {
         EditText newPassField = view.findViewById(R.id.newPass);
         EditText confirmPassField = view.findViewById(R.id.confirmPass);
 
-        if (!validateField(oldPassField, "Old password is required!")) {
+        if (!ValidationUtils.isFieldValid(oldPassField, "Old password is required!")) {
             return;
         }
 
-        if (!validateField(newPassField, "New password is required!")) {
+        if (!ValidationUtils.isFieldValid(newPassField, "New password is required!")) {
             return;
         }
 
-        if (!validateField(confirmPassField, "Confirmation is required")) {
+        if (!ValidationUtils.isFieldValid(confirmPassField, "Confirmation is required")) {
             return;
         }
 
-        if (!validatePasswords(newPassField.getText().toString(), confirmPassField.getText().toString(), confirmPassField)) {
+        if (!ValidationUtils.isMatchingPassword(newPassField, confirmPassField)) {
             return;
         }
 

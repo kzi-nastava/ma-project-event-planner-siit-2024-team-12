@@ -53,7 +53,7 @@
 
 
         <EditText
-            android:id="@+id/editTextText"
+            android:id="@+id/name"
             android:layout_width="240dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
@@ -70,7 +70,7 @@
 
 
         <EditText
-            android:id="@+id/editTextText2"
+            android:id="@+id/address"
             android:layout_width="240dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
@@ -86,7 +86,7 @@
             app:layout_constraintVertical_bias="0.637" />
 
         <EditText
-            android:id="@+id/editTextText3"
+            android:id="@+id/email"
             android:layout_width="240dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
@@ -101,7 +101,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/next1"
+            android:id="@+id/nextBtn"
             android:layout_width="121dp"
             android:layout_height="42dp"
             android:background="@drawable/form_button"

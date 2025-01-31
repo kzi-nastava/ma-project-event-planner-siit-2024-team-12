@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.activities.auth.SignUpActivity;
 import com.example.eventplanner.viewmodels.SignUpViewModel;
 
@@ -32,8 +33,8 @@ public class SignUp2 extends Fragment {
                 EditText nameField = view.findViewById(R.id.name);
                 EditText surnameField = view.findViewById(R.id.surname);
 
-                if (!validateField(nameField, "Name is required!")) return;
-                if (!validateField(surnameField, "Surname is required!")) return;
+                if (!ValidationUtils.isFieldValid(nameField, "Name is required!")) return;
+                if (!ValidationUtils.isFieldValid(surnameField, "Surname is required!")) return;
 
                 viewModel.updateSignUpAttributes("name", nameField.getText().toString());
                 viewModel.updateSignUpAttributes("surname", surnameField.getText().toString());
@@ -52,14 +53,5 @@ public class SignUp2 extends Fragment {
     }
 
 
-    private boolean validateField(EditText field, String errorMessage) {
-        String value = field.getText().toString().trim();
-        if (value.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
-            return false;
-        }
-        return true;
-    }
 
 }

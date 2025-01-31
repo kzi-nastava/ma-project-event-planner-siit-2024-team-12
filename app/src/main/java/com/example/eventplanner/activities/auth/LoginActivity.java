@@ -18,6 +18,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.activities.homepage.AdminHomepageActivity;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
 import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
@@ -55,9 +56,9 @@ public class LoginActivity extends AppCompatActivity {
                 EditText emailField = findViewById(R.id.email);
                 EditText passwordField = findViewById(R.id.password);
 
-                if (!validate(emailField, "Email is required!")) return;
-                if (!validateEmailFormat(emailField)) return;
-                if (!validate(passwordField, "Password is required!")) return;
+                if (!ValidationUtils.isFieldValid(emailField, "Email is required!")) return;
+                if (!ValidationUtils.isEmailValid(emailField)) return;
+                if (!ValidationUtils.isFieldValid(passwordField, "Password is required!")) return;
 
                 logIn();
             }
@@ -143,30 +144,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-
-    private boolean validate(EditText field, String errorMessage) {
-        String value = field.getText().toString().trim();
-
-        if (value.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-    private boolean validateEmailFormat(EditText field) {
-        String email = field.getText().toString().trim();
-        String emailPattern = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-
-        if (!email.matches(emailPattern)) {
-            field.setError("Invalid email format!");
-            field.requestFocus();
-            return false;
-        }
-        return true;
     }
 
 }

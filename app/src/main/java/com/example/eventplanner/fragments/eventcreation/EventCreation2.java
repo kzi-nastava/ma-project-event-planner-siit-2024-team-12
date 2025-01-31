@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
 
@@ -74,10 +75,10 @@ public class EventCreation2 extends Fragment {
         agendaBtn.setOnClickListener(v -> {
             EditText dateField = view.findViewById(R.id.date);
             // check if date field is empty
-            if (!validateField(dateField, "Date is required!")) return;
+            if (!ValidationUtils.isFieldValid(dateField, "Date is required!")) return;
 
             // check date format
-            if (!validateDateFormat(dateField)) return;
+            if (!ValidationUtils.isDateValid(dateField)) return;
 
             if (!viewModel.isLocationSet()) {
                 Toast.makeText(getActivity(), "Fill out location form!", Toast.LENGTH_SHORT).show();
@@ -123,53 +124,6 @@ public class EventCreation2 extends Fragment {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.remove(this);
         transaction.commit();
-    }
-
-
-    private boolean validateField(EditText field, String errorMessage) {
-        String value = field.getText().toString().trim();
-        if (value.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
-            return false;
-        }
-
-        return true;
-    }
-
-
-
-    private boolean validateDateFormat(EditText field) {
-        String datePattern = "^\\d{4}-\\d{2}-\\d{2}$"; // format yyyy-mm-dd
-        String date = field.getText().toString().trim();
-
-        if (!date.matches(datePattern)) {
-            field.setError("Incorrect format!");
-            field.requestFocus();
-            return false;
-        }
-
-        // check if date is valid ( e.g. there is no February 30 )
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            dateFormat.setLenient(false);
-
-            long inputDateMillis = dateFormat.parse(date).getTime();
-            long currentDateMillis = System.currentTimeMillis();
-
-            // check if entered date is in the past
-            if (inputDateMillis < currentDateMillis) {
-                field.setError("Date cannot be in the past!");
-                field.requestFocus();
-                return false;
-            }
-        } catch (ParseException e) {
-            field.setError("Invalid date!");
-            field.requestFocus();
-            return false;
-        }
-
-        return true;
     }
 
 }

@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.dto.eventtype.CreateEventTypeDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
 import com.example.eventplanner.model.EventType;
@@ -117,8 +118,8 @@ public class EventTypeCreationActivity extends AppCompatActivity {
         EditText descriptionText = findViewById(R.id.description);
 
         // validate input data
-        if (!validateField(nameText, "Name is required!")) return;
-        if (!validateField(descriptionText, "Description is required!")) return;
+        if (!ValidationUtils.isFieldValid(nameText, "Name is required!")) return;
+        if (!ValidationUtils.isFieldValid(descriptionText, "Description is required!")) return;
 
         // admin doesn't have to select suggested categories when creating event type
         // in case no appropriate categories are available in that moment
@@ -165,14 +166,4 @@ public class EventTypeCreationActivity extends AppCompatActivity {
         finish();
     }
 
-
-    private boolean validateField(EditText field, String errorMessage) {
-        String value = field.getText().toString().trim();
-        if (value.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
-            return false;
-        }
-        return true;
-    }
 }

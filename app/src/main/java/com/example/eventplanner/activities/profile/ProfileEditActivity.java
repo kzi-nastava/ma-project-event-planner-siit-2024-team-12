@@ -21,6 +21,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.dto.user.UpdateUserDTO;
 import com.example.eventplanner.dto.user.UpdatedUserDTO;
@@ -101,20 +102,14 @@ public class ProfileEditActivity extends AppCompatActivity {
         TextView emailField = findViewById(R.id.email);
 
         // in case user tries to delete data completely
-        boolean isValid = true;
 
-        if (!validate(nameField, "Name is required")) isValid = false;
-        if (!validate(surnameField, "Surname is required")) isValid = false;
-        if (!validate(phoneField, "Phone is required!")) isValid = false;
-        if (!isValidPhoneNumber(phoneField, phoneField.getText().toString())) isValid = false;
-        if (!validate(addressField, "Address is required")) isValid = false;
+        if (!ValidationUtils.isFieldValid(nameField, "Name is required")) return;
+        if (!ValidationUtils.isFieldValid(surnameField, "Surname is required")) return;
+        if (!ValidationUtils.isFieldValid(phoneField, "Phone is required!")) return;
+        if (!ValidationUtils.isPhoneValid(phoneField, phoneField.getText().toString())) return;
+        if (!ValidationUtils.isFieldValid(addressField, "Address is required")) return;
 
         // email is not validated or updated as it is read-only and cannot be changed
-
-        if (!isValid) {
-            Toast.makeText(this, "Enter proper values!", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         String name = nameField.getText().toString().trim();
         String surname = surnameField.getText().toString().trim();
@@ -127,41 +122,6 @@ public class ProfileEditActivity extends AppCompatActivity {
         updateUser(email, updateUserDTO);
 
     }
-
-
-    private boolean validate(EditText field, String errorMessage) {
-        String value = field.getText().toString().trim();
-
-        if (value.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean isValidPhoneNumber(EditText field, String phoneNumber) {
-        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-        if (phoneNumber == null || phoneNumber.isEmpty()) {
-            return true;
-        }
-
-        try {
-            Phonenumber.PhoneNumber parsedNumber = phoneUtil.parse(phoneNumber, "");
-            if (!phoneUtil.isValidNumber(parsedNumber)) {
-                field.setError("Invalid phone number format!");
-                field.requestFocus();
-                return false;
-            }
-            return true;
-        } catch (NumberParseException e) {
-            field.setError("Invalid phone number format!");
-            field.requestFocus();
-            return false;
-        }
-    }
-
 
 
 

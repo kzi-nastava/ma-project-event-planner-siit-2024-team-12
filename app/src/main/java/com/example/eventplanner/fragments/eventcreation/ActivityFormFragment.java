@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.adapters.AgendaAdapter;
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
 import com.example.eventplanner.model.Activity;
@@ -59,11 +60,11 @@ public class ActivityFormFragment extends DialogFragment {
             EditText nameField = view.findViewById(R.id.name);
 
             // validate input data
-            if (!validateField(timeField, "Time is required!")) return;
-            if (!validateTimeFormat(timeField)) return;
-            if (!validateField(nameField, "Name is required!")) return;
-            if (!validateField(descriptionField, "Description is required!")) return;
-            if (!validateField(venueField, "Venue is required!")) return;
+            if (!ValidationUtils.isFieldValid(timeField, "Time is required!")) return;
+            if (!ValidationUtils.isActivityTimeValid(timeField)) return;
+            if (!ValidationUtils.isFieldValid(nameField, "Name is required!")) return;
+            if (!ValidationUtils.isFieldValid(descriptionField, "Description is required!")) return;
+            if (!ValidationUtils.isFieldValid(venueField, "Venue is required!")) return;
 
 
             // if valid, save
@@ -88,55 +89,5 @@ public class ActivityFormFragment extends DialogFragment {
     public void closeForm(View view) {
         dismiss();
     }
-
-
-    private boolean validateField(EditText field, String errorMessage) {
-        String value = field.getText().toString().trim();
-        if (value.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-
-    private boolean validateTimeFormat(EditText timeField) {
-        String timePattern = "^([01]\\d|2[0-3]):[0-5]\\d - ([01]\\d|2[0-3]):[0-5]\\d$"; // HH:mm - HH:mm
-        String timeInput = timeField.getText().toString().trim();
-
-        if (!timeInput.matches(timePattern)) {
-            timeField.setError("Incorrect format!");
-            timeField.requestFocus();
-            return false;
-        }
-
-        // check if start time is before end time
-        String[] times = timeInput.split(" - ");
-        String startTime = times[0];
-        String endTime = times[1];
-
-        try {
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-            timeFormat.setLenient(false);
-
-            long startMillis = timeFormat.parse(startTime).getTime();
-            long endMillis = timeFormat.parse(endTime).getTime();
-
-            if (startMillis >= endMillis) {
-                timeField.setError("Start time must be earlier than end time!");
-                timeField.requestFocus();
-                return false;
-            }
-        } catch (ParseException e) {
-            timeField.setError("Invalid time format!");
-            timeField.requestFocus();
-            return false;
-        }
-
-        return true;
-    }
-
-
 
 }
