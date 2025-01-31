@@ -51,8 +51,8 @@ public class BusinessInfoActivity extends AppCompatActivity {
 
 
     public void closeForm(View view) {
-        setResult(RESULT_CANCELED);
-        finish();
+        Intent intent = new Intent(BusinessInfoActivity.this, ProviderHomepageActivity.class);
+        startActivity(intent);
     }
 
 
