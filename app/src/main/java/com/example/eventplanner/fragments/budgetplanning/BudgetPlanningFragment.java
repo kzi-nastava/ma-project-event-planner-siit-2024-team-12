@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
+import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.model.EventType;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
 
@@ -66,7 +67,7 @@ public class BudgetPlanningFragment extends Fragment {
 
         Button createBtn = view.findViewById(R.id.createBtn);
         createBtn.setOnClickListener(v -> {
-            createEvent();
+            getOrganizer();
         });
 
 
@@ -124,7 +125,6 @@ public class BudgetPlanningFragment extends Fragment {
         String eventType = typeSpinner.getSelectedItem().toString();
 
         viewModel.updateEventAttributes("eventType", eventType);
-        viewModel.updateEventAttributes("organizer", "organizer3@example.com");
 
         Call<ResponseBody> call = ClientUtils.eventService.createEvent(viewModel.getDto().getValue());
 
@@ -211,6 +211,33 @@ public class BudgetPlanningFragment extends Fragment {
             @Override
             public void onFailure(Call<ArrayList<String>> call, Throwable t) {
                 Toast.makeText(getActivity(), "Failed to load categories", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+    private void getOrganizer() {
+        String authorization = ClientUtils.getAuthorization(requireContext());
+
+        Call<GetUserDTO> call = ClientUtils.authService.getCurrentUser(authorization);
+
+        call.enqueue(new Callback<GetUserDTO>() {
+            @Override
+            public void onResponse(Call<GetUserDTO> call, Response<GetUserDTO> response) {
+                if (response.isSuccessful()) {
+                    GetUserDTO user = response.body();
+                    viewModel.updateEventAttributes("organizer", user.getEmail());
+
+                    createEvent();
+                } else {
+                    Toast.makeText(getActivity(), "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetUserDTO> call, Throwable t) {
+                Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
             }
         });
     }
