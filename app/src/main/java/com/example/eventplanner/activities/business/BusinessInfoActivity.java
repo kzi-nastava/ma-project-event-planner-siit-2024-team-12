@@ -3,7 +3,10 @@ package com.example.eventplanner.activities.business;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -12,8 +15,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
+import com.example.eventplanner.dto.business.GetBusinessDTO;
+import com.example.eventplanner.dto.user.GetUserDTO;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BusinessInfoActivity extends AppCompatActivity {
 
@@ -27,6 +37,8 @@ public class BusinessInfoActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        getCurrentBusiness();
     }
 
 
@@ -67,4 +79,55 @@ public class BusinessInfoActivity extends AppCompatActivity {
         Intent intent = new Intent(BusinessInfoActivity.this, BusinessEditActivity.class);
         startActivity(intent);
     }
+
+
+
+    private void setUpFormDetails(GetBusinessDTO getBusinessDTO) {
+
+        TextView name = findViewById(R.id.name);
+        name.setText(getBusinessDTO.getCompanyName());
+
+        TextView email = findViewById(R.id.email);
+        email.setText(getBusinessDTO.getCompanyEmail());
+
+        TextView address = findViewById(R.id.address);
+        address.setText(getBusinessDTO.getAddress());
+
+        TextView phone = findViewById(R.id.phone);
+        phone.setText(getBusinessDTO.getPhone());
+
+        TextView description = findViewById(R.id.description);
+        description.setText(getBusinessDTO.getDescription());
+
+    }
+
+
+
+    private void getCurrentBusiness() {
+        String authorization = ClientUtils.getAuthorization(this);
+        Toast.makeText(BusinessInfoActivity.this, " " + authorization, Toast.LENGTH_SHORT).show();
+
+        Call<GetBusinessDTO> call = ClientUtils.businessService.getBusinessForCurrentUser(authorization);
+
+        call.enqueue(new Callback<GetBusinessDTO>() {
+            @Override
+            public void onResponse(Call<GetBusinessDTO> call, Response<GetBusinessDTO> response) {
+                if (response.isSuccessful()) {
+                    GetBusinessDTO dto = response.body();
+                    Log.d("BusinessInfo", "Response body: " + dto.toString()); // Dodajte log
+                    setUpFormDetails(dto);
+                } else {
+                    Log.d("BusinessInfo", "Response failed with code: " + response.code());
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<GetBusinessDTO> call, Throwable t) {
+                Toast.makeText(BusinessInfoActivity.this, "Failed to load business information!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 }
