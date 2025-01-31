@@ -126,16 +126,9 @@ public class ProfileEditActivity extends AppCompatActivity {
 
 
     public void updateUser(String email, UpdateUserDTO updateUserDTO) {
-        String token = getAuthToken();
+        String authorization = ClientUtils.getAuthorization(this);
 
-        Log.d("TOKEN_DEBUG", "Token being sent: " + token);
-
-        if (token == null) {
-            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Call<UpdatedUserDTO> call = ClientUtils.userService.update("Bearer " + token, email, updateUserDTO);
+        Call<UpdatedUserDTO> call = ClientUtils.userService.update(authorization, email, updateUserDTO);
 
         call.enqueue(new Callback<UpdatedUserDTO>() {
             @Override
@@ -158,16 +151,9 @@ public class ProfileEditActivity extends AppCompatActivity {
 
 
     public void setUpInitialForm() {
-        String token = getAuthToken();
+       String authorization = ClientUtils.getAuthorization(this);
 
-        Log.d("TOKEN_DEBUG", "Token being sent: " + token);
-
-        if (token == null) {
-            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Call<GetUserDTO> call = ClientUtils.authService.getCurrentUser("Bearer " + token);
+        Call<GetUserDTO> call = ClientUtils.authService.getCurrentUser(authorization);
 
         call.enqueue(new Callback<GetUserDTO>() {
             @Override
@@ -199,10 +185,4 @@ public class ProfileEditActivity extends AppCompatActivity {
         });
     }
 
-
-
-    private String getAuthToken() {
-        SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        return sharedPreferences.getString("token", null);
-    }
 }

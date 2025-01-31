@@ -107,14 +107,9 @@ public class ProfileViewActivity extends AppCompatActivity {
 
 
     private void getCurrentUser() {
-        String token = getAuthToken();
+        String authorization = ClientUtils.getAuthorization(this);
 
-        if (token == null) {
-            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Call<GetUserDTO> call = ClientUtils.authService.getCurrentUser("Bearer " + token);
+        Call<GetUserDTO> call = ClientUtils.authService.getCurrentUser(authorization);
 
         call.enqueue(new Callback<GetUserDTO>() {
             @Override
@@ -159,10 +154,6 @@ public class ProfileViewActivity extends AppCompatActivity {
     }
 
 
-    private String getAuthToken() {
-        SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        return sharedPreferences.getString("token", null);
-    }
 
 
     private void saveUserRole(String userRole) {
@@ -183,14 +174,9 @@ public class ProfileViewActivity extends AppCompatActivity {
         TextView emailField = findViewById(R.id.email);
         String email = emailField.getText().toString();
 
-        String token = getAuthToken();
+        String authorization = ClientUtils.getAuthorization(this);
 
-        if (token == null) {
-            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Call<ResponseBody> call = ClientUtils.userService.deleteUser("Bearer " + token, email);
+        Call<ResponseBody> call = ClientUtils.userService.deleteUser(authorization, email);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override

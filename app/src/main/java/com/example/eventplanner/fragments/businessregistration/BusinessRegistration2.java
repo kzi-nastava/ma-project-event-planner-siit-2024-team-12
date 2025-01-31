@@ -11,26 +11,40 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
+import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.activities.business.BusinessInfoActivity;
 import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
+import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
+import com.example.eventplanner.activities.profile.ProfileViewActivity;
+import com.example.eventplanner.dto.business.CreateBusinessDTO;
+import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.viewmodels.BusinessViewModel;
+import com.google.gson.Gson;
 
 import java.io.IOException;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class BusinessRegistration2 extends Fragment {
     private View view;
     BusinessViewModel viewModel;
+    String registrationSuccess;
     private static final int PICK_IMAGE_REQUEST = 1;
 
     private ImageView selectedImage;
@@ -42,7 +56,7 @@ public class BusinessRegistration2 extends Fragment {
         view = inflater.inflate(R.layout.fragment_business_registration2, container, false);
         viewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
 
-        String registrationSuccess = getString(R.string.business_reg_success);
+        registrationSuccess = getString(R.string.business_reg_success);
 
         Button backButton = view.findViewById(R.id.back2);
         Button registerButton = view.findViewById(R.id.register);
@@ -54,12 +68,7 @@ public class BusinessRegistration2 extends Fragment {
         });
 
         registerButton.setOnClickListener(v -> {
-            if (saveFormData()) {
-                Intent intent = new Intent(getActivity(), BusinessInfoActivity.class);
-                startActivity(intent);
-
-                Toast.makeText(getActivity(), registrationSuccess, Toast.LENGTH_SHORT).show();
-            }
+            createBusiness();
         });
 
         return view;
@@ -101,6 +110,31 @@ public class BusinessRegistration2 extends Fragment {
     }
 
 
+
+    private void getOwner() {
+        String authorization = ClientUtils.getAuthorization(requireContext());
+
+        Call<GetUserDTO> call = ClientUtils.authService.getCurrentUser(authorization);
+
+        call.enqueue(new Callback<GetUserDTO>() {
+            @Override
+            public void onResponse(Call<GetUserDTO> call, Response<GetUserDTO> response) {
+                if (response.isSuccessful()) {
+                    GetUserDTO user = response.body();
+                    viewModel.update("owner", user.getEmail());
+                } else {
+                    Toast.makeText(getActivity(), "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetUserDTO> call, Throwable t) {
+                Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
     private boolean saveFormData() {
         EditText phoneField = view.findViewById(R.id.phone);
         EditText descriptionField = view.findViewById(R.id.description);
@@ -116,8 +150,46 @@ public class BusinessRegistration2 extends Fragment {
 
         viewModel.update("phone", phone);
         viewModel.update("description", description);
+        getOwner();
 
         return true;
 
     }
+
+
+    private void createBusiness() {
+        if (saveFormData()) {
+            String authorization = ClientUtils.getAuthorization(requireActivity());
+
+            Call<ResponseBody> call = ClientUtils.businessService.registerBusiness(authorization, viewModel.getDto().getValue());
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        Intent intent = new Intent(getActivity(), BusinessInfoActivity.class);
+                        startActivity(intent);
+
+                        Toast.makeText(getActivity(), registrationSuccess, Toast.LENGTH_SHORT).show();
+                    }
+
+                    else if (response.code() == 403) {
+                        Toast.makeText(getActivity(), "You already have an active business account!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getActivity(), ProviderHomepageActivity.class);
+                        startActivity(intent);
+                    }
+
+                    else if (response.code() == 409) {
+                        Toast.makeText(getActivity(), "Already taken business email!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(getActivity(), "Failed to register business!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
 }
