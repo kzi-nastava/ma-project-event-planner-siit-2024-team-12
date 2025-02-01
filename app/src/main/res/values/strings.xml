@@ -258,5 +258,9 @@
     <string name="event_type">Event type :</string>
     <string name="clearer_view">*Click for clearer view</string>
     <string name="phone_format">Phone [ + [country code] [local number] ] :</string>
+    <string name="status">Status :</string>
+
+    <string name="description_in_table_row"><b>Description :</b> %s</string>
+    <string name="status_in_table_row"><b>Status :</b> %s</string>
 
 </resources>

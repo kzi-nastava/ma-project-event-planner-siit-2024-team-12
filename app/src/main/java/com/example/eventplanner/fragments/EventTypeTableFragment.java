@@ -115,7 +115,7 @@ public class EventTypeTableFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<GetEventTypeDTO>> call, Throwable t) {
-                Toast.makeText(getContext(), "Failed to load event types!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Failed to load event types!", Toast.LENGTH_SHORT).show();
 
             }
         });

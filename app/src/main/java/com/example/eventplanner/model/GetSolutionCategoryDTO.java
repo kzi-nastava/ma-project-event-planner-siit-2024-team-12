@@ -1,13 +1,13 @@
 package com.example.eventplanner.model;
 
-public class Category {
+public class GetSolutionCategoryDTO {
     private String id;
     private String name;
     private String description;
     private String status;
     private boolean isExpanded;
 
-    public Category(String id, String name, String description, String status) {
+    public GetSolutionCategoryDTO(String id, String name, String description, String status) {
         this.id = id;
         this.name = name;
         this.description = description;

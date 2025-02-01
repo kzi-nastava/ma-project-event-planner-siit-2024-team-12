@@ -5,6 +5,7 @@ import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.business.UpdateBusinessDTO;
 import com.example.eventplanner.dto.business.UpdatedBusinessDTO;
 import com.example.eventplanner.model.GetEventTypeDTO;
+import com.example.eventplanner.model.GetSolutionCategoryDTO;
 
 import java.util.ArrayList;
 
@@ -38,4 +39,10 @@ public interface BusinessService {
     @GET("businesses/{companyEmail}/event-types")
     Call<ArrayList<GetEventTypeDTO>> getEventTypesByBusiness(@Header("Authorization") String token,
                                                              @Path("companyEmail") String email);
+
+
+    @GET("businesses/{companyEmail}/solution-categories")
+    Call<ArrayList<GetSolutionCategoryDTO>> getSolutionCategoriesByBusiness(@Header("Authorization") String token,
+                                                                 @Path("companyEmail") String email);
+
 }

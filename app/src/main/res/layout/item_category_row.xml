@@ -50,7 +50,6 @@
         android:id="@+id/categoryDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Description"
         android:visibility="gone"
     android:padding="8dp"
     android:textColor="@android:color/black" />
@@ -59,7 +58,6 @@
         android:id="@+id/categoryStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Status"
         android:visibility="gone"
     android:padding="8dp"
     android:textColor="@android:color/black" />
