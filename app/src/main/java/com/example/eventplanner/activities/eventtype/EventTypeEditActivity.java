@@ -1,6 +1,8 @@
 package com.example.eventplanner.activities.eventtype;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -18,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.UserRole;
 import com.example.eventplanner.dto.eventtype.UpdateEventTypeDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
 import com.example.eventplanner.model.GetEventTypeDTO;
@@ -54,8 +57,9 @@ public class EventTypeEditActivity extends AppCompatActivity {
         EditText nameText = findViewById(R.id.eventTypeName);
         EditText descriptionText = findViewById(R.id.eventTypeDescription);
 
-        nameText.setText(name);
         // make the name field read-only
+        nameText.setText(name);
+        // could've just used TextView, but wanted to try this out
         nameText.setFocusable(false);
         nameText.setFocusableInTouchMode(false);
         nameText.setInputType(InputType.TYPE_NULL);
@@ -69,8 +73,16 @@ public class EventTypeEditActivity extends AppCompatActivity {
             loadAcceptedCategories(categoriesButton, selectedCategoryNames);
         });
 
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String role = prefs.getString("userRole", UserRole.ROLE_ADMIN.toString());
 
         Button deactivationButton = findViewById(R.id.deactivateButton);
+
+        // provider cannot (de)activate event type but can edit
+        if (role.equals(UserRole.ROLE_PROVIDER.toString())) {
+            deactivationButton.setVisibility(View.GONE);
+        }
+
         boolean isActive = intent.getBooleanExtra("isActive", true);
 
         deactivationButton.setText(isActive ? "Deactivate" : "Activate");
