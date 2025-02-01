@@ -21,7 +21,7 @@ import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
 import com.example.eventplanner.dto.user.GetUserDTO;
-import com.example.eventplanner.model.EventType;
+import com.example.eventplanner.model.GetEventTypeDTO;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
 
 import java.util.ArrayList;
@@ -90,14 +90,14 @@ public class BudgetPlanningFragment extends Fragment {
 
 
     private void loadEventTypes(ArrayAdapter<String> adapter, List<String> eventTypes) {
-        Call<ArrayList<EventType>> call = ClientUtils.eventTypeService.getAllActive();
+        Call<ArrayList<GetEventTypeDTO>> call = ClientUtils.eventTypeService.getAllActive();
 
-        call.enqueue(new Callback<ArrayList<EventType>>() {
+        call.enqueue(new Callback<ArrayList<GetEventTypeDTO>>() {
             @Override
-            public void onResponse(Call<ArrayList<EventType>> call, Response<ArrayList<EventType>> response) {
+            public void onResponse(Call<ArrayList<GetEventTypeDTO>> call, Response<ArrayList<GetEventTypeDTO>> response) {
                 if (response.isSuccessful()) {
-                    ArrayList<EventType> types = response.body();
-                    for (EventType eventType : types) {
+                    ArrayList<GetEventTypeDTO> types = response.body();
+                    for (GetEventTypeDTO eventType : types) {
                         eventTypes.add(eventType.getName());
                     }
 
@@ -111,7 +111,7 @@ public class BudgetPlanningFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ArrayList<EventType>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<GetEventTypeDTO>> call, Throwable t) {
                 Toast.makeText(getActivity(), "Failed to load event types!", Toast.LENGTH_SHORT).show();
             }
         });

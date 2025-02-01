@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.UserRole;
 import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.auth.SignUpActivity;
@@ -90,10 +91,10 @@ public class SignUp3 extends Fragment {
             String role = "";
 
             if (selectedRole.equalsIgnoreCase(roles[0])) {
-                role = "ROLE_ORGANIZER";
+                role = UserRole.ROLE_ORGANIZER.toString();
             }
             else {
-                role = "ROLE_PROVIDER";
+                role = UserRole.ROLE_PROVIDER.toString();
             }
 
             viewModel.updateSignUpAttributes("role", role);

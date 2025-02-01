@@ -18,10 +18,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.solutioncategory.SolutionCategoryService;
 import com.example.eventplanner.dto.eventtype.UpdateEventTypeDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
-import com.example.eventplanner.model.EventType;
+import com.example.eventplanner.model.GetEventTypeDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -270,13 +269,13 @@ public class EventTypeEditActivity extends AppCompatActivity {
         String id = intent.getStringExtra("eventTypeId");
 
         Log.d("PARAMETRI ", "Params " + dto.getSuggestedCategoryNames());
-        Call<EventType> call = ClientUtils.eventTypeService.updateEventType(dto, Long.parseLong(id));
+        Call<GetEventTypeDTO> call = ClientUtils.eventTypeService.updateEventType(dto, Long.parseLong(id));
 
-        call.enqueue(new Callback<EventType>() {
+        call.enqueue(new Callback<GetEventTypeDTO>() {
             @Override
-            public void onResponse(Call<EventType> call, Response<EventType> response) {
+            public void onResponse(Call<GetEventTypeDTO> call, Response<GetEventTypeDTO> response) {
                 if (response.isSuccessful()) {
-                    EventType updatedEventType = response.body();
+                    GetEventTypeDTO updatedEventType = response.body();
 
                     runOnUiThread(() -> {
                         Toast.makeText(EventTypeEditActivity.this, "Event type updated successfully!", Toast.LENGTH_SHORT).show();
@@ -298,7 +297,7 @@ public class EventTypeEditActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<EventType> call, Throwable t) {;
+            public void onFailure(Call<GetEventTypeDTO> call, Throwable t) {;
                 runOnUiThread(() -> {
                     Toast.makeText(EventTypeEditActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 });

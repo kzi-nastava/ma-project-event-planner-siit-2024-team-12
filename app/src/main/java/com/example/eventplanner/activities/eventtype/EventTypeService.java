@@ -2,9 +2,8 @@ package com.example.eventplanner.activities.eventtype;
 
 import com.example.eventplanner.dto.eventtype.CreateEventTypeDTO;
 import com.example.eventplanner.dto.eventtype.UpdateEventTypeDTO;
-import com.example.eventplanner.model.EventType;
+import com.example.eventplanner.model.GetEventTypeDTO;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import okhttp3.ResponseBody;
@@ -23,7 +22,7 @@ public interface EventTypeService {
             "Content-Type: application/json"
     })
     @GET("event-types/all")
-    Call<ArrayList<EventType>> getAll();
+    Call<ArrayList<GetEventTypeDTO>> getAll();
 
 
     @Headers({
@@ -31,11 +30,11 @@ public interface EventTypeService {
             "Content-Type: application/json"
     })
     @POST("event-types")
-    Call<EventType> createEventType(@Body CreateEventTypeDTO createEventTypeDTO);
+    Call<GetEventTypeDTO> createEventType(@Body CreateEventTypeDTO createEventTypeDTO);
 
 
     @PUT("event-types/{id}")
-    Call<EventType> updateEventType(@Body UpdateEventTypeDTO updateEventTypeDTO, @Path("id") Long id);
+    Call<GetEventTypeDTO> updateEventType(@Body UpdateEventTypeDTO updateEventTypeDTO, @Path("id") Long id);
 
 
     @PUT("event-types/{id}/activate")
@@ -47,7 +46,7 @@ public interface EventTypeService {
 
 
     @GET("event-types/all-active")
-    Call<ArrayList<EventType>> getAllActive();
+    Call<ArrayList<GetEventTypeDTO>> getAllActive();
 
 
     @GET("event-types/{eventTypeName}/suggested-categories")

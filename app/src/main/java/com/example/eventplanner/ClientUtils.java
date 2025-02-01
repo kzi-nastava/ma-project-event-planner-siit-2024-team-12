@@ -2,10 +2,8 @@ package com.example.eventplanner;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.eventplanner.activities.auth.AuthService;
@@ -14,11 +12,7 @@ import com.example.eventplanner.activities.event.EventService;
 import com.example.eventplanner.activities.eventtype.EventTypeService;
 import com.example.eventplanner.activities.profile.UserService;
 import com.example.eventplanner.activities.solutioncategory.SolutionCategoryService;
-import com.example.eventplanner.model.EventType;
 
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

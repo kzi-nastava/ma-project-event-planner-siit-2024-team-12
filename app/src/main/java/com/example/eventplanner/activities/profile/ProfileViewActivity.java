@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.UserRole;
 import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
@@ -64,11 +65,11 @@ public class ProfileViewActivity extends AppCompatActivity {
     public void closeForm(View view) {
         String role = getUserRole();
 
-        if (role.equalsIgnoreCase("role_organizer")) {
+        if (role.equalsIgnoreCase(UserRole.ROLE_ORGANIZER.toString())) {
             Intent intent = new Intent(ProfileViewActivity.this, OrganiserHomepageActivity.class);
             startActivity(intent);
         }
-        else if (role.equalsIgnoreCase("role_provider")) {
+        else if (role.equalsIgnoreCase(UserRole.ROLE_PROVIDER.toString())) {
             Intent intent = new Intent(ProfileViewActivity.this, ProviderHomepageActivity.class);
             startActivity(intent);
         }
@@ -165,7 +166,7 @@ public class ProfileViewActivity extends AppCompatActivity {
 
     private String getUserRole() {
         SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        return sharedPreferences.getString("userRole", "ROLE_UNREGISTERED_USER");
+        return sharedPreferences.getString("userRole", UserRole.ROLE_UNREGISTERED_USER.toString());
     }
 
 

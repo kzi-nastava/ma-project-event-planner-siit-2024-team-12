@@ -19,7 +19,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.dto.eventtype.CreateEventTypeDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
-import com.example.eventplanner.model.EventType;
+import com.example.eventplanner.model.GetEventTypeDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,11 +140,11 @@ public class EventTypeCreationActivity extends AppCompatActivity {
         createEventTypeDTO.setDescription(description);
         createEventTypeDTO.setCategoryNames(selectedCategoryNames);
 
-        Call<EventType> call = ClientUtils.eventTypeService.createEventType(createEventTypeDTO);
+        Call<GetEventTypeDTO> call = ClientUtils.eventTypeService.createEventType(createEventTypeDTO);
 
-        call.enqueue(new Callback<EventType>() {
+        call.enqueue(new Callback<GetEventTypeDTO>() {
             @Override
-            public void onResponse(Call<EventType> call, Response<EventType> response) {
+            public void onResponse(Call<GetEventTypeDTO> call, Response<GetEventTypeDTO> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(EventTypeCreationActivity.this, "Successfully created event type!", Toast.LENGTH_SHORT).show();
 
@@ -154,7 +154,7 @@ public class EventTypeCreationActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<EventType> call, Throwable t) {
+            public void onFailure(Call<GetEventTypeDTO> call, Throwable t) {
                 Toast.makeText(EventTypeCreationActivity.this, "Error creating event type!", Toast.LENGTH_SHORT).show();
             }
         });

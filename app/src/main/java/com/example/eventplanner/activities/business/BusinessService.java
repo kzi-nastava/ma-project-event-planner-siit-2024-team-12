@@ -4,6 +4,9 @@ import com.example.eventplanner.dto.business.CreateBusinessDTO;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.business.UpdateBusinessDTO;
 import com.example.eventplanner.dto.business.UpdatedBusinessDTO;
+import com.example.eventplanner.model.GetEventTypeDTO;
+
+import java.util.ArrayList;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -30,4 +33,9 @@ public interface BusinessService {
     @PUT("businesses/{companyEmail}")
     Call<UpdatedBusinessDTO> update(@Header("Authorization") String token, @Path("companyEmail") String email,
                                     @Body UpdateBusinessDTO dto);
+
+
+    @GET("businesses/{companyEmail}/event-types")
+    Call<ArrayList<GetEventTypeDTO>> getEventTypesByBusiness(@Header("Authorization") String token,
+                                                             @Path("companyEmail") String email);
 }

@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -25,17 +24,12 @@ import com.example.eventplanner.activities.eventtype.EventTypeCreationActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.service.CategoriesTableActivity;
-import com.example.eventplanner.adapters.CategoryAdapter;
 import com.example.eventplanner.adapters.ChatAdapter;
-import com.example.eventplanner.adapters.EventTypeAdapter;
-import com.example.eventplanner.fragments.CategoriesTableFragment;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.HomepageCardsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
 import com.example.eventplanner.fragments.homepage.HomepageProductsServicesFragment;
 import com.example.eventplanner.fragments.homepage.PSListFragment;
-import com.example.eventplanner.model.Category;
-import com.example.eventplanner.model.EventType;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;

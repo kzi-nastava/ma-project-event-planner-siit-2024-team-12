@@ -18,6 +18,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.UserRole;
 import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.activities.homepage.AdminHomepageActivity;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
@@ -107,22 +108,26 @@ public class LoginActivity extends AppCompatActivity {
                     String token = userToken.getAccessToken();
                     DecodedJWT decodedJWT = JWT.decode(token);
                     String userRole = decodedJWT.getClaim("role").asString();
+                    // email is stored under the "sub" key in jwt
+                    String email = decodedJWT.getClaim("sub").asString();
 
                     SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("token", token);
+                    editor.putString("userRole", userRole);
+                    editor.putString("email", email);
                     editor.apply();
 
 
-                    if (userRole.equalsIgnoreCase("ROLE_ORGANIZER")) {
+                    if (userRole.equalsIgnoreCase(UserRole.ROLE_ORGANIZER.toString())) {
                         Intent intent = new Intent(LoginActivity.this, OrganiserHomepageActivity.class);
                         startActivity(intent);
                     }
-                    else if (userRole.equalsIgnoreCase("ROLE_PROVIDER")) {
+                    else if (userRole.equalsIgnoreCase(UserRole.ROLE_PROVIDER.toString())) {
                         Intent intent = new Intent(LoginActivity.this, ProviderHomepageActivity.class);
                         startActivity(intent);
                     }
-                    else if (userRole.equalsIgnoreCase("ROLE_ADMIN")) {
+                    else if (userRole.equalsIgnoreCase(UserRole.ROLE_ADMIN.toString())) {
                         Intent intent = new Intent(LoginActivity.this, AdminHomepageActivity.class);
                         startActivity(intent);
                     }

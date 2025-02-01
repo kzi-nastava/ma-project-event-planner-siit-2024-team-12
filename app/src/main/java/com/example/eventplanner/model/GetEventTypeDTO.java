@@ -2,9 +2,7 @@ package com.example.eventplanner.model;
 
 import java.util.List;
 
-import okhttp3.internal.annotations.EverythingIsNonNull;
-
-public class EventType {
+public class GetEventTypeDTO {
     private String id;
     private String name;
     private String description;
@@ -12,9 +10,9 @@ public class EventType {
     private boolean active;
     private boolean isExpanded;
 
-    public EventType() {}
+    public GetEventTypeDTO() {}
 
-    public EventType(String id, String name, String description, boolean active) {
+    public GetEventTypeDTO(String id, String name, String description, boolean active) {
         this.id = id;
         this.name = name;
         this.description = description;
