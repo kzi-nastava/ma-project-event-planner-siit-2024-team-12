@@ -1,23 +1,34 @@
 package com.example.eventplanner.activities.homepage;
 
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.CalendarAdapter;
+import com.example.eventplanner.dto.event.AcceptedEventDTO;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CalendarActivity extends AppCompatActivity {
 
@@ -25,6 +36,8 @@ public class CalendarActivity extends AppCompatActivity {
     private CalendarAdapter calendarAdapter;
     private TextView monthYearText;
     private Calendar currentCalendar;
+    private HashMap<String, String> events = new HashMap<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,25 +76,25 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     private void updateCalendar() {
-        // Update the month/year text
         int month = currentCalendar.get(Calendar.MONTH);
         int year = currentCalendar.get(Calendar.YEAR);
         monthYearText.setText(getMonthName(month) + " " + year);
 
-        // Generate the days for the current month and update the adapter
         List<String> days = generateDaysForMonth();
-        HashMap<Integer, String> events = new HashMap<>();
-        events.put(13, "Wedding Celebration");
-        events.put(17, "Graduation Hackathon");
-        events.put(15, "Baby Shower for Emma");
 
+        // Pozivanje metode za učitavanje događaja iz baze
+        loadAcceptedEvents(events);
+
+        // Ažuriranje adaptera
         if (calendarAdapter == null) {
-            calendarAdapter = new CalendarAdapter(days, events);
+            calendarAdapter = new CalendarAdapter(days, events, month, year);
             calendarRecyclerView.setAdapter(calendarAdapter);
         } else {
-            calendarAdapter.updateData(days, events);  // Update the existing adapter data
+            calendarAdapter.updateData(days, events, month, year);
         }
     }
+
+
 
     private List<String> generateDaysForMonth() {
         List<String> days = new ArrayList<>();
@@ -112,6 +125,62 @@ public class CalendarActivity extends AppCompatActivity {
                 "August", "September", "October", "November", "December"};
         return months[month];
     }
+
+
+
+
+    private void loadAcceptedEvents(HashMap<String, String> events) {
+        String auth = ClientUtils.getAuthorization(this);
+
+        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String email = pref.getString("email", "e");
+
+        Call<ArrayList<AcceptedEventDTO>> call = ClientUtils.userService.getAcceptedEvents(auth, email);
+        call.enqueue(new Callback<ArrayList<AcceptedEventDTO>>() {
+            @Override
+            public void onResponse(Call<ArrayList<AcceptedEventDTO>> call, Response<ArrayList<AcceptedEventDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    events.clear(); // Očistimo pre nego što dodamo nove podatke
+
+                    for (AcceptedEventDTO event : response.body()) {
+                        Calendar eventCalendar = Calendar.getInstance();
+                        eventCalendar.setTime(event.getDate());
+
+                        // Formatiramo datum kao "YYYY-MM-DD" (da bude jedinstven za svaki mesec/godinu)
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                        String formattedDate = sdf.format(eventCalendar.getTime());
+
+                        Log.d("CalendarActivity", "Mapped event: " + event.getName() + " to date " + formattedDate);
+
+                        events.put(formattedDate, event.getName());
+                    }
+
+                    // Osvežavanje prikaza
+                    runOnUiThread(() -> {
+                        calendarAdapter.updateData(generateDaysForMonth(), events, currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.YEAR));
+
+                        calendarAdapter.notifyDataSetChanged();
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<AcceptedEventDTO>> call, Throwable t) {
+                Toast.makeText(CalendarActivity.this, "Failed to load accepted events!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+
+    private String formatDate(int year, int month, int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return sdf.format(calendar.getTime());
+    }
+
 
 
 }

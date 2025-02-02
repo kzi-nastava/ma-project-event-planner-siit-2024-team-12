@@ -16,24 +16,41 @@ import java.util.List;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHolder> {
     private List<String> days;
+    private HashMap<String, String> events;
+    private int month, year; // Dodaj mesec i godinu
 
-    private HashMap<Integer, String> events;
-
-    public CalendarAdapter(List<String> days, HashMap<Integer, String> events) {
+    public CalendarAdapter(List<String> days, HashMap<String, String> events, int month, int year) {
         this.days = days;
         this.events = events;
+        this.month = month;
+        this.year = year;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.dayText.setText(days.get(position));
+        String day = days.get(position);
+        holder.dayText.setText(day);
 
-        if (!days.get(position).isEmpty() && events.containsKey(Integer.parseInt(days.get(position)))) {
-            holder.eventText.setText(events.get(Integer.parseInt(days.get(position))));
-            holder.eventText.setVisibility(View.VISIBLE);
-            holder.background.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.light_gray));
-        } else {
-            holder.eventText.setVisibility(View.GONE);
+        if (!day.isEmpty()) {
+            // Pravilno formatiran datum "YYYY-MM-DD"
+            String fullDate = year + "-" + String.format("%02d", month + 1) + "-" + String.format("%02d", Integer.parseInt(day));
+
+            if (events.containsKey(fullDate)) {
+                holder.eventText.setText(events.get(fullDate));
+                holder.eventText.setVisibility(View.VISIBLE);
+                holder.background.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.light_gray));
+
+                // Dodaj indikaciju boje za dane sa događajima
+                holder.dayText.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.pink));
+                holder.dayText.setTypeface(null, android.graphics.Typeface.BOLD);
+            } else {
+                holder.eventText.setVisibility(View.GONE);
+                holder.background.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), android.R.color.transparent));
+
+                // Resetuj stil ako nema događaja
+                holder.dayText.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.black));
+                holder.dayText.setTypeface(null, android.graphics.Typeface.NORMAL);
+            }
         }
     }
 
@@ -44,8 +61,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
                 .inflate(R.layout.calendar_cell, parent, false);
         return new ViewHolder(view);
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -65,12 +80,11 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         }
     }
 
-
-    public void updateData(List<String> days, HashMap<Integer, String> events) {
+    public void updateData(List<String> days, HashMap<String, String> events, int month, int year) {
         this.days = days;
         this.events = events;
+        this.month = month;
+        this.year = year;
         notifyDataSetChanged();
     }
-
-
 }
