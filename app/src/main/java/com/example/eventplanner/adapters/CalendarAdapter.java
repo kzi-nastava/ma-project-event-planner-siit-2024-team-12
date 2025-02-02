@@ -3,46 +3,74 @@ package com.example.eventplanner.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.viewholders.CalendarViewHolder;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
+public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHolder> {
+    private List<String> days;
 
-    private final ArrayList<String> daysOfMonth;
-    private final OnItemListener onItemListener;
+    private HashMap<Integer, String> events;
 
-    public CalendarAdapter(ArrayList<String> daysOfMonth, OnItemListener onItemListener) { this.daysOfMonth = daysOfMonth;
-        this.onItemListener = onItemListener;
+    public CalendarAdapter(List<String> days, HashMap<Integer, String> events) {
+        this.days = days;
+        this.events = events;
     }
 
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.dayText.setText(days.get(position));
+
+        if (!days.get(position).isEmpty() && events.containsKey(Integer.parseInt(days.get(position)))) {
+            holder.eventText.setText(events.get(Integer.parseInt(days.get(position))));
+            holder.eventText.setVisibility(View.VISIBLE);
+            holder.background.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.light_gray));
+        } else {
+            holder.eventText.setVisibility(View.GONE);
+        }
+    }
 
     @NonNull
     @Override
-    public CalendarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.calendar_cell, parent, false);
-        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-        layoutParams.height = (int) (parent.getHeight() * 0.166666666);
-        return new CalendarViewHolder(view, onItemListener);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.calendar_cell, parent, false);
+        return new ViewHolder(view);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position) {
-        holder.daysOfMonth.setText(daysOfMonth.get(position));
-    }
+
 
     @Override
     public int getItemCount() {
-        return daysOfMonth.size();
+        return days.size();
     }
 
-    public interface OnItemListener {
-        void onItemClick(int position, String dayText);
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView dayText;
+        TextView eventText;
+        LinearLayout background;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            dayText = itemView.findViewById(R.id.dayText);
+            eventText = itemView.findViewById(R.id.eventText);
+            background = itemView.findViewById(R.id.background);
+        }
     }
+
+
+    public void updateData(List<String> days, HashMap<Integer, String> events) {
+        this.days = days;
+        this.events = events;
+        notifyDataSetChanged();
+    }
+
+
 }
