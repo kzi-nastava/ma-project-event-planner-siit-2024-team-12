@@ -17,7 +17,7 @@ import java.util.List;
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHolder> {
     private List<String> days;
     private HashMap<String, String> events;
-    private int month, year; // Dodaj mesec i godinu
+    private int month, year;
 
     public CalendarAdapter(List<String> days, HashMap<String, String> events, int month, int year) {
         this.days = days;
@@ -32,7 +32,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         holder.dayText.setText(day);
 
         if (!day.isEmpty()) {
-            // Pravilno formatiran datum "YYYY-MM-DD"
             String fullDate = year + "-" + String.format("%02d", month + 1) + "-" + String.format("%02d", Integer.parseInt(day));
 
             if (events.containsKey(fullDate)) {
@@ -40,14 +39,14 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
                 holder.eventText.setVisibility(View.VISIBLE);
                 holder.background.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.light_gray));
 
-                // Dodaj indikaciju boje za dane sa događajima
+                // set color for dates with events
                 holder.dayText.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.pink));
                 holder.dayText.setTypeface(null, android.graphics.Typeface.BOLD);
             } else {
                 holder.eventText.setVisibility(View.GONE);
                 holder.background.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), android.R.color.transparent));
 
-                // Resetuj stil ako nema događaja
+                // reset if there is no events
                 holder.dayText.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.black));
                 holder.dayText.setTypeface(null, android.graphics.Typeface.NORMAL);
             }

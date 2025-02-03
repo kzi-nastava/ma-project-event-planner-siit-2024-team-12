@@ -31,4 +31,10 @@ public interface UserService {
     @GET("users/{email}/accepted-events")
     Call<ArrayList<AcceptedEventDTO>> getAcceptedEvents(@Header("Authorization") String token,
                                                         @Path("email") String email);
+
+
+
+    @GET("users/{email}/created-events")
+    Call<ArrayList<AcceptedEventDTO>> getCreatedEvents(@Header("Authorization") String token,
+                                                       @Path("email") String email);
 }

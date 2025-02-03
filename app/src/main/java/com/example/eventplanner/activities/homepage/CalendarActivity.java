@@ -82,10 +82,9 @@ public class CalendarActivity extends AppCompatActivity {
 
         List<String> days = generateDaysForMonth();
 
-        // Pozivanje metode za učitavanje događaja iz baze
         loadAcceptedEvents(events);
 
-        // Ažuriranje adaptera
+        // Update adapter
         if (calendarAdapter == null) {
             calendarAdapter = new CalendarAdapter(days, events, month, year);
             calendarRecyclerView.setAdapter(calendarAdapter);
@@ -128,7 +127,6 @@ public class CalendarActivity extends AppCompatActivity {
 
 
 
-
     private void loadAcceptedEvents(HashMap<String, String> events) {
         String auth = ClientUtils.getAuthorization(this);
 
@@ -140,25 +138,20 @@ public class CalendarActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ArrayList<AcceptedEventDTO>> call, Response<ArrayList<AcceptedEventDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    events.clear(); // Očistimo pre nego što dodamo nove podatke
+                    events.clear();
 
                     for (AcceptedEventDTO event : response.body()) {
                         Calendar eventCalendar = Calendar.getInstance();
                         eventCalendar.setTime(event.getDate());
 
-                        // Formatiramo datum kao "YYYY-MM-DD" (da bude jedinstven za svaki mesec/godinu)
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                         String formattedDate = sdf.format(eventCalendar.getTime());
-
-                        Log.d("CalendarActivity", "Mapped event: " + event.getName() + " to date " + formattedDate);
 
                         events.put(formattedDate, event.getName());
                     }
 
-                    // Osvežavanje prikaza
                     runOnUiThread(() -> {
                         calendarAdapter.updateData(generateDaysForMonth(), events, currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.YEAR));
-
                         calendarAdapter.notifyDataSetChanged();
                     });
                 }
@@ -172,15 +165,8 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
 
-
-
-    private String formatDate(int year, int month, int day) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        return sdf.format(calendar.getTime());
+    public void closeForm(View view) {
+        setResult(RESULT_CANCELED);
+        finish();
     }
-
-
-
 }
