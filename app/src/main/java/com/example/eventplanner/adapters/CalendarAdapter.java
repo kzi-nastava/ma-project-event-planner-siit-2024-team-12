@@ -16,12 +16,13 @@ import java.util.List;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHolder> {
     private List<String> days;
-    private HashMap<String, String> events;
+    private HashMap<String, String> acceptedEvents;
+    private HashMap<String, String> createdEvents;
     private int month, year;
 
-    public CalendarAdapter(List<String> days, HashMap<String, String> events, int month, int year) {
+    public CalendarAdapter(List<String> days, HashMap<String, String> acceptedEvents, int month, int year) {
         this.days = days;
-        this.events = events;
+        this.acceptedEvents = acceptedEvents;
         this.month = month;
         this.year = year;
     }
@@ -31,27 +32,32 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         String day = days.get(position);
         holder.dayText.setText(day);
 
-        if (!day.isEmpty()) {
-            String fullDate = year + "-" + String.format("%02d", month + 1) + "-" + String.format("%02d", Integer.parseInt(day));
-
-            if (events.containsKey(fullDate)) {
-                holder.eventText.setText(events.get(fullDate));
-                holder.eventText.setVisibility(View.VISIBLE);
-                holder.background.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.light_gray));
-
-                // set color for dates with events
-                holder.dayText.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.pink));
-                holder.dayText.setTypeface(null, android.graphics.Typeface.BOLD);
-            } else {
-                holder.eventText.setVisibility(View.GONE);
-                holder.background.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), android.R.color.transparent));
-
-                // reset if there is no events
-                holder.dayText.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.black));
-                holder.dayText.setTypeface(null, android.graphics.Typeface.NORMAL);
-            }
+        if (day.isEmpty()) {  
+            holder.acceptedEventIndicator.setVisibility(View.GONE);
+            holder.createdEventIndicator.setVisibility(View.GONE);
+            holder.background.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), android.R.color.transparent));
+            return;
         }
+
+        String fullDate = year + "-" + String.format("%02d", month + 1) + "-" + String.format("%02d", Integer.parseInt(day));
+
+        if (acceptedEvents.containsKey(fullDate)) {
+            holder.acceptedEventIndicator.setVisibility(View.VISIBLE);
+            holder.background.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.light_gray));
+        } else {
+            holder.acceptedEventIndicator.setVisibility(View.GONE);
+        }
+
+        /*
+        if (createdEvents.containsKey(fullDate)) {
+            holder.createdEventIndicator.setVisibility(View.VISIBLE);
+        } else {
+            holder.createdEventIndicator.setVisibility(View.GONE);
+        }
+
+         */
     }
+
 
     @NonNull
     @Override
@@ -68,20 +74,22 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView dayText;
-        TextView eventText;
         LinearLayout background;
+        View acceptedEventIndicator;
+        View createdEventIndicator;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             dayText = itemView.findViewById(R.id.dayText);
-            eventText = itemView.findViewById(R.id.eventText);
             background = itemView.findViewById(R.id.background);
+            acceptedEventIndicator = itemView.findViewById(R.id.acceptedEventIndicator);
+            createdEventIndicator = itemView.findViewById(R.id.createdEventIndicator);
         }
     }
 
-    public void updateData(List<String> days, HashMap<String, String> events, int month, int year) {
+    public void updateData(List<String> days, HashMap<String, String> acceptedEvents, int month, int year) {
         this.days = days;
-        this.events = events;
+        this.acceptedEvents = acceptedEvents;
         this.month = month;
         this.year = year;
         notifyDataSetChanged();
