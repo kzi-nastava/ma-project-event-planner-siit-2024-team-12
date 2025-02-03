@@ -1,9 +1,8 @@
-package com.example.eventplanner.activities.homepage;
+package com.example.eventplanner.activities.calendar;
 
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -36,7 +35,8 @@ public class CalendarActivity extends AppCompatActivity {
     private CalendarAdapter calendarAdapter;
     private TextView monthYearText;
     private Calendar currentCalendar;
-    private HashMap<String, String> events = new HashMap<>();
+    private HashMap<String, String> acceptedEvents = new HashMap<>();
+    private HashMap<String, String> createdEvents = new HashMap<>();
 
 
     @Override
@@ -82,14 +82,15 @@ public class CalendarActivity extends AppCompatActivity {
 
         List<String> days = generateDaysForMonth();
 
-        loadAcceptedEvents(events);
+        loadAcceptedEvents(acceptedEvents);
+        loadCreatedEvents(createdEvents);
 
         // Update adapter
         if (calendarAdapter == null) {
-            calendarAdapter = new CalendarAdapter(days, events, month, year);
+            calendarAdapter = new CalendarAdapter(days, acceptedEvents, createdEvents, month, year);
             calendarRecyclerView.setAdapter(calendarAdapter);
         } else {
-            calendarAdapter.updateData(days, events, month, year);
+            calendarAdapter.updateData(days, acceptedEvents, createdEvents, month, year);
         }
     }
 
@@ -151,7 +152,45 @@ public class CalendarActivity extends AppCompatActivity {
                     }
 
                     runOnUiThread(() -> {
-                        calendarAdapter.updateData(generateDaysForMonth(), events, currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.YEAR));
+                        calendarAdapter.updateData(generateDaysForMonth(), events, createdEvents, currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.YEAR));
+                        calendarAdapter.notifyDataSetChanged();
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<AcceptedEventDTO>> call, Throwable t) {
+                Toast.makeText(CalendarActivity.this, "Failed to load accepted events!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void loadCreatedEvents(HashMap<String, String> events) {
+        String auth = ClientUtils.getAuthorization(this);
+
+        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String email = pref.getString("email", "e");
+
+        Call<ArrayList<AcceptedEventDTO>> call = ClientUtils.userService.getCreatedEvents(auth, email);
+        call.enqueue(new Callback<ArrayList<AcceptedEventDTO>>() {
+            @Override
+            public void onResponse(Call<ArrayList<AcceptedEventDTO>> call, Response<ArrayList<AcceptedEventDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    events.clear();
+
+                    for (AcceptedEventDTO event : response.body()) {
+                        Calendar eventCalendar = Calendar.getInstance();
+                        eventCalendar.setTime(event.getDate());
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                        String formattedDate = sdf.format(eventCalendar.getTime());
+
+                        events.put(formattedDate, event.getName());
+                    }
+
+                    runOnUiThread(() -> {
+                        calendarAdapter.updateData(generateDaysForMonth(), acceptedEvents, events, currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.YEAR));
                         calendarAdapter.notifyDataSetChanged();
                     });
                 }

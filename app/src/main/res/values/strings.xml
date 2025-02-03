@@ -263,4 +263,10 @@
     <string name="description_in_table_row"><b>Description :</b> %s</string>
     <string name="status_in_table_row"><b>Status :</b> %s</string>
 
+    <string name="accepted">Accepted</string>
+    <string name="created">Created</string>
+    <string name="no_events">No events</string>
+    <string name="close">Close</string>
+    <string name="events_title">Events</string>
+
 </resources>

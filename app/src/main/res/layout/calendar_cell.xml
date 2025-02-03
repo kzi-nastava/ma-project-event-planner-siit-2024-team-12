@@ -21,25 +21,14 @@
             android:textStyle="bold"
             android:paddingBottom="10dp"/>
 
-
-        <View
-            android:id="@+id/createdEventIndicator"
+        <!-- LinearLayout for multiple indicators -->
+        <LinearLayout
+            android:id="@+id/eventIndicatorsContainer"
             android:layout_width="match_parent"
-            android:layout_height="7dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@color/pink"
-            android:visibility="gone"/>
-
-
-
-        <View
-            android:id="@+id/acceptedEventIndicator"
-            android:layout_width="match_parent"
-            android:layout_height="7dp"
-            android:layout_gravity="bottom"
-            android:background="@color/green"
-            android:visibility="gone"/>
-
+            android:orientation="vertical"
+            android:gravity="center_horizontal"/>
     </FrameLayout>
 
 </LinearLayout>

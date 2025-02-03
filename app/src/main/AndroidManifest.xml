@@ -39,7 +39,7 @@
             android:name=".activities.homepage.AdminHomepageActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.homepage.CalendarActivity"
+            android:name=".activities.calendar.CalendarActivity"
             android:exported="false" />
         <activity
             android:name=".activities.eventtype.EventTypeEditActivity"
