@@ -3,7 +3,6 @@ package com.example.eventplanner.adapters;
 
 
 import android.graphics.Typeface;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
@@ -16,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.viewholders.CategoryViewHolder;
-import com.example.eventplanner.model.GetSolutionCategoryDTO;
+import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
 
 import java.util.List;
 

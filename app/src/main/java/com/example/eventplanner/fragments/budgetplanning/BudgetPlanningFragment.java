@@ -21,7 +21,7 @@ import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
 import com.example.eventplanner.dto.user.GetUserDTO;
-import com.example.eventplanner.model.GetEventTypeDTO;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
 
 import java.util.ArrayList;

@@ -18,8 +18,8 @@ import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.dto.eventtype.CreateEventTypeDTO;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
-import com.example.eventplanner.model.GetEventTypeDTO;
 
 import java.util.ArrayList;
 import java.util.List;

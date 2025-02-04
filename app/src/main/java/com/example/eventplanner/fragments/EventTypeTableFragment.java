@@ -20,7 +20,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.UserRole;
 import com.example.eventplanner.adapters.EventTypeAdapter;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
-import com.example.eventplanner.model.GetEventTypeDTO;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 
 import java.util.ArrayList;
 import java.util.List;

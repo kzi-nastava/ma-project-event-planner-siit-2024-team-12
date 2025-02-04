@@ -2,7 +2,6 @@ package com.example.eventplanner.activities.eventtype;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -22,8 +21,8 @@ import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.UserRole;
 import com.example.eventplanner.dto.eventtype.UpdateEventTypeDTO;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
-import com.example.eventplanner.model.GetEventTypeDTO;
 
 import java.util.ArrayList;
 import java.util.List;

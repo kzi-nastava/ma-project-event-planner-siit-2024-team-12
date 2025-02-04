@@ -2,7 +2,7 @@ package com.example.eventplanner.activities.eventtype;
 
 import com.example.eventplanner.dto.eventtype.CreateEventTypeDTO;
 import com.example.eventplanner.dto.eventtype.UpdateEventTypeDTO;
-import com.example.eventplanner.model.GetEventTypeDTO;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 
 import java.util.ArrayList;
 

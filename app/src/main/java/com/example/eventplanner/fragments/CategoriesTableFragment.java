@@ -17,7 +17,7 @@ import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.CategoryAdapter;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
-import com.example.eventplanner.model.GetSolutionCategoryDTO;
+import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
 
 import java.util.ArrayList;
 import java.util.List;

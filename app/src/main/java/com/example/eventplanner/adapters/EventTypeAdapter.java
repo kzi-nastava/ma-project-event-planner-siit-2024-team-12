@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.viewholders.EventTypeViewHolder;
-import com.example.eventplanner.model.GetEventTypeDTO;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.activities.eventtype.EventTypeViewActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeEditActivity;
 

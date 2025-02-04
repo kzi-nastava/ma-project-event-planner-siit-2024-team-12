@@ -1,4 +1,4 @@
-package com.example.eventplanner.model;
+package com.example.eventplanner.dto.eventtype;
 
 import java.util.List;
 

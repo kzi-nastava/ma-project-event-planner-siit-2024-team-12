@@ -4,8 +4,8 @@ import com.example.eventplanner.dto.business.CreateBusinessDTO;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.business.UpdateBusinessDTO;
 import com.example.eventplanner.dto.business.UpdatedBusinessDTO;
-import com.example.eventplanner.model.GetEventTypeDTO;
-import com.example.eventplanner.model.GetSolutionCategoryDTO;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
+import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
 
 import java.util.ArrayList;
 

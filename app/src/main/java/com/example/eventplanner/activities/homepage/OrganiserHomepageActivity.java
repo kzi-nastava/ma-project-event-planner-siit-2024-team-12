@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.calendar.CalendarActivity;
+import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
@@ -102,6 +103,11 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
 
                 if (id == R.id.nav_home) {
                     Intent intent = new Intent(OrganiserHomepageActivity.this, OrganiserHomepageActivity.class);
+                    startActivity(intent);
+                }
+
+                else if (id == R.id.nav_fav_events) {
+                    Intent intent = new Intent(OrganiserHomepageActivity.this, FavoriteEventsActivity.class);
                     startActivity(intent);
                 }
                 else if (id == R.id.nav_log_out) { logOut();}
