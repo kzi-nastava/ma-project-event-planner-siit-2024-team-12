@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.calendar.CalendarActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
+import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.business.BusinessInfoActivity;
 import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
@@ -125,6 +126,12 @@ public class ProviderHomepageActivity extends AppCompatActivity {
 
                 else if (id == R.id.nav_calendar_od) {
                     Intent intent = new Intent(ProviderHomepageActivity.this, CalendarActivity.class);
+                    startActivity(intent);
+                }
+
+
+                else if (id == R.id.nav_fav_events) {
+                    Intent intent = new Intent(ProviderHomepageActivity.this, FavoriteEventsActivity.class);
                     startActivity(intent);
                 }
 

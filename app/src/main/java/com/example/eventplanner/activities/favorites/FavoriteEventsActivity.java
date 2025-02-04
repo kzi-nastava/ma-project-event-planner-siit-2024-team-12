@@ -110,6 +110,7 @@ public class FavoriteEventsActivity extends AppCompatActivity {
             public void onFailure(Call<ArrayList<FavEventDTO>> call, Throwable t) {
                 Toast.makeText(FavoriteEventsActivity.this, "Failed to load favorite events!",
                         Toast.LENGTH_SHORT).show();
+                Log.d("FEJLL ", t.getMessage());
             }
         });
     }
@@ -132,5 +133,9 @@ public class FavoriteEventsActivity extends AppCompatActivity {
         return (int) Math.ceil((double) allEvents.size() / PAGE_SIZE);
     }
 
+    public void closeForm(View view) {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
 }
 

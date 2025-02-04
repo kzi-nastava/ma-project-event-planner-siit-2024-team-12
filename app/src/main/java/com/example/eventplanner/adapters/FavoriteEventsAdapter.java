@@ -34,20 +34,22 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         FavEventDTO event = events.get(position);
 
+        holder.eventTitle.setText(event.getName());
+        holder.eventLocation.setText(event.getCity() + ", " + event.getCountry());
+        holder.eventDate.setText(event.getStartDate().toString());
+        holder.eventTime.setText(event.getStartTime().toString());
+
         if (position % 2 == 0) {
             holder.eventImage.setImageResource(R.drawable.event1);
             holder.container.removeAllViews();
             holder.container.addView(holder.eventImage);
             holder.container.addView(holder.textContainer);
-        }
-        else {
+        } else {
             holder.eventImage.setImageResource(R.drawable.event3);
             holder.container.removeAllViews();
             holder.container.addView(holder.textContainer);
             holder.container.addView(holder.eventImage);
         }
-
-        holder.eventTitle.setText(event.getName());
 
         holder.seeMore.setOnClickListener(v -> {
 
@@ -64,7 +66,7 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView eventImage;
-        TextView eventTitle, seeMore;
+        TextView eventTitle, seeMore, eventLocation, eventDate, eventTime;
         LinearLayout container, textContainer;
 
         public ViewHolder(View itemView) {
@@ -73,7 +75,10 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
             eventImage = itemView.findViewById(R.id.eventImage);
             eventTitle = itemView.findViewById(R.id.eventTitle);
             seeMore = itemView.findViewById(R.id.seeMore);
-            textContainer = (LinearLayout) itemView.findViewById(R.id.textContainer);
+            textContainer = itemView.findViewById(R.id.textContainer);
+            eventLocation = itemView.findViewById(R.id.eventLocation);
+            eventDate = itemView.findViewById(R.id.eventDate);
+            eventTime = itemView.findViewById(R.id.eventTime);
         }
     }
 
