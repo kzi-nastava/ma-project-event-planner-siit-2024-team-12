@@ -3,6 +3,7 @@ package com.example.eventplanner.activities.calendar;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.UserRole;
 import com.example.eventplanner.adapters.CalendarAdapter;
 import com.example.eventplanner.dto.event.AcceptedEventDTO;
 
@@ -37,6 +39,7 @@ public class CalendarActivity extends AppCompatActivity {
     private Calendar currentCalendar;
     private HashMap<String, String> acceptedEvents = new HashMap<>();
     private HashMap<String, String> createdEvents = new HashMap<>();
+    String userRole;
 
 
     @Override
@@ -82,8 +85,16 @@ public class CalendarActivity extends AppCompatActivity {
 
         List<String> days = generateDaysForMonth();
 
+        // all users can se accepted events in calendar
         loadAcceptedEvents(acceptedEvents);
-        loadCreatedEvents(createdEvents);
+
+        // only organizers can see events they created too
+        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String role = pref.getString("userRole", UserRole.ROLE_ORGANIZER.toString());
+
+        if (role.equals(UserRole.ROLE_ORGANIZER.toString())) {
+            loadCreatedEvents(createdEvents);
+        }
 
         // Update adapter
         if (calendarAdapter == null) {
@@ -193,6 +204,10 @@ public class CalendarActivity extends AppCompatActivity {
                         calendarAdapter.updateData(generateDaysForMonth(), acceptedEvents, events, currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.YEAR));
                         calendarAdapter.notifyDataSetChanged();
                     });
+                }
+
+                else if (response.code() == 404) {
+                    Toast.makeText(CalendarActivity.this, "You don't have any events!", Toast.LENGTH_SHORT).show();
                 }
             }
 

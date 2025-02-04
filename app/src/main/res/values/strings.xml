@@ -268,5 +268,6 @@
     <string name="no_events">No events</string>
     <string name="close">Close</string>
     <string name="events_title">Events</string>
+    <string name="explore_public_events">Explore public events</string>
 
 </resources>

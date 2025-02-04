@@ -37,7 +37,12 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
         holder.eventTitle.setText(event.getName());
         holder.eventLocation.setText(event.getCity() + ", " + event.getCountry());
         holder.eventDate.setText(event.getStartDate().toString());
-        holder.eventTime.setText(event.getStartTime().toString());
+        if (event.getStartTime() == null) {
+            holder.eventTime.setText("");
+        }
+        else {
+            holder.eventTime.setText(event.getStartTime().toString());
+        }
 
         if (position % 2 == 0) {
             holder.eventImage.setImageResource(R.drawable.event1);

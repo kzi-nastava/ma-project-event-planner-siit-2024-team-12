@@ -89,6 +89,9 @@
             android:name=".activities.auth.LoginActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.favorites.ExplorePageActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.auth.AccountActivation"
             android:exported="true">
             <intent-filter android:autoVerify="true">
