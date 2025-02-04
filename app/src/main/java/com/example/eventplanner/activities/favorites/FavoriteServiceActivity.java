@@ -8,7 +8,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -18,26 +17,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.FavoriteEventsAdapter;
-import com.example.eventplanner.dto.event.AcceptedEventDTO;
+import com.example.eventplanner.adapters.FavoriteServiceAdapter;
 import com.example.eventplanner.dto.event.FavEventDTO;
+import com.example.eventplanner.dto.solution.FavSolutionDTO;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FavoriteEventsActivity extends AppCompatActivity {
+public class FavoriteServiceActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private FavoriteEventsAdapter adapter;
-    private List<FavEventDTO> allEvents = new ArrayList<>();
-    private List<FavEventDTO> currentEvents = new ArrayList<>();
+    private FavoriteServiceAdapter adapter;
+    private List<FavSolutionDTO> allServices = new ArrayList<>();
+    private List<FavSolutionDTO> currentServices = new ArrayList<>();
     private static final int PAGE_SIZE = 3;
     private int currentPage = 1;
 
@@ -45,14 +41,14 @@ public class FavoriteEventsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorite_events);
+        setContentView(R.layout.activity_favorite_service);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        loadAllEvents();
+        loadAllServices();
 
-        adapter = new FavoriteEventsAdapter(currentEvents);
+        adapter = new FavoriteServiceAdapter(currentServices);
         recyclerView.setAdapter(adapter);
 
         loadPage(currentPage);
@@ -82,33 +78,33 @@ public class FavoriteEventsActivity extends AppCompatActivity {
     }
 
 
-    private void loadAllEvents() {
+    private void loadAllServices() {
         String auth = ClientUtils.getAuthorization(this);
         SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         String email = pref.getString("email", "e");
 
-        final List<FavEventDTO>[] favEvents = new List[]{new ArrayList<>()};
+        final List<FavSolutionDTO>[] favServices = new List[]{new ArrayList<>()};
 
-        Call<ArrayList<FavEventDTO>> call = ClientUtils.userService.getFavoriteEvents(auth, email);
+        Call<ArrayList<FavSolutionDTO>> call = ClientUtils.userService.getFavoriteServices(auth, email);
 
 
-        call.enqueue(new Callback<ArrayList<FavEventDTO>>() {
+        call.enqueue(new Callback<ArrayList<FavSolutionDTO>>() {
             @Override
-            public void onResponse(Call<ArrayList<FavEventDTO>> call, Response<ArrayList<FavEventDTO>> response) {
+            public void onResponse(Call<ArrayList<FavSolutionDTO>> call, Response<ArrayList<FavSolutionDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    favEvents[0] = response.body();
-                    allEvents.clear();
-                    allEvents.addAll(favEvents[0]);
+                    favServices[0] = response.body();
+                    allServices.clear();
+                    allServices.addAll(favServices[0]);
                     loadPage(currentPage);
                 } else {
-                    Toast.makeText(FavoriteEventsActivity.this, "Error loading favorites: " + response.code(),
+                    Toast.makeText(FavoriteServiceActivity.this, "Error loading favorite services!" + response.code(),
                             Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<ArrayList<FavEventDTO>> call, Throwable t) {
-                Toast.makeText(FavoriteEventsActivity.this, "Failed to load favorite events!",
+            public void onFailure(Call<ArrayList<FavSolutionDTO>> call, Throwable t) {
+                Toast.makeText(FavoriteServiceActivity.this, "Failed to load favorite services!",
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -118,10 +114,10 @@ public class FavoriteEventsActivity extends AppCompatActivity {
 
     private void loadPage(int page) {
         int startIndex = (page - 1) * PAGE_SIZE;
-        int endIndex = Math.min(startIndex + PAGE_SIZE, allEvents.size());
+        int endIndex = Math.min(startIndex + PAGE_SIZE, allServices.size());
 
-        currentEvents.clear();
-        currentEvents.addAll(allEvents.subList(startIndex, endIndex));
+        currentServices.clear();
+        currentServices.addAll(allServices.subList(startIndex, endIndex));
         adapter.notifyDataSetChanged();
 
         updatePageUI();
@@ -129,7 +125,7 @@ public class FavoriteEventsActivity extends AppCompatActivity {
 
 
     private int getTotalPages() {
-        return (int) Math.ceil((double) allEvents.size() / PAGE_SIZE);
+        return (int) Math.ceil((double) allServices.size() / PAGE_SIZE);
     }
 
     public void closeForm(View view) {
@@ -137,4 +133,3 @@ public class FavoriteEventsActivity extends AppCompatActivity {
         finish();
     }
 }
-

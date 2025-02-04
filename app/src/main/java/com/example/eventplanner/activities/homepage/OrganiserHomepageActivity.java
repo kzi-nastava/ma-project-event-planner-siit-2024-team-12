@@ -23,6 +23,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.activities.calendar.CalendarActivity;
 import com.example.eventplanner.activities.favorites.ExplorePageActivity;
 import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
+import com.example.eventplanner.activities.favorites.FavoriteServiceActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
@@ -157,6 +158,12 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
 
                 else if (id == R.id.nav_explore_events) {
                     Intent intent = new Intent(OrganiserHomepageActivity.this, ExplorePageActivity.class);
+                    startActivity(intent);
+                }
+
+
+                else if (id == R.id.nav_fav_services) {
+                    Intent intent = new Intent(OrganiserHomepageActivity.this, FavoriteServiceActivity.class);
                     startActivity(intent);
                 }
 

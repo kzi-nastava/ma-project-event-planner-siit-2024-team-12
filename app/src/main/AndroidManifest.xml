@@ -17,6 +17,9 @@
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
         <activity
+            android:name=".activities.favorites.FavoriteServiceActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.favorites.FavoriteEventsActivity"
             android:exported="false" />
         <activity

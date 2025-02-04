@@ -101,7 +101,6 @@ public class ExplorePageActivity extends AppCompatActivity {
             public void onFailure(Call<ArrayList<FavEventDTO>> call, Throwable t) {
                 Toast.makeText(ExplorePageActivity.this, "Failed to load favorite events!",
                         Toast.LENGTH_SHORT).show();
-                Log.d("FEJLL ", t.getMessage());
             }
         });
     }
