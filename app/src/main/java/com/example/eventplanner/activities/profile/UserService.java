@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities.profile;
 
 import com.example.eventplanner.dto.event.AcceptedEventDTO;
+import com.example.eventplanner.dto.event.FavEventDTO;
 import com.example.eventplanner.dto.user.UpdateUserDTO;
 
 import com.example.eventplanner.dto.user.UpdatedUserDTO;
@@ -37,4 +38,9 @@ public interface UserService {
     @GET("users/{email}/created-events")
     Call<ArrayList<AcceptedEventDTO>> getCreatedEvents(@Header("Authorization") String token,
                                                        @Path("email") String email);
+
+
+    @GET("users/{email}/favorite-events")
+    Call<ArrayList<FavEventDTO>> getFavoriteEvents(@Header("Authorization") String token,
+                                                   @Path("email") String email);
 }

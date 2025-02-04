@@ -17,7 +17,6 @@ import java.util.List;
 
 public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAdapter.ViewHolder> {
     private List<FavEventDTO> events;
-    private Context context;
 
     public FavoriteEventsAdapter(List<FavEventDTO> events) {
         this.events = events;
@@ -48,9 +47,7 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
             holder.container.addView(holder.eventImage);
         }
 
-
         holder.eventTitle.setText(event.getName());
-
 
         holder.seeMore.setOnClickListener(v -> {
 

@@ -25,7 +25,7 @@ import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.business.BusinessInfoActivity;
 import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
-import com.example.eventplanner.activities.service.CategoriesTableActivity;
+import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
 import com.example.eventplanner.adapters.ChatAdapter;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.HomepageCardsFragment;

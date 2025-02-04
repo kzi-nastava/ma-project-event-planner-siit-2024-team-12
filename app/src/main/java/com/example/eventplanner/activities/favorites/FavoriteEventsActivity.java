@@ -1,8 +1,11 @@
 package com.example.eventplanner.activities.favorites;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -13,14 +16,21 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.FavoriteEventsAdapter;
+import com.example.eventplanner.dto.event.AcceptedEventDTO;
 import com.example.eventplanner.dto.event.FavEventDTO;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FavoriteEventsActivity extends AppCompatActivity {
 
@@ -68,17 +78,42 @@ public class FavoriteEventsActivity extends AppCompatActivity {
 
     private void updatePageUI() {
         TextView pageNumberText = findViewById(R.id.pageNumber);
-        pageNumberText.setText("Strana " + currentPage + " / " + getTotalPages());
+        pageNumberText.setText("Page " + currentPage + " / " + getTotalPages());
     }
 
 
     private void loadAllEvents() {
-        allEvents.add(new FavEventDTO(1L, "Event 1", "image_url_1", "city", "country", LocalDate.now(), LocalTime.now(), "img"));
-        allEvents.add(new FavEventDTO(2L, "Event 2", "image_url_2", "city", "country", LocalDate.now(), LocalTime.now(), "img"));
-        allEvents.add(new FavEventDTO(3L, "Event 3", "image_url_3", "city", "country", LocalDate.now(), LocalTime.now(), "img"));
-        allEvents.add(new FavEventDTO(4L, "Event 4", "image_url_4", "city", "country", LocalDate.now(), LocalTime.now(), "img"));
-        allEvents.add(new FavEventDTO(5L, "Event 5", "image_url_5", "city", "country", LocalDate.now(), LocalTime.now(), "img"));
+        String auth = ClientUtils.getAuthorization(this);
+        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String email = pref.getString("email", "e");
+
+        final List<FavEventDTO>[] favEvents = new List[]{new ArrayList<>()};
+
+        Call<ArrayList<FavEventDTO>> call = ClientUtils.userService.getFavoriteEvents(auth, email);
+
+
+        call.enqueue(new Callback<ArrayList<FavEventDTO>>() {
+            @Override
+            public void onResponse(Call<ArrayList<FavEventDTO>> call, Response<ArrayList<FavEventDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    favEvents[0] = response.body();
+                    allEvents.clear();
+                    allEvents.addAll(favEvents[0]);
+                    loadPage(currentPage);
+                } else {
+                    Toast.makeText(FavoriteEventsActivity.this, "Error loading favorites: " + response.code(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<FavEventDTO>> call, Throwable t) {
+                Toast.makeText(FavoriteEventsActivity.this, "Failed to load favorite events!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 
 
     private void loadPage(int page) {

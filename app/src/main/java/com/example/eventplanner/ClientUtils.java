@@ -12,6 +12,13 @@ import com.example.eventplanner.activities.event.EventService;
 import com.example.eventplanner.activities.eventtype.EventTypeService;
 import com.example.eventplanner.activities.profile.UserService;
 import com.example.eventplanner.activities.solutioncategory.SolutionCategoryService;
+import com.example.eventplanner.adapters.LocalDateAdapter;
+import com.example.eventplanner.adapters.LocalTimeAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -20,9 +27,15 @@ public class ClientUtils {
 
     public static final String SERVICE_API_PATH = "http://" + BuildConfig.IP_ADDR + ":8080/api/";
 
+    // add adapters for proper LocalDate and LocalTime parsing
+    static Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
+            .create();
+
     public static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(SERVICE_API_PATH)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
 
 

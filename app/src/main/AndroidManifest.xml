@@ -23,7 +23,7 @@
             android:name=".activities.event.AgendaActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.service.CategoriesTableActivity"
+            android:name=".activities.solutioncategory.CategoriesTableActivity"
             android:exported="false" />
         <activity
             android:name=".activities.eventtype.EventTypeTableActivity"
@@ -71,7 +71,7 @@
             android:name=".activities.service.ServiceEditActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.service.CategoryCreationActivity"
+            android:name=".activities.solutioncategory.CategoryCreationActivity"
             android:exported="false" />
         <activity
             android:name=".activities.service.ServiceCreationActivity"
