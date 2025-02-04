@@ -53,4 +53,9 @@ public interface UserService {
     @GET("users/{email}/favorite-services")
     Call<ArrayList<FavSolutionDTO>> getFavoriteServices(@Header("Authorization") String token,
                                                         @Path("email") String email);
+
+
+    @GET("users/{email}/favorite-products")
+    Call<ArrayList<FavSolutionDTO>> getFavoriteProducts(@Header("Authorization") String token,
+                                                        @Path("email") String email);
 }

@@ -14,23 +14,23 @@ import com.example.eventplanner.dto.solution.FavSolutionDTO;
 
 import java.util.List;
 
-public class FavoriteServiceAdapter extends RecyclerView.Adapter<FavoriteServiceAdapter.ViewHolder> {
+public class FavoriteServicesAdapter extends RecyclerView.Adapter<FavoriteServicesAdapter.ViewHolder> {
     private List<FavSolutionDTO> services;
 
-    public FavoriteServiceAdapter(List<FavSolutionDTO> services) {
+    public FavoriteServicesAdapter(List<FavSolutionDTO> services) {
         this.services = services;
     }
 
     @Override
-    public FavoriteServiceAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public FavoriteServicesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fav_service, parent, false);
-        return new FavoriteServiceAdapter.ViewHolder(view);
+        return new FavoriteServicesAdapter.ViewHolder(view);
     }
 
 
 
     @Override
-    public void onBindViewHolder(FavoriteServiceAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(FavoriteServicesAdapter.ViewHolder holder, int position) {
         FavSolutionDTO service = services.get(position);
 
         holder.serviceTitle.setText(service.getName());
