@@ -20,6 +20,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.calendar.CalendarActivity;
+import com.example.eventplanner.activities.favorites.ExplorePageActivity;
+import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
+import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
+import com.example.eventplanner.activities.favorites.FavoriteServicesActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
@@ -103,6 +108,11 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
                     Intent intent = new Intent(OrganiserHomepageActivity.this, OrganiserHomepageActivity.class);
                     startActivity(intent);
                 }
+
+                else if (id == R.id.nav_fav_events) {
+                    Intent intent = new Intent(OrganiserHomepageActivity.this, FavoriteEventsActivity.class);
+                    startActivity(intent);
+                }
                 else if (id == R.id.nav_log_out) { logOut();}
                 else if (id == R.id.nav_services) {
                     FragmentManager fragmentManager = getSupportFragmentManager();
@@ -145,6 +155,25 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
                     Intent intent = new Intent(OrganiserHomepageActivity.this, EventCreationActivity.class);
                     startActivity(intent);
                 }
+
+
+                else if (id == R.id.nav_explore_events) {
+                    Intent intent = new Intent(OrganiserHomepageActivity.this, ExplorePageActivity.class);
+                    startActivity(intent);
+                }
+
+
+                else if (id == R.id.nav_fav_services) {
+                    Intent intent = new Intent(OrganiserHomepageActivity.this, FavoriteServicesActivity.class);
+                    startActivity(intent);
+                }
+
+
+                else if (id == R.id.nav_fav_products) {
+                    Intent intent = new Intent(OrganiserHomepageActivity.this, FavoriteProductsActivity.class);
+                    startActivity(intent);
+                }
+
 
                 // Close the drawer after an item is selected
                 drawerLayout.closeDrawers();

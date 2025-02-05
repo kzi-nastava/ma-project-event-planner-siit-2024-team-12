@@ -53,7 +53,7 @@
 
 
         <Button
-            android:id="@+id/button7"
+            android:id="@+id/deactivateButton"
             android:layout_width="78dp"
             android:layout_height="31dp"
             android:background="@drawable/form_button"
@@ -83,20 +83,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.316" />
 
+
         <TextView
-            android:id="@+id/textView12"
-            android:layout_width="107dp"
-            android:layout_height="36dp"
-            android:text="Name"
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.061"
+            app:layout_constraintHorizontal_bias="0.048"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.352" />
-
+            app:layout_constraintVertical_bias="0.351" />
 
         <ImageView
             android:id="@+id/imageView3"
@@ -124,18 +123,17 @@
             app:layout_constraintVertical_bias="0.459" />
 
         <TextView
-            android:id="@+id/textView10"
-            android:layout_width="107dp"
-            android:layout_height="52dp"
-            android:text="Nachname"
+            android:id="@+id/surname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.055"
+            app:layout_constraintHorizontal_bias="0.048"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.51" />
+            app:layout_constraintVertical_bias="0.489" />
 
         <TextView
             android:id="@+id/textView13"
@@ -151,10 +149,9 @@
             app:layout_constraintVertical_bias="0.557" />
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="nachname@domen.com"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -178,10 +175,9 @@
             app:layout_constraintVertical_bias="0.696" />
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="000-000-000"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -205,18 +201,17 @@
             app:layout_constraintVertical_bias="0.837" />
 
         <TextView
-            android:id="@+id/textView18"
+            android:id="@+id/address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Adresse"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.041"
+            app:layout_constraintHorizontal_bias="0.08"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.888" />
+            app:layout_constraintVertical_bias="0.93" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

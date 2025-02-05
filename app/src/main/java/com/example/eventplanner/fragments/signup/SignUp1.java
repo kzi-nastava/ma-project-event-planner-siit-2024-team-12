@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.activities.auth.SignUpActivity;
 import com.example.eventplanner.viewmodels.SignUpViewModel;
 
@@ -31,11 +32,11 @@ public class SignUp1 extends Fragment {
                 EditText passwordField = view.findViewById(R.id.password);
                 EditText confirmationField = view.findViewById(R.id.passwordConfirmation);
 
-                if (!validateField(emailField, "Email is required!")) return;
-                if (!validateEmailFormat(emailField)) return;
-                if (!validateField(passwordField, "Password is required!")) return;
-                if (!validateField(confirmationField, "Confirmation is required!")) return;
-                if (!validatePasswordConfirmation(passwordField, confirmationField)) return;
+                if (!ValidationUtils.isFieldValid(emailField, "Email is required!")) return;
+                if (!ValidationUtils.isEmailValid(emailField)) return;
+                if (!ValidationUtils.isFieldValid(passwordField, "Password is required!")) return;
+                if (!ValidationUtils.isFieldValid(confirmationField, "Confirmation is required!")) return;
+                if (!ValidationUtils.isMatchingPassword(passwordField, confirmationField)) return;
 
                 // if valid, save input data
                 viewModel.updateSignUpAttributes("email", emailField.getText().toString());
@@ -48,43 +49,5 @@ public class SignUp1 extends Fragment {
 
         return view;
     }
-
-
-    private boolean validateField(EditText field, String errorMessage) {
-        String value = field.getText().toString().trim();
-        if (value.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-
-    private boolean validateEmailFormat(EditText field) {
-        String email = field.getText().toString().trim();
-        String emailPattern = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-
-        if (!email.matches(emailPattern)) {
-            field.setError("Invalid email format!");
-            field.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-
-    private boolean validatePasswordConfirmation(EditText passwordField, EditText confirmationField) {
-        String password = passwordField.getText().toString().trim();
-        String confirmation = confirmationField.getText().toString().trim();
-
-        if (!password.equals(confirmation)) {
-            confirmationField.setError("Passwords do not match!");
-            confirmationField.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
 
 }

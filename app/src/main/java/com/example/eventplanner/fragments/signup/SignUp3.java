@@ -17,10 +17,15 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.UserRole;
+import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.auth.SignUpActivity;
 import com.example.eventplanner.dto.user.CreateUserDTO;
 import com.example.eventplanner.viewmodels.SignUpViewModel;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -74,9 +79,9 @@ public class SignUp3 extends Fragment {
             EditText addressField = view.findViewById(R.id.address);
             EditText phoneField = view.findViewById(R.id.phone);
 
-            if (!validateField(addressField, "Address is required!")) return;
-            if (!validateField(phoneField, "Phone is required!")) return;
-            if (!validatePhone(phoneField, "Invalid format!")) return;
+            if (!ValidationUtils.isFieldValid(addressField, "Address is required!")) return;
+            if (!ValidationUtils.isFieldValid(phoneField, "Phone is required!")) return;
+            if (!ValidationUtils.isPhoneValid(phoneField, phoneField.getText().toString())) return;
 
             viewModel.updateSignUpAttributes("address", addressField.getText().toString());
             viewModel.updateSignUpAttributes("phone", phoneField.getText().toString());
@@ -86,10 +91,10 @@ public class SignUp3 extends Fragment {
             String role = "";
 
             if (selectedRole.equalsIgnoreCase(roles[0])) {
-                role = "ROLE_ORGANIZER";
+                role = UserRole.ROLE_ORGANIZER.toString();
             }
             else {
-                role = "ROLE_PROVIDER";
+                role = UserRole.ROLE_PROVIDER.toString();
             }
 
             viewModel.updateSignUpAttributes("role", role);
@@ -101,30 +106,6 @@ public class SignUp3 extends Fragment {
         return view;
     }
 
-
-    private boolean validateField(EditText field, String errorMessage) {
-        String value = field.getText().toString().trim();
-        if (value.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-
-    private boolean validatePhone(EditText phoneField, String errorMessage) {
-        String phone = phoneField.getText().toString().trim();
-
-        String phonePattern = "^\\+\\d{1,4}(\\s\\d+)+$";
-
-        if (!phone.matches(phonePattern)) {
-            phoneField.setError(errorMessage);
-            phoneField.requestFocus();
-            return false;
-        }
-        return true;
-    }
 
 
 
@@ -139,6 +120,16 @@ public class SignUp3 extends Fragment {
                             " your email address!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(requireActivity(), LoginActivity.class);
                     startActivity(intent);
+                }
+
+                else if (response.code() == 409) {
+                    Toast.makeText(getActivity(), "Already taken email address!", Toast.LENGTH_SHORT).show();
+                }
+                else if (response.code() == 410) {
+                    Toast.makeText(getActivity(), "Your activation link is still valid! Check your email!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getActivity(), "Error! Please try again!", Toast.LENGTH_SHORT).show();
                 }
             }
 

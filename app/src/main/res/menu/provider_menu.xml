@@ -35,9 +35,11 @@
     </group>
 
 
-    <item
-        android:id="@+id/nav_calendar_od"
-        android:title="@string/calendar" />
+    <group android:id="@+id/calendar">
+        <item
+            android:id="@+id/nav_calendar_od"
+            android:title="@string/calendar" />
+    </group>
 
 
     <group android:id="@+id/favorites">
@@ -52,6 +54,10 @@
         <item
             android:id="@+id/nav_fav_products"
             android:title="@string/fav_products" />
+
+        <item
+            android:id="@+id/nav_explore_events"
+            android:title="@string/explore_events" />
     </group>
 
     <item

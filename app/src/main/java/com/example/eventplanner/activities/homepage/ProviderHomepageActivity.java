@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -21,22 +20,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.calendar.CalendarActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
+import com.example.eventplanner.activities.favorites.ExplorePageActivity;
+import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
+import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
+import com.example.eventplanner.activities.favorites.FavoriteServicesActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.business.BusinessInfoActivity;
 import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
-import com.example.eventplanner.activities.service.CategoriesTableActivity;
-import com.example.eventplanner.adapters.CategoryAdapter;
+import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
 import com.example.eventplanner.adapters.ChatAdapter;
-import com.example.eventplanner.adapters.EventTypeAdapter;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.HomepageCardsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
 import com.example.eventplanner.fragments.homepage.HomepageProductsServicesFragment;
 import com.example.eventplanner.fragments.homepage.PSListFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
-import com.example.eventplanner.model.Category;
-import com.example.eventplanner.model.EventType;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -132,6 +132,12 @@ public class ProviderHomepageActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
 
+
+                else if (id == R.id.nav_fav_events) {
+                    Intent intent = new Intent(ProviderHomepageActivity.this, FavoriteEventsActivity.class);
+                    startActivity(intent);
+                }
+
                 else if (id == R.id.nav_log_out) { logOut();}
                 else if (id == R.id.nav_services) {
                     FragmentManager fragmentManager = getSupportFragmentManager();
@@ -174,8 +180,25 @@ public class ProviderHomepageActivity extends AppCompatActivity {
                 }
 
 
+                else if (id == R.id.nav_explore_events) {
+                    Intent intent = new Intent(ProviderHomepageActivity.this, ExplorePageActivity.class);
+                    startActivity(intent);
+                }
+
+
                 else if (id == R.id.nav_view_profile) {
                     Intent intent = new Intent(ProviderHomepageActivity.this, ProfileViewActivity.class);
+                    startActivity(intent);
+                }
+
+                else if (id == R.id.nav_fav_services) {
+                    Intent intent = new Intent(ProviderHomepageActivity.this, FavoriteServicesActivity.class);
+                    startActivity(intent);
+                }
+
+
+                else if (id == R.id.nav_fav_products) {
+                    Intent intent = new Intent(ProviderHomepageActivity.this, FavoriteProductsActivity.class);
                     startActivity(intent);
                 }
 

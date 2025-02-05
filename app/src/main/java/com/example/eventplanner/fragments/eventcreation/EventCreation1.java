@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
 
@@ -42,10 +43,10 @@ public class EventCreation1 extends Fragment {
             if (getActivity() instanceof EventCreationActivity) {
 
                 // validate input data
-                if (!validateField(nameField, "Name is required!")) return;
-                if (!validateField(maxGuestsField, "Max number is required!")) return;
-                if (!validateNumberField(maxGuestsField, "Enter a number!!", "Enter a positive number!!")) return;
-                if (!validateField(descriptionField, "Description is required!")) return;
+                if (!ValidationUtils.isFieldValid(nameField, "Name is required!")) return;
+                if (!ValidationUtils.isFieldValid(maxGuestsField, "Max number is required!")) return;
+                if (!ValidationUtils.isNumberValid(maxGuestsField, "Enter a number!!", "Enter a positive number!!")) return;
+                if (!ValidationUtils.isFieldValid(descriptionField, "Description is required!")) return;
 
                 // save validated data
                 viewModel.updateEventAttributes("name", nameField.getText().toString());
@@ -61,33 +62,4 @@ public class EventCreation1 extends Fragment {
     }
 
 
-    // check if fields are empty
-    private boolean validateField(EditText field, String errorMessage) {
-        String value = field.getText().toString().trim();
-        if (value.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-
-    // check if number is valid
-    private boolean validateNumberField(EditText field, String invalidNumberMessage, String negativeNumberMessage) {
-        String value = field.getText().toString().trim();
-        try {
-            int number = Integer.parseInt(value);
-            if (number <= 0) {
-                field.setError(negativeNumberMessage);
-                field.requestFocus();
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            field.setError(invalidNumberMessage);
-            field.requestFocus();
-            return false;
-        }
-        return true;
-    }
 }

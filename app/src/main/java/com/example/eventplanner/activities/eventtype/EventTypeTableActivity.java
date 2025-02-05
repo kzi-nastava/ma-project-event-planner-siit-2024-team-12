@@ -1,8 +1,10 @@
 package com.example.eventplanner.activities.eventtype;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +13,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.UserRole;
 import com.example.eventplanner.activities.homepage.AdminHomepageActivity;
+import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 
 public class EventTypeTableActivity extends AppCompatActivity {
 
@@ -26,11 +30,34 @@ public class EventTypeTableActivity extends AppCompatActivity {
             return insets;
         });
 
+        TextView title = findViewById(R.id.title);
+        String adminTitle = getString(R.string.event_types);
+        String providerTitle = getString(R.string.provider_event_types);
+
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String role = prefs.getString("userRole", UserRole.ROLE_ADMIN.toString());
+
+        if (role.equals(UserRole.ROLE_PROVIDER.toString())) {
+            title.setText(providerTitle);
+        }
+        else {
+            title.setText(adminTitle);
+        }
 
     }
 
     public void closeForm(View view) {
-        Intent intent = new Intent(EventTypeTableActivity.this, AdminHomepageActivity.class);
-        startActivity(intent);
+        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String role = pref.getString("userRole", UserRole.ROLE_ADMIN.toString());
+
+        if (role.equals(UserRole.ROLE_ADMIN.toString())) {
+            Intent intent = new Intent(EventTypeTableActivity.this, AdminHomepageActivity.class);
+            startActivity(intent);
+        }
+        else {
+            Intent intent = new Intent(EventTypeTableActivity.this, ProviderHomepageActivity.class);
+            startActivity(intent);
+        }
+
     }
 }

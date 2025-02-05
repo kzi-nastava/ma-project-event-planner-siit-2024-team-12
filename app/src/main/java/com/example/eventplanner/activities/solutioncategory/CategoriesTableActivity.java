@@ -1,6 +1,7 @@
-package com.example.eventplanner.activities.service;
+package com.example.eventplanner.activities.solutioncategory;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,5 +23,10 @@ public class CategoriesTableActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    public void closeForm(View view) {
+        setResult(RESULT_CANCELED);
+        finish();
     }
 }

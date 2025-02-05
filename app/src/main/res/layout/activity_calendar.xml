@@ -1,139 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    tools:context=".activities.calendar.CalendarActivity">
 
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:contentDescription="TODO"
+        android:onClick="closeForm"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.959"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.026"
+        app:srcCompat="@drawable/exit_form" />
 
     <LinearLayout
+        android:id="@+id/weekDaysLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp">
-
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@null"
-            android:text="&lt;"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:onClick="previousMonthAction"
-            />
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2">
 
         <TextView
-            android:id="@+id/monthYearTV"
             android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="40dp"
-            android:text="January 2025"
-            android:textSize="20sp"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            />
-
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@null"
-            android:text="&gt;"
-            android:textColor="@color/black"
-            android:textSize="20sp"
+            android:gravity="center"
             android:textStyle="bold"
-            android:onClick="nextMonthAction"
-            />
+            android:textSize="18sp"
+            android:text="Mon" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:text="Tue" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:text="Wed" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:text="Thu" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:text="Fri" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:text="Sat" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:text="Sun" />
 
     </LinearLayout>
-    
-    <LinearLayout
-        android:layout_width="match_parent"
+
+
+    <TextView
+        android:id="@+id/monthYearText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:padding="16dp"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.456"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.042" />
+
+    <LinearLayout
+        android:id="@+id/monthStatusLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/monthYearText">
 
 
-        <TextView
-            android:layout_width="0dp"
+        <!-- Green Circle Accepted -->
+        <FrameLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="MON"
-            android:textColor="@color/black"
-            android:textAlignment="center"
-            android:textSize="16sp" />
+            android:gravity="center_vertical">
 
+        </FrameLayout>
 
-        <TextView
-            android:layout_width="0dp"
+        <!-- Pink Circle Created -->
+        <FrameLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TUE"
-            android:textColor="@color/black"
-            android:textAlignment="center"
-            android:textSize="16sp" />
+            android:gravity="center_vertical">
 
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="WED"
-            android:textColor="@color/black"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="THU"
-            android:textColor="@color/black"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="FRI"
-            android:textColor="@color/black"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="SAT"
-            android:textColor="@color/black"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="SUN"
-            android:textColor="@color/black"
-            android:textAlignment="center"
-            android:textSize="16sp" />
+        </FrameLayout>
 
     </LinearLayout>
+
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/calendarRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="400dp"
+        android:layout_height="628dp"
+        android:background="@drawable/form_frame"
+        android:padding="8dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.454"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/monthYearText"
+        app:layout_constraintVertical_bias="0.8"
+        app:spanCount="7" />
 
+    <Button
+        android:id="@+id/nextMonthButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="&gt;"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.058" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/previousMonthButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="&lt;"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.015"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.058" />
+
+    <View
+        android:layout_width="23dp"
+        android:layout_height="23dp"
+        android:background="@drawable/green_circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.041"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.141" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Accepted"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.137"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.14" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Created events"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.594"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.138" />
+
+    <View
+        android:layout_width="23dp"
+        android:layout_height="23dp"
+        android:background="@drawable/pink_circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.365"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.139" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.viewholders.EventTypeViewHolder;
-import com.example.eventplanner.model.EventType;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.activities.eventtype.EventTypeViewActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeEditActivity;
 
@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeViewHolder> {
-    private List<EventType> eventTypeList;
+    private List<GetEventTypeDTO> eventTypeList;
 
-    public EventTypeAdapter(List<EventType> eventTypeList) {
+    public EventTypeAdapter(List<GetEventTypeDTO> eventTypeList) {
         this.eventTypeList = eventTypeList;
     }
 
@@ -35,7 +35,7 @@ public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull EventTypeViewHolder holder, int position) {
-        EventType eventType = eventTypeList.get(position);
+        GetEventTypeDTO eventType = eventTypeList.get(position);
 
         holder.idTextView.setText(eventType.getId());
         holder.nameTextView.setText(eventType.getName());

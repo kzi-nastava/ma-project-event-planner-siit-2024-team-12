@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities.eventtype;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -18,10 +19,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.solutioncategory.SolutionCategoryService;
+import com.example.eventplanner.UserRole;
 import com.example.eventplanner.dto.eventtype.UpdateEventTypeDTO;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
-import com.example.eventplanner.model.EventType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +56,9 @@ public class EventTypeEditActivity extends AppCompatActivity {
         EditText nameText = findViewById(R.id.eventTypeName);
         EditText descriptionText = findViewById(R.id.eventTypeDescription);
 
-        nameText.setText(name);
         // make the name field read-only
+        nameText.setText(name);
+        // could've just used TextView, but wanted to try this out
         nameText.setFocusable(false);
         nameText.setFocusableInTouchMode(false);
         nameText.setInputType(InputType.TYPE_NULL);
@@ -70,8 +72,16 @@ public class EventTypeEditActivity extends AppCompatActivity {
             loadAcceptedCategories(categoriesButton, selectedCategoryNames);
         });
 
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String role = prefs.getString("userRole", UserRole.ROLE_ADMIN.toString());
 
         Button deactivationButton = findViewById(R.id.deactivateButton);
+
+        // provider cannot (de)activate event type but can edit
+        if (role.equals(UserRole.ROLE_PROVIDER.toString())) {
+            deactivationButton.setVisibility(View.GONE);
+        }
+
         boolean isActive = intent.getBooleanExtra("isActive", true);
 
         deactivationButton.setText(isActive ? "Deactivate" : "Activate");
@@ -127,7 +137,9 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
 
     private void activateEventType(String id, Button activationButton) {
-        Call<ResponseBody> call = ClientUtils.eventTypeService.activateEventType(Long.parseLong(id));
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<ResponseBody> call = ClientUtils.eventTypeService.activateEventType(auth, Long.parseLong(id));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -158,7 +170,9 @@ public class EventTypeEditActivity extends AppCompatActivity {
     }
 
     private void deactivateEventType(String id, Button activationButton) {
-        Call<ResponseBody> call = ClientUtils.eventTypeService.deactivateEventType(Long.parseLong(id));
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<ResponseBody> call = ClientUtils.eventTypeService.deactivateEventType(auth, Long.parseLong(id));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -192,7 +206,9 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
 
     private void loadAcceptedCategories(Button categoriesButton, ArrayList<String> selectedCategoryNames) {
-        Call<List<GetSolutionCategoryDTO>> call = ClientUtils.solutionCategoryService.getAllAccepted();
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<List<GetSolutionCategoryDTO>> call = ClientUtils.solutionCategoryService.getAllAccepted(auth);
 
         call.enqueue(new Callback<List<GetSolutionCategoryDTO>>() {
             @Override
@@ -269,14 +285,16 @@ public class EventTypeEditActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String id = intent.getStringExtra("eventTypeId");
 
-        Log.d("PARAMETRI ", "Params " + dto.getSuggestedCategoryNames());
-        Call<EventType> call = ClientUtils.eventTypeService.updateEventType(dto, Long.parseLong(id));
+        String auth = ClientUtils.getAuthorization(this);
 
-        call.enqueue(new Callback<EventType>() {
+        Log.d("PARAMETRI ", "Params " + dto.getSuggestedCategoryNames());
+        Call<GetEventTypeDTO> call = ClientUtils.eventTypeService.updateEventType(auth, dto, Long.parseLong(id));
+
+        call.enqueue(new Callback<GetEventTypeDTO>() {
             @Override
-            public void onResponse(Call<EventType> call, Response<EventType> response) {
+            public void onResponse(Call<GetEventTypeDTO> call, Response<GetEventTypeDTO> response) {
                 if (response.isSuccessful()) {
-                    EventType updatedEventType = response.body();
+                    GetEventTypeDTO updatedEventType = response.body();
 
                     runOnUiThread(() -> {
                         Toast.makeText(EventTypeEditActivity.this, "Event type updated successfully!", Toast.LENGTH_SHORT).show();
@@ -298,7 +316,7 @@ public class EventTypeEditActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<EventType> call, Throwable t) {;
+            public void onFailure(Call<GetEventTypeDTO> call, Throwable t) {;
                 runOnUiThread(() -> {
                     Toast.makeText(EventTypeEditActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 });

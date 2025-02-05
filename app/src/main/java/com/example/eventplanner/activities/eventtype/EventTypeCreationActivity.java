@@ -16,9 +16,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.dto.eventtype.CreateEventTypeDTO;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
-import com.example.eventplanner.model.EventType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,9 @@ public class EventTypeCreationActivity extends AppCompatActivity {
 
 
     private void loadCategories(Button categoriesButton) {
-        Call<List<GetSolutionCategoryDTO>> call = ClientUtils.solutionCategoryService.getAllAccepted();
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<List<GetSolutionCategoryDTO>> call = ClientUtils.solutionCategoryService.getAllAccepted(auth);
 
         call.enqueue(new Callback<List<GetSolutionCategoryDTO>>() {
             @Override
@@ -117,8 +120,8 @@ public class EventTypeCreationActivity extends AppCompatActivity {
         EditText descriptionText = findViewById(R.id.description);
 
         // validate input data
-        if (!validateField(nameText, "Name is required!")) return;
-        if (!validateField(descriptionText, "Description is required!")) return;
+        if (!ValidationUtils.isFieldValid(nameText, "Name is required!")) return;
+        if (!ValidationUtils.isFieldValid(descriptionText, "Description is required!")) return;
 
         // admin doesn't have to select suggested categories when creating event type
         // in case no appropriate categories are available in that moment
@@ -139,11 +142,13 @@ public class EventTypeCreationActivity extends AppCompatActivity {
         createEventTypeDTO.setDescription(description);
         createEventTypeDTO.setCategoryNames(selectedCategoryNames);
 
-        Call<EventType> call = ClientUtils.eventTypeService.createEventType(createEventTypeDTO);
+        String auth = ClientUtils.getAuthorization(this);
 
-        call.enqueue(new Callback<EventType>() {
+        Call<GetEventTypeDTO> call = ClientUtils.eventTypeService.createEventType(auth, createEventTypeDTO);
+
+        call.enqueue(new Callback<GetEventTypeDTO>() {
             @Override
-            public void onResponse(Call<EventType> call, Response<EventType> response) {
+            public void onResponse(Call<GetEventTypeDTO> call, Response<GetEventTypeDTO> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(EventTypeCreationActivity.this, "Successfully created event type!", Toast.LENGTH_SHORT).show();
 
@@ -153,7 +158,7 @@ public class EventTypeCreationActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<EventType> call, Throwable t) {
+            public void onFailure(Call<GetEventTypeDTO> call, Throwable t) {
                 Toast.makeText(EventTypeCreationActivity.this, "Error creating event type!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -165,14 +170,4 @@ public class EventTypeCreationActivity extends AppCompatActivity {
         finish();
     }
 
-
-    private boolean validateField(EditText field, String errorMessage) {
-        String value = field.getText().toString().trim();
-        if (value.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
-            return false;
-        }
-        return true;
-    }
 }

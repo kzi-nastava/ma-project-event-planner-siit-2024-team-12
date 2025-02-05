@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.ValidationUtils;
 import com.example.eventplanner.dto.location.CreateLocationDTO;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
 
@@ -49,10 +50,10 @@ public class LocationFormFragment extends DialogFragment {
             EditText addressField = view.findViewById(R.id.address);
 
             // validate fields
-            if (!validateField(venueField, "Venue is required!")) return;
-            if (!validateField(addressField, "Address is required!")) return;
-            if (!validateField(cityField, "City is required!")) return;
-            if (!validateField(countryField, "Country is required!")) return;
+            if (!ValidationUtils.isFieldValid(venueField, "Venue is required!")) return;
+            if (!ValidationUtils.isFieldValid(addressField, "Address is required!")) return;
+            if (!ValidationUtils.isFieldValid(cityField, "City is required!")) return;
+            if (!ValidationUtils.isFieldValid(countryField, "Country is required!")) return;
 
             // if valid, save
             String venue = venueField.getText().toString();
@@ -79,14 +80,6 @@ public class LocationFormFragment extends DialogFragment {
     }
 
 
-    private boolean validateField(EditText field, String errorMessage) {
-        String value = field.getText().toString().trim();
-        if (value.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
-            return false;
-        }
-        return true;
-    }
+
 
 }

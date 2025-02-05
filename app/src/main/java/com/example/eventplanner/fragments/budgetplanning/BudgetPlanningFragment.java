@@ -20,7 +20,8 @@ import android.widget.Toast;
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
-import com.example.eventplanner.model.EventType;
+import com.example.eventplanner.dto.user.GetUserDTO;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
 
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class BudgetPlanningFragment extends Fragment {
 
         Button createBtn = view.findViewById(R.id.createBtn);
         createBtn.setOnClickListener(v -> {
-            createEvent();
+            getOrganizer();
         });
 
 
@@ -89,14 +90,16 @@ public class BudgetPlanningFragment extends Fragment {
 
 
     private void loadEventTypes(ArrayAdapter<String> adapter, List<String> eventTypes) {
-        Call<ArrayList<EventType>> call = ClientUtils.eventTypeService.getAllActive();
+        String auth = ClientUtils.getAuthorization(requireContext());
 
-        call.enqueue(new Callback<ArrayList<EventType>>() {
+        Call<ArrayList<GetEventTypeDTO>> call = ClientUtils.eventTypeService.getAllActive(auth);
+
+        call.enqueue(new Callback<ArrayList<GetEventTypeDTO>>() {
             @Override
-            public void onResponse(Call<ArrayList<EventType>> call, Response<ArrayList<EventType>> response) {
+            public void onResponse(Call<ArrayList<GetEventTypeDTO>> call, Response<ArrayList<GetEventTypeDTO>> response) {
                 if (response.isSuccessful()) {
-                    ArrayList<EventType> types = response.body();
-                    for (EventType eventType : types) {
+                    ArrayList<GetEventTypeDTO> types = response.body();
+                    for (GetEventTypeDTO eventType : types) {
                         eventTypes.add(eventType.getName());
                     }
 
@@ -110,7 +113,7 @@ public class BudgetPlanningFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ArrayList<EventType>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<GetEventTypeDTO>> call, Throwable t) {
                 Toast.makeText(getActivity(), "Failed to load event types!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -121,12 +124,13 @@ public class BudgetPlanningFragment extends Fragment {
 
 
     private void createEvent() {
+        String auth = ClientUtils.getAuthorization(requireContext());
+
         String eventType = typeSpinner.getSelectedItem().toString();
 
         viewModel.updateEventAttributes("eventType", eventType);
-        viewModel.updateEventAttributes("organizer", "organizer3@example.com");
 
-        Call<ResponseBody> call = ClientUtils.eventService.createEvent(viewModel.getDto().getValue());
+        Call<ResponseBody> call = ClientUtils.eventService.createEvent(auth, viewModel.getDto().getValue());
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -152,7 +156,9 @@ public class BudgetPlanningFragment extends Fragment {
 
 
     private void loadRecommendedCategories(String eventType, Button categoriesButton) {
-        Call<ArrayList<String>> call = ClientUtils.eventTypeService.getSuggestedCategories(eventType);
+        String auth = ClientUtils.getAuthorization(requireContext());
+
+        Call<ArrayList<String>> call = ClientUtils.eventTypeService.getSuggestedCategories(auth, eventType);
 
         call.enqueue(new Callback<ArrayList<String>>() {
             @Override
@@ -211,6 +217,33 @@ public class BudgetPlanningFragment extends Fragment {
             @Override
             public void onFailure(Call<ArrayList<String>> call, Throwable t) {
                 Toast.makeText(getActivity(), "Failed to load categories", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+    private void getOrganizer() {
+        String authorization = ClientUtils.getAuthorization(requireContext());
+
+        Call<GetUserDTO> call = ClientUtils.authService.getCurrentUser(authorization);
+
+        call.enqueue(new Callback<GetUserDTO>() {
+            @Override
+            public void onResponse(Call<GetUserDTO> call, Response<GetUserDTO> response) {
+                if (response.isSuccessful()) {
+                    GetUserDTO user = response.body();
+                    viewModel.updateEventAttributes("organizer", user.getEmail());
+
+                    createEvent();
+                } else {
+                    Toast.makeText(getActivity(), "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetUserDTO> call, Throwable t) {
+                Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
             }
         });
     }
