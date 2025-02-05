@@ -129,14 +129,6 @@ public class AdminHomepageActivity extends AppCompatActivity {
 
 
 
-                else if (id == R.id.nav_categories) {
-                    Intent intent = new Intent(AdminHomepageActivity.this, CategoriesTableActivity.class);
-                    startActivity(intent);
-
-                }
-
-
-
                 else if (id == R.id.nav_view_profile) {
                     Intent intent = new Intent(AdminHomepageActivity.this, ProfileViewActivity.class);
                     startActivity(intent);

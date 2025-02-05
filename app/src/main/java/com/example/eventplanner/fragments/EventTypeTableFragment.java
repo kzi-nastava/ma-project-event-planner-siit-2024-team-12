@@ -67,9 +67,11 @@ public class EventTypeTableFragment extends Fragment {
 
 
     public void loadEventTypes() {
+        String auth = ClientUtils.getAuthorization(requireContext());
+
         final List<GetEventTypeDTO>[] eventTypes = new List[]{new ArrayList<>()};
 
-        Call<ArrayList<GetEventTypeDTO>> call = ClientUtils.eventTypeService.getAll();
+        Call<ArrayList<GetEventTypeDTO>> call = ClientUtils.eventTypeService.getAll(auth);
         call.enqueue(new Callback<ArrayList<GetEventTypeDTO>>() {
             @Override
             public void onResponse(Call<ArrayList<GetEventTypeDTO>> call, Response<ArrayList<GetEventTypeDTO>> response) {

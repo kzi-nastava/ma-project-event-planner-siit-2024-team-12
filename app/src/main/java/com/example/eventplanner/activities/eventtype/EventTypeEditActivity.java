@@ -137,7 +137,9 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
 
     private void activateEventType(String id, Button activationButton) {
-        Call<ResponseBody> call = ClientUtils.eventTypeService.activateEventType(Long.parseLong(id));
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<ResponseBody> call = ClientUtils.eventTypeService.activateEventType(auth, Long.parseLong(id));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -168,7 +170,9 @@ public class EventTypeEditActivity extends AppCompatActivity {
     }
 
     private void deactivateEventType(String id, Button activationButton) {
-        Call<ResponseBody> call = ClientUtils.eventTypeService.deactivateEventType(Long.parseLong(id));
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<ResponseBody> call = ClientUtils.eventTypeService.deactivateEventType(auth, Long.parseLong(id));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -202,7 +206,9 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
 
     private void loadAcceptedCategories(Button categoriesButton, ArrayList<String> selectedCategoryNames) {
-        Call<List<GetSolutionCategoryDTO>> call = ClientUtils.solutionCategoryService.getAllAccepted();
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<List<GetSolutionCategoryDTO>> call = ClientUtils.solutionCategoryService.getAllAccepted(auth);
 
         call.enqueue(new Callback<List<GetSolutionCategoryDTO>>() {
             @Override
@@ -279,8 +285,10 @@ public class EventTypeEditActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String id = intent.getStringExtra("eventTypeId");
 
+        String auth = ClientUtils.getAuthorization(this);
+
         Log.d("PARAMETRI ", "Params " + dto.getSuggestedCategoryNames());
-        Call<GetEventTypeDTO> call = ClientUtils.eventTypeService.updateEventType(dto, Long.parseLong(id));
+        Call<GetEventTypeDTO> call = ClientUtils.eventTypeService.updateEventType(auth, dto, Long.parseLong(id));
 
         call.enqueue(new Callback<GetEventTypeDTO>() {
             @Override

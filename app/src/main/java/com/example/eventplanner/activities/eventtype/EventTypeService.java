@@ -10,6 +10,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -22,7 +23,7 @@ public interface EventTypeService {
             "Content-Type: application/json"
     })
     @GET("event-types/all")
-    Call<ArrayList<GetEventTypeDTO>> getAll();
+    Call<ArrayList<GetEventTypeDTO>> getAll(@Header("Authorization") String token);
 
 
     @Headers({
@@ -30,25 +31,26 @@ public interface EventTypeService {
             "Content-Type: application/json"
     })
     @POST("event-types")
-    Call<GetEventTypeDTO> createEventType(@Body CreateEventTypeDTO createEventTypeDTO);
+    Call<GetEventTypeDTO> createEventType(@Header("Authorization") String token, @Body CreateEventTypeDTO createEventTypeDTO);
 
 
     @PUT("event-types/{id}")
-    Call<GetEventTypeDTO> updateEventType(@Body UpdateEventTypeDTO updateEventTypeDTO, @Path("id") Long id);
+    Call<GetEventTypeDTO> updateEventType(@Header("Authorization") String token, @Body UpdateEventTypeDTO updateEventTypeDTO, @Path("id") Long id);
 
 
     @PUT("event-types/{id}/activate")
-    Call<ResponseBody> activateEventType(@Path("id") Long id);
+    Call<ResponseBody> activateEventType(@Header("Authorization") String token, @Path("id") Long id);
 
 
     @PUT("event-types/{id}/deactivate")
-    Call<ResponseBody> deactivateEventType(@Path("id") Long id);
+    Call<ResponseBody> deactivateEventType(@Header("Authorization") String token, @Path("id") Long id);
 
 
     @GET("event-types/all-active")
-    Call<ArrayList<GetEventTypeDTO>> getAllActive();
+    Call<ArrayList<GetEventTypeDTO>> getAllActive(@Header("Authorization") String token);
 
 
     @GET("event-types/{eventTypeName}/suggested-categories")
-    Call<ArrayList<String>> getSuggestedCategories(@Path("eventTypeName") String eventTypeName);
+    Call<ArrayList<String>> getSuggestedCategories(@Header("Authorization") String token,
+                                                   @Path("eventTypeName") String eventTypeName);
 }

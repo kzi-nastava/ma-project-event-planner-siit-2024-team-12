@@ -90,7 +90,9 @@ public class BudgetPlanningFragment extends Fragment {
 
 
     private void loadEventTypes(ArrayAdapter<String> adapter, List<String> eventTypes) {
-        Call<ArrayList<GetEventTypeDTO>> call = ClientUtils.eventTypeService.getAllActive();
+        String auth = ClientUtils.getAuthorization(requireContext());
+
+        Call<ArrayList<GetEventTypeDTO>> call = ClientUtils.eventTypeService.getAllActive(auth);
 
         call.enqueue(new Callback<ArrayList<GetEventTypeDTO>>() {
             @Override
@@ -122,11 +124,13 @@ public class BudgetPlanningFragment extends Fragment {
 
 
     private void createEvent() {
+        String auth = ClientUtils.getAuthorization(requireContext());
+
         String eventType = typeSpinner.getSelectedItem().toString();
 
         viewModel.updateEventAttributes("eventType", eventType);
 
-        Call<ResponseBody> call = ClientUtils.eventService.createEvent(viewModel.getDto().getValue());
+        Call<ResponseBody> call = ClientUtils.eventService.createEvent(auth, viewModel.getDto().getValue());
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -152,7 +156,9 @@ public class BudgetPlanningFragment extends Fragment {
 
 
     private void loadRecommendedCategories(String eventType, Button categoriesButton) {
-        Call<ArrayList<String>> call = ClientUtils.eventTypeService.getSuggestedCategories(eventType);
+        String auth = ClientUtils.getAuthorization(requireContext());
+
+        Call<ArrayList<String>> call = ClientUtils.eventTypeService.getSuggestedCategories(auth, eventType);
 
         call.enqueue(new Callback<ArrayList<String>>() {
             @Override

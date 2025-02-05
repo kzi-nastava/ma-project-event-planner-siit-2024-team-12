@@ -60,7 +60,9 @@ public class EventTypeCreationActivity extends AppCompatActivity {
 
 
     private void loadCategories(Button categoriesButton) {
-        Call<List<GetSolutionCategoryDTO>> call = ClientUtils.solutionCategoryService.getAllAccepted();
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<List<GetSolutionCategoryDTO>> call = ClientUtils.solutionCategoryService.getAllAccepted(auth);
 
         call.enqueue(new Callback<List<GetSolutionCategoryDTO>>() {
             @Override
@@ -140,7 +142,9 @@ public class EventTypeCreationActivity extends AppCompatActivity {
         createEventTypeDTO.setDescription(description);
         createEventTypeDTO.setCategoryNames(selectedCategoryNames);
 
-        Call<GetEventTypeDTO> call = ClientUtils.eventTypeService.createEventType(createEventTypeDTO);
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<GetEventTypeDTO> call = ClientUtils.eventTypeService.createEventType(auth, createEventTypeDTO);
 
         call.enqueue(new Callback<GetEventTypeDTO>() {
             @Override
