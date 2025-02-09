@@ -8,24 +8,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.charts.EventAttendanceDTO;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
+import com.example.eventplanner.dto.charts.EventRatingsDTO;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -39,29 +28,32 @@ import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Image;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-
-public class AttendanceChart extends AppCompatActivity {
-
+public class RatingsChart extends AppCompatActivity {
     private BarChart barChart;
     private ArrayList<String> eventNames = new ArrayList<>();
-    private ArrayList<EventAttendanceDTO> eventList = new ArrayList<>();
-
+    private ArrayList<EventRatingsDTO> eventList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_attendance_chart);
+        setContentView(R.layout.activity_ratings_chart);
 
         barChart = findViewById(R.id.barChart);
 
-        loadEventAttendance();
+        loadEventRatings();
 
         Button pdfBtn = findViewById(R.id.pdfBtn);
         pdfBtn.setOnClickListener(v -> {
@@ -70,14 +62,16 @@ public class AttendanceChart extends AppCompatActivity {
                     generatePDF(eventList);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
-                    Toast.makeText(AttendanceChart.this, "Error generating PDF!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error generating PDF!", Toast.LENGTH_SHORT).show();
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
                 }
             } else {
-                Toast.makeText(AttendanceChart.this, "Please wait, loading event data...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Loading data, please wait...", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
+
 
     public void closeForm(View view) {
         setResult(RESULT_CANCELED);
@@ -85,81 +79,77 @@ public class AttendanceChart extends AppCompatActivity {
     }
 
 
-    private void loadEventAttendance() {
+    private void loadEventRatings() {
         String auth = ClientUtils.getAuthorization(this);
+        Call<ArrayList<EventRatingsDTO>> call = ClientUtils.chartService.getEventRatings(auth);
 
-        Call<ArrayList<EventAttendanceDTO>> call = ClientUtils.chartService.getEventAttendance(auth);
-
-        call.enqueue(new Callback<ArrayList<EventAttendanceDTO>>() {
+        call.enqueue(new Callback<ArrayList<EventRatingsDTO>>() {
             @Override
-            public void onResponse(Call<ArrayList<EventAttendanceDTO>> call, Response<ArrayList<EventAttendanceDTO>> response) {
+            public void onResponse(Call<ArrayList<EventRatingsDTO>> call, Response<ArrayList<EventRatingsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     eventList = response.body();
                     setBarChart(eventList);
                 } else {
-                    Toast.makeText(AttendanceChart.this, "No data available!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RatingsChart.this, "No data available!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<ArrayList<EventAttendanceDTO>> call, Throwable t) {
-                Toast.makeText(AttendanceChart.this, "Failed to load event attendance!", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<ArrayList<EventRatingsDTO>> call, Throwable t) {
+                Toast.makeText(RatingsChart.this, "Failed to load event ratings!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
 
 
-    private void setBarChart(ArrayList<EventAttendanceDTO> eventList) {
-        ArrayList<BarEntry> stackedEntries = new ArrayList<>();
-        eventNames.clear(); // avoid duplicate event names
+    private void setBarChart(ArrayList<EventRatingsDTO> eventList) {
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        eventNames.clear();
 
-        // set limit to 15 bars for better readability
-        // other events will be included in detailed pdf report
         int limit = Math.min(eventList.size(), 15);
 
         for (int i = 0; i < limit; i++) {
-            EventAttendanceDTO event = eventList.get(i);
+            EventRatingsDTO event = eventList.get(i);
             eventNames.add(event.getEventName());
 
-            float maxGuests = event.getMaxGuests();
-            float attendance = event.getAttendance();
-            float percentage = event.getPercentage().floatValue();
-
-            stackedEntries.add(new BarEntry(i, new float[]{maxGuests, attendance, percentage}));
+            float avgRating = event.getAverageRating().floatValue();
+            entries.add(new BarEntry(i, avgRating));
         }
 
-        BarDataSet stackedSet = new BarDataSet(stackedEntries, "");
-        stackedSet.setColors(new int[]{Color.parseColor("#FF9999"), Color.parseColor("#66B3FF"), Color.parseColor("#c899c9")});
-        stackedSet.setStackLabels(new String[]{"Max guests", "Attendance", "Percentage (%)"});
+        BarDataSet dataSet = new BarDataSet(entries, "Average rating");
+        dataSet.setColor(Color.parseColor("#c899c9"));
+        dataSet.setValueTextSize(10f);
 
-        BarData barData = new BarData(stackedSet);
+        BarData barData = new BarData(dataSet);
         barData.setBarWidth(0.8f);
-        barData.setValueTextSize(9f);
 
         barChart.setData(barData);
         barChart.getDescription().setEnabled(false);
         barChart.setFitBars(true);
         barChart.invalidate();
 
-        // configure x axis
         XAxis xAxis = barChart.getXAxis();
         xAxis.setValueFormatter(new IndexAxisValueFormatter(eventNames));
         xAxis.setGranularity(1f);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setLabelRotationAngle(270f);
-        xAxis.setTextSize(14f);
-        xAxis.setDrawLabels(true);
+        xAxis.setTextSize(12f);
         xAxis.setGranularityEnabled(true);
         xAxis.setAvoidFirstLastClipping(false);
         xAxis.setLabelCount(limit);
 
         YAxis yAxis = barChart.getAxisLeft();
         yAxis.setAxisMinimum(0f);
+        yAxis.setAxisMaximum(5f);
+        yAxis.setLabelCount(11, true);
+        yAxis.setGranularity(0.5f);
+        yAxis.setGranularityEnabled(true);
 
-        barChart.setExtraBottomOffset(250f);
         barChart.getAxisRight().setEnabled(false);
+        barChart.setExtraBottomOffset(250f);
         barChart.setExtraTopOffset(30f);
+        barChart.setExtraLeftOffset(12f);
 
         Legend legend = barChart.getLegend();
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
@@ -170,11 +160,11 @@ public class AttendanceChart extends AppCompatActivity {
         legend.setFormSize(16f);
         legend.setXEntrySpace(20f);
         legend.setXOffset(-25f);
-
     }
 
 
-    private void generatePDF(ArrayList<EventAttendanceDTO> eventList) throws FileNotFoundException {
+
+    private void generatePDF(ArrayList<EventRatingsDTO> eventList) throws FileNotFoundException, MalformedURLException {
         String directoryPath = getExternalFilesDir(null) + "/";
         String fileName = getNextReportFileName(directoryPath);
         String filePath = directoryPath + fileName;
@@ -184,18 +174,13 @@ public class AttendanceChart extends AppCompatActivity {
         Document document = new Document(pdfDoc);
 
         try {
-
-            Paragraph title = new Paragraph("Event attendance report")
+            document.add(new Paragraph("Event ratings report")
                     .setFontSize(18)
                     .setBold()
-                    .setTextAlignment(TextAlignment.LEFT);
-
-            document.add(title);
+                    .setTextAlignment(TextAlignment.LEFT));
             document.add(new Paragraph("\n"));
 
-
-            // add chart image
-            File chartImage = saveChartToImage(); // Sačuvaj novi grafik
+            File chartImage = saveChartToImage(); 
 
             if (chartImage != null && chartImage.exists()) {
                 Image chart = new Image(ImageDataFactory.create(chartImage.getAbsolutePath()));
@@ -205,32 +190,35 @@ public class AttendanceChart extends AppCompatActivity {
             }
 
 
-            // add detailed table
-            Table table = new Table(4);
+
+            Table table = new Table(7);
             table.setWidth(UnitValue.createPercentValue(100));
 
-            // set header
             DeviceRgb headerColor = new DeviceRgb(44, 62, 80);
             DeviceRgb white = new DeviceRgb(255, 255, 255);
-            table.addCell(new Cell().add(new Paragraph("Event name")).setBackgroundColor(headerColor).setFontColor(white));
-            table.addCell(new Cell().add(new Paragraph("Max guests")).setBackgroundColor(headerColor).setFontColor(white));
-            table.addCell(new Cell().add(new Paragraph("Attended")).setBackgroundColor(headerColor).setFontColor(white));
-            table.addCell(new Cell().add(new Paragraph("Attendance %")).setBackgroundColor(headerColor).setFontColor(white));
+            String[] headers = {"Event name", "1", "2", "3", "4", "5", "Average rating"};
 
-            DeviceRgb firstColumnColor = new DeviceRgb(44, 62, 80);
-
-            // populate table
-            for (EventAttendanceDTO event : eventList) {
-                table.addCell(new Cell().add(new Paragraph(event.getEventName())).setBackgroundColor(firstColumnColor).setFontColor(white));
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(event.getMaxGuests()))));
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(event.getAttendance()))));
-                table.addCell(new Cell().add(new Paragraph(event.getPercentage() + " %")));
+            for (String header : headers) {
+                table.addCell(new Cell().add(new Paragraph(header))
+                        .setBackgroundColor(headerColor)
+                        .setFontColor(white)
+                        .setBold()
+                        .setTextAlignment(TextAlignment.LEFT));
             }
 
+            for (EventRatingsDTO event : eventList) {
+                table.addCell(new Cell().add(new Paragraph(event.getEventName()))
+                        .setBackgroundColor(headerColor)
+                        .setFontColor(white));
+                for (int i = 1; i <= 5; i++) {
+                    int count = event.getRatingCounts().getOrDefault(i, 0);
+                    table.addCell(new Cell().add(new Paragraph(String.valueOf(count)))
+                            .setTextAlignment(TextAlignment.LEFT));
+                }
+                table.addCell(new Cell().add(new Paragraph(String.format("%.2f", event.getAverageRating())))
+                        .setTextAlignment(TextAlignment.LEFT));
+            }
             document.add(table);
-
-        } catch (Exception e) {
-            e.printStackTrace();
         } finally {
             document.close();
         }
@@ -239,10 +227,9 @@ public class AttendanceChart extends AppCompatActivity {
         openGeneratedPDF(filePath);
     }
 
-    // reports are stored in format Event_Attendance_ReportX , X = number of report
     private String getNextReportFileName(String directoryPath) {
         File directory = new File(directoryPath);
-        File[] files = directory.listFiles((dir, name) -> name.startsWith("Event_Attendance_Report") && name.endsWith(".pdf"));
+        File[] files = directory.listFiles((dir, name) -> name.startsWith("Event_Ratings_Report") && name.endsWith(".pdf"));
 
         int highestNumber = 0;
 
@@ -259,7 +246,7 @@ public class AttendanceChart extends AppCompatActivity {
         }
 
         int nextReportNumber = highestNumber + 1;
-        return "Event_Attendance_Report" + nextReportNumber + ".pdf";
+        return "Event_Ratings_Report" + nextReportNumber + ".pdf";
     }
 
     private void openGeneratedPDF(String filePath) {
@@ -274,6 +261,7 @@ public class AttendanceChart extends AppCompatActivity {
             Toast.makeText(this, "PDF not found!", Toast.LENGTH_LONG).show();
         }
     }
+
 
 
     private File saveChartToImage() {
@@ -292,4 +280,6 @@ public class AttendanceChart extends AppCompatActivity {
         }
         return chartFile;
     }
+
+
 }

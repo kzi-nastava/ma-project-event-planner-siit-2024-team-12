@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.calendar.CalendarActivity;
 import com.example.eventplanner.activities.charts.AttendanceChart;
+import com.example.eventplanner.activities.charts.RatingsChart;
 import com.example.eventplanner.activities.eventtype.EventTypeCreationActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
@@ -140,6 +141,13 @@ public class AdminHomepageActivity extends AppCompatActivity {
                     Intent intent = new Intent(AdminHomepageActivity.this, AttendanceChart.class);
                     startActivity(intent);
                 }
+
+
+                else if (id == R.id.nav_ratings_chart) {
+                    Intent intent = new Intent(AdminHomepageActivity.this, RatingsChart.class);
+                    startActivity(intent);
+                }
+
 
                 // Close the drawer after an item is selected
                 drawerLayout.closeDrawers();
