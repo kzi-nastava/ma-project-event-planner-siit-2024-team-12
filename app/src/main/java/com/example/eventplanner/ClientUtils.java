@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.example.eventplanner.activities.auth.AuthService;
 import com.example.eventplanner.activities.business.BusinessService;
+import com.example.eventplanner.activities.charts.ChartService;
 import com.example.eventplanner.activities.event.EventService;
 import com.example.eventplanner.activities.eventtype.EventTypeService;
 import com.example.eventplanner.activities.profile.UserService;
@@ -67,5 +68,7 @@ public class ClientUtils {
     public static UserService userService = retrofit.create(UserService.class);
 
     public static BusinessService businessService = retrofit.create(BusinessService.class);
+
+    public static ChartService chartService = retrofit.create(ChartService.class);
 
 }

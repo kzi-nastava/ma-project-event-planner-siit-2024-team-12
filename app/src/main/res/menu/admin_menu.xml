@@ -39,6 +39,16 @@
     </group>
 
 
+    <group android:id="@+id/charts">
+        <item
+            android:id="@+id/nav_attendance_chart"
+            android:title="@string/attendance_chart" />
+
+        <item
+            android:id="@+id/nav_ratings_chart"
+            android:title="@string/ratings_chart"/>
+    </group>
+
 
 
     <item

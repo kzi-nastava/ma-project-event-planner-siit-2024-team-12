@@ -269,5 +269,7 @@
     <string name="close">Close</string>
     <string name="events_title">Events</string>
     <string name="explore_public_events">Explore public events</string>
+    <string name="attendance_chart">Event attendance chart\n</string>
+    <string name="ratings_chart">Event ratings chart</string>
 
 </resources>
