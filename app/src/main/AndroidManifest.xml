@@ -17,6 +17,12 @@
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
         <activity
+            android:name=".activities.charts.RatingsChart"
+            android:exported="false" />
+        <activity
+            android:name=".activities.charts.AttendanceChart"
+            android:exported="false" />
+        <activity
             android:name=".activities.favorites.FavoriteServicesActivity"
             android:exported="false" />
         <activity
@@ -123,6 +129,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.eventplanner.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>
