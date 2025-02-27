@@ -1,6 +1,7 @@
 package com.example.eventplanner.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,12 +9,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import android.content.Intent;
+
+import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.activities.event.EventDetailsActivity;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.dto.event.FavEventDTO;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAdapter.ViewHolder> {
     private List<FavEventDTO> events;
@@ -57,10 +68,42 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
         }
 
         holder.seeMore.setOnClickListener(v -> {
-
+            Context context = v.getContext();
+            loadEventDetails(context, event.getId());
         });
     }
 
+
+
+    void loadEventDetails(Context context, Long eventId) {
+        String token = ClientUtils.getAuthorization(context);
+
+        Call<EventDetailsDTO> call = ClientUtils.eventService.getEvent(token, eventId);
+
+        call.enqueue(new Callback<EventDetailsDTO>() {
+            @Override
+            public void onResponse(Call<EventDetailsDTO> call, Response<EventDetailsDTO> response) {
+                if (response.isSuccessful()) {
+                    EventDetailsDTO event = response.body();
+
+                    Intent intent = new Intent(context, EventDetailsActivity.class);
+                    intent.putExtra("name", event.getName());
+                    intent.putExtra("eventType", event.getEventType());
+                    intent.putExtra("date", event.getDate().toString());
+                    intent.putExtra("maxGuests", event.getMaxGuests());
+                    intent.putExtra("description", event.getDescription());
+                    intent.putExtra("location", event.getLocation().getAddress() + ", " +
+                            event.getLocation().getCity() + ", " + event.getLocation().getCountry());
+                    context.startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventDetailsDTO> call, Throwable t) {
+
+            }
+        });
+    }
 
 
 
