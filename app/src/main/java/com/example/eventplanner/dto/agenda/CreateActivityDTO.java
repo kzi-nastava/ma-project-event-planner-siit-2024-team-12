@@ -3,8 +3,10 @@ package com.example.eventplanner.dto.agenda;
 
 import com.example.eventplanner.dto.event.CreateEventDTO;
 
+import java.io.Serializable;
+
 // activity format sent from front
-public class CreateActivityDTO {
+public class CreateActivityDTO implements Serializable {
     private String time;
     private String name;
     private String description;

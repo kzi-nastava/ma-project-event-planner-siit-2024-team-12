@@ -183,7 +183,7 @@
             app:layout_constraintVertical_bias="0.789" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/seeAgenda"
             android:layout_width="114dp"
             android:layout_height="24dp"
             android:background="@drawable/display_field"

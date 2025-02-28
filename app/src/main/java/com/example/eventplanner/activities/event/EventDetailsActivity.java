@@ -7,6 +7,7 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +19,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.dto.agenda.CreateActivityDTO;
+import com.example.eventplanner.fragments.eventcreation.AgendaDialogFragment;
+import com.example.eventplanner.model.Activity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,8 +33,11 @@ import org.osmdroid.views.overlay.Marker;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
+
 
 public class EventDetailsActivity extends AppCompatActivity {
 
@@ -83,9 +90,22 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
         }
 
+
+        Button seeAgendaButton = findViewById(R.id.seeAgenda);
+        List<CreateActivityDTO> activities = (List<CreateActivityDTO>) intent.getSerializableExtra("activities");
+        List<Activity> adapterActivities = new ArrayList<>();
+
+        for (CreateActivityDTO dto : activities) {
+            Activity activity = new Activity(dto.getTime(), dto.getName(), dto.getDescription(), dto.getLocation());
+            adapterActivities.add(activity);
+        }
+
+        seeAgendaButton.setOnClickListener(v -> {
+            AgendaDialogFragment agendaDialog = new AgendaDialogFragment(adapterActivities);
+            agendaDialog.show(getSupportFragmentManager(), "AgendaDialog");
+        });
+
     }
-
-
 
 
     private void setupWebView() {

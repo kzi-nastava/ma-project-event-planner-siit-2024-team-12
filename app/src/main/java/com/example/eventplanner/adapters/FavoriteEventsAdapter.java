@@ -20,6 +20,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.dto.event.FavEventDTO;
 
+import java.io.Serializable;
 import java.util.List;
 
 import retrofit2.Call;
@@ -94,6 +95,7 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
                     intent.putExtra("description", event.getDescription());
                     intent.putExtra("location", event.getLocation().getAddress() + ", " +
                             event.getLocation().getCity() + ", " + event.getLocation().getCountry());
+                    intent.putExtra("activities", (Serializable) event.getActivities());
                     context.startActivity(intent);
                 }
             }

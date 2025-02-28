@@ -1,5 +1,9 @@
 package com.example.eventplanner.adapters;
 
+import android.graphics.Typeface;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,9 +46,21 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaViewHolder> {
             holder.activityDescription.setVisibility(View.VISIBLE);
             holder.activityVenue.setVisibility(View.VISIBLE);
 
-            holder.activityName.setText(activity.getName());
-            holder.activityDescription.setText(activity.getDescription());
-            holder.activityVenue.setText(activity.getLocation());
+            // bold "Activity name*" part in table
+            String name = holder.itemView.getContext().getString(R.string.activity_name_in_table, activity.getName());
+            SpannableString spannable = new SpannableString(name);
+            spannable.setSpan(new StyleSpan(Typeface.BOLD), 0, 11, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.activityName.setText(spannable);
+
+            String description = holder.itemView.getContext().getString(R.string.description_in_table_row, activity.getDescription());
+            SpannableString spannable2 = new SpannableString(description);
+            spannable2.setSpan(new StyleSpan(Typeface.BOLD), 0, 11, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.activityDescription.setText(spannable2);
+
+            String venue = holder.itemView.getContext().getString(R.string.location_in_table, activity.getLocation());
+            SpannableString spannable3 = new SpannableString(venue);
+            spannable3.setSpan(new StyleSpan(Typeface.BOLD), 0, 11, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.activityVenue.setText(spannable3);
 
             holder.expandArrow.setRotation(180f);
         } else {
