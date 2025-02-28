@@ -1,6 +1,10 @@
 package com.example.eventplanner.activities.event;
 
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,14 +18,27 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
+import com.example.eventplanner.dto.charts.EventAttendanceDTO;
 import com.example.eventplanner.fragments.eventcreation.AgendaDialogFragment;
 import com.example.eventplanner.model.Activity;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,6 +47,10 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -104,6 +125,17 @@ public class EventDetailsActivity extends AppCompatActivity {
             AgendaDialogFragment agendaDialog = new AgendaDialogFragment(adapterActivities);
             agendaDialog.show(getSupportFragmentManager(), "AgendaDialog");
         });
+
+
+        Button pdfBtn = findViewById(R.id.pdfBtn);
+        pdfBtn.setOnClickListener(v -> {
+            try {
+                generatePdf();
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
 
     }
 
@@ -184,4 +216,117 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
         }).start();
     }
+
+
+    private void generatePdf() throws FileNotFoundException {
+        String directoryPath = getExternalFilesDir(null) + "/";
+        String fileName = getNextReportFileName(directoryPath);
+        String filePath = directoryPath + fileName;
+
+        PdfWriter writer = new PdfWriter(filePath);
+        PdfDocument pdfDoc = new PdfDocument(writer);
+        Document document = new Document(pdfDoc);
+
+        Intent intent = getIntent();
+        String eventName = intent.getStringExtra("name");
+        String eventType = intent.getStringExtra("eventType");
+        String eventDate = intent.getStringExtra("date");
+        String maxGuests = intent.getStringExtra("maxGuests");
+        String description = intent.getStringExtra("description");
+        String location = intent.getStringExtra("location");
+        List<CreateActivityDTO> activities = (List<CreateActivityDTO>) intent.getSerializableExtra("activities");
+
+
+        try {
+
+            Paragraph title = new Paragraph(eventName)
+                    .setFontSize(18)
+                    .setBold()
+                    .setTextAlignment(TextAlignment.LEFT);
+
+            document.add(title);
+            document.add(new Paragraph("\n"));
+
+
+            document.add(new Paragraph("Event type: " + eventType).setFontSize(12));
+            document.add(new Paragraph("Date: " + eventDate).setFontSize(12));
+            document.add(new Paragraph("Max guests: " + maxGuests).setFontSize(12));
+            document.add(new Paragraph("Description: " + description).setFontSize(12));
+            document.add(new Paragraph("Location: " + location).setFontSize(12));
+            document.add(new Paragraph("\nAgenda:\n"));
+
+
+            // add detailed table
+            Table table = new Table(4);
+            table.setWidth(UnitValue.createPercentValue(100));
+
+            // set header
+            DeviceRgb headerColor = new DeviceRgb(44, 62, 80);
+            DeviceRgb white = new DeviceRgb(255, 255, 255);
+            table.addCell(new Cell().add(new Paragraph("Time")).setBackgroundColor(headerColor).setFontColor(white));
+            table.addCell(new Cell().add(new Paragraph("Activity name")).setBackgroundColor(headerColor).setFontColor(white));
+            table.addCell(new Cell().add(new Paragraph("Description")).setBackgroundColor(headerColor).setFontColor(white));
+            table.addCell(new Cell().add(new Paragraph("Location")).setBackgroundColor(headerColor).setFontColor(white));
+
+            DeviceRgb firstColumnColor = new DeviceRgb(44, 62, 80);
+
+            // populate table
+            for (CreateActivityDTO activityDTO : activities) {
+                table.addCell(new Cell().add(new Paragraph(activityDTO.getTime())).setBackgroundColor(firstColumnColor).setFontColor(white));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(activityDTO.getName()))));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(activityDTO.getDescription()))));
+                table.addCell(new Cell().add(new Paragraph(activityDTO.getLocation())));
+            }
+
+            document.add(table);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            document.close();
+        }
+
+        // open newly created pdf file
+        openGeneratedPDF(filePath);
+
+
+    }
+
+
+
+    private String getNextReportFileName(String directoryPath) {
+        File directory = new File(directoryPath);
+        File[] files = directory.listFiles((dir, name) -> name.startsWith("Details_") && name.endsWith(".pdf"));
+
+        int highestNumber = 0;
+
+        if (files != null) {
+            for (File file : files) {
+                String fileName = file.getName();
+                try {
+                    String numberPart = fileName.replaceAll("[^0-9]", "");
+                    int fileNumber = Integer.parseInt(numberPart);
+                    highestNumber = Math.max(highestNumber, fileNumber);
+                } catch (NumberFormatException e) {
+                }
+            }
+        }
+
+        int nextReportNumber = highestNumber + 1;
+        return "Details_" + nextReportNumber + ".pdf";
+    }
+
+    private void openGeneratedPDF(String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            Uri uri = FileProvider.getUriForFile(this, "com.example.eventplanner.provider", file);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "application/pdf");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "PDF not found!", Toast.LENGTH_LONG).show();
+        }
+    }
+
 }
