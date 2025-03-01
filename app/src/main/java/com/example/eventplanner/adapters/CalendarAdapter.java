@@ -1,38 +1,50 @@
 package com.example.eventplanner.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.event.EventDetailsActivity;
+import com.example.eventplanner.dto.event.EventDetailsDTO;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHolder> {
     private List<String> days;
-    private HashMap<String, String> acceptedEvents;
-    private HashMap<String, String> createdEvents;
+    private HashMap<String, List<String>> acceptedEvents;
+    private HashMap<String, List<String>> createdEvents;
     private int month, year;
 
-    public CalendarAdapter(List<String> days, HashMap<String, String> acceptedEvents,
-                           HashMap<String, String> createdEvents, int month, int year) {
+
+    public CalendarAdapter(List<String> days, HashMap<String, List<String>> acceptedEvents,
+                           HashMap<String, List<String>> createdEvents, int month, int year) {
         this.days = days;
         this.acceptedEvents = acceptedEvents;
         this.createdEvents = createdEvents;
         this.month = month;
         this.year = year;
     }
-
-
 
 
     @Override
@@ -86,21 +98,28 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         String noEvents = context.getString(R.string.no_events);
         String close = context.getString(R.string.close);
 
-        String acceptedEvent = acceptedEvents.getOrDefault(date, noEvents);
-        String createdEvent = createdEvents.getOrDefault(date, noEvents);
+        List<String> acceptedEventList = acceptedEvents.getOrDefault(date, new ArrayList<>());
+        List<String> createdEventList = createdEvents.getOrDefault(date, new ArrayList<>());
 
-        // set up the dialog layout
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_events, null);
 
-        // find the TextViews where the events will be displayed
         TextView acceptedEventsList = dialogView.findViewById(R.id.acceptedEventsList);
         TextView createdEventsList = dialogView.findViewById(R.id.createdEventsList);
 
-        // set the events in the respective columns
-        acceptedEventsList.setText(acceptedEvent);
-        createdEventsList.setText(createdEvent);
+        String acceptedEventsText = acceptedEventList.isEmpty() ? noEvents : String.join("\n", acceptedEventList);
+        String createdEventsText = createdEventList.isEmpty() ? noEvents : String.join("\n", createdEventList);
 
-        // create and show the dialog
+        acceptedEventsList.setText(acceptedEventsText);
+        createdEventsList.setText(createdEventsText);
+
+        acceptedEventsList.setOnClickListener(v -> {
+            showEventSelectionDialog(context, "Select event to view details:", acceptedEventList);
+        });
+
+        createdEventsList.setOnClickListener(v -> {
+            showEventSelectionDialog(context, "Select event to view details:", createdEventList);
+        });
+
         TextView dialogTitle = new TextView(context);
         dialogTitle.setText(date + "   " + events);
         dialogTitle.setTextSize(22);
@@ -116,6 +135,52 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
     }
 
 
+    private void showEventSelectionDialog(Context context, String title, List<String> eventList) {
+        String[] eventArray = eventList.toArray(new String[0]);
+
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setItems(eventArray, (dialog, which) -> {
+                    String selectedEvent = eventArray[which];
+                    findByName(context, selectedEvent);
+                })
+                .show();
+    }
+
+
+    private void findByName(Context context, String eventName) {
+        String auth = ClientUtils.getAuthorization(context);
+
+        Call<EventDetailsDTO> call = ClientUtils.eventService.findByName(auth, eventName);
+        call.enqueue(new Callback<EventDetailsDTO>() {
+            @Override
+            public void onResponse(Call<EventDetailsDTO> call, Response<EventDetailsDTO> response) {
+                if (response.isSuccessful()) {
+
+                    EventDetailsDTO event = response.body();
+                    Intent intent = new Intent(context, EventDetailsActivity.class);
+
+                    intent.putExtra("id", event.getId());
+                    intent.putExtra("name", event.getName());
+                    intent.putExtra("eventType", event.getEventType());
+                    intent.putExtra("date", event.getDate().toString());
+                    intent.putExtra("maxGuests", event.getMaxGuests());
+                    intent.putExtra("description", event.getDescription());
+                    intent.putExtra("location", event.getLocation().getAddress() + ", " +
+                            event.getLocation().getCity() + ", " + event.getLocation().getCountry());
+                    intent.putExtra("activities", (Serializable) event.getActivities());
+
+                    context.startActivity(intent);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventDetailsDTO> call, Throwable t) {
+
+            }
+        });
+    }
 
 
     @NonNull
@@ -131,7 +196,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         return days.size();
     }
 
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView dayText;
         LinearLayout background;
@@ -145,9 +209,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         }
     }
 
-
-    public void updateData(List<String> days, HashMap<String, String> acceptedEvents,
-                           HashMap<String, String> createdEvents, int month, int year) {
+    public void updateData(List<String> days, HashMap<String, List<String>> acceptedEvents, HashMap<String, List<String>> createdEvents, int month, int year) {
         this.days = days;
         this.acceptedEvents = acceptedEvents;
         this.createdEvents = createdEvents;
@@ -155,4 +217,5 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         this.year = year;
         notifyDataSetChanged();
     }
+
 }
