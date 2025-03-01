@@ -72,4 +72,10 @@ public interface UserService {
                                   @Path("email") String email,
                                   @Query("eventId") Long eventId);
 
+
+    @DELETE("users/{email}/remove-favorite-event")
+    Call<Void> removeFromFavorites(@Header("Authorization") String token,
+                                   @Path("email") String email,
+                                   @Query("eventId") Long eventId);
+
 }

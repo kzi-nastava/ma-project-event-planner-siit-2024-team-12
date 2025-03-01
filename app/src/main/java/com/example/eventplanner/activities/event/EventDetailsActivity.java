@@ -26,6 +26,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
 import com.example.eventplanner.dto.charts.EventAttendanceDTO;
 import com.example.eventplanner.dto.event.FavEventDTO;
@@ -72,7 +73,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private WebView mapWebView;
     private TextView name, eventType, date, maxGuests, description, location;
-    private String currentEventId;
+    private Long currentEventId;
     private Boolean isFavorite;
     ImageView fav, favOutline;
 
@@ -94,8 +95,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         ImageView exitBtn = findViewById(R.id.exitBtn);
         exitBtn.setOnClickListener(v -> {
-            setResult(RESULT_CANCELED);
-            finish();
+            Intent intent = new Intent(EventDetailsActivity.this, FavoriteEventsActivity.class);
+            startActivity(intent);
         });
 
 
@@ -109,13 +110,14 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-            currentEventId = intent.getStringExtra("id");
+            currentEventId = intent.getLongExtra("id", 0L);
             name.setText(intent.getStringExtra("name"));
             eventType.setText(intent.getStringExtra("eventType"));
             date.setText(intent.getStringExtra("date"));
             maxGuests.setText(intent.getStringExtra("maxGuests"));
             description.setText(intent.getStringExtra("description"));
             String locationText = intent.getStringExtra("location");
+
 
             if (locationText != null && !locationText.trim().isEmpty()) {
                 location.setText(locationText);
@@ -157,6 +159,10 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         favOutline.setOnClickListener(v -> {
             addToFavorites();
+        });
+
+        fav.setOnClickListener(v -> {
+            removeFromFavorites();
         });
 
     }
@@ -362,7 +368,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             return;
         }
 
-        Call<ResponseBody> call = ClientUtils.userService.addToFavorites(auth, userEmail, Long.parseLong(currentEventId));
+        Call<ResponseBody> call = ClientUtils.userService.addToFavorites(auth, userEmail, currentEventId);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -391,7 +397,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         String email = pref.getString("email", "a");
 
-        Call<Boolean> call = ClientUtils.userService.isEventFavorite(auth, email, Long.parseLong(currentEventId));
+        Call<Boolean> call = ClientUtils.userService.isEventFavorite(auth, email, currentEventId);
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -410,6 +416,38 @@ public class EventDetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
                 Toast.makeText(EventDetailsActivity.this, "Failed to check if favorite!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void removeFromFavorites() {
+        String auth = ClientUtils.getAuthorization(this);
+
+        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String email = pref.getString("email", "a");
+
+        if (currentEventId == null) {
+            return;
+        }
+
+        Call<Void> call = ClientUtils.userService.removeFromFavorites(auth, email, currentEventId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    fav.setVisibility(View.GONE);
+                    favOutline.setVisibility(View.VISIBLE);
+                    Toast.makeText(EventDetailsActivity.this, "Removed event from favorites!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(EventDetailsActivity.this, "Unsuccessful", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(EventDetailsActivity.this, "Failed to remove event from favorites!", Toast.LENGTH_SHORT).show();
             }
         });
     }

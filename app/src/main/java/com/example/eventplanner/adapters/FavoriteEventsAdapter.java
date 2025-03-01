@@ -88,7 +88,7 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
                     EventDetailsDTO event = response.body();
 
                     Intent intent = new Intent(context, EventDetailsActivity.class);
-                    intent.putExtra("id", eventId.toString());
+                    intent.putExtra("id", eventId);
                     intent.putExtra("name", event.getName());
                     intent.putExtra("eventType", event.getEventType());
                     intent.putExtra("date", event.getDate().toString());
@@ -132,6 +132,5 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
             eventTime = itemView.findViewById(R.id.eventTime);
         }
     }
-
 
 }

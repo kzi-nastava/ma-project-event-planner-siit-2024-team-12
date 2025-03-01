@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities.favorites;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.UserRole;
+import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
+import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.adapters.FavoriteEventsAdapter;
 import com.example.eventplanner.dto.event.AcceptedEventDTO;
 import com.example.eventplanner.dto.event.FavEventDTO;
@@ -133,8 +137,21 @@ public class FavoriteEventsActivity extends AppCompatActivity {
     }
 
     public void closeForm(View view) {
-        setResult(RESULT_CANCELED);
-        finish();
+        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String role = pref.getString("userRole", UserRole.ROLE_ORGANIZER.toString());
+
+        if (role.equals(UserRole.ROLE_ORGANIZER.toString())) {
+            Intent intent = new Intent(FavoriteEventsActivity.this, OrganiserHomepageActivity.class);
+            startActivity(intent);
+        }
+        else if (role.equals(UserRole.ROLE_PROVIDER.toString())) {
+            Intent intent = new Intent(FavoriteEventsActivity.this, ProviderHomepageActivity.class);
+            startActivity(intent);
+        }
+        else {
+            setResult(RESULT_CANCELED);
+            finish();
+        }
     }
 }
 
