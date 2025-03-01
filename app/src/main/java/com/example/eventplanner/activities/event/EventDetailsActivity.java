@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities.event;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,9 +24,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.eventplanner.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
 import com.example.eventplanner.dto.charts.EventAttendanceDTO;
+import com.example.eventplanner.dto.event.FavEventDTO;
 import com.example.eventplanner.fragments.eventcreation.AgendaDialogFragment;
 import com.example.eventplanner.model.Activity;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -59,10 +62,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class EventDetailsActivity extends AppCompatActivity {
 
     private WebView mapWebView;
+    private TextView name, eventType, date, maxGuests, description, location;
+    private String currentEventId;
+    private Boolean isFavorite;
+    ImageView fav, favOutline;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,16 +99,17 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
 
 
-        TextView name = findViewById(R.id.name);
-        TextView eventType = findViewById(R.id.eventType);
-        TextView date = findViewById(R.id.date);
-        TextView maxGuests = findViewById(R.id.maxGuests);
-        TextView description = findViewById(R.id.description);
-        TextView location = findViewById(R.id.location);
+        name = findViewById(R.id.name);
+        eventType = findViewById(R.id.eventType);
+        date = findViewById(R.id.date);
+        maxGuests = findViewById(R.id.maxGuests);
+        description = findViewById(R.id.description);
+        location = findViewById(R.id.location);
 
 
         Intent intent = getIntent();
         if (intent != null) {
+            currentEventId = intent.getStringExtra("id");
             name.setText(intent.getStringExtra("name"));
             eventType.setText(intent.getStringExtra("eventType"));
             date.setText(intent.getStringExtra("date"));
@@ -136,6 +150,14 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
         });
 
+        fav = findViewById(R.id.fav);
+        favOutline = findViewById(R.id.favOutline);
+
+        checkIfFavorite();
+
+        favOutline.setOnClickListener(v -> {
+            addToFavorites();
+        });
 
     }
 
@@ -327,6 +349,69 @@ public class EventDetailsActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "PDF not found!", Toast.LENGTH_LONG).show();
         }
+    }
+
+
+
+    private void addToFavorites() {
+        String auth = ClientUtils.getAuthorization(this);
+        SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String userEmail = sharedPreferences.getString("email", "a");
+
+        if (currentEventId == null) {
+            return;
+        }
+
+        Call<ResponseBody> call = ClientUtils.userService.addToFavorites(auth, userEmail, Long.parseLong(currentEventId));
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    fav.setVisibility(View.VISIBLE);
+                    Toast.makeText(EventDetailsActivity.this, "Added event to favorites!", Toast.LENGTH_SHORT).show();
+
+                }
+                else {
+                    Toast.makeText(EventDetailsActivity.this, "Unsuccessful", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(EventDetailsActivity.this, "Failed to add event to favorites!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void checkIfFavorite() {
+        isFavorite = false;
+        String auth = ClientUtils.getAuthorization(this);
+
+        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String email = pref.getString("email", "a");
+
+        Call<Boolean> call = ClientUtils.userService.isEventFavorite(auth, email, Long.parseLong(currentEventId));
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful()) {
+                    isFavorite = response.body();
+
+                    if (Boolean.TRUE.equals(isFavorite)) {
+                        fav.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        favOutline.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Toast.makeText(EventDetailsActivity.this, "Failed to check if favorite!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

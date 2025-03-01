@@ -53,18 +53,50 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
 
+
         <TextView
             android:id="@+id/name"
-            android:layout_width="183dp"
-            android:layout_height="32dp"
-            android:textSize="23sp"
+            android:layout_width="237dp"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.097"
+            app:layout_constraintHorizontal_bias="0.122"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.088" />
+            app:layout_constraintVertical_bias="0.067" />
+
+        <ImageView
+            android:id="@+id/favOutline"
+            android:layout_width="39dp"
+            android:layout_height="36dp"
+            android:src="@drawable/favorite_outline"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.92"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.04" />
+
+
+        <ImageView
+            android:id="@+id/fav"
+            android:layout_width="39dp"
+            android:layout_height="36dp"
+            android:src="@drawable/favorite"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.92"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.04" />
+
+
+
+
 
         <TextView
             android:id="@+id/eventTypeAst"
