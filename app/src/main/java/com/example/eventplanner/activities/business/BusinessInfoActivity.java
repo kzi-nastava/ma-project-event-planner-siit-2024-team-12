@@ -3,7 +3,6 @@ package com.example.eventplanner.activities.business;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,11 +15,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
-import com.example.eventplanner.dto.user.GetUserDTO;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

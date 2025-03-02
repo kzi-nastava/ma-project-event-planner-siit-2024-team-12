@@ -8,15 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.event.EventDetailsActivity;
 import com.example.eventplanner.dto.event.EventDetailsDTO;

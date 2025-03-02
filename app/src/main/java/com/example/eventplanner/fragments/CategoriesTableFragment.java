@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.CategoryAdapter;
 import com.example.eventplanner.dto.business.GetBusinessDTO;

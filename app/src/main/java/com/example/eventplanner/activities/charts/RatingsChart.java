@@ -11,9 +11,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
-import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.dto.charts.EventAttendanceDTO;
 import com.example.eventplanner.dto.charts.EventRatingsDTO;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;

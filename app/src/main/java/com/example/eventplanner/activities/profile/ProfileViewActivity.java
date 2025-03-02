@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,17 +17,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.UserRole;
-import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
 import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.google.gson.Gson;
 
-import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;

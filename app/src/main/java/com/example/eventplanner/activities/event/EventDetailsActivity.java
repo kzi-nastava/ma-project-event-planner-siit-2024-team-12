@@ -2,9 +2,6 @@ package com.example.eventplanner.activities.event;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +10,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,21 +22,19 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
-import com.example.eventplanner.dto.charts.EventAttendanceDTO;
-import com.example.eventplanner.dto.event.FavEventDTO;
+import com.example.eventplanner.dto.event.EventDetailsDTO;
+import com.example.eventplanner.dto.location.CreateLocationDTO;
 import com.example.eventplanner.fragments.eventcreation.AgendaDialogFragment;
 import com.example.eventplanner.model.Activity;
-import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
@@ -46,20 +42,15 @@ import com.itextpdf.layout.properties.UnitValue;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.osmdroid.config.Configuration;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Marker;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -73,9 +64,13 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private WebView mapWebView;
     private TextView name, eventType, date, maxGuests, description, location;
+    private String nameTxt, eventTypeTxt, dateTxt, maxGuestsTxt, descriptionTxt, locationText;
     private Long currentEventId;
     private Boolean isFavorite;
-    ImageView fav, favOutline;
+    private ImageView fav, favOutline, exitBtn;
+    private EventDetailsDTO eventDetailsDTO = new EventDetailsDTO();
+    Button editBtn, seeAgendaButton, pdfBtn;
+    private List<CreateActivityDTO> activities = new ArrayList<>();
 
 
     @Override
@@ -93,159 +88,28 @@ public class EventDetailsActivity extends AppCompatActivity {
         mapWebView = findViewById(R.id.mapWebView);
         setupWebView();
 
-        ImageView exitBtn = findViewById(R.id.exitBtn);
-        exitBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(EventDetailsActivity.this, FavoriteEventsActivity.class);
-            startActivity(intent);
-        });
-
-
-        name = findViewById(R.id.name);
-        eventType = findViewById(R.id.eventType);
-        date = findViewById(R.id.date);
-        maxGuests = findViewById(R.id.maxGuests);
-        description = findViewById(R.id.description);
-        location = findViewById(R.id.location);
-
+        findTextViews();
 
         Intent intent = getIntent();
         if (intent != null) {
-            currentEventId = intent.getLongExtra("id", 0L);
-            name.setText(intent.getStringExtra("name"));
-            eventType.setText(intent.getStringExtra("eventType"));
-            date.setText(intent.getStringExtra("date"));
-            maxGuests.setText(intent.getStringExtra("maxGuests"));
-            description.setText(intent.getStringExtra("description"));
-            String locationText = intent.getStringExtra("location");
-
-
-            if (locationText != null && !locationText.trim().isEmpty()) {
-                location.setText(locationText);
-                loadMap(locationText);
-            } else {
-                loadMap("Belgrade, Serbia");
-            }
+            populateTextViews(intent);
+            getTextValues();
+            setUpEventDetailsDTO();
+            setUpAgendaBtn(intent);
         }
 
-
-        Button seeAgendaButton = findViewById(R.id.seeAgenda);
-        List<CreateActivityDTO> activities = (List<CreateActivityDTO>) intent.getSerializableExtra("activities");
-        List<Activity> adapterActivities = new ArrayList<>();
-
-        for (CreateActivityDTO dto : activities) {
-            Activity activity = new Activity(dto.getTime(), dto.getName(), dto.getDescription(), dto.getLocation());
-            adapterActivities.add(activity);
-        }
-
-        seeAgendaButton.setOnClickListener(v -> {
-            AgendaDialogFragment agendaDialog = new AgendaDialogFragment(adapterActivities);
-            agendaDialog.show(getSupportFragmentManager(), "AgendaDialog");
-        });
-
-
-        Button pdfBtn = findViewById(R.id.pdfBtn);
-        pdfBtn.setOnClickListener(v -> {
-            try {
-                generatePdf();
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        fav = findViewById(R.id.fav);
-        favOutline = findViewById(R.id.favOutline);
-
-        checkIfFavorite();
-
-        favOutline.setOnClickListener(v -> {
-            addToFavorites();
-        });
-
-        fav.setOnClickListener(v -> {
-            removeFromFavorites();
-        });
+        setUpEditBtn();
+        setUpExitBtn();
+        setUpPdfBtn();
+        setUpFavEvents();
 
     }
 
 
-    private void setupWebView() {
-        WebSettings webSettings = mapWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        mapWebView.setWebViewClient(new WebViewClient());
-    }
-
-    private void loadMap(String location) {
-        String leafletHTML = "<!DOCTYPE html>\n" +
-                "<html>\n" +
-                "<head>\n" +
-                "    <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n" +
-                "    <link rel='stylesheet' href='https://unpkg.com/leaflet@1.7.1/dist/leaflet.css'/>\n" +
-                "    <script src='https://unpkg.com/leaflet@1.7.1/dist/leaflet.js'></script>\n" +
-                "</head>\n" +
-                "<body>\n" +
-                "<div id='map' style='width: 100%; height: 600px;'></div>\n" +
-                "<script>\n" +
-                "    var map = L.map('map').setView([44.7866, 20.4489], 15);\n" +  // Default: Belgrade
-                "    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {\n" +
-                "        attribution: '&copy; OpenStreetMap contributors'\n" +
-                "    }).addTo(map);\n" +
-
-                "    var redIcon = L.icon({\n" +
-                "        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',\n" +
-                "        iconSize: [25, 41],\n" +
-                "        iconAnchor: [12, 41],\n" +
-                "        popupAnchor: [1, -34],\n" +
-                "        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',\n" +
-                "        shadowSize: [41, 41]\n" +
-                "    });\n" +
-
-                "    function updateLocation(lat, lon, name) {\n" +
-                "        map.setView([lat, lon], 15);\n" +
-                "        L.marker([lat, lon], { icon: redIcon }).addTo(map).bindPopup(name).openPopup();\n" +
-                "    }\n" +
-                "</script>\n" +
-                "</body>\n" +
-                "</html>";
-
-        mapWebView.loadData(leafletHTML, "text/html", "UTF-8");
-
-        getCoordinatesFromOSM(location);
-    }
-
-    private void getCoordinatesFromOSM(String location) {
-        new Thread(() -> {
-            try {
-                String urlStr = "https://nominatim.openstreetmap.org/search?format=json&q=" + URLEncoder.encode(location, "UTF-8");
-                URL url = new URL(urlStr);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-
-                Scanner scanner = new Scanner(conn.getInputStream());
-                String response = scanner.useDelimiter("\\A").next();
-                scanner.close();
-
-                JSONArray results = new JSONArray(response);
-                if (results.length() > 0) {
-                    JSONObject firstResult = results.getJSONObject(0);
-                    double lat = firstResult.getDouble("lat");
-                    double lon = firstResult.getDouble("lon");
-
-                    runOnUiThread(() -> mapWebView.loadUrl("javascript:updateLocation(" + lat + ", " + lon + ", '" + "Event location" + "')"));
-                }
-                else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(EventDetailsActivity.this, "Unknown address!", Toast.LENGTH_LONG).show();
-                    });
-                }
-            } catch (Exception e) {
-                Toast.makeText(EventDetailsActivity.this, "Unknown address!", Toast.LENGTH_SHORT).show();
-                Log.e("MapError", "Error fetching location: " + e.getMessage());
-            }
-        }).start();
-    }
 
 
+
+    // **********  pdf  **********
     private void generatePdf() throws FileNotFoundException {
         String directoryPath = getExternalFilesDir(null) + "/";
         String fileName = getNextReportFileName(directoryPath);
@@ -255,19 +119,12 @@ public class EventDetailsActivity extends AppCompatActivity {
         PdfDocument pdfDoc = new PdfDocument(writer);
         Document document = new Document(pdfDoc);
 
-        Intent intent = getIntent();
-        String eventName = intent.getStringExtra("name");
-        String eventType = intent.getStringExtra("eventType");
-        String eventDate = intent.getStringExtra("date");
-        String maxGuests = intent.getStringExtra("maxGuests");
-        String description = intent.getStringExtra("description");
-        String location = intent.getStringExtra("location");
-        List<CreateActivityDTO> activities = (List<CreateActivityDTO>) intent.getSerializableExtra("activities");
+        getTextValues();
 
 
         try {
 
-            Paragraph title = new Paragraph(eventName)
+            Paragraph title = new Paragraph(nameTxt)
                     .setFontSize(18)
                     .setBold()
                     .setTextAlignment(TextAlignment.LEFT);
@@ -276,11 +133,11 @@ public class EventDetailsActivity extends AppCompatActivity {
             document.add(new Paragraph("\n"));
 
 
-            document.add(new Paragraph("Event type: " + eventType).setFontSize(12));
-            document.add(new Paragraph("Date: " + eventDate).setFontSize(12));
-            document.add(new Paragraph("Max guests: " + maxGuests).setFontSize(12));
-            document.add(new Paragraph("Description: " + description).setFontSize(12));
-            document.add(new Paragraph("Location: " + location).setFontSize(12));
+            document.add(new Paragraph("Event type: " + eventTypeTxt).setFontSize(12));
+            document.add(new Paragraph("Date: " + dateTxt).setFontSize(12));
+            document.add(new Paragraph("Max guests: " + maxGuestsTxt).setFontSize(12));
+            document.add(new Paragraph("Description: " + descriptionTxt).setFontSize(12));
+            document.add(new Paragraph("Location: " + locationText).setFontSize(12));
             document.add(new Paragraph("\nAgenda:\n"));
 
 
@@ -317,9 +174,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         // open newly created pdf file
         openGeneratedPDF(filePath);
 
-
     }
-
 
 
     private String getNextReportFileName(String directoryPath) {
@@ -359,6 +214,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
 
+
+    // **********  favorites  **********
     private void addToFavorites() {
         String auth = ClientUtils.getAuthorization(this);
         SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
@@ -450,6 +307,220 @@ public class EventDetailsActivity extends AppCompatActivity {
                 Toast.makeText(EventDetailsActivity.this, "Failed to remove event from favorites!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+
+
+    // **********  leaflet map  **********
+    private void setupWebView() {
+        WebSettings webSettings = mapWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        mapWebView.setWebViewClient(new WebViewClient());
+    }
+
+    private void loadMap(String location) {
+        String leafletHTML = "<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "<head>\n" +
+                "    <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n" +
+                "    <link rel='stylesheet' href='https://unpkg.com/leaflet@1.7.1/dist/leaflet.css'/>\n" +
+                "    <script src='https://unpkg.com/leaflet@1.7.1/dist/leaflet.js'></script>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "<div id='map' style='width: 100%; height: 600px;'></div>\n" +
+                "<script>\n" +
+                "    var map = L.map('map').setView([44.7866, 20.4489], 15);\n" +  // Default: Belgrade
+                "    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {\n" +
+                "        attribution: '&copy; OpenStreetMap contributors'\n" +
+                "    }).addTo(map);\n" +
+
+                "    var redIcon = L.icon({\n" +
+                "        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',\n" +
+                "        iconSize: [25, 41],\n" +
+                "        iconAnchor: [12, 41],\n" +
+                "        popupAnchor: [1, -34],\n" +
+                "        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',\n" +
+                "        shadowSize: [41, 41]\n" +
+                "    });\n" +
+
+                "    function updateLocation(lat, lon, name) {\n" +
+                "        map.setView([lat, lon], 15);\n" +
+                "        L.marker([lat, lon], { icon: redIcon }).addTo(map).bindPopup(name).openPopup();\n" +
+                "    }\n" +
+                "</script>\n" +
+                "</body>\n" +
+                "</html>";
+
+        mapWebView.loadData(leafletHTML, "text/html", "UTF-8");
+
+        getCoordinatesFromOSM(location);
+    }
+
+    private void getCoordinatesFromOSM(String location) {
+        new Thread(() -> {
+            try {
+                String urlStr = "https://nominatim.openstreetmap.org/search?format=json&q=" + URLEncoder.encode(location, "UTF-8");
+                URL url = new URL(urlStr);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+                Scanner scanner = new Scanner(conn.getInputStream());
+                String response = scanner.useDelimiter("\\A").next();
+                scanner.close();
+
+                JSONArray results = new JSONArray(response);
+                if (results.length() > 0) {
+                    JSONObject firstResult = results.getJSONObject(0);
+                    double lat = firstResult.getDouble("lat");
+                    double lon = firstResult.getDouble("lon");
+
+                    runOnUiThread(() -> mapWebView.loadUrl("javascript:updateLocation(" + lat + ", " + lon + ", '" + "Event location" + "')"));
+                }
+                else {
+                    runOnUiThread(() -> {
+                        Toast.makeText(EventDetailsActivity.this, "Unknown address!", Toast.LENGTH_LONG).show();
+                    });
+                }
+            } catch (Exception e) {
+                Toast.makeText(EventDetailsActivity.this, "Unknown address!", Toast.LENGTH_SHORT).show();
+                Log.e("MapError", "Error fetching location: " + e.getMessage());
+            }
+        }).start();
+    }
+
+
+
+    // **********  general set up  **********
+
+    private void getTextValues() {
+        nameTxt = name.getText().toString();
+        eventTypeTxt = eventType.getText().toString();
+        dateTxt = date.getText().toString();
+        maxGuestsTxt = maxGuests.getText().toString();
+        descriptionTxt = description.getText().toString();
+    }
+
+    private void setUpEventDetailsDTO() {
+        getTextValues();
+
+        eventDetailsDTO.setId(currentEventId);
+        eventDetailsDTO.setName(nameTxt);
+        eventDetailsDTO.setEventType(eventTypeTxt);
+        eventDetailsDTO.setDate(LocalDate.parse(dateTxt));
+        eventDetailsDTO.setMaxGuests(maxGuestsTxt);
+        eventDetailsDTO.setDescription(descriptionTxt);
+        eventDetailsDTO.setActivities(activities);
+    }
+
+
+    private void populateTextViews(Intent intent) {
+        currentEventId = intent.getLongExtra("id", 0L);
+        name.setText(intent.getStringExtra("name"));
+        eventType.setText(intent.getStringExtra("eventType"));
+        date.setText(intent.getStringExtra("date"));
+        maxGuests.setText(intent.getStringExtra("maxGuests"));
+        description.setText(intent.getStringExtra("description"));
+        activities = (List<CreateActivityDTO>) intent.getSerializableExtra("activities");
+
+        locationText = intent.getStringExtra("location");
+        if (locationText != null && !locationText.trim().isEmpty()) {
+            location.setText(locationText);
+            loadMap(locationText);
+
+            String[] parts = locationText.split(",");
+            CreateLocationDTO locationDTO = new CreateLocationDTO(" ", parts[0], parts[1], parts[2]);  // venue name is " "
+            eventDetailsDTO.setLocation(locationDTO);
+
+
+        } else {
+            loadMap("Belgrade, Serbia");
+        }
+    }
+
+
+
+    private void setUpAgendaBtn(Intent intent) {
+        seeAgendaButton = findViewById(R.id.seeAgenda);
+        List<CreateActivityDTO> activities = (List<CreateActivityDTO>) intent.getSerializableExtra("activities");
+        List<Activity> adapterActivities = new ArrayList<>();
+
+        for (CreateActivityDTO dto : activities) {
+            Activity activity = new Activity(dto.getTime(), dto.getName(), dto.getDescription(), dto.getLocation());
+            adapterActivities.add(activity);
+        }
+
+        seeAgendaButton.setOnClickListener(v -> {
+            AgendaDialogFragment agendaDialog = new AgendaDialogFragment(adapterActivities);
+            agendaDialog.show(getSupportFragmentManager(), "AgendaDialog");
+        });
+    }
+
+
+
+    private void setUpEditBtn() {
+        editBtn = findViewById(R.id.editBtn);
+
+        editBtn.setOnClickListener(v -> {
+            editEvent(eventDetailsDTO);
+        });
+    }
+
+
+    private void setUpPdfBtn() {
+        pdfBtn = findViewById(R.id.pdfBtn);
+
+        pdfBtn.setOnClickListener(v -> {
+            try {
+                generatePdf();
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+
+    private void setUpFavEvents() {
+        fav = findViewById(R.id.fav);
+        favOutline = findViewById(R.id.favOutline);
+
+        checkIfFavorite();
+
+        favOutline.setOnClickListener(v -> {
+            addToFavorites();
+        });
+
+        fav.setOnClickListener(v -> {
+            removeFromFavorites();
+        });
+
+    }
+
+
+
+    private void setUpExitBtn() {
+        exitBtn = findViewById(R.id.exitBtn);
+
+        exitBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(EventDetailsActivity.this, FavoriteEventsActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    private void editEvent(EventDetailsDTO dto) {
+        Intent intent = new Intent(EventDetailsActivity.this, EventEditActivity.class);
+        intent.putExtra("dto",(Serializable) dto);
+        startActivity(intent);
+    }
+
+
+    private void findTextViews() {
+        name = findViewById(R.id.name);
+        eventType = findViewById(R.id.eventType);
+        date = findViewById(R.id.date);
+        maxGuests = findViewById(R.id.maxGuests);
+        description = findViewById(R.id.description);
+        location = findViewById(R.id.location);
     }
 
 }

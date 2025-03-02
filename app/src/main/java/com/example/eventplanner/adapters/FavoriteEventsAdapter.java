@@ -1,7 +1,6 @@
 package com.example.eventplanner.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,7 @@ import android.widget.TextView;
 
 import android.content.Intent;
 
-import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.activities.event.EventDetailsActivity;
 
 import androidx.recyclerview.widget.RecyclerView;

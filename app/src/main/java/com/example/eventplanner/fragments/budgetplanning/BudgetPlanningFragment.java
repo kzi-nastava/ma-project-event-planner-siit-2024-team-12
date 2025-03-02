@@ -17,7 +17,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
 import com.example.eventplanner.dto.user.GetUserDTO;

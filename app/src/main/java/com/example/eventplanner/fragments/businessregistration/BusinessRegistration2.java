@@ -11,27 +11,22 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TableLayout;
 import android.widget.Toast;
 
-import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.ValidationUtils;
+import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.activities.business.BusinessInfoActivity;
 import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
 import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
-import com.example.eventplanner.activities.profile.ProfileViewActivity;
-import com.example.eventplanner.dto.business.CreateBusinessDTO;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.viewmodels.BusinessViewModel;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 

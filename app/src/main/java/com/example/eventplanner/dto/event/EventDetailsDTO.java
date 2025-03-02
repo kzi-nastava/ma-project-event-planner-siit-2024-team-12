@@ -3,10 +3,11 @@ package com.example.eventplanner.dto.event;
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
 import com.example.eventplanner.dto.location.CreateLocationDTO;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-public class EventDetailsDTO {
+public class EventDetailsDTO implements Serializable {
     private Long id;
     private String name;
     private String eventType;

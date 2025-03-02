@@ -1,11 +1,9 @@
 package com.example.eventplanner.activities.profile;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,16 +17,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.ValidationUtils;
+import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.dto.user.UpdateUserDTO;
 import com.example.eventplanner.dto.user.UpdatedUserDTO;
 import com.example.eventplanner.fragments.others.ChangePasswordFragment;
-import com.google.i18n.phonenumbers.NumberParseException;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber;
 
 import retrofit2.Call;
 import retrofit2.Callback;

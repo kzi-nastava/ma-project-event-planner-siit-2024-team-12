@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.ValidationUtils;
+import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
 

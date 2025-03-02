@@ -17,12 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.ValidationUtils;
+import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 public class EventCreation2 extends Fragment {
 

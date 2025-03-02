@@ -15,17 +15,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.UserRole;
-import com.example.eventplanner.ValidationUtils;
+import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.auth.SignUpActivity;
 import com.example.eventplanner.dto.user.CreateUserDTO;
 import com.example.eventplanner.viewmodels.SignUpViewModel;
-import com.google.i18n.phonenumbers.NumberParseException;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

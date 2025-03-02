@@ -1,34 +1,20 @@
 package com.example.eventplanner.fragments.eventcreation;
 
-import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.ValidationUtils;
-import com.example.eventplanner.adapters.AgendaAdapter;
+import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
-import com.example.eventplanner.model.Activity;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class ActivityFormFragment extends DialogFragment {
