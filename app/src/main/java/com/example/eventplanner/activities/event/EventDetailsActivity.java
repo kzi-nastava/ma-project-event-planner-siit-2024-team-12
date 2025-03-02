@@ -2,6 +2,7 @@ package com.example.eventplanner.activities.event;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.eventplanner.dto.event.UpdatedEventDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
@@ -63,14 +65,15 @@ import retrofit2.Response;
 public class EventDetailsActivity extends AppCompatActivity {
 
     private WebView mapWebView;
-    private TextView name, eventType, date, maxGuests, description, location;
+    private EditText name, eventType, date, maxGuests, description, location;
     private String nameTxt, eventTypeTxt, dateTxt, maxGuestsTxt, descriptionTxt, locationText;
     private Long currentEventId;
-    private Boolean isFavorite;
+    private Boolean isFavorite, isEditable = false;
     private ImageView fav, favOutline, exitBtn;
     private EventDetailsDTO eventDetailsDTO = new EventDetailsDTO();
     Button editBtn, seeAgendaButton, pdfBtn;
     private List<CreateActivityDTO> activities = new ArrayList<>();
+    private CreateLocationDTO locationDTO = new CreateLocationDTO();
 
 
     @Override
@@ -399,6 +402,10 @@ public class EventDetailsActivity extends AppCompatActivity {
         dateTxt = date.getText().toString();
         maxGuestsTxt = maxGuests.getText().toString();
         descriptionTxt = description.getText().toString();
+        locationText = location.getText().toString();
+
+        String[] parts = locationText.split(",");
+        locationDTO = new CreateLocationDTO(" ", parts[0], parts[1], parts[2]);  // venue name is " "
     }
 
     private void setUpEventDetailsDTO() {
@@ -411,6 +418,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         eventDetailsDTO.setMaxGuests(maxGuestsTxt);
         eventDetailsDTO.setDescription(descriptionTxt);
         eventDetailsDTO.setActivities(activities);
+        eventDetailsDTO.setLocation(locationDTO);
     }
 
 
@@ -429,7 +437,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             loadMap(locationText);
 
             String[] parts = locationText.split(",");
-            CreateLocationDTO locationDTO = new CreateLocationDTO(" ", parts[0], parts[1], parts[2]);  // venue name is " "
+            locationDTO = new CreateLocationDTO(" ", parts[0], parts[1], parts[2]);  // venue name is " "
             eventDetailsDTO.setLocation(locationDTO);
 
 
@@ -462,10 +470,45 @@ public class EventDetailsActivity extends AppCompatActivity {
         editBtn = findViewById(R.id.editBtn);
 
         editBtn.setOnClickListener(v -> {
-            editEvent(eventDetailsDTO);
+            if (isEditable) {
+                updateEvent();
+            }
+            else {
+                enterEditMode();
+            }
         });
+
     }
 
+    private void updateEvent() {
+        String auth = ClientUtils.getAuthorization(this);
+        setUpEventDetailsDTO();
+
+        Call<UpdatedEventDTO> call = ClientUtils.eventService.updateEvent(auth, currentEventId, eventDetailsDTO);
+        call.enqueue(new Callback<UpdatedEventDTO>() {
+            @Override
+            public void onResponse(Call<UpdatedEventDTO> call, Response<UpdatedEventDTO> response) {
+                if (response.isSuccessful()) {
+                    UpdatedEventDTO dto = response.body();
+                    eventDetailsDTO.setName(dto.getName());
+                    eventDetailsDTO.setEventType(dto.getEventType());
+                    eventDetailsDTO.setDate(dto.getDate());
+                    eventDetailsDTO.setMaxGuests(dto.getMaxGuests());
+                    eventDetailsDTO.setDescription(dto.getDescription());
+                    eventDetailsDTO.setLocation(dto.getLocation());
+
+                    loadMap(dto.getLocation().getAddress() + ", " + dto.getLocation().getCity() + ", " + dto.getLocation().getCountry());
+                    isEditable = false;
+                    exitEditMode();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdatedEventDTO> call, Throwable t) {
+
+            }
+        });
+    }
 
     private void setUpPdfBtn() {
         pdfBtn = findViewById(R.id.pdfBtn);
@@ -507,15 +550,42 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void editEvent(EventDetailsDTO dto) {
-        Intent intent = new Intent(EventDetailsActivity.this, EventEditActivity.class);
-        intent.putExtra("dto",(Serializable) dto);
-        startActivity(intent);
+    private void enterEditMode() {
+        editBtn.setText(getString(R.string.save));
+
+        name.setBackgroundResource(R.drawable.display_field);
+        name.setFocusableInTouchMode(true);
+
+        eventType.setFocusableInTouchMode(true);
+        date.setFocusableInTouchMode(true);
+        maxGuests.setFocusableInTouchMode(true);
+        description.setFocusableInTouchMode(true);
+        location.setFocusableInTouchMode(true);
+
+        isEditable = true;
+    }
+
+
+    private void exitEditMode() {
+        editBtn.setText(getString(R.string.edit));
+
+        name.setBackgroundColor(Color.TRANSPARENT);
+        name.setFocusableInTouchMode(false);
+
+        eventType.setFocusableInTouchMode(false);
+        date.setFocusableInTouchMode(false);
+        maxGuests.setFocusableInTouchMode(false);
+        description.setFocusableInTouchMode(false);
+        location.setFocusableInTouchMode(false);
+
+        isEditable = false;
     }
 
 
     private void findTextViews() {
         name = findViewById(R.id.name);
+        name.setBackgroundColor(Color.TRANSPARENT);
+
         eventType = findViewById(R.id.eventType);
         date = findViewById(R.id.date);
         maxGuests = findViewById(R.id.maxGuests);
