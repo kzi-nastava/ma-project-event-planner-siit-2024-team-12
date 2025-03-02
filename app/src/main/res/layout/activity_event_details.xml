@@ -114,15 +114,13 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.257" />
 
-        <EditText
+        <Spinner
             android:id="@+id/eventType"
             android:layout_width="161dp"
             android:layout_height="24dp"
             android:background="@drawable/display_field"
-            android:paddingStart="7dp"
-            android:paddingTop="2dp"
+            android:padding="2dp"
             android:textColor="@color/black"
-            android:textSize="13sp"
             android:focusableInTouchMode="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -10,9 +10,12 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +27,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.dto.event.UpdatedEventDTO;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
@@ -65,7 +69,7 @@ import retrofit2.Response;
 public class EventDetailsActivity extends AppCompatActivity {
 
     private WebView mapWebView;
-    private EditText name, eventType, date, maxGuests, description, location;
+    private EditText name, date, maxGuests, description, location;
     private String nameTxt, eventTypeTxt, dateTxt, maxGuestsTxt, descriptionTxt, locationText;
     private Long currentEventId;
     private Boolean isFavorite, isEditable = false;
@@ -74,6 +78,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     Button editBtn, seeAgendaButton, pdfBtn;
     private List<CreateActivityDTO> activities = new ArrayList<>();
     private CreateLocationDTO locationDTO = new CreateLocationDTO();
+    private List<String> eventTypeNames = new ArrayList<>();
+    private Spinner eventTypeSpinner;
 
 
     @Override
@@ -101,11 +107,79 @@ public class EventDetailsActivity extends AppCompatActivity {
             setUpAgendaBtn(intent);
         }
 
+        loadActiveEventTypes();
         setUpEditBtn();
         setUpExitBtn();
         setUpPdfBtn();
         setUpFavEvents();
 
+    }
+
+
+
+    private void loadActiveEventTypes() {
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<ArrayList<GetEventTypeDTO>> call = ClientUtils.eventTypeService.getAllActive(auth);
+        call.enqueue(new Callback<ArrayList<GetEventTypeDTO>>() {
+            @Override
+            public void onResponse(Call<ArrayList<GetEventTypeDTO>> call, Response<ArrayList<GetEventTypeDTO>> response) {
+                if (response.isSuccessful()) {
+                    List<GetEventTypeDTO> eventTypes = response.body();
+                    eventTypeNames.clear();
+                    assert eventTypes != null;
+                    for (GetEventTypeDTO dto : eventTypes) {
+                        eventTypeNames.add(dto.getName());
+                    }
+
+                    setUpEventTypeSpinner();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<GetEventTypeDTO>> call, Throwable t) {
+                Toast.makeText(EventDetailsActivity.this, "Failed to load active event types!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+    private void setUpEventTypeSpinner() {
+        eventTypeSpinner = findViewById(R.id.eventType);
+
+        if (eventTypeNames.isEmpty()) {
+            return;
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, eventTypeNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        eventTypeSpinner.setAdapter(adapter);
+
+        eventTypeSpinner.post(() -> {
+            if (eventTypeTxt != null) {
+                int selectedIndex = eventTypeNames.indexOf(eventTypeTxt);
+                if (selectedIndex != -1) {
+                    eventTypeSpinner.setSelection(selectedIndex);
+                }
+            }
+        });
+
+
+        if (!isEditable) {
+            eventTypeSpinner.setEnabled(false);
+        }
+
+
+        eventTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                eventTypeTxt = eventTypeNames.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {}
+        });
     }
 
 
@@ -398,7 +472,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private void getTextValues() {
         nameTxt = name.getText().toString();
-        eventTypeTxt = eventType.getText().toString();
         dateTxt = date.getText().toString();
         maxGuestsTxt = maxGuests.getText().toString();
         descriptionTxt = description.getText().toString();
@@ -424,8 +497,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private void populateTextViews(Intent intent) {
         currentEventId = intent.getLongExtra("id", 0L);
+        eventTypeTxt = intent.getStringExtra("eventType");
         name.setText(intent.getStringExtra("name"));
-        eventType.setText(intent.getStringExtra("eventType"));
         date.setText(intent.getStringExtra("date"));
         maxGuests.setText(intent.getStringExtra("maxGuests"));
         description.setText(intent.getStringExtra("description"));
@@ -556,11 +629,12 @@ public class EventDetailsActivity extends AppCompatActivity {
         name.setBackgroundResource(R.drawable.display_field);
         name.setFocusableInTouchMode(true);
 
-        eventType.setFocusableInTouchMode(true);
         date.setFocusableInTouchMode(true);
         maxGuests.setFocusableInTouchMode(true);
         description.setFocusableInTouchMode(true);
         location.setFocusableInTouchMode(true);
+
+        eventTypeSpinner.setEnabled(true);
 
         isEditable = true;
     }
@@ -572,11 +646,17 @@ public class EventDetailsActivity extends AppCompatActivity {
         name.setBackgroundColor(Color.TRANSPARENT);
         name.setFocusableInTouchMode(false);
 
-        eventType.setFocusableInTouchMode(false);
         date.setFocusableInTouchMode(false);
         maxGuests.setFocusableInTouchMode(false);
         description.setFocusableInTouchMode(false);
         location.setFocusableInTouchMode(false);
+
+        View currentFocusView = getCurrentFocus();
+        if (currentFocusView instanceof EditText) {
+            currentFocusView.clearFocus();
+        }
+
+        eventTypeSpinner.setEnabled(false);
 
         isEditable = false;
     }
@@ -586,7 +666,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         name = findViewById(R.id.name);
         name.setBackgroundColor(Color.TRANSPARENT);
 
-        eventType = findViewById(R.id.eventType);
         date = findViewById(R.id.date);
         maxGuests = findViewById(R.id.maxGuests);
         description = findViewById(R.id.description);
