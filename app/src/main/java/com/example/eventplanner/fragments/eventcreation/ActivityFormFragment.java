@@ -5,21 +5,26 @@ import android.os.Bundle;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
+import com.example.eventplanner.viewmodels.EventEditViewModel;
 
 
 public class ActivityFormFragment extends DialogFragment {
-    View view;
-    EventCreationViewModel viewModel;
+    private View view;
+    private EventCreationViewModel viewModel;
+    private EventEditViewModel editViewModel;
 
     public ActivityFormFragment() {}
 
@@ -37,6 +42,7 @@ public class ActivityFormFragment extends DialogFragment {
         view = inflater.inflate(R.layout.fragment_activity_form, container, false);
 
         viewModel = new ViewModelProvider(requireActivity()).get(EventCreationViewModel.class);
+        editViewModel = new ViewModelProvider(requireActivity()).get(EventEditViewModel.class);
 
         Button addBtn = view.findViewById(R.id.addBtn);
         addBtn.setOnClickListener(v -> {
@@ -61,9 +67,19 @@ public class ActivityFormFragment extends DialogFragment {
 
             CreateActivityDTO newActivity = new CreateActivityDTO(time, name, description, venue);
 
-            viewModel.updateAgenda(newActivity);
 
-            dismiss();
+
+            if (getArguments() != null) {
+                viewModel.updateAgenda(newActivity);
+                dismiss();
+            }
+            else {
+                editViewModel.updateAgenda(newActivity);
+                dismiss();
+            }
+
+
+
 
 
         });

@@ -16,17 +16,22 @@ import android.view.ViewGroup;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.AgendaAdapter;
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
+import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.model.Activity;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
+import com.example.eventplanner.viewmodels.EventEditViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class AgendaTableFragment extends Fragment {
-    View view;
-    EventCreationViewModel viewModel;
+    private View view;
+    private EventCreationViewModel viewModel;
     private RecyclerView agendaRecyclerView;
+    private List<Activity> tableDisplay;
+    private EventEditViewModel editViewModel;
+
 
 
     @Override
@@ -36,9 +41,20 @@ public class AgendaTableFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_agenda_table, container, false);
 
         viewModel = new ViewModelProvider(requireActivity()).get(EventCreationViewModel.class);
+        editViewModel = new ViewModelProvider(requireActivity()).get(EventEditViewModel.class);
 
         return view;
     }
+
+
+    private List<Activity> convertDTOToActivity(List<CreateActivityDTO> activityDTOS) {
+        List<Activity> activities = new ArrayList<>();
+        for (CreateActivityDTO dto : activityDTOS) {
+            activities.add(new Activity(dto.getTime(), dto.getName(), dto.getDescription(), dto.getLocation()));
+        }
+        return activities;
+    }
+
 
 
     @Override
@@ -48,7 +64,17 @@ public class AgendaTableFragment extends Fragment {
         agendaRecyclerView = view.findViewById(R.id.agendaRecyclerView);
         agendaRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        List<Activity> tableDisplay = new ArrayList<>();
+
+        if (getArguments() != null) {
+            EventDetailsDTO dto = (EventDetailsDTO) getArguments().getSerializable("passed_details");
+            assert dto != null;
+            tableDisplay = convertDTOToActivity(dto.getActivities());
+
+        } else {
+            tableDisplay = new ArrayList<>();
+        }
+
+
         AgendaAdapter adapter = new AgendaAdapter(tableDisplay);
         agendaRecyclerView.setAdapter(adapter);
 
@@ -66,6 +92,21 @@ public class AgendaTableFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
-    }
 
+
+        // track changes in editViewModel to dynamically display them in agenda table
+        editViewModel.getDto().observe(getViewLifecycleOwner(), editEventDTO -> {
+            if (editEventDTO != null && editEventDTO.getActivities() != null) {
+                tableDisplay.clear();
+
+                for (CreateActivityDTO activityDTO : editEventDTO.getActivities()) {
+                    Activity activity = new Activity(activityDTO.getTime(), activityDTO.getName(),
+                            activityDTO.getDescription(), activityDTO.getLocation());
+                    tableDisplay.add(activity);
+                }
+
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
 }

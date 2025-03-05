@@ -33,4 +33,10 @@ public class CreateActivityDTO implements Serializable {
 
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
+
+
+    @Override
+    public String toString() {
+        return "ActivityDTO {time=" + time + ", name=" + name + ", description=" + description + ", location=" + location + "\n}";
+    }
 }

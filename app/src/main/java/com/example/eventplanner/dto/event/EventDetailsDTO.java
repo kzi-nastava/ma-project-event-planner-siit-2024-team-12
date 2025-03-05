@@ -45,7 +45,7 @@ public class EventDetailsDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "Details [name=" + name + ", eventType=" + eventType + ", maxGuests=" +
+        return "Details [id=" + id + ", name=" + name + ", eventType=" + eventType + ", maxGuests=" +
                 maxGuests + ", description=" + description + ", location=" + location + ", DATE=" + date +
                 ", activities=" + activities + "]";
     }

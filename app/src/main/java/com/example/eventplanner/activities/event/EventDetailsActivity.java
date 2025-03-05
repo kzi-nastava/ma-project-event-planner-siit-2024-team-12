@@ -25,9 +25,11 @@ import androidx.core.content.FileProvider;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.dto.event.UpdatedEventDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
+import com.example.eventplanner.fragments.eventcreation.AgendaEditFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
@@ -36,6 +38,7 @@ import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.dto.location.CreateLocationDTO;
 import com.example.eventplanner.fragments.eventcreation.AgendaDialogFragment;
 import com.example.eventplanner.model.Activity;
+import com.example.eventplanner.viewmodels.EventEditViewModel;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -80,6 +83,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private CreateLocationDTO locationDTO = new CreateLocationDTO();
     private List<String> eventTypeNames = new ArrayList<>();
     private Spinner eventTypeSpinner;
+    private EventEditViewModel editViewModel;
 
 
     @Override
@@ -93,6 +97,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             return insets;
         });
 
+        editViewModel = new ViewModelProvider(this).get(EventEditViewModel.class);
 
         mapWebView = findViewById(R.id.mapWebView);
         setupWebView();
@@ -512,10 +517,17 @@ public class EventDetailsActivity extends AppCompatActivity {
             String[] parts = locationText.split(",");
             locationDTO = new CreateLocationDTO(" ", parts[0], parts[1], parts[2]);  // venue name is " "
             eventDetailsDTO.setLocation(locationDTO);
-
-
         } else {
             loadMap("Belgrade, Serbia");
+        }
+    }
+
+
+    private void setEditViewModel() {
+        editViewModel.updateEventAttributes("id", currentEventId.toString());
+
+        for (CreateActivityDTO dto : eventDetailsDTO.getActivities()) {
+            editViewModel.updateAgenda(dto);
         }
     }
 
@@ -523,7 +535,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private void setUpAgendaBtn(Intent intent) {
         seeAgendaButton = findViewById(R.id.seeAgenda);
-        List<CreateActivityDTO> activities = (List<CreateActivityDTO>) intent.getSerializableExtra("activities");
         List<Activity> adapterActivities = new ArrayList<>();
 
         for (CreateActivityDTO dto : activities) {
@@ -532,8 +543,14 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
 
         seeAgendaButton.setOnClickListener(v -> {
-            AgendaDialogFragment agendaDialog = new AgendaDialogFragment(adapterActivities);
-            agendaDialog.show(getSupportFragmentManager(), "AgendaDialog");
+            if (isEditable) {
+                AgendaEditFragment editFragment = AgendaEditFragment.newInstance(eventDetailsDTO);
+                editFragment.show(getSupportFragmentManager(), "AgendaEdit");
+            }
+            else {
+                AgendaDialogFragment agendaDialog = new AgendaDialogFragment(adapterActivities);
+                agendaDialog.show(getSupportFragmentManager(), "AgendaDialog");
+            }
         });
     }
 
@@ -556,6 +573,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private void updateEvent() {
         String auth = ClientUtils.getAuthorization(this);
         setUpEventDetailsDTO();
+        eventDetailsDTO.setActivities(editViewModel.getDto().getValue().getActivities());
 
         Call<UpdatedEventDTO> call = ClientUtils.eventService.updateEvent(auth, currentEventId, eventDetailsDTO);
         call.enqueue(new Callback<UpdatedEventDTO>() {
@@ -569,6 +587,13 @@ public class EventDetailsActivity extends AppCompatActivity {
                     eventDetailsDTO.setMaxGuests(dto.getMaxGuests());
                     eventDetailsDTO.setDescription(dto.getDescription());
                     eventDetailsDTO.setLocation(dto.getLocation());
+                    eventDetailsDTO.setActivities(dto.getActivities());
+
+                    // refresh agenda ui
+                    activities.clear();
+                    activities.addAll(dto.getActivities());
+                    setUpAgendaBtn(getIntent());
+
 
                     loadMap(dto.getLocation().getAddress() + ", " + dto.getLocation().getCity() + ", " + dto.getLocation().getCountry());
                     isEditable = false;
@@ -625,6 +650,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private void enterEditMode() {
         editBtn.setText(getString(R.string.save));
+
+        setEditViewModel();
 
         name.setBackgroundResource(R.drawable.display_field);
         name.setFocusableInTouchMode(true);
