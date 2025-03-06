@@ -25,6 +25,7 @@ public class ActivityFormFragment extends DialogFragment {
     private View view;
     private EventCreationViewModel viewModel;
     private EventEditViewModel editViewModel;
+    private Boolean isEditable;
 
     public ActivityFormFragment() {}
 
@@ -32,8 +33,20 @@ public class ActivityFormFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
+
+
+
+    public static ActivityFormFragment newInstance(Boolean isEditable) {
+        Bundle args = new Bundle();
+        args.putSerializable("is_editable", isEditable);
+
+        ActivityFormFragment fragment = new ActivityFormFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,6 +56,12 @@ public class ActivityFormFragment extends DialogFragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(EventCreationViewModel.class);
         editViewModel = new ViewModelProvider(requireActivity()).get(EventEditViewModel.class);
+
+
+        if (getArguments() != null) {
+            isEditable = (Boolean) getArguments().getSerializable("is_editable");
+        }
+
 
         Button addBtn = view.findViewById(R.id.addBtn);
         addBtn.setOnClickListener(v -> {
@@ -69,12 +88,12 @@ public class ActivityFormFragment extends DialogFragment {
 
 
 
-            if (getArguments() != null) {
-                viewModel.updateAgenda(newActivity);
+            if (isEditable) {
+                editViewModel.updateAgenda(newActivity);
                 dismiss();
             }
             else {
-                editViewModel.updateAgenda(newActivity);
+                viewModel.updateAgenda(newActivity);
                 dismiss();
             }
 

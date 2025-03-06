@@ -73,7 +73,7 @@ public class AgendaEditFragment extends DialogFragment {
         Button activityBtn = view.findViewById(R.id.activityBtn);
 
         activityBtn.setOnClickListener(v -> {
-            ActivityFormFragment activityForm = new ActivityFormFragment();
+            ActivityFormFragment activityForm = ActivityFormFragment.newInstance(true);
             activityForm.show(getChildFragmentManager(), "ActivityForm");
         });
     }

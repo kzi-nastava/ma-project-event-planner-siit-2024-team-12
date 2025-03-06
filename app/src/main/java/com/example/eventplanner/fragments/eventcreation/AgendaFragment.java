@@ -67,7 +67,7 @@ public class AgendaFragment extends Fragment {
 
 
     private void addActivity(View view) {
-        ActivityFormFragment activityFormFragment = new ActivityFormFragment();
+        ActivityFormFragment activityFormFragment = ActivityFormFragment.newInstance(false);
         activityFormFragment.show(requireActivity().getSupportFragmentManager(), "addActivity");
     }
 
