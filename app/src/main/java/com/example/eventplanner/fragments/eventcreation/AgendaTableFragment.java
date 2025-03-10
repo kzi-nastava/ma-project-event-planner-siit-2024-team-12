@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,9 @@ import com.example.eventplanner.viewmodels.EventCreationViewModel;
 import com.example.eventplanner.viewmodels.EventEditViewModel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class AgendaTableFragment extends Fragment {
@@ -99,7 +102,9 @@ public class AgendaTableFragment extends Fragment {
             if (editEventDTO != null && editEventDTO.getActivities() != null) {
                 tableDisplay.clear();
 
-                for (CreateActivityDTO activityDTO : editEventDTO.getActivities()) {
+                Set<CreateActivityDTO> uniques = new HashSet<>(editEventDTO.getActivities());
+
+                for (CreateActivityDTO activityDTO : uniques) {
                     Activity activity = new Activity(activityDTO.getTime(), activityDTO.getName(),
                             activityDTO.getDescription(), activityDTO.getLocation());
                     tableDisplay.add(activity);

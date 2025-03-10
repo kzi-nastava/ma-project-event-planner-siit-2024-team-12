@@ -60,8 +60,10 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -500,6 +502,21 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
 
+
+
+    private void setUpUpdateEventDetailsDTO() {
+        getTextValues();
+
+        eventDetailsDTO.setId(currentEventId);
+        eventDetailsDTO.setName(nameTxt);
+        eventDetailsDTO.setEventType(eventTypeTxt);
+        eventDetailsDTO.setDate(LocalDate.parse(dateTxt));
+        eventDetailsDTO.setMaxGuests(maxGuestsTxt);
+        eventDetailsDTO.setDescription(descriptionTxt);
+        eventDetailsDTO.setLocation(locationDTO);
+    }
+
+
     private void populateTextViews(Intent intent) {
         currentEventId = intent.getLongExtra("id", 0L);
         eventTypeTxt = intent.getStringExtra("eventType");
@@ -572,8 +589,11 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private void updateEvent() {
         String auth = ClientUtils.getAuthorization(this);
-        setUpEventDetailsDTO();
-        eventDetailsDTO.setActivities(editViewModel.getDto().getValue().getActivities());
+        setUpUpdateEventDetailsDTO();
+
+        Set<CreateActivityDTO> unique = new HashSet<>(editViewModel.getDto().getValue().getActivities());
+        eventDetailsDTO.setActivities(new ArrayList<>(unique));
+
 
         Call<UpdatedEventDTO> call = ClientUtils.eventService.updateEvent(auth, currentEventId, eventDetailsDTO);
         call.enqueue(new Callback<UpdatedEventDTO>() {
@@ -587,13 +607,11 @@ public class EventDetailsActivity extends AppCompatActivity {
                     eventDetailsDTO.setMaxGuests(dto.getMaxGuests());
                     eventDetailsDTO.setDescription(dto.getDescription());
                     eventDetailsDTO.setLocation(dto.getLocation());
-                    eventDetailsDTO.setActivities(dto.getActivities());
 
                     // refresh agenda ui
                     activities.clear();
                     activities.addAll(dto.getActivities());
                     setUpAgendaBtn(getIntent());
-
 
                     loadMap(dto.getLocation().getAddress() + ", " + dto.getLocation().getCity() + ", " + dto.getLocation().getCountry());
                     isEditable = false;
