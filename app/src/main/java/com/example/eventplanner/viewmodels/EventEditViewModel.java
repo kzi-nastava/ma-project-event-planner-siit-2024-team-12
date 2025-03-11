@@ -40,6 +40,7 @@ public class EventEditViewModel extends AndroidViewModel {
     }
 
 
+
     public void updateEventAttributes(String key, String value) {
         EventDetailsDTO current = dto.getValue();
 

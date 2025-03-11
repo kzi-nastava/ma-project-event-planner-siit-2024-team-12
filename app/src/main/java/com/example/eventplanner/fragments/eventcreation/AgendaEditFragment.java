@@ -46,6 +46,7 @@ public class AgendaEditFragment extends DialogFragment {
         // pass event details to agenda table
         AgendaTableFragment agendaTableFragment = new AgendaTableFragment();
         Bundle bundle = new Bundle();
+        bundle.putSerializable("is_editable", true);
         bundle.putSerializable("passed_details", detailsDTO);
         agendaTableFragment.setArguments(bundle);
 
@@ -73,7 +74,7 @@ public class AgendaEditFragment extends DialogFragment {
         Button activityBtn = view.findViewById(R.id.activityBtn);
 
         activityBtn.setOnClickListener(v -> {
-            ActivityFormFragment activityForm = ActivityFormFragment.newInstance(true);
+            ActivityFormFragment activityForm = ActivityFormFragment.newInstance(true, null);
             activityForm.show(getChildFragmentManager(), "ActivityForm");
         });
     }

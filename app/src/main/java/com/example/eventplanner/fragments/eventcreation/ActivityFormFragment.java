@@ -26,6 +26,8 @@ public class ActivityFormFragment extends DialogFragment {
     private EventCreationViewModel viewModel;
     private EventEditViewModel editViewModel;
     private Boolean isEditable;
+    private EditText timeField, descriptionField, venueField, nameField;
+
 
     public ActivityFormFragment() {}
 
@@ -36,10 +38,10 @@ public class ActivityFormFragment extends DialogFragment {
     }
 
 
-
-    public static ActivityFormFragment newInstance(Boolean isEditable) {
+    public static ActivityFormFragment newInstance(Boolean isEditable, CreateActivityDTO activity) {
         Bundle args = new Bundle();
         args.putSerializable("is_editable", isEditable);
+        args.putSerializable("activity_data", activity);
 
         ActivityFormFragment fragment = new ActivityFormFragment();
         fragment.setArguments(args);
@@ -57,53 +59,84 @@ public class ActivityFormFragment extends DialogFragment {
         viewModel = new ViewModelProvider(requireActivity()).get(EventCreationViewModel.class);
         editViewModel = new ViewModelProvider(requireActivity()).get(EventEditViewModel.class);
 
+        findViews();
+
+        Button addBtn = view.findViewById(R.id.addBtn);
 
         if (getArguments() != null) {
             isEditable = (Boolean) getArguments().getSerializable("is_editable");
+            CreateActivityDTO activity = (CreateActivityDTO) getArguments().getSerializable("activity_data");
+
+            if (activity != null) {
+                timeField.setText(activity.getTime());
+                descriptionField.setText(activity.getDescription());
+                venueField.setText(activity.getLocation());
+                nameField.setText(activity.getName());
+
+                addBtn.setText(getString(R.string.edit));
+
+            }
         }
 
-
-        Button addBtn = view.findViewById(R.id.addBtn);
         addBtn.setOnClickListener(v -> {
-            EditText timeField = view.findViewById(R.id.time);
-            EditText descriptionField = view.findViewById(R.id.description);
-            EditText venueField = view.findViewById(R.id.venue);
-            EditText nameField = view.findViewById(R.id.name);
-
-            // validate input data
-            if (!ValidationUtils.isFieldValid(timeField, "Time is required!")) return;
-            if (!ValidationUtils.isActivityTimeValid(timeField)) return;
-            if (!ValidationUtils.isFieldValid(nameField, "Name is required!")) return;
-            if (!ValidationUtils.isFieldValid(descriptionField, "Description is required!")) return;
-            if (!ValidationUtils.isFieldValid(venueField, "Venue is required!")) return;
-
-
-            // if valid, save
-            String time = timeField.getText().toString();
-            String description = descriptionField.getText().toString();
-            String venue = venueField.getText().toString();
-            String name = nameField.getText().toString();
-
-            CreateActivityDTO newActivity = new CreateActivityDTO(time, name, description, venue);
-
-
-
-            if (isEditable) {
-                editViewModel.updateAgenda(newActivity);
-                dismiss();
+            if (addBtn.getText().toString().equals(getString(R.string.add))) {
+                addActivity();
             }
             else {
-                viewModel.updateAgenda(newActivity);
-                dismiss();
+                editActivity();
             }
-
-
-
-
-
         });
 
         return view;
+    }
+
+
+    private void findViews() {
+        timeField = view.findViewById(R.id.time);
+        descriptionField = view.findViewById(R.id.description);
+        venueField = view.findViewById(R.id.venue);
+        nameField = view.findViewById(R.id.name);
+    }
+
+
+    private void validateFields() {
+        if (!ValidationUtils.isFieldValid(timeField, "Time is required!")) return;
+        if (!ValidationUtils.isActivityTimeValid(timeField)) return;
+        if (!ValidationUtils.isFieldValid(nameField, "Name is required!")) return;
+        if (!ValidationUtils.isFieldValid(descriptionField, "Description is required!")) return;
+        if (!ValidationUtils.isFieldValid(venueField, "Venue is required!")) return;
+    }
+
+
+    private void addActivity() {
+        // validate input data
+        validateFields();
+
+        // if valid, save
+        String time = timeField.getText().toString();
+        String description = descriptionField.getText().toString();
+        String venue = venueField.getText().toString();
+        String name = nameField.getText().toString();
+
+        CreateActivityDTO newActivity = new CreateActivityDTO(time, name, description, venue);
+
+        if (isEditable) {
+            editViewModel.updateAgenda(newActivity);
+            dismiss();
+        }
+        else {
+            viewModel.updateAgenda(newActivity);
+            dismiss();
+        }
+    }
+
+
+    private void editActivity() {
+        // Validate input
+        validateFields();
+
+
+        dismiss();
     }
 
 

@@ -31,7 +31,7 @@ public class AgendaDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_agenda_dialog, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewAgenda);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        AgendaAdapter agendaAdapter = new AgendaAdapter(activities);
+        AgendaAdapter agendaAdapter = new AgendaAdapter(activities, false);
         recyclerView.setAdapter(agendaAdapter);
         return view;
     }

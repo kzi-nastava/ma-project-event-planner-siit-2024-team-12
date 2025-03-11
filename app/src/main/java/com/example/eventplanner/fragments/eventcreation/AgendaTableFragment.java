@@ -34,7 +34,16 @@ public class AgendaTableFragment extends Fragment {
     private RecyclerView agendaRecyclerView;
     private List<Activity> tableDisplay;
     private EventEditViewModel editViewModel;
+    private Boolean isEditable = false;
 
+
+    public static AgendaTableFragment newInstance(Boolean isEditable) {
+        AgendaTableFragment fragment = new AgendaTableFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("is_editable", isEditable);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
 
     @Override
@@ -45,6 +54,12 @@ public class AgendaTableFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(EventCreationViewModel.class);
         editViewModel = new ViewModelProvider(requireActivity()).get(EventEditViewModel.class);
+
+
+        if (getArguments() != null) {
+            isEditable = (Boolean) getArguments().getSerializable("is_editable");
+        }
+
 
         return view;
     }
@@ -78,7 +93,7 @@ public class AgendaTableFragment extends Fragment {
         }
 
 
-        AgendaAdapter adapter = new AgendaAdapter(tableDisplay);
+        AgendaAdapter adapter = new AgendaAdapter(tableDisplay, isEditable);
         agendaRecyclerView.setAdapter(adapter);
 
         // track changes in viewModel to dynamically display them in agenda table

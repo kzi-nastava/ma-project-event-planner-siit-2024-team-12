@@ -1,6 +1,7 @@
 package com.example.eventplanner.adapters;
 
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
@@ -10,21 +11,28 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.viewholders.AgendaViewHolder;
+import com.example.eventplanner.dto.agenda.CreateActivityDTO;
+import com.example.eventplanner.fragments.eventcreation.ActivityFormFragment;
 import com.example.eventplanner.model.Activity;
 
 import java.util.List;
 
 public class AgendaAdapter extends RecyclerView.Adapter<AgendaViewHolder> {
 
-    private List<Activity> activites;
+    private List<Activity> activities;
+    private Boolean isEditable;
 
-    public AgendaAdapter(List<Activity> activites) {
-        this.activites = activites;
+    public AgendaAdapter(List<Activity> activities, Boolean isEditable) {
+        this.activities = activities;
+        this.isEditable = isEditable;
     }
+
+
 
     @NonNull
     @Override
@@ -37,7 +45,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull AgendaViewHolder holder, int position) {
-        Activity activity = activites.get(position);
+        Activity activity = activities.get(position);
 
         holder.activityTime.setText(activity.getTime());
 
@@ -45,6 +53,17 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaViewHolder> {
             holder.activityName.setVisibility(View.VISIBLE);
             holder.activityDescription.setVisibility(View.VISIBLE);
             holder.activityVenue.setVisibility(View.VISIBLE);
+
+            if (isEditable) {
+                holder.editButton.setVisibility(View.VISIBLE);
+                holder.editButton.setOnClickListener(v -> {
+                    CreateActivityDTO activityDTO = new CreateActivityDTO(activity.getTime(),
+                            activity.getName(), activity.getDescription(), activity.getLocation());
+
+                    ActivityFormFragment activityForm = ActivityFormFragment.newInstance(true, activityDTO);
+                    activityForm.show(((FragmentActivity) v.getContext()).getSupportFragmentManager(), "ActivityForm");
+                });
+            }
 
             // bold "Activity name*" part in table
             String name = holder.itemView.getContext().getString(R.string.activity_name_in_table, activity.getName());
@@ -68,6 +87,8 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaViewHolder> {
             holder.activityDescription.setVisibility(View.GONE);
             holder.activityVenue.setVisibility(View.GONE);
 
+            holder.editButton.setVisibility(View.GONE);
+
             holder.expandArrow.setRotation(0f);
         }
 
@@ -87,8 +108,9 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaViewHolder> {
 
     }
 
+
     @Override
     public int getItemCount() {
-        return activites.size();
+        return activities.size();
     }
 }
