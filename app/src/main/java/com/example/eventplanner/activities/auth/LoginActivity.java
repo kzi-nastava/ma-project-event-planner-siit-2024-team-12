@@ -16,19 +16,17 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.UserRole;
-import com.example.eventplanner.ValidationUtils;
+import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.activities.homepage.AdminHomepageActivity;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
 import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.dto.auth.LogInRequest;
 import com.example.eventplanner.dto.auth.UserTokenState;
-import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.fragments.others.ResetPasswordFragment;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

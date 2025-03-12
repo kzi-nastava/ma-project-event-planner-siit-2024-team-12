@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.utils;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
+import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.activities.auth.AuthService;
 import com.example.eventplanner.activities.business.BusinessService;
 import com.example.eventplanner.activities.charts.ChartService;

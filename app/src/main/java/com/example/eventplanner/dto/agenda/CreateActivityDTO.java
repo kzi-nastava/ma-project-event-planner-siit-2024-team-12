@@ -3,8 +3,11 @@ package com.example.eventplanner.dto.agenda;
 
 import com.example.eventplanner.dto.event.CreateEventDTO;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 // activity format sent from front
-public class CreateActivityDTO {
+public class CreateActivityDTO implements Serializable {
     private String time;
     private String name;
     private String description;
@@ -31,4 +34,30 @@ public class CreateActivityDTO {
 
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
+
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        CreateActivityDTO that = (CreateActivityDTO) obj;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(time, that.time) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(location, that.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, time, description, location);
+    }
+
+
+
+
+    @Override
+    public String toString() {
+        return "ActivityDTO {time=" + time + ", name=" + name + ", description=" + description + ", location=" + location + "\n}";
+    }
 }

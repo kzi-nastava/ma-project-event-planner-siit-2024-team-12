@@ -1,26 +1,38 @@
 package com.example.eventplanner.adapters;
 
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.viewholders.AgendaViewHolder;
+import com.example.eventplanner.dto.agenda.CreateActivityDTO;
+import com.example.eventplanner.fragments.eventcreation.ActivityFormFragment;
 import com.example.eventplanner.model.Activity;
 
 import java.util.List;
 
 public class AgendaAdapter extends RecyclerView.Adapter<AgendaViewHolder> {
 
-    private List<Activity> activites;
+    private List<Activity> activities;
+    private Boolean isEditable;
 
-    public AgendaAdapter(List<Activity> activites) {
-        this.activites = activites;
+    public AgendaAdapter(List<Activity> activities, Boolean isEditable) {
+        this.activities = activities;
+        this.isEditable = isEditable;
     }
+
+
 
     @NonNull
     @Override
@@ -33,7 +45,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull AgendaViewHolder holder, int position) {
-        Activity activity = activites.get(position);
+        Activity activity = activities.get(position);
 
         holder.activityTime.setText(activity.getTime());
 
@@ -42,15 +54,40 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaViewHolder> {
             holder.activityDescription.setVisibility(View.VISIBLE);
             holder.activityVenue.setVisibility(View.VISIBLE);
 
-            holder.activityName.setText(activity.getName());
-            holder.activityDescription.setText(activity.getDescription());
-            holder.activityVenue.setText(activity.getLocation());
+            if (isEditable) {
+                holder.editButton.setVisibility(View.VISIBLE);
+                holder.editButton.setOnClickListener(v -> {
+                    CreateActivityDTO activityDTO = new CreateActivityDTO(activity.getTime(),
+                            activity.getName(), activity.getDescription(), activity.getLocation());
+
+                    ActivityFormFragment activityForm = ActivityFormFragment.newEditInstance(true, activityDTO, position);
+                    activityForm.show(((FragmentActivity) v.getContext()).getSupportFragmentManager(), "ActivityForm");
+                });
+            }
+
+            // bold "Activity name*" part in table
+            String name = holder.itemView.getContext().getString(R.string.activity_name_in_table, activity.getName());
+            SpannableString spannable = new SpannableString(name);
+            spannable.setSpan(new StyleSpan(Typeface.BOLD), 0, 11, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.activityName.setText(spannable);
+
+            String description = holder.itemView.getContext().getString(R.string.description_in_table_row, activity.getDescription());
+            SpannableString spannable2 = new SpannableString(description);
+            spannable2.setSpan(new StyleSpan(Typeface.BOLD), 0, 11, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.activityDescription.setText(spannable2);
+
+            String venue = holder.itemView.getContext().getString(R.string.location_in_table, activity.getLocation());
+            SpannableString spannable3 = new SpannableString(venue);
+            spannable3.setSpan(new StyleSpan(Typeface.BOLD), 0, 11, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.activityVenue.setText(spannable3);
 
             holder.expandArrow.setRotation(180f);
         } else {
             holder.activityName.setVisibility(View.GONE);
             holder.activityDescription.setVisibility(View.GONE);
             holder.activityVenue.setVisibility(View.GONE);
+
+            holder.editButton.setVisibility(View.GONE);
 
             holder.expandArrow.setRotation(0f);
         }
@@ -71,8 +108,9 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaViewHolder> {
 
     }
 
+
     @Override
     public int getItemCount() {
-        return activites.size();
+        return activities.size();
     }
 }

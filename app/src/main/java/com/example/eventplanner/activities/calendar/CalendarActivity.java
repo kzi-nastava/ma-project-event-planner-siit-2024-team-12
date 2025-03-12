@@ -3,7 +3,6 @@ package com.example.eventplanner.activities.calendar;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.UserRole;
 import com.example.eventplanner.adapters.CalendarAdapter;
@@ -37,8 +36,8 @@ public class CalendarActivity extends AppCompatActivity {
     private CalendarAdapter calendarAdapter;
     private TextView monthYearText;
     private Calendar currentCalendar;
-    private HashMap<String, String> acceptedEvents = new HashMap<>();
-    private HashMap<String, String> createdEvents = new HashMap<>();
+    private HashMap<String, List<String>> acceptedEvents = new HashMap<>();
+    private HashMap<String, List<String>> createdEvents = new HashMap<>();
     String userRole;
 
 
@@ -85,7 +84,7 @@ public class CalendarActivity extends AppCompatActivity {
 
         List<String> days = generateDaysForMonth();
 
-        // all users can se accepted events in calendar
+        // all users can see accepted events in calendar
         loadAcceptedEvents(acceptedEvents);
 
         // only organizers can see events they created too
@@ -139,7 +138,7 @@ public class CalendarActivity extends AppCompatActivity {
 
 
 
-    private void loadAcceptedEvents(HashMap<String, String> events) {
+    private void loadAcceptedEvents(HashMap<String, List<String>> events) {
         String auth = ClientUtils.getAuthorization(this);
 
         SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
@@ -159,7 +158,10 @@ public class CalendarActivity extends AppCompatActivity {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                         String formattedDate = sdf.format(eventCalendar.getTime());
 
-                        events.put(formattedDate, event.getName());
+                        if (!events.containsKey(formattedDate)) {
+                            events.put(formattedDate, new ArrayList<>());
+                        }
+                        events.get(formattedDate).add(event.getName());
                     }
 
                     runOnUiThread(() -> {
@@ -177,7 +179,8 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
 
-    private void loadCreatedEvents(HashMap<String, String> events) {
+
+    private void loadCreatedEvents(HashMap<String, List<String>> events) {
         String auth = ClientUtils.getAuthorization(this);
 
         SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
@@ -197,26 +200,28 @@ public class CalendarActivity extends AppCompatActivity {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                         String formattedDate = sdf.format(eventCalendar.getTime());
 
-                        events.put(formattedDate, event.getName());
+                        if (!events.containsKey(formattedDate)) {
+                            events.put(formattedDate, new ArrayList<>());
+                        }
+                        events.get(formattedDate).add(event.getName());
                     }
 
                     runOnUiThread(() -> {
                         calendarAdapter.updateData(generateDaysForMonth(), acceptedEvents, events, currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.YEAR));
                         calendarAdapter.notifyDataSetChanged();
                     });
-                }
-
-                else if (response.code() == 404) {
+                } else if (response.code() == 404) {
                     Toast.makeText(CalendarActivity.this, "You don't have any events!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<AcceptedEventDTO>> call, Throwable t) {
-                Toast.makeText(CalendarActivity.this, "Failed to load accepted events!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CalendarActivity.this, "Failed to load created events!", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
 
     public void closeForm(View view) {

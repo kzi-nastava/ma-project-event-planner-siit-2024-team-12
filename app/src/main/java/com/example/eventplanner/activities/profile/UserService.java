@@ -18,6 +18,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface UserService {
     @PUT("users/{email}")
@@ -58,4 +59,23 @@ public interface UserService {
     @GET("users/{email}/favorite-products")
     Call<ArrayList<FavSolutionDTO>> getFavoriteProducts(@Header("Authorization") String token,
                                                         @Path("email") String email);
+
+
+    @POST("users/{email}/favorite-event-addition")
+    Call<ResponseBody> addToFavorites(@Header("Authorization") String token,
+                                      @Path("email") String email,
+                                      @Body Long eventId);
+
+
+    @GET("users/{email}/is-favorite-event")
+    Call<Boolean> isEventFavorite(@Header("Authorization") String token,
+                                  @Path("email") String email,
+                                  @Query("eventId") Long eventId);
+
+
+    @DELETE("users/{email}/remove-favorite-event")
+    Call<Void> removeFromFavorites(@Header("Authorization") String token,
+                                   @Path("email") String email,
+                                   @Query("eventId") Long eventId);
+
 }

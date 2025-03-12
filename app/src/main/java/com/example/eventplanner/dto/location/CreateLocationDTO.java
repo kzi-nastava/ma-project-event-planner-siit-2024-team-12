@@ -1,6 +1,8 @@
 package com.example.eventplanner.dto.location;
 
-public class CreateLocationDTO {
+import java.io.Serializable;
+
+public class CreateLocationDTO implements Serializable {
     private String name;
     private String address;
     private String city;

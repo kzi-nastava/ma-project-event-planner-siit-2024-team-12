@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.utils;
 
 import android.widget.EditText;
 

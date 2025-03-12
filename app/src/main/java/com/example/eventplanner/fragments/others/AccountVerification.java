@@ -13,9 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.eventplanner.ClientUtils;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.auth.AccountActivation;
 import com.example.eventplanner.activities.auth.LoginActivity;
 
 import okhttp3.ResponseBody;

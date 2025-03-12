@@ -260,8 +260,8 @@
     <string name="phone_format">Phone [ + [country code] [local number] ] :</string>
     <string name="status">Status :</string>
 
-    <string name="description_in_table_row"><b>Description :</b> %s</string>
-    <string name="status_in_table_row"><b>Status :</b> %s</string>
+    <string name="description_in_table_row"><b>Description*</b>\n%s</string>
+    <string name="status_in_table_row"><b>Status*</b>\n%s</string>
 
     <string name="accepted">Accepted</string>
     <string name="created">Created</string>
@@ -273,5 +273,14 @@
     <string name="ratings_chart">Event ratings chart</string>
     <string name="more_details">For more details :</string>
     <string name="generate_pdf">Generate pdf report</string>
+    <string name="event_type_ast">Event type*</string>
+    <string name="date_ast">Date*</string>
+    <string name="max_guests_ast">Max guests*</string>
+    <string name="generate_pdf_event">Generate pdf</string>
+    <string name="location_ast">Location*</string>
+    <string name="see_agenda">See agenda</string>
+
+    <string name="activity_name_in_table"><b>Activity name*</b>\n%s</string>
+    <string name="location_in_table"><b>Location*</b>\n%s</string>
 
 </resources>

@@ -3,9 +3,7 @@ package com.example.eventplanner.fragments.eventcreation;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -16,7 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.ValidationUtils;
+import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.dto.location.CreateLocationDTO;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
 

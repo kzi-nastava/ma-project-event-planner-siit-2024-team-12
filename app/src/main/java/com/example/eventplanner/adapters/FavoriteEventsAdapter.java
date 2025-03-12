@@ -8,12 +8,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import android.content.Intent;
+
+import com.example.eventplanner.utils.ClientUtils;
+import com.example.eventplanner.activities.event.EventDetailsActivity;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.dto.event.FavEventDTO;
 
+import java.io.Serializable;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAdapter.ViewHolder> {
     private List<FavEventDTO> events;
@@ -57,10 +68,44 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
         }
 
         holder.seeMore.setOnClickListener(v -> {
-
+            Context context = v.getContext();
+            loadEventDetails(context, event.getId());
         });
     }
 
+
+
+    void loadEventDetails(Context context, Long eventId) {
+        String token = ClientUtils.getAuthorization(context);
+
+        Call<EventDetailsDTO> call = ClientUtils.eventService.getEvent(token, eventId);
+
+        call.enqueue(new Callback<EventDetailsDTO>() {
+            @Override
+            public void onResponse(Call<EventDetailsDTO> call, Response<EventDetailsDTO> response) {
+                if (response.isSuccessful()) {
+                    EventDetailsDTO event = response.body();
+
+                    Intent intent = new Intent(context, EventDetailsActivity.class);
+                    intent.putExtra("id", eventId);
+                    intent.putExtra("name", event.getName());
+                    intent.putExtra("eventType", event.getEventType());
+                    intent.putExtra("date", event.getDate().toString());
+                    intent.putExtra("maxGuests", event.getMaxGuests());
+                    intent.putExtra("description", event.getDescription());
+                    intent.putExtra("location", event.getLocation().getAddress() + ", " +
+                            event.getLocation().getCity() + ", " + event.getLocation().getCountry());
+                    intent.putExtra("activities", (Serializable) event.getActivities());
+                    context.startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventDetailsDTO> call, Throwable t) {
+
+            }
+        });
+    }
 
 
 
@@ -86,6 +131,5 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
             eventTime = itemView.findViewById(R.id.eventTime);
         }
     }
-
 
 }
