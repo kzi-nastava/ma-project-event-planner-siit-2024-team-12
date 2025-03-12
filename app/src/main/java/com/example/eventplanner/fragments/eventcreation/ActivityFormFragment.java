@@ -27,6 +27,7 @@ public class ActivityFormFragment extends DialogFragment {
     private EventEditViewModel editViewModel;
     private Boolean isEditable;
     private EditText timeField, descriptionField, venueField, nameField;
+    private Integer position;
 
 
     public ActivityFormFragment() {}
@@ -42,6 +43,19 @@ public class ActivityFormFragment extends DialogFragment {
         Bundle args = new Bundle();
         args.putSerializable("is_editable", isEditable);
         args.putSerializable("activity_data", activity);
+
+        ActivityFormFragment fragment = new ActivityFormFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
+
+    public static ActivityFormFragment newEditInstance(Boolean isEditable, CreateActivityDTO activity, Integer position) {
+        Bundle args = new Bundle();
+        args.putSerializable("is_editable", isEditable);
+        args.putSerializable("activity_data", activity);
+        args.putSerializable("position", position);
 
         ActivityFormFragment fragment = new ActivityFormFragment();
         fragment.setArguments(args);
@@ -66,6 +80,7 @@ public class ActivityFormFragment extends DialogFragment {
         if (getArguments() != null) {
             isEditable = (Boolean) getArguments().getSerializable("is_editable");
             CreateActivityDTO activity = (CreateActivityDTO) getArguments().getSerializable("activity_data");
+            position = getArguments().containsKey("position") ? (Integer) getArguments().getSerializable("position") : -1;
 
             if (activity != null) {
                 timeField.setText(activity.getTime());
@@ -79,12 +94,7 @@ public class ActivityFormFragment extends DialogFragment {
         }
 
         addBtn.setOnClickListener(v -> {
-            if (addBtn.getText().toString().equals(getString(R.string.add))) {
-                addActivity();
-            }
-            else {
-                editActivity();
-            }
+            addActivity();
         });
 
         return view;
@@ -121,7 +131,7 @@ public class ActivityFormFragment extends DialogFragment {
         CreateActivityDTO newActivity = new CreateActivityDTO(time, name, description, venue);
 
         if (isEditable) {
-            editViewModel.updateAgenda(newActivity);
+            editViewModel.updateAgenda(newActivity, position >= 0 ? position : null);
             dismiss();
         }
         else {
@@ -131,13 +141,7 @@ public class ActivityFormFragment extends DialogFragment {
     }
 
 
-    private void editActivity() {
-        // Validate input
-        validateFields();
 
-
-        dismiss();
-    }
 
 
     public void closeForm(View view) {

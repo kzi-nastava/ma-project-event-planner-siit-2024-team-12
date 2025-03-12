@@ -24,6 +24,7 @@ import com.example.eventplanner.viewmodels.EventEditViewModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -117,7 +118,10 @@ public class AgendaTableFragment extends Fragment {
             if (editEventDTO != null && editEventDTO.getActivities() != null) {
                 tableDisplay.clear();
 
-                Set<CreateActivityDTO> uniques = new HashSet<>(editEventDTO.getActivities());
+
+                // using LinkedHashSet to keep the order from getActivities()
+                // order is important because activity edit depends on the position in the list
+                Set<CreateActivityDTO> uniques = new LinkedHashSet<>(editEventDTO.getActivities());
 
                 for (CreateActivityDTO activityDTO : uniques) {
                     Activity activity = new Activity(activityDTO.getTime(), activityDTO.getName(),

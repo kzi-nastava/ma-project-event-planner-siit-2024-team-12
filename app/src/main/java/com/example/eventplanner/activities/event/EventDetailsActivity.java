@@ -544,7 +544,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         editViewModel.updateEventAttributes("id", currentEventId.toString());
 
         for (CreateActivityDTO dto : eventDetailsDTO.getActivities()) {
-            editViewModel.updateAgenda(dto);
+            editViewModel.updateAgenda(dto, null);
         }
     }
 

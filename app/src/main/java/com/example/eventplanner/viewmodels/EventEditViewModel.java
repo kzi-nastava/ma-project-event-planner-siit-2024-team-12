@@ -2,6 +2,7 @@ package com.example.eventplanner.viewmodels;
 
 import android.app.Application;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -25,19 +26,29 @@ public class EventEditViewModel extends AndroidViewModel {
 
 
 
-    public void updateAgenda(CreateActivityDTO newActivity) {
+    public void updateAgenda(CreateActivityDTO newActivity, Integer position) {
         EventDetailsDTO current = dto.getValue();
 
         if (current != null) {
             List<CreateActivityDTO> existingActivities = current.getActivities();
             if (existingActivities == null) {
                 existingActivities = new ArrayList<>();
+            } else {
+                existingActivities = new ArrayList<>(existingActivities);
             }
-            existingActivities.add(newActivity);
+
+            if (position != null && position >= 0 && position < existingActivities.size()) {
+                existingActivities.set(position, newActivity);
+            } else {
+                existingActivities.add(newActivity);
+            }
+
             current.setActivities(existingActivities);
             dto.setValue(current);
         }
     }
+
+
 
 
 
@@ -71,5 +82,4 @@ public class EventEditViewModel extends AndroidViewModel {
         }
 
     }
-
 }

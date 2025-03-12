@@ -19,6 +19,17 @@ public class EventDetailsDTO implements Serializable {
 
     public EventDetailsDTO() {}
 
+    public EventDetailsDTO(EventDetailsDTO other) {
+        this.id = other.id;
+        this.name = other.name;
+        this.eventType = other.eventType;
+        this.maxGuests = other.maxGuests;
+        this.description = other.description;
+        this.location = other.location;
+        this.date = other.date;
+        this.activities = other.activities;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

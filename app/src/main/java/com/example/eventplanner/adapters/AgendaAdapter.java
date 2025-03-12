@@ -60,7 +60,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<AgendaViewHolder> {
                     CreateActivityDTO activityDTO = new CreateActivityDTO(activity.getTime(),
                             activity.getName(), activity.getDescription(), activity.getLocation());
 
-                    ActivityFormFragment activityForm = ActivityFormFragment.newInstance(true, activityDTO);
+                    ActivityFormFragment activityForm = ActivityFormFragment.newEditInstance(true, activityDTO, position);
                     activityForm.show(((FragmentActivity) v.getContext()).getSupportFragmentManager(), "ActivityForm");
                 });
             }
