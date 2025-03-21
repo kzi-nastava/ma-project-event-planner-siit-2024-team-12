@@ -1,4 +1,4 @@
-package com.example.eventplanner.adapters;
+package com.example.eventplanner.adapters.datetime;
 
 import com.google.gson.*;
 import java.lang.reflect.Type;

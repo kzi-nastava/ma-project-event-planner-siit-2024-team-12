@@ -1,16 +1,16 @@
-package com.example.eventplanner.adapters;
+package com.example.eventplanner.adapters.solution;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.eventplanner.fragments.eventcreation.EventCreation1;
-import com.example.eventplanner.fragments.eventcreation.EventCreation2;
+import com.example.eventplanner.fragments.product.ProductCreationFragment;
+import com.example.eventplanner.fragments.product.ProductCreationFragment2;
 
-public class EventCreationPager extends FragmentStateAdapter {
+public class ProductCreationPager extends FragmentStateAdapter {
 
-    public EventCreationPager(@NonNull FragmentActivity fragmentActivity) {
+    public ProductCreationPager(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
 
@@ -19,9 +19,9 @@ public class EventCreationPager extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 1:
-                return new EventCreation2();
+                return new ProductCreationFragment2();
             default:
-                return new EventCreation1();
+                return new ProductCreationFragment();
         }
     }
 

@@ -1,7 +1,6 @@
-package com.example.eventplanner.adapters;
+package com.example.eventplanner.adapters.event;
 
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;

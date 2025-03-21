@@ -5,6 +5,7 @@ import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.business.UpdateBusinessDTO;
 import com.example.eventplanner.dto.business.UpdatedBusinessDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
+import com.example.eventplanner.dto.solution.GetProductDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface BusinessService {
     @POST("businesses")
@@ -45,4 +47,9 @@ public interface BusinessService {
     Call<ArrayList<GetSolutionCategoryDTO>> getSolutionCategoriesByBusiness(@Header("Authorization") String token,
                                                                  @Path("companyEmail") String email);
 
+
+
+    @GET("businesses/{businessId}/products")
+    Call<ArrayList<GetProductDTO>> getProvidersProducts(@Header("Authorization") String auth,
+                                                        @Path("businessId") Long businessId);
 }

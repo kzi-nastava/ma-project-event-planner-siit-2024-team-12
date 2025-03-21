@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="7dp">
 
                 <ImageView
                     android:layout_width="16dp"
@@ -70,13 +70,13 @@
                     android:textSize="15sp"/>
             </LinearLayout>
 
-            <!-- Date -->
+            <!-- Price -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="7dp">
 
                 <ImageView
                     android:layout_width="16dp"
@@ -91,7 +91,36 @@
                     android:textSize="15sp"/>
             </LinearLayout>
 
-            <!-- Time -->
+
+
+
+            <!-- Discount -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="7dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/sell"
+                    android:layout_marginEnd="6dp"/>
+
+                <TextView
+                    android:id="@+id/discount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"/>
+            </LinearLayout>
+
+
+
+
+
+
+            <!-- Category -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -114,22 +143,20 @@
         </LinearLayout>
 
 
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
 
 
         <TextView
             android:id="@+id/seeMore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="See more"
-            android:textColor="@android:color/holo_blue_dark"
-            android:textSize="14sp"
             android:layout_gravity="bottom"
+            android:layout_marginStart="12dp"
             android:layout_marginBottom="20dp"
-            android:layout_marginStart="25dp"/>
+            android:text="@string/view_details"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
     </LinearLayout>
 
 </LinearLayout>

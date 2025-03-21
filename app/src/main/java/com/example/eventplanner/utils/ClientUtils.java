@@ -14,8 +14,8 @@ import com.example.eventplanner.activities.event.EventService;
 import com.example.eventplanner.activities.eventtype.EventTypeService;
 import com.example.eventplanner.activities.profile.UserService;
 import com.example.eventplanner.activities.solutioncategory.SolutionCategoryService;
-import com.example.eventplanner.adapters.LocalDateAdapter;
-import com.example.eventplanner.adapters.LocalTimeAdapter;
+import com.example.eventplanner.adapters.datetime.LocalDateAdapter;
+import com.example.eventplanner.adapters.datetime.LocalTimeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

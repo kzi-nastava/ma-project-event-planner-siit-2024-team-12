@@ -1,9 +1,7 @@
 package com.example.eventplanner.activities.event;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,9 +11,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.EventCreationPager;
-import com.example.eventplanner.fragments.eventcreation.EventCreation2;
-import com.example.eventplanner.fragments.eventcreation.LocationFormFragment;
+import com.example.eventplanner.adapters.event.EventCreationPager;
 
 public class EventCreationActivity extends AppCompatActivity {
 

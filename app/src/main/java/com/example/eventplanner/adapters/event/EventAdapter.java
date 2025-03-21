@@ -1,4 +1,4 @@
-package com.example.eventplanner.adapters;
+package com.example.eventplanner.adapters.event;
 
 import android.view.LayoutInflater;
 import android.view.View;

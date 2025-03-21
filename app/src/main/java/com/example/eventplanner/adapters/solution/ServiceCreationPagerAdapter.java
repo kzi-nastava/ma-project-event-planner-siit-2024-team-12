@@ -1,4 +1,4 @@
-package com.example.eventplanner.adapters;
+package com.example.eventplanner.adapters.solution;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

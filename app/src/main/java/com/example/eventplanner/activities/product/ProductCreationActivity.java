@@ -1,28 +1,30 @@
-package com.example.eventplanner.activities.service;
+package com.example.eventplanner.activities.product;
 
 import android.os.Bundle;
-import android.view.View;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager2.widget.ViewPager2;
+
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.solution.ServiceCreationPagerAdapter;
+import com.example.eventplanner.adapters.solution.ProductCreationPager;
 
-public class ServiceCreationActivity extends AppCompatActivity {
-
+public class ProductCreationActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
-    private ServiceCreationPagerAdapter adapter;
-
+    private ProductCreationPager adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_service_creation);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_product_creation);
 
-        viewPager = findViewById(R.id.serviceCreationPager);
-        adapter = new ServiceCreationPagerAdapter(this);
+        viewPager = findViewById(R.id.viewPager);
+        adapter = new ProductCreationPager(this);
         viewPager.setAdapter(adapter);
-
 
     }
 
@@ -37,10 +39,4 @@ public class ServiceCreationActivity extends AppCompatActivity {
             viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
         }
     }
-
-    public void closeForm(View view) {
-        setResult(RESULT_CANCELED);
-        finish();
-    }
 }
-

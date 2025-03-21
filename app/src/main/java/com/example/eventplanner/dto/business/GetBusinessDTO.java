@@ -1,6 +1,7 @@
 package com.example.eventplanner.dto.business;
 
 public class GetBusinessDTO {
+    private Long id;
     private String companyName;
     private String companyEmail;
     private String address;
@@ -10,6 +11,8 @@ public class GetBusinessDTO {
 
     public GetBusinessDTO() {super();}
 
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public String getCompanyName() {return companyName;}
     public void setCompanyName(String companyName) {this.companyName = companyName;}
 

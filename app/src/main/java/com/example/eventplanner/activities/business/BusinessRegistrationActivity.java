@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.BusinessRegPager;
+import com.example.eventplanner.adapters.auth.BusinessRegPager;
 
 public class BusinessRegistrationActivity extends AppCompatActivity {
 
