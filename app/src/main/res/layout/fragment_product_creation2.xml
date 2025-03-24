@@ -35,6 +35,18 @@
             app:layout_constraintVertical_bias="0.0" />
 
 
+        <ImageView
+            android:id="@+id/images"
+            android:layout_width="39dp"
+            android:layout_height="36dp"
+            android:src="@drawable/photo_library"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.996"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
         <TextView
             android:id="@+id/event_types_ast"
             android:layout_width="117dp"

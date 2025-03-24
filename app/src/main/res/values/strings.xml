@@ -304,5 +304,6 @@
     <string name="offered_products">Products your business offers</string>
 
     <string name="discount_off">%s%% off</string>
+    <string name="see_event_types">See event types</string>
 
 </resources>

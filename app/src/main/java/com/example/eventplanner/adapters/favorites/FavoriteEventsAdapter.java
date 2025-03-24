@@ -75,7 +75,7 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
 
 
 
-    void loadEventDetails(Context context, Long eventId) {
+    private void loadEventDetails(Context context, Long eventId) {
         String token = ClientUtils.getAuthorization(context);
 
         Call<EventDetailsDTO> call = ClientUtils.eventService.getEvent(token, eventId);
