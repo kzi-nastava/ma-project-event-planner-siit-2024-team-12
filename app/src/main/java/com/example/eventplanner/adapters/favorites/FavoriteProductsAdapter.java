@@ -33,9 +33,13 @@ public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProduc
     public void onBindViewHolder(FavoriteProductsAdapter.ViewHolder holder, int position) {
         FavSolutionDTO product = products.get(position);
 
+        int discountValue = (int) Math.floor(product.getDiscount());
+        String discountOff = holder.itemView.getContext().getString(R.string.discount_off, discountValue);
+
         holder.productTitle.setText(product.getName());
         holder.productLocation.setText(product.getCity());
         holder.productPrice.setText(product.getPrice().toString());
+        holder.discount.setText(discountOff);
         holder.productCategory.setText(product.getCategoryName());
 
 
@@ -66,7 +70,7 @@ public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProduc
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView productImage;
-        TextView productTitle, seeMore, productLocation, productPrice, productCategory;
+        TextView productTitle, seeMore, productLocation, productPrice, productCategory, discount;
         LinearLayout container, textContainer;
 
         public ViewHolder(View itemView) {
@@ -79,6 +83,7 @@ public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProduc
             productLocation = itemView.findViewById(R.id.productLocation);
             productPrice = itemView.findViewById(R.id.productPrice);
             productCategory = itemView.findViewById(R.id.productCategory);
+            discount = itemView.findViewById(R.id.discount);
         }
     }
 }

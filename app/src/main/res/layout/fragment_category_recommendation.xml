@@ -57,7 +57,7 @@
 
 
         <EditText
-            android:id="@+id/name2"
+            android:id="@+id/description"
             android:layout_width="326dp"
             android:layout_height="wrap_content"
             android:minHeight="30dp"
@@ -75,7 +75,7 @@
             app:layout_constraintVertical_bias="0.712" />
 
         <TextView
-            android:id="@+id/textView18"
+            android:id="@+id/saveTxt"
             android:layout_width="55dp"
             android:layout_height="36dp"
             android:text="@string/save"
@@ -89,7 +89,7 @@
             app:layout_constraintVertical_bias="1.0" />
 
         <TextView
-            android:id="@+id/textView25"
+            android:id="@+id/cancelTxt"
             android:layout_width="55dp"
             android:layout_height="36dp"
             android:text="@string/cancel"

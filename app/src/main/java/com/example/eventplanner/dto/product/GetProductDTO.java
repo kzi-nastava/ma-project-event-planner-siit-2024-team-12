@@ -1,4 +1,4 @@
-package com.example.eventplanner.dto.solution;
+package com.example.eventplanner.dto.product;
 
 
 import java.util.List;

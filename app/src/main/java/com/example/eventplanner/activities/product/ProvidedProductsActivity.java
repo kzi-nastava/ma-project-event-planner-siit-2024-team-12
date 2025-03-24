@@ -1,6 +1,6 @@
 package com.example.eventplanner.activities.product;
 
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,28 +10,25 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
+import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.adapters.favorites.FavoriteProductsAdapter;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.solution.FavSolutionDTO;
-import com.example.eventplanner.dto.solution.GetProductDTO;
+import com.example.eventplanner.dto.product.GetProductDTO;
 import com.example.eventplanner.fragments.product.ProductCreationFragment;
 import com.example.eventplanner.utils.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 public class ProvidedProductsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -140,8 +137,8 @@ public class ProvidedProductsActivity extends AppCompatActivity {
     }
 
     public void closeForm(View view) {
-        setResult(RESULT_CANCELED);
-        finish();
+        Intent intent = new Intent(ProvidedProductsActivity.this, ProviderHomepageActivity.class);
+        startActivity(intent);
     }
 
 
@@ -155,6 +152,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
                                              getProductDTO.getMainImageUrl(),
                                              getProductDTO.getCity(),
                                              getProductDTO.getPrice(),
+                                             getProductDTO.getDiscount(),
                                              getProductDTO.getCategoryName()));
         }
 

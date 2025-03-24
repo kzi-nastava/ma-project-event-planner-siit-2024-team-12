@@ -66,6 +66,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/available"
                 android:textSize="15sp"
+                android:buttonTint="@color/radio_button_color"
                 android:scaleX="0.8"
                 android:scaleY="0.8" />
 
@@ -75,6 +76,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/unavailable"
                 android:textSize="15sp"
+                android:buttonTint="@color/radio_button_color"
                 android:scaleX="0.8"
                 android:scaleY="0.8" />
 
@@ -99,11 +101,11 @@
             android:layout_width="288dp"
             android:layout_height="30dp"
             android:background="@drawable/display_field"
-            android:focusableInTouchMode="false"
             android:paddingStart="7dp"
             android:paddingTop="2dp"
             android:textColor="@color/black"
             android:textSize="13sp"
+            android:inputType="text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.333"
@@ -142,6 +144,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/visible"
                 android:textSize="15sp"
+                android:buttonTint="@color/radio_button_color"
                 android:scaleX="0.8"
                 android:scaleY="0.8" />
 
@@ -151,6 +154,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/invisible"
                 android:textSize="15sp"
+                android:buttonTint="@color/radio_button_color"
                 android:scaleX="0.8"
                 android:scaleY="0.8" />
 
@@ -175,11 +179,11 @@
             android:layout_width="288dp"
             android:layout_height="30dp"
             android:background="@drawable/display_field"
-            android:focusableInTouchMode="false"
             android:paddingStart="7dp"
             android:paddingTop="2dp"
             android:textColor="@color/black"
             android:textSize="13sp"
+            android:inputType="text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.333"
@@ -188,7 +192,7 @@
             app:layout_constraintVertical_bias="0.792" />
 
         <Button
-            android:id="@+id/pdfBtn"
+            android:id="@+id/createBtn"
             android:layout_width="112dp"
             android:layout_height="38dp"
             android:background="@drawable/form_button"
@@ -204,7 +208,7 @@
             app:layout_constraintVertical_bias="1.0" />
 
         <Button
-            android:id="@+id/pdfBtn2"
+            android:id="@+id/backBtn"
             android:layout_width="112dp"
             android:layout_height="38dp"
             android:background="@drawable/form_button"
