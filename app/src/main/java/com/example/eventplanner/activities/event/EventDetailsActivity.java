@@ -310,7 +310,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             return;
         }
 
-        Call<ResponseBody> call = ClientUtils.userService.addToFavorites(auth, userEmail, currentEventId);
+        Call<ResponseBody> call = ClientUtils.userService.addFavoriteEvent(auth, userEmail, currentEventId);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -373,7 +373,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             return;
         }
 
-        Call<Void> call = ClientUtils.userService.removeFromFavorites(auth, email, currentEventId);
+        Call<Void> call = ClientUtils.userService.removeFavoriteEvent(auth, email, currentEventId);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

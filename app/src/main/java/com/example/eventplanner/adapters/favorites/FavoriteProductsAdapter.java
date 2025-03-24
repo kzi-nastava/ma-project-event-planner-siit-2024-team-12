@@ -103,7 +103,7 @@ public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProduc
         return products.size();
     }
 
-    
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView productImage;

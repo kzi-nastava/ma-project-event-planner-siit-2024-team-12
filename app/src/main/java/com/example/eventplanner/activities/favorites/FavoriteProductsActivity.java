@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities.favorites;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
+import com.example.eventplanner.activities.product.ProvidedProductsActivity;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.favorites.FavoriteProductsAdapter;
@@ -123,7 +126,7 @@ public class FavoriteProductsActivity extends AppCompatActivity {
     }
 
     public void closeForm(View view) {
-        setResult(RESULT_CANCELED);
-        finish();
+        Intent intent = new Intent(FavoriteProductsActivity.this, ProviderHomepageActivity.class);
+        startActivity(intent);
     }
 }
