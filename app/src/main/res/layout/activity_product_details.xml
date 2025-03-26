@@ -106,6 +106,50 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.33" />
 
+
+        <RadioGroup
+            android:id="@+id/availabilityGroup"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-7dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.33">
+
+            <RadioButton
+                android:id="@+id/availableBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/radio_button_color"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:text="@string/available"
+                android:textSize="15sp" />
+
+            <RadioButton
+                android:id="@+id/unavailableBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/radio_button_color"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:layout_marginStart="-17dp"
+                android:text="@string/unavailable"
+                android:textSize="15sp" />
+
+        </RadioGroup>
+
+
+
+
+
+
+
         <TextView
             android:id="@+id/visible"
             android:layout_width="wrap_content"
@@ -135,6 +179,48 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.33" />
+
+
+
+        <RadioGroup
+            android:id="@+id/visibilityGroup"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.923"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.33">
+
+            <RadioButton
+                android:id="@+id/visibleBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/radio_button_color"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:text="@string/visible"
+                android:textSize="15sp" />
+
+            <RadioButton
+                android:id="@+id/invisibleBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/radio_button_color"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:layout_marginStart="-12dp"
+                android:text="@string/invisible"
+                android:textSize="15sp" />
+
+        </RadioGroup>
+
+
+
+
 
         <TextView
             android:id="@+id/price_ast"
@@ -213,7 +299,8 @@
         <EditText
             android:id="@+id/category"
             android:layout_width="135dp"
-            android:layout_height="24dp"
+            android:layout_height="wrap_content"
+            android:minHeight="24dp"
             android:background="@drawable/display_field"
             android:focusableInTouchMode="false"
             android:paddingStart="7dp"
@@ -245,7 +332,8 @@
         <Button
             android:id="@+id/seeEventTypes"
             android:layout_width="135dp"
-            android:layout_height="24dp"
+            android:layout_height="wrap_content"
+            android:minHeight="24dp"
             android:background="@drawable/display_field"
             android:text="@string/see_event_types"
             android:textAllCaps="false"
@@ -273,7 +361,8 @@
         <EditText
             android:id="@+id/description"
             android:layout_width="304dp"
-            android:layout_height="31dp"
+            android:layout_height="wrap_content"
+            android:minHeight="31dp"
             android:background="@drawable/display_field"
             android:focusableInTouchMode="false"
             android:paddingStart="7dp"

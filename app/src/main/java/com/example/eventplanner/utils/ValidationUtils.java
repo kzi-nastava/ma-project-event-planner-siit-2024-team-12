@@ -80,7 +80,7 @@ public class ValidationUtils {
         String value = field.getText().toString().trim();
         try {
             int number = Integer.parseInt(value);
-            if (number <= 0) {
+            if (number < 0) {
                 field.setError(negativeNumberMessage);
                 field.requestFocus();
                 return false;
@@ -91,6 +91,30 @@ public class ValidationUtils {
             return false;
         }
         return true;
+    }
+
+
+    // allows both, integer and double
+    public static boolean isDecimalNumber(EditText field, String invalidNumberMessage, String negativeNumberMessage) {
+        String input = field.getText().toString().trim();
+        if (input.isEmpty()) {
+            return false;
+        }
+        try {
+            double number = Double.parseDouble(input);
+            if (number < 0) {
+                field.setError(negativeNumberMessage);
+                field.requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            field.setError(invalidNumberMessage);
+            field.requestFocus();
+            return false;
+        }
+
+        return true;
+
     }
 
 

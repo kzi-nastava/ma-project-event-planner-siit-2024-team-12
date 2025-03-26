@@ -99,9 +99,9 @@ public class ProductCreationFragment2 extends DialogFragment {
         discountField = view.findViewById(R.id.discount);
 
         if (!ValidationUtils.isFieldValid(priceField, "Price is required!")) return;
-        if (!ValidationUtils.isNumberValid(priceField, "Enter a number!", "Negative number!")) return;
+        if (!ValidationUtils.isDecimalNumber(priceField, "Enter a number!", "Negative number!")) return;
         if (!ValidationUtils.isFieldValid(discountField, "Discount is required!")) return;
-        if (!ValidationUtils.isNumberValid(discountField, "Enter a number!", "Negative number!")) return;
+        if (!ValidationUtils.isDecimalNumber(discountField, "Enter a number!", "Negative number!")) return;
 
         viewModel.updateAttributes("price", priceField.getText().toString());
         viewModel.updateAttributes("discount", discountField.getText().toString());

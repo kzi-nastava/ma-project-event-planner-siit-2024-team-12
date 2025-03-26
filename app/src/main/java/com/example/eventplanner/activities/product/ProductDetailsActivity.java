@@ -3,13 +3,15 @@ package com.example.eventplanner.activities.product;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -20,13 +22,16 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.event.EventDetailsActivity;
-import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
 import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.product.GetProductDTO;
+import com.example.eventplanner.dto.product.UpdateProductDTO;
+import com.example.eventplanner.dto.product.UpdatedProductDTO;
 import com.example.eventplanner.utils.ClientUtils;
+import com.example.eventplanner.utils.ValidationUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -36,10 +41,14 @@ import retrofit2.Response;
 public class ProductDetailsActivity extends AppCompatActivity {
 
     private EditText name, availability, visibility, price, discount, category, description;
-    private Button seeEventTypes;
+    private Button seeEventTypes, editBtn;
     private ImageView fav, favOutline, exitBtn;
     private Long currentProductId;
-    private Boolean isFavorite;
+    private Boolean isFavorite, isEditable = false;
+    private RadioGroup availabilityGroup, visibilityGroup;
+    private RadioButton availableBtn, unavailableBtn, visibleBtn, invisibleBtn;
+    private List<String> selectedEventTypes = new ArrayList<>();
+
 
 
 
@@ -54,14 +63,14 @@ public class ProductDetailsActivity extends AppCompatActivity {
             return insets;
         });
 
-        findTextViews();
+        findFields();
 
         loadProductDetails();
 
-        seeEventTypes = findViewById(R.id.seeEventTypes);
 
         setUpFavProducts();
         setUpExitBtn();
+        setUpEditBtn();
 
     }
 
@@ -98,7 +107,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
 
-    private void findTextViews() {
+    // **********  general set up  **********
+
+    private void findFields() {
         name = findViewById(R.id.name);
         availability = findViewById(R.id.availability);
         visibility = findViewById(R.id.visibility);
@@ -106,14 +117,25 @@ public class ProductDetailsActivity extends AppCompatActivity {
         discount = findViewById(R.id.discount);
         category = findViewById(R.id.category);
         description = findViewById(R.id.description);
+
+        seeEventTypes = findViewById(R.id.seeEventTypes);
+
+        availabilityGroup = findViewById(R.id.availabilityGroup);
+        visibilityGroup = findViewById(R.id.visibilityGroup);
+
+        availableBtn = findViewById(R.id.availableBtn);
+        unavailableBtn = findViewById(R.id.unavailableBtn);
+        visibleBtn = findViewById(R.id.visibleBtn);
+        invisibleBtn = findViewById(R.id.invisibleBtn);
+
     }
 
 
 
     private void populateTextViews(GetProductDTO product) {
         name.setText(product.getName());
-        availability.setText(product.getIsAvailable() ? "Available" : "Unavailable");
-        visibility.setText(product.getIsVisible() ? "Visible" : "Invisible");
+        availability.setText(product.getIsAvailable() ? getString(R.string.available) : getString(R.string.unavailable));
+        visibility.setText(product.getIsVisible() ? getString(R.string.visible) : getString(R.string.invisible));
         price.setText(String.valueOf(product.getPrice()));
         discount.setText(String.valueOf(product.getDiscount()));
         category.setText(product.getCategoryName());
@@ -124,54 +146,61 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private void setUpEventTypes(GetProductDTO product) {
         ArrayList<String> eventTypes =  new ArrayList<>(product.getEventTypeNames());
-        String[] eventTypesArray = new String[eventTypes.size()];
+        selectedEventTypes = new ArrayList<>(product.getEventTypeNames());
 
+        String[] eventTypesArray = new String[eventTypes.size()];
         eventTypes.toArray(eventTypesArray);
 
-        boolean[] selectedEventTypes = new boolean[eventTypesArray.length];
-
         seeEventTypes.setOnClickListener(v -> {
-            for (int i = 0; i < selectedEventTypes.length; i++) {
-                selectedEventTypes[i] = true;
-            }
-
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Event types :");
 
-            builder.setMultiChoiceItems(eventTypesArray, selectedEventTypes, (dialog, which, isChecked) -> {
+            boolean[] selected = new boolean[eventTypesArray.length];
+            for (int i = 0; i < eventTypesArray.length; i++) {
+                selected[i] = true;
+            }
+
+            builder.setMultiChoiceItems(eventTypesArray, selected, (dialog, which, isChecked) -> {
                 // do nothing because checkboxes should be disabled in product details display
             });
 
-
             builder.setPositiveButton("OK", (dialog, which) -> {
-                StringBuilder selected = new StringBuilder();
-
+                StringBuilder selectedText = new StringBuilder();
                 for (int i = 0; i < eventTypesArray.length; i++) {
-                    if (selectedEventTypes[i]) {
-                        if (selected.length() > 0) selected.append(", ");
-                        selected.append(eventTypesArray[i]);
+                    if (selected[i]) {
+                        if (selectedText.length() > 0) selectedText.append(", ");
+                        selectedText.append(eventTypesArray[i]);
                     }
                 }
-
-                seeEventTypes.setText(selected.length() > 0 ? selected.toString() : "See event types");
+                seeEventTypes.setText(selectedText.length() > 0 ? selectedText.toString() : "See event types");
             });
 
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
             AlertDialog dialog = builder.create();
 
-
             // disable interaction with checkboxes
             ListView listView = dialog.getListView();
             listView.setEnabled(false);
 
             dialog.show();
-
         });
     }
 
 
 
+    private void setUpExitBtn() {
+        exitBtn = findViewById(R.id.exitBtn);
+
+        exitBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(ProductDetailsActivity.this, FavoriteProductsActivity.class);
+            startActivity(intent);
+        });
+    }
+
+
+
+    // **********  favorites  **********
 
     private void setUpFavProducts() {
         fav = findViewById(R.id.fav);
@@ -190,9 +219,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
 
-
-
-    // **********  favorites  **********
     private void addToFavorites() {
         String auth = ClientUtils.getAuthorization(this);
         SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
@@ -288,13 +314,256 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
 
-    private void setUpExitBtn() {
-        exitBtn = findViewById(R.id.exitBtn);
+    // **********  product edit  **********
 
-        exitBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(ProductDetailsActivity.this, FavoriteProductsActivity.class);
-            startActivity(intent);
+    private void setUpEditBtn() {
+        editBtn = findViewById(R.id.editBtn);
+
+        editBtn.setOnClickListener(v -> {
+            if (isEditable) {
+                getUpdateProductDTO();
+            }
+            else {
+                enterEditMode();
+            }
         });
+
+    }
+
+
+
+    private void enterEditMode() {
+        editBtn.setText(getString(R.string.save));
+
+        name.setBackgroundResource(R.drawable.display_field);
+        name.setFocusableInTouchMode(true);
+
+        price.setFocusableInTouchMode(true);
+        discount.setFocusableInTouchMode(true);
+        description.setFocusableInTouchMode(true);
+
+        availability.setVisibility(View.GONE);
+        visibility.setVisibility(View.GONE);
+
+        availabilityGroup.setVisibility(View.VISIBLE);
+        visibilityGroup.setVisibility(View.VISIBLE);
+
+        setRadioButtons();
+
+        seeEventTypes.setOnClickListener(v -> {
+            loadActiveEventTypes(seeEventTypes, new ArrayList<>(selectedEventTypes));
+        });
+
+        isEditable = true;
+    }
+
+
+    private void setRadioButtons() {
+        // availability
+        String available = availability.getText().toString();
+
+        if (available.equals(getString(R.string.available))) {
+            availableBtn = findViewById(R.id.availableBtn);
+            availableBtn.setChecked(true);
+        }
+        else {
+            unavailableBtn.setChecked(true);
+        }
+
+
+        // visibility
+        String visible = visibility.getText().toString();
+
+        if (visible.equals(getString(R.string.visible))) {
+            visibleBtn.setChecked(true);
+        }
+        else {
+            invisibleBtn.setChecked(true);
+        }
+
+    }
+
+    private void exitEditMode() {
+        editBtn.setText(getString(R.string.edit));
+
+        name.setBackgroundColor(Color.TRANSPARENT);
+        name.setFocusableInTouchMode(false);
+
+        price.setFocusableInTouchMode(false);
+        discount.setFocusableInTouchMode(false);
+        description.setFocusableInTouchMode(false);
+
+        availabilityGroup.setVisibility(View.GONE);
+        visibilityGroup.setVisibility(View.GONE);
+
+        availability.setVisibility(View.VISIBLE);
+        visibility.setVisibility(View.VISIBLE);
+
+        View currentFocusView = getCurrentFocus();
+        if (currentFocusView instanceof EditText) {
+            currentFocusView.clearFocus();
+        }
+
+        isEditable = false;
+    }
+
+
+
+    private void loadActiveEventTypes(Button seeEventTypes, ArrayList<String> selectedEventTypes) {
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<ArrayList<GetEventTypeDTO>> call = ClientUtils.eventTypeService.getAllActive(auth);
+        call.enqueue(new Callback<ArrayList<GetEventTypeDTO>>() {
+            @Override
+            public void onResponse(Call<ArrayList<GetEventTypeDTO>> call, Response<ArrayList<GetEventTypeDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ArrayList<GetEventTypeDTO> eventTypeDTOS = response.body();
+                    List<String> eventTypeNames = new ArrayList<>();
+
+                    for (GetEventTypeDTO dto : eventTypeDTOS) {
+                        eventTypeNames.add(dto.getName());
+                    }
+
+                    if (!eventTypeNames.isEmpty()) {
+                        showMultiChoiceDialog(eventTypeNames, selectedEventTypes, seeEventTypes);
+                    }
+                    else {
+                        Toast.makeText(ProductDetailsActivity.this, "No categories available.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    Toast.makeText(ProductDetailsActivity.this, "Failed to load categories.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<GetEventTypeDTO>> call, Throwable t) {
+                Toast.makeText(ProductDetailsActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+
+
+
+    private void showMultiChoiceDialog(List<String> activeEventTypes, List<String> selectedEventTypeNames, Button seeEventTypes) {
+        String[] eventTypesArray = activeEventTypes.toArray(new String[0]);
+        boolean[] selectedTypes = new boolean[eventTypesArray.length];
+
+        // preselect already suggested categories
+        for (int i = 0; i < eventTypesArray.length; i++) {
+            selectedTypes[i] = selectedEventTypeNames.contains(eventTypesArray[i]);
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Selected event types");
+
+        builder.setMultiChoiceItems(eventTypesArray, selectedTypes, (dialog, which, isChecked) -> {
+            selectedTypes[which] = isChecked;
+        });
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            // save new choice of suggested categories
+            selectedEventTypeNames.clear();
+            for (int i = 0; i < eventTypesArray.length; i++) {
+                if (selectedTypes[i]) {
+                    selectedEventTypeNames.add(eventTypesArray[i]);
+                }
+            }
+
+            selectedEventTypes.clear();
+            selectedEventTypes = selectedEventTypeNames;
+
+            // display checked categories on the button
+            StringBuilder selected = new StringBuilder();
+            for (String category : selectedEventTypeNames) {
+                if (selected.length() > 0) selected.append(", ");
+                selected.append(category);
+            }
+            seeEventTypes.setText(selected.length() > 0 ? selected.toString() : "Selected event types");
+
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+
+    private boolean validateInputFields() {
+        if (!ValidationUtils.isFieldValid(name, "Name is required!")) return false;
+        if (!ValidationUtils.isFieldValid(price, "Price is required!")) return false;
+        if (!ValidationUtils.isDecimalNumber(price, "Enter a number!", "Negative number")) return false;
+        if (!ValidationUtils.isFieldValid(discount, "Discount is required!")) return false;
+        if (!ValidationUtils.isDecimalNumber(discount, "Enter a number!", "Negative number!")) return false;
+        if (!ValidationUtils.isFieldValid(description, "Description is required!")) return false;
+
+        if (selectedEventTypes.isEmpty()) {
+            Toast.makeText(ProductDetailsActivity.this, "Select event type!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
+
+
+    private void getUpdateProductDTO() {
+        if (!validateInputFields()) {
+            return;
+        }
+
+        UpdateProductDTO dto = new UpdateProductDTO();
+
+        dto.setName(name.getText().toString());
+        dto.setIsAvailable(availableBtn.isChecked());
+        dto.setIsVisible(visibleBtn.isChecked());
+        dto.setPrice(Double.parseDouble(price.getText().toString()));
+        dto.setDiscount(Double.parseDouble(discount.getText().toString()));
+        dto.setEventTypeNames(selectedEventTypes);
+        dto.setDescription(description.getText().toString());
+
+        updateProduct(dto);
+
+    }
+
+    private void updateProduct(UpdateProductDTO updateProductDTO) {
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<UpdatedProductDTO> call = ClientUtils.productService.updateProduct(auth, updateProductDTO, currentProductId);
+        call.enqueue(new Callback<UpdatedProductDTO>() {
+            @Override
+            public void onResponse(Call<UpdatedProductDTO> call, Response<UpdatedProductDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    UpdatedProductDTO dto = response.body();
+                    setUpUpdatedForm(dto);
+
+                    isEditable = false;
+                    exitEditMode();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdatedProductDTO> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+
+    private void setUpUpdatedForm(UpdatedProductDTO dto) {
+        name.setText(dto.getName());
+        availability.setText(dto.getIsAvailable() ? getString(R.string.available) : getString(R.string.unavailable));
+        visibility.setText(dto.getIsVisible() ? getString(R.string.visible) : getString(R.string.invisible));
+        price.setText(String.valueOf(dto.getPrice()));
+        discount.setText(String.valueOf(dto.getDiscount()));
+        selectedEventTypes = dto.getEventTypeNames();
+        description.setText(dto.getDescription());
+
     }
 
 }
