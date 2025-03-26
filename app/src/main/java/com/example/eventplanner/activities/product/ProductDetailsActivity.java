@@ -22,6 +22,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.eventtype.EventTypeEditActivity;
 import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.product.GetProductDTO;
@@ -41,7 +42,7 @@ import retrofit2.Response;
 public class ProductDetailsActivity extends AppCompatActivity {
 
     private EditText name, availability, visibility, price, discount, category, description;
-    private Button seeEventTypes, editBtn;
+    private Button seeEventTypes, editBtn, deleteBtn;
     private ImageView fav, favOutline, exitBtn;
     private Long currentProductId;
     private Boolean isFavorite, isEditable = false;
@@ -127,6 +128,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         unavailableBtn = findViewById(R.id.unavailableBtn);
         visibleBtn = findViewById(R.id.visibleBtn);
         invisibleBtn = findViewById(R.id.invisibleBtn);
+
+        deleteBtn = findViewById(R.id.deleteBtn);
 
     }
 
@@ -354,6 +357,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
             loadActiveEventTypes(seeEventTypes, new ArrayList<>(selectedEventTypes));
         });
 
+        deleteBtn.setVisibility(View.VISIBLE);
+        deleteBtn.setOnClickListener(v -> {
+            confirmProductDeletion();
+        });
+
         isEditable = true;
     }
 
@@ -563,6 +571,50 @@ public class ProductDetailsActivity extends AppCompatActivity {
         discount.setText(String.valueOf(dto.getDiscount()));
         selectedEventTypes = dto.getEventTypeNames();
         description.setText(dto.getDescription());
+
+    }
+
+
+    private void confirmProductDeletion() {
+        // confirmation dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailsActivity.this);
+        builder.setTitle("Delete " + name.getText().toString() + "?");
+        builder.setMessage("Are you sure you want to delete this product?");
+
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            deleteProduct();
+        });
+
+        builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+    private void deleteProduct() {
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<ResponseBody> call = ClientUtils.productService.deleteProduct(auth, currentProductId);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(ProductDetailsActivity.this, "Successfully deleted product!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ProductDetailsActivity.this, ProvidedProductsActivity.class);
+                    startActivity(intent);
+
+                }
+                else {
+                    Toast.makeText(ProductDetailsActivity.this, "Error deleting product!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(ProductDetailsActivity.this, "Failed to delete product!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 

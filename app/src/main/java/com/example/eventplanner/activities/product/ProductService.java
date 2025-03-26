@@ -8,6 +8,7 @@ import com.example.eventplanner.dto.product.UpdatedProductDTO;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -29,6 +30,13 @@ public interface ProductService {
     Call<UpdatedProductDTO> updateProduct(@Header("Authorization") String auth,
                                           @Body UpdateProductDTO updateProductDTO,
                                           @Path("id") Long productId);
+
+
+    @DELETE("products/{id}")
+    Call<ResponseBody> deleteProduct(@Header("Authorization") String auth,
+                                     @Path("id") Long productId);
+
+
 
 
 }
