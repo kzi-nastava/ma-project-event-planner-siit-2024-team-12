@@ -51,6 +51,14 @@ public class MultiSelectAdapter extends RecyclerView.Adapter<MultiSelectAdapter.
         return selectedItems;
     }
 
+
+
+    public void setSelectedItems(List<String> selectedItems) {
+        this.selectedItems.clear();
+        this.selectedItems.addAll(selectedItems);
+        notifyDataSetChanged();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textOption;
         CheckBox checkBox;

@@ -53,10 +53,10 @@ public class SolutionFilterFragment extends DialogFragment {
         loadDescriptions();
 
 
-        setupFilter(view, R.id.categoryFilter, getString(R.string.category), categoryOptions);
-        setupFilter(view, R.id.eventTypeFilter, getString(R.string.event_type_filter), eventTypeOptions);
-        setupFilter(view, R.id.availabilityFilter, getString(R.string.availability), availabilityOptions);
-        setupFilter(view, R.id.descriptionFilter, getString(R.string.description_filter), descriptionOptions);
+        setupFilter(view, R.id.categoryFilter, getString(R.string.category), categoryOptions, filterViewModel.getSelectedCategories().getValue());
+        setupFilter(view, R.id.eventTypeFilter, getString(R.string.event_type_filter), eventTypeOptions, filterViewModel.getSelectedEventTypes().getValue());
+        setupFilter(view, R.id.availabilityFilter, getString(R.string.availability), availabilityOptions, filterViewModel.getSelectedAvailability().getValue());
+        setupFilter(view, R.id.descriptionFilter, getString(R.string.description_filter), descriptionOptions, filterViewModel.getSelectedDescriptions().getValue());
 
 
 
@@ -79,15 +79,19 @@ public class SolutionFilterFragment extends DialogFragment {
         return view;
     }
 
-    private void setupFilter(View parentView, int filterId, String filterName, List<String> options) {
+    private void setupFilter(View parentView, int filterId, String filterName, List<String> options, List<String> selectedItems) {
         View filterView = parentView.findViewById(filterId);
         ((TextView) filterView.findViewById(R.id.parameterName)).setText(filterName);
 
         RecyclerView recyclerView = filterView.findViewById(R.id.options);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new MultiSelectAdapter(options));
+        MultiSelectAdapter adapter = new MultiSelectAdapter(options);
+        recyclerView.setAdapter(adapter);
 
-
+        // mark the selected items in the RecyclerView
+        if (selectedItems != null) {
+            adapter.setSelectedItems(selectedItems);
+        }
 
         filterView.setOnClickListener(v -> {
             if (recyclerView.getVisibility() == View.GONE) {

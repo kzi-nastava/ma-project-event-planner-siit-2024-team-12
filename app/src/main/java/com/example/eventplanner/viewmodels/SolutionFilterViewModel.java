@@ -22,20 +22,46 @@ public class SolutionFilterViewModel extends AndroidViewModel {
     }
 
     public void setSelectedCategories(List<String> categories) {
-        selectedCategories.setValue(categories);
+        List<String> currentCategories = selectedCategories.getValue();
+        for (String category : categories) {
+            if (!currentCategories.contains(category)) {
+                currentCategories.add(category);
+            }
+        }
+        selectedCategories.setValue(currentCategories);
     }
 
+
     public void setSelectedEventTypes(List<String> eventTypes) {
-        selectedEventTypes.setValue(eventTypes);
+        List<String> currentEventTypes = selectedEventTypes.getValue();
+        for (String eventType : eventTypes) {
+            if (!currentEventTypes.contains(eventType)) {
+                currentEventTypes.add(eventType);
+            }
+        }
+        selectedEventTypes.setValue(currentEventTypes);
     }
 
     public void setSelectedAvailability(List<String> availability) {
-        selectedAvailability.setValue(availability);
+        List<String> currentAvailability = selectedAvailability.getValue();
+        for (String availabilityOption : availability) {
+            if (!currentAvailability.contains(availabilityOption)) {
+                currentAvailability.add(availabilityOption);
+            }
+        }
+        selectedAvailability.setValue(currentAvailability);
     }
 
     public void setSelectedDescriptions(List<String> descriptions) {
-        selectedDescriptions.setValue(descriptions);
+        List<String> currentDescriptions = selectedDescriptions.getValue();
+        for (String description : descriptions) {
+            if (!currentDescriptions.contains(description)) {
+                currentDescriptions.add(description);
+            }
+        }
+        selectedDescriptions.setValue(currentDescriptions);
     }
+
 
     public LiveData<List<String>> getSelectedCategories() {
         return selectedCategories;
@@ -52,4 +78,31 @@ public class SolutionFilterViewModel extends AndroidViewModel {
     public LiveData<List<String>> getSelectedDescriptions() {
         return selectedDescriptions;
     }
+
+
+    public void removeCategory(String category) {
+        List<String> updatedCategories = new ArrayList<>(getSelectedCategories().getValue());
+        updatedCategories.remove(category);
+        selectedCategories.setValue(updatedCategories);
+    }
+
+
+    public void removeEventType(String eventType) {
+        List<String> updatedEventTypes = new ArrayList<>(getSelectedEventTypes().getValue());
+        updatedEventTypes.remove(eventType);
+        selectedEventTypes.setValue(updatedEventTypes);
+    }
+
+    public void removeAvailability(String availability) {
+        List<String> updatedAvailability = new ArrayList<>(getSelectedAvailability().getValue());
+        updatedAvailability.remove(availability);
+        selectedAvailability.setValue(updatedAvailability);
+    }
+
+    public void removeDescription(String description) {
+        List<String> updatedDescriptions = new ArrayList<>(getSelectedDescriptions().getValue());
+        updatedDescriptions.remove(description);
+        selectedDescriptions.setValue(updatedDescriptions);
+    }
+
 }

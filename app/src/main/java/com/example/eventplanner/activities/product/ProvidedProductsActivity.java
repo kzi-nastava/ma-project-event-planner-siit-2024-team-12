@@ -2,6 +2,7 @@ package com.example.eventplanner.activities.product;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -190,6 +191,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
     }
 
 
+
     private void loadCurrentBusiness() {
         String auth = ClientUtils.getAuthorization(this);
 
@@ -211,15 +213,35 @@ public class ProvidedProductsActivity extends AppCompatActivity {
 
 
 
+
+    public void removeFilter(String item) {
+        if (filterViewModel.getSelectedCategories().getValue().contains(item)) {
+            filterViewModel.removeCategory(item);
+        } else if (filterViewModel.getSelectedEventTypes().getValue().contains(item)) {
+            filterViewModel.removeEventType(item);
+        } else if (filterViewModel.getSelectedAvailability().getValue().contains(item)) {
+            filterViewModel.removeAvailability(item);
+        } else if (filterViewModel.getSelectedDescriptions().getValue().contains(item)) {
+            filterViewModel.removeDescription(item);
+        }
+
+        updateChips();
+    }
+
+
     private void updateChips() {
         chipGroup.removeAllViews();
 
+        // combine all selected filters into one list
         List<String> allSelectedFilters = new ArrayList<>();
         allSelectedFilters.addAll(filterViewModel.getSelectedCategories().getValue() != null ? filterViewModel.getSelectedCategories().getValue() : new ArrayList<>());
         allSelectedFilters.addAll(filterViewModel.getSelectedEventTypes().getValue() != null ? filterViewModel.getSelectedEventTypes().getValue() : new ArrayList<>());
         allSelectedFilters.addAll(filterViewModel.getSelectedAvailability().getValue() != null ? filterViewModel.getSelectedAvailability().getValue() : new ArrayList<>());
         allSelectedFilters.addAll(filterViewModel.getSelectedDescriptions().getValue() != null ? filterViewModel.getSelectedDescriptions().getValue() : new ArrayList<>());
 
+        Log.d("updateChips", "Selected filters: " + allSelectedFilters);
+
+        // for each selected filter, create a new chip and add it to the ChipGroup
         for (String item : allSelectedFilters) {
             Chip chip = new Chip(this);
             chip.setText(item);
@@ -228,27 +250,5 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             chipGroup.addView(chip);
         }
     }
-
-
-
-    private void removeFilter(String filter) {
-        List<String> updatedCategories = new ArrayList<>(filterViewModel.getSelectedCategories().getValue() != null ? filterViewModel.getSelectedCategories().getValue() : new ArrayList<>());
-        List<String> updatedEventTypes = new ArrayList<>(filterViewModel.getSelectedEventTypes().getValue() != null ? filterViewModel.getSelectedEventTypes().getValue() : new ArrayList<>());
-        List<String> updatedAvailability = new ArrayList<>(filterViewModel.getSelectedAvailability().getValue() != null ? filterViewModel.getSelectedAvailability().getValue() : new ArrayList<>());
-        List<String> updatedDescriptions = new ArrayList<>(filterViewModel.getSelectedDescriptions().getValue() != null ? filterViewModel.getSelectedDescriptions().getValue() : new ArrayList<>());
-
-        if (updatedCategories.remove(filter)) {
-            filterViewModel.setSelectedCategories(updatedCategories);
-        } else if (updatedEventTypes.remove(filter)) {
-            filterViewModel.setSelectedEventTypes(updatedEventTypes);
-        } else if (updatedAvailability.remove(filter)) {
-            filterViewModel.setSelectedAvailability(updatedAvailability);
-        } else if (updatedDescriptions.remove(filter)) {
-            filterViewModel.setSelectedDescriptions(updatedDescriptions);
-        }
-    }
-
-
-
 
 }
