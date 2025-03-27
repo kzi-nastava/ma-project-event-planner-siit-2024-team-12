@@ -3,16 +3,14 @@ package com.example.eventplanner.fragments.product;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.MultiAutoCompleteTextView;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +19,7 @@ import com.example.eventplanner.adapters.MultiSelectAdapter;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
 import com.example.eventplanner.utils.ClientUtils;
+import com.example.eventplanner.viewmodels.SolutionFilterViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,12 +36,16 @@ public class SolutionFilterFragment extends DialogFragment {
     private List<String> eventTypeOptions = new ArrayList<>();
     private List<String> availabilityOptions = new ArrayList<>();
     private List<String> descriptionOptions = new ArrayList<>();
+    private Button filterBtn;
+    private SolutionFilterViewModel filterViewModel;
 
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_solution_filter, container, false);
+
+        filterViewModel = new ViewModelProvider(requireActivity()).get(SolutionFilterViewModel.class);
 
         loadCategories();
         loadEventTypes();
@@ -54,6 +57,24 @@ public class SolutionFilterFragment extends DialogFragment {
         setupFilter(view, R.id.eventTypeFilter, getString(R.string.event_type_filter), eventTypeOptions);
         setupFilter(view, R.id.availabilityFilter, getString(R.string.availability), availabilityOptions);
         setupFilter(view, R.id.descriptionFilter, getString(R.string.description_filter), descriptionOptions);
+
+
+
+        filterBtn = view.findViewById(R.id.filterBtn);
+        filterBtn.setOnClickListener(v -> {
+            List<String> selectedCategories = ((MultiSelectAdapter)((RecyclerView) view.findViewById(R.id.categoryFilter).findViewById(R.id.options)).getAdapter()).getSelectedItems();
+            List<String> selectedEventTypes = ((MultiSelectAdapter)((RecyclerView) view.findViewById(R.id.eventTypeFilter).findViewById(R.id.options)).getAdapter()).getSelectedItems();
+            List<String> selectedAvailability = ((MultiSelectAdapter)((RecyclerView) view.findViewById(R.id.availabilityFilter).findViewById(R.id.options)).getAdapter()).getSelectedItems();
+            List<String> selectedDescriptions = ((MultiSelectAdapter)((RecyclerView) view.findViewById(R.id.descriptionFilter).findViewById(R.id.options)).getAdapter()).getSelectedItems();
+
+            filterViewModel.setSelectedCategories(selectedCategories);
+            filterViewModel.setSelectedEventTypes(selectedEventTypes);
+            filterViewModel.setSelectedAvailability(selectedAvailability);
+            filterViewModel.setSelectedDescriptions(selectedDescriptions);
+
+            dismiss();
+        });
+
 
         return view;
     }

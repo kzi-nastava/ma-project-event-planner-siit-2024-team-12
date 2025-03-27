@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,9 +21,13 @@ import com.example.eventplanner.adapters.favorites.FavoriteProductsAdapter;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.solution.FavSolutionDTO;
 import com.example.eventplanner.dto.product.GetProductDTO;
+import com.example.eventplanner.dto.solution.SolutionFilterParams;
 import com.example.eventplanner.fragments.product.ProductCreationFragment;
 import com.example.eventplanner.fragments.product.SolutionFilterFragment;
 import com.example.eventplanner.utils.ClientUtils;
+import com.example.eventplanner.viewmodels.SolutionFilterViewModel;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +46,9 @@ public class ProvidedProductsActivity extends AppCompatActivity {
     private int currentPage = 1;
     private Button addProductBtn, filterBtn;
     private ImageView exitBtn;
+    private ChipGroup chipGroup;
+    private SolutionFilterViewModel filterViewModel;
+
 
 
     @Override
@@ -90,6 +99,19 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             SolutionFilterFragment filterFragment = new SolutionFilterFragment();
             filterFragment.show(getSupportFragmentManager(), "Filter");
         });
+
+
+        chipGroup = findViewById(R.id.chipGroup);
+
+
+        filterViewModel = new ViewModelProvider(this).get(SolutionFilterViewModel.class);
+
+        filterViewModel.getSelectedCategories().observe(this, selectedCategories -> updateChips());
+        filterViewModel.getSelectedEventTypes().observe(this, selectedEventTypes -> updateChips());
+        filterViewModel.getSelectedAvailability().observe(this, selectedAvailability -> updateChips());
+        filterViewModel.getSelectedDescriptions().observe(this, selectedDescriptions -> updateChips());
+
+
     }
 
 
@@ -186,4 +208,47 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
+    private void updateChips() {
+        chipGroup.removeAllViews();
+
+        List<String> allSelectedFilters = new ArrayList<>();
+        allSelectedFilters.addAll(filterViewModel.getSelectedCategories().getValue() != null ? filterViewModel.getSelectedCategories().getValue() : new ArrayList<>());
+        allSelectedFilters.addAll(filterViewModel.getSelectedEventTypes().getValue() != null ? filterViewModel.getSelectedEventTypes().getValue() : new ArrayList<>());
+        allSelectedFilters.addAll(filterViewModel.getSelectedAvailability().getValue() != null ? filterViewModel.getSelectedAvailability().getValue() : new ArrayList<>());
+        allSelectedFilters.addAll(filterViewModel.getSelectedDescriptions().getValue() != null ? filterViewModel.getSelectedDescriptions().getValue() : new ArrayList<>());
+
+        for (String item : allSelectedFilters) {
+            Chip chip = new Chip(this);
+            chip.setText(item);
+            chip.setCloseIconVisible(true);
+            chip.setOnCloseIconClickListener(v -> removeFilter(item));
+            chipGroup.addView(chip);
+        }
+    }
+
+
+
+    private void removeFilter(String filter) {
+        List<String> updatedCategories = new ArrayList<>(filterViewModel.getSelectedCategories().getValue() != null ? filterViewModel.getSelectedCategories().getValue() : new ArrayList<>());
+        List<String> updatedEventTypes = new ArrayList<>(filterViewModel.getSelectedEventTypes().getValue() != null ? filterViewModel.getSelectedEventTypes().getValue() : new ArrayList<>());
+        List<String> updatedAvailability = new ArrayList<>(filterViewModel.getSelectedAvailability().getValue() != null ? filterViewModel.getSelectedAvailability().getValue() : new ArrayList<>());
+        List<String> updatedDescriptions = new ArrayList<>(filterViewModel.getSelectedDescriptions().getValue() != null ? filterViewModel.getSelectedDescriptions().getValue() : new ArrayList<>());
+
+        if (updatedCategories.remove(filter)) {
+            filterViewModel.setSelectedCategories(updatedCategories);
+        } else if (updatedEventTypes.remove(filter)) {
+            filterViewModel.setSelectedEventTypes(updatedEventTypes);
+        } else if (updatedAvailability.remove(filter)) {
+            filterViewModel.setSelectedAvailability(updatedAvailability);
+        } else if (updatedDescriptions.remove(filter)) {
+            filterViewModel.setSelectedDescriptions(updatedDescriptions);
+        }
+    }
+
+
+
+
 }
