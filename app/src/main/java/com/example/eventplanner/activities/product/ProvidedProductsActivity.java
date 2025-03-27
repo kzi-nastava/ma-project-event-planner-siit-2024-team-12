@@ -20,6 +20,7 @@ import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.solution.FavSolutionDTO;
 import com.example.eventplanner.dto.product.GetProductDTO;
 import com.example.eventplanner.fragments.product.ProductCreationFragment;
+import com.example.eventplanner.fragments.product.SolutionFilterFragment;
 import com.example.eventplanner.utils.ClientUtils;
 
 import java.util.ArrayList;
@@ -82,6 +83,13 @@ public class ProvidedProductsActivity extends AppCompatActivity {
 
         exitBtn = findViewById(R.id.exitBtn);
         exitBtn.setOnClickListener(this::closeForm);
+
+
+        filterBtn = findViewById(R.id.filterBtn);
+        filterBtn.setOnClickListener(v -> {
+            SolutionFilterFragment filterFragment = new SolutionFilterFragment();
+            filterFragment.show(getSupportFragmentManager(), "Filter");
+        });
     }
 
 

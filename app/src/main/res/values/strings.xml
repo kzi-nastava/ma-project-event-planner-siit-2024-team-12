@@ -305,5 +305,12 @@
 
     <string name="discount_off">%s%% off</string>
     <string name="see_event_types">See event types</string>
+    <string name="min_price">Min price :</string>
+    <string name="max_price">Max price :</string>
+    <string name="filter">Filter</string>
+    <string name="category">Category</string>
+    <string name="availability">Availability</string>
+    <string name="description_filter">Description</string>
+    <string name="event_type_filter">Event type</string>
 
 </resources>

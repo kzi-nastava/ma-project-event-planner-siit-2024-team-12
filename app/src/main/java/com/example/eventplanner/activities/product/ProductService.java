@@ -5,6 +5,8 @@ import com.example.eventplanner.dto.product.GetProductDTO;
 import com.example.eventplanner.dto.product.UpdateProductDTO;
 import com.example.eventplanner.dto.product.UpdatedProductDTO;
 
+import java.util.List;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -35,6 +37,11 @@ public interface ProductService {
     @DELETE("products/{id}")
     Call<ResponseBody> deleteProduct(@Header("Authorization") String auth,
                                      @Path("id") Long productId);
+
+
+
+    @GET("products/descriptions")
+    Call<List<String>> getProductDescriptions(@Header("Authorization") String auth);
 
 
 

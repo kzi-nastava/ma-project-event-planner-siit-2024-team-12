@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="236dp"
+        android:layout_height="32dp"
+        android:text="@string/filters"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp"/>
+
+
+    <include layout="@layout/item_filter_row" android:id="@+id/categoryFilter"/>
+    <include layout="@layout/item_filter_row" android:id="@+id/eventTypeFilter"/>
+    <include layout="@layout/item_filter_row" android:id="@+id/availabilityFilter"/>
+    <include layout="@layout/item_filter_row" android:id="@+id/descriptionFilter"/>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <EditText
+            android:id="@+id/minPrice"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_field"
+            android:ems="10"
+            android:hint="@string/min_price"
+            android:inputType="text"
+            android:paddingStart="12dp"
+            android:textSize="12sp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="26dp"/>
+
+        <EditText
+            android:id="@+id/maxPrice"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_field"
+            android:ems="10"
+            android:hint="@string/max_price"
+            android:inputType="text"
+            android:paddingStart="12dp"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/createBtn"
+        android:layout_width="112dp"
+        android:layout_height="38dp"
+        android:background="@drawable/form_button"
+        android:text="@string/filter"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="end"/>
+
+
+
+</LinearLayout>

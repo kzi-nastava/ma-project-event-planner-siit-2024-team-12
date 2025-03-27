@@ -76,7 +76,6 @@ public class EventTypeTableFragment extends Fragment {
             @Override
             public void onResponse(Call<ArrayList<GetEventTypeDTO>> call, Response<ArrayList<GetEventTypeDTO>> response) {
                 if (response.code() == 200) {
-                    Log.d("DOBAVLJENO ", " " + response.body());
                     eventTypes[0] = response.body();
 
                     // Set adapter
