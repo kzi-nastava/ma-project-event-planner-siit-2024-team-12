@@ -2,9 +2,12 @@ package com.example.eventplanner.activities.product;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +52,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
     private ImageView exitBtn;
     private ChipGroup chipGroup;
     private SolutionFilterViewModel filterViewModel;
-
+    private EditText searchBar;
 
 
     @Override
@@ -122,6 +125,24 @@ public class ProvidedProductsActivity extends AppCompatActivity {
         filterViewModel.getSelectedDescriptions().observe(this, selectedDescriptions -> filterProducts());
         filterViewModel.getMinPrice().observe(this, minPrice -> filterProducts());
         filterViewModel.getMaxPrice().observe(this, maxPrice -> filterProducts());
+
+
+        searchBar = findViewById(R.id.searchBar);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                searchProducts();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
 
     }
 
@@ -367,6 +388,40 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<GetProductDTO>> call, Throwable t) {
                 Toast.makeText(ProvidedProductsActivity.this, "Failed to load filtered products!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+    private void searchProducts() {
+        String auth = ClientUtils.getAuthorization(this);
+
+
+        Call<List<GetProductDTO>> call = ClientUtils.productService.searchProvidedProducts(auth, searchBar.getText().toString());
+        call.enqueue(new Callback<List<GetProductDTO>>() {
+            @Override
+            public void onResponse(Call<List<GetProductDTO>> call, Response<List<GetProductDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<GetProductDTO> searchResults = response.body();
+                    allProducts.clear();
+
+                    for (GetProductDTO dto : searchResults) {
+                        allProducts.add(new FavSolutionDTO(dto.getId(), dto.getName(),
+                                dto.getDescription(), dto.getMainImageUrl(), dto.getCity(),
+                                dto.getPrice(), dto.getDiscount(), dto.getCategoryName()));
+                    }
+                    loadPage(currentPage);  // reload the page with the filtered products
+                    adapter.notifyDataSetChanged();
+                }
+                else {
+                    Toast.makeText(ProvidedProductsActivity.this, "Error loading search results!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GetProductDTO>> call, Throwable t) {
+                Toast.makeText(ProvidedProductsActivity.this, "Failed to load search results!", Toast.LENGTH_SHORT).show();
             }
         });
     }

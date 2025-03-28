@@ -17,6 +17,7 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ProductService {
     @POST("products")
@@ -49,5 +50,9 @@ public interface ProductService {
     Call<List<GetProductDTO>> filterProvidedProducts(@Header("Authorization") String auth,
                                                      @Body SolutionFilterParams params);
 
+
+    @GET("products/provided-search")
+    Call<List<GetProductDTO>> searchProvidedProducts(@Header("Authorization") String auth,
+                                                     @Query("keyword") String keyword);
 
 }
