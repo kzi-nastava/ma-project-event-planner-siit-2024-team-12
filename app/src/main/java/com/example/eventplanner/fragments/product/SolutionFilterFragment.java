@@ -55,38 +55,45 @@ public class SolutionFilterFragment extends DialogFragment {
         loadAvailability();
         loadDescriptions();
 
-
-        setupFilter(view, R.id.categoryFilter, getString(R.string.category), categoryOptions, filterViewModel.getSelectedCategories().getValue());
-        setupFilter(view, R.id.eventTypeFilter, getString(R.string.event_type_filter), eventTypeOptions, filterViewModel.getSelectedEventTypes().getValue());
-        setupFilter(view, R.id.availabilityFilter, getString(R.string.availability), availabilityOptions, filterViewModel.getSelectedAvailability().getValue());
-        setupFilter(view, R.id.descriptionFilter, getString(R.string.description_filter), descriptionOptions, filterViewModel.getSelectedDescriptions().getValue());
-
+        setFilters();
 
         minPrice = view.findViewById(R.id.minPrice);
         maxPrice = view.findViewById(R.id.maxPrice);
         setUpExistingPriceRange();
 
-
         filterBtn = view.findViewById(R.id.filterBtn);
         filterBtn.setOnClickListener(v -> {
-            List<String> selectedCategories = ((MultiSelectAdapter)((RecyclerView) view.findViewById(R.id.categoryFilter).findViewById(R.id.options)).getAdapter()).getSelectedItems();
-            List<String> selectedEventTypes = ((MultiSelectAdapter)((RecyclerView) view.findViewById(R.id.eventTypeFilter).findViewById(R.id.options)).getAdapter()).getSelectedItems();
-            List<String> selectedAvailability = ((MultiSelectAdapter)((RecyclerView) view.findViewById(R.id.availabilityFilter).findViewById(R.id.options)).getAdapter()).getSelectedItems();
-            List<String> selectedDescriptions = ((MultiSelectAdapter)((RecyclerView) view.findViewById(R.id.descriptionFilter).findViewById(R.id.options)).getAdapter()).getSelectedItems();
-
-            filterViewModel.setSelectedCategories(selectedCategories);
-            filterViewModel.setSelectedEventTypes(selectedEventTypes);
-            filterViewModel.setSelectedAvailability(selectedAvailability);
-            filterViewModel.setSelectedDescriptions(selectedDescriptions);
-
-            setUpPriceRange();
-
-            dismiss();
+            applyFilters();
         });
-
 
         return view;
     }
+
+
+    private void applyFilters() {
+        List<String> selectedCategories = ((MultiSelectAdapter)((RecyclerView) view.findViewById(R.id.categoryFilter).findViewById(R.id.options)).getAdapter()).getSelectedItems();
+        List<String> selectedEventTypes = ((MultiSelectAdapter)((RecyclerView) view.findViewById(R.id.eventTypeFilter).findViewById(R.id.options)).getAdapter()).getSelectedItems();
+        List<String> selectedAvailability = ((MultiSelectAdapter)((RecyclerView) view.findViewById(R.id.availabilityFilter).findViewById(R.id.options)).getAdapter()).getSelectedItems();
+        List<String> selectedDescriptions = ((MultiSelectAdapter)((RecyclerView) view.findViewById(R.id.descriptionFilter).findViewById(R.id.options)).getAdapter()).getSelectedItems();
+
+        filterViewModel.setSelectedCategories(selectedCategories);
+        filterViewModel.setSelectedEventTypes(selectedEventTypes);
+        filterViewModel.setSelectedAvailability(selectedAvailability);
+        filterViewModel.setSelectedDescriptions(selectedDescriptions);
+
+        setUpPriceRange();
+
+        dismiss();
+    }
+
+
+    private void setFilters() {
+        setupFilter(view, R.id.categoryFilter, getString(R.string.category), categoryOptions, filterViewModel.getSelectedCategories().getValue());
+        setupFilter(view, R.id.eventTypeFilter, getString(R.string.event_type_filter), eventTypeOptions, filterViewModel.getSelectedEventTypes().getValue());
+        setupFilter(view, R.id.availabilityFilter, getString(R.string.availability), availabilityOptions, filterViewModel.getSelectedAvailability().getValue());
+        setupFilter(view, R.id.descriptionFilter, getString(R.string.description_filter), descriptionOptions, filterViewModel.getSelectedDescriptions().getValue());
+    }
+
 
     private void setupFilter(View parentView, int filterId, String filterName, List<String> options, List<String> selectedItems) {
         View filterView = parentView.findViewById(filterId);
@@ -112,7 +119,6 @@ public class SolutionFilterFragment extends DialogFragment {
     }
 
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -120,7 +126,6 @@ public class SolutionFilterFragment extends DialogFragment {
             Objects.requireNonNull(getDialog().getWindow()).setLayout(1000, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
-
 
 
     private void loadCategories() {
@@ -150,7 +155,6 @@ public class SolutionFilterFragment extends DialogFragment {
     }
 
 
-
     private void loadEventTypes() {
         String auth = ClientUtils.getAuthorization(requireContext());
 
@@ -176,6 +180,7 @@ public class SolutionFilterFragment extends DialogFragment {
             }
         });
     }
+
 
     private void loadAvailability() {
         availabilityOptions = List.of(getString(R.string.available), getString(R.string.unavailable));

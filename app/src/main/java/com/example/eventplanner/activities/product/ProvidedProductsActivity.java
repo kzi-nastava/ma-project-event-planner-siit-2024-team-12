@@ -70,63 +70,29 @@ public class ProvidedProductsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         loadPage(currentPage);
-
-        findViewById(R.id.previousPage).setOnClickListener(v -> {
-            if (currentPage > 1) {
-                currentPage--;
-                loadPage(currentPage);
-            }
-        });
-
-        findViewById(R.id.nextPage).setOnClickListener(v -> {
-            if (currentPage < getTotalPages()) {
-                currentPage++;
-                loadPage(currentPage);
-            }
-        });
+        setUpPagination();
 
         updatePageUI();
 
-        addProductBtn = findViewById(R.id.addProductBtn);
-        addProductBtn.setOnClickListener(v -> {
-            ProductCreationFragment fragment = new ProductCreationFragment();
-            fragment.show(getSupportFragmentManager(), "ProductCreationFragment");
-        });
-
+        setUpAddProductBtn();
 
         exitBtn = findViewById(R.id.exitBtn);
         exitBtn.setOnClickListener(this::closeForm);
 
-
-        filterBtn = findViewById(R.id.filterBtn);
-        filterBtn.setOnClickListener(v -> {
-            SolutionFilterFragment filterFragment = new SolutionFilterFragment();
-            filterFragment.show(getSupportFragmentManager(), "Filter");
-            filterProducts();
-        });
-
+        setUpFilterBtn();
 
         chipGroup = findViewById(R.id.chipGroup);
-
-
         filterViewModel = new ViewModelProvider(this).get(SolutionFilterViewModel.class);
 
-        filterViewModel.getSelectedCategories().observe(this, selectedCategories -> updateChips());
-        filterViewModel.getSelectedEventTypes().observe(this, selectedEventTypes -> updateChips());
-        filterViewModel.getSelectedAvailability().observe(this, selectedAvailability -> updateChips());
-        filterViewModel.getSelectedDescriptions().observe(this, selectedDescriptions -> updateChips());
-        filterViewModel.getMinPrice().observe(this, minPrice -> updateChips());
-        filterViewModel.getMaxPrice().observe(this, maxPrice -> updateChips());
+        setChipObservers();
+        setFilterObservers();
+
+        setUpSearchBar();
+
+    }
 
 
-        filterViewModel.getSelectedCategories().observe(this, selectedCategories -> filterProducts());
-        filterViewModel.getSelectedEventTypes().observe(this, selectedEventTypes -> filterProducts());
-        filterViewModel.getSelectedAvailability().observe(this, selectedAvailability -> filterProducts());
-        filterViewModel.getSelectedDescriptions().observe(this, selectedDescriptions -> filterProducts());
-        filterViewModel.getMinPrice().observe(this, minPrice -> filterProducts());
-        filterViewModel.getMaxPrice().observe(this, maxPrice -> filterProducts());
-
-
+    private void setUpSearchBar() {
         searchBar = findViewById(R.id.searchBar);
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -142,14 +108,71 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
             }
         });
+    }
 
 
+    private void setFilterObservers() {
+
+        filterViewModel.getSelectedCategories().observe(this, selectedCategories -> filterProducts());
+        filterViewModel.getSelectedEventTypes().observe(this, selectedEventTypes -> filterProducts());
+        filterViewModel.getSelectedAvailability().observe(this, selectedAvailability -> filterProducts());
+        filterViewModel.getSelectedDescriptions().observe(this, selectedDescriptions -> filterProducts());
+        filterViewModel.getMinPrice().observe(this, minPrice -> filterProducts());
+        filterViewModel.getMaxPrice().observe(this, maxPrice -> filterProducts());
+
+    }
+
+
+    private void setChipObservers() {
+        filterViewModel.getSelectedCategories().observe(this, selectedCategories -> updateChips());
+        filterViewModel.getSelectedEventTypes().observe(this, selectedEventTypes -> updateChips());
+        filterViewModel.getSelectedAvailability().observe(this, selectedAvailability -> updateChips());
+        filterViewModel.getSelectedDescriptions().observe(this, selectedDescriptions -> updateChips());
+        filterViewModel.getMinPrice().observe(this, minPrice -> updateChips());
+        filterViewModel.getMaxPrice().observe(this, maxPrice -> updateChips());
+    }
+
+
+    private void setUpFilterBtn() {
+        filterBtn = findViewById(R.id.filterBtn);
+        filterBtn.setOnClickListener(v -> {
+            SolutionFilterFragment filterFragment = new SolutionFilterFragment();
+            filterFragment.show(getSupportFragmentManager(), "Filter");
+            filterProducts();
+        });
+    }
+
+
+    private void setUpAddProductBtn() {
+        addProductBtn = findViewById(R.id.addProductBtn);
+        addProductBtn.setOnClickListener(v -> {
+            ProductCreationFragment fragment = new ProductCreationFragment();
+            fragment.show(getSupportFragmentManager(), "ProductCreationFragment");
+        });
+    }
+
+
+    private void setUpPagination() {
+        findViewById(R.id.previousPage).setOnClickListener(v -> {
+            if (currentPage > 1) {
+                currentPage--;
+                loadPage(currentPage);
+            }
+        });
+
+        findViewById(R.id.nextPage).setOnClickListener(v -> {
+            if (currentPage < getTotalPages()) {
+                currentPage++;
+                loadPage(currentPage);
+            }
+        });
     }
 
 
     private void updatePageUI() {
         TextView pageNumberText = findViewById(R.id.pageNumber);
-        pageNumberText.setText("Page " + currentPage + " / " + getTotalPages());
+        String page = getString(R.string.page, currentPage, getTotalPages());
+        pageNumberText.setText(page);
     }
 
 
@@ -167,8 +190,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
                     allProducts.clear();
                     allProducts.addAll(convertToFavDTO(providedProducts[0]));
                     loadPage(currentPage);
-                }
-                else {
+                } else {
                     Toast.makeText(ProvidedProductsActivity.this, "Error loading provided products!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -179,7 +201,6 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
     private void loadPage(int page) {
@@ -197,6 +218,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
     private int getTotalPages() {
         return (int) Math.ceil((double) allProducts.size() / PAGE_SIZE);
     }
+
 
     public void closeForm(View view) {
         Intent intent = new Intent(ProvidedProductsActivity.this, ProviderHomepageActivity.class);
@@ -222,7 +244,6 @@ public class ProvidedProductsActivity extends AppCompatActivity {
     }
 
 
-
     private void loadCurrentBusiness() {
         String auth = ClientUtils.getAuthorization(this);
 
@@ -241,8 +262,6 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
 
     public void removeFilter(String item) {
@@ -271,7 +290,6 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             }
         }
 
-
         updateChips();
     }
 
@@ -297,10 +315,8 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             chipGroup.addView(chip);
         }
 
-
         Double minPrice = filterViewModel.getMinPrice().getValue();
         Double maxPrice = filterViewModel.getMaxPrice().getValue();
-
 
         if (minPrice != null && maxPrice != null) {
             Chip chip = new Chip(this);
@@ -328,8 +344,6 @@ public class ProvidedProductsActivity extends AppCompatActivity {
                 chipGroup.addView(chip);
             }
 
-
-
             if (maxPrice != null) {
                 Chip chip = new Chip(this);
 
@@ -342,8 +356,6 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             }
         }
     }
-
-
 
 
     private void filterProducts() {
@@ -425,6 +437,5 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             }
         });
     }
-
 
 }

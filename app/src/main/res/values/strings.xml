@@ -316,5 +316,6 @@
     <string name="from_min_price">From %.1f</string>
     <string name="to_max_price">To %.1f</string>
     <string name="min_to_max">%.1f - %.1f</string>
-    
+    <string name="page">Page %d / %d</string>
+
 </resources>
