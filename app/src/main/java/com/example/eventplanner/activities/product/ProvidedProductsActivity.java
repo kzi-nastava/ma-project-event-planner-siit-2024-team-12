@@ -112,13 +112,16 @@ public class ProvidedProductsActivity extends AppCompatActivity {
         filterViewModel.getSelectedEventTypes().observe(this, selectedEventTypes -> updateChips());
         filterViewModel.getSelectedAvailability().observe(this, selectedAvailability -> updateChips());
         filterViewModel.getSelectedDescriptions().observe(this, selectedDescriptions -> updateChips());
+        filterViewModel.getMinPrice().observe(this, minPrice -> updateChips());
+        filterViewModel.getMaxPrice().observe(this, maxPrice -> updateChips());
 
 
         filterViewModel.getSelectedCategories().observe(this, selectedCategories -> filterProducts());
         filterViewModel.getSelectedEventTypes().observe(this, selectedEventTypes -> filterProducts());
         filterViewModel.getSelectedAvailability().observe(this, selectedAvailability -> filterProducts());
         filterViewModel.getSelectedDescriptions().observe(this, selectedDescriptions -> filterProducts());
-
+        filterViewModel.getMinPrice().observe(this, minPrice -> filterProducts());
+        filterViewModel.getMaxPrice().observe(this, maxPrice -> filterProducts());
 
     }
 
@@ -232,6 +235,22 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             filterViewModel.removeDescription(item);
         }
 
+        else {
+            Double minPrice = filterViewModel.getMinPrice().getValue();
+            Double maxPrice = filterViewModel.getMaxPrice().getValue();
+
+            // "min - max" format
+            if (minPrice != null && maxPrice != null && item.equals(getString(R.string.min_to_max, minPrice, maxPrice))) {
+                filterViewModel.setMinPrice(null);
+                filterViewModel.setMaxPrice(null);
+            } else if (minPrice != null && item.equals(String.valueOf(minPrice))) {
+                filterViewModel.setMinPrice(null);
+            } else if (maxPrice != null && item.equals(String.valueOf(maxPrice))) {
+                filterViewModel.setMaxPrice(null);
+            }
+        }
+
+
         updateChips();
     }
 
@@ -256,6 +275,51 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             chip.setOnCloseIconClickListener(v -> removeFilter(item));
             chipGroup.addView(chip);
         }
+
+
+        Double minPrice = filterViewModel.getMinPrice().getValue();
+        Double maxPrice = filterViewModel.getMaxPrice().getValue();
+
+
+        if (minPrice != null && maxPrice != null) {
+            Chip chip = new Chip(this);
+
+            String minToMax = getString(R.string.min_to_max, minPrice, maxPrice);
+            chip.setText(minToMax);
+
+            chip.setCloseIconVisible(true);
+            chip.setOnCloseIconClickListener(v -> {
+                removeFilter(String.valueOf(minPrice));
+                removeFilter(String.valueOf(maxPrice));
+            });
+
+            chipGroup.addView(chip);
+        }
+        else {
+            if (minPrice != null) {
+                Chip chip = new Chip(this);
+
+                String fromMinPrice = getString(R.string.from_min_price, minPrice);
+                chip.setText(fromMinPrice);
+
+                chip.setCloseIconVisible(true);
+                chip.setOnCloseIconClickListener(v -> removeFilter(String.valueOf(minPrice)));
+                chipGroup.addView(chip);
+            }
+
+
+
+            if (maxPrice != null) {
+                Chip chip = new Chip(this);
+
+                String toMaxPrice = getString(R.string.to_max_price, maxPrice);
+                chip.setText(toMaxPrice);
+
+                chip.setCloseIconVisible(true);
+                chip.setOnCloseIconClickListener(v -> removeFilter(String.valueOf(maxPrice)));
+                chipGroup.addView(chip);
+            }
+        }
     }
 
 
@@ -279,7 +343,8 @@ public class ProvidedProductsActivity extends AppCompatActivity {
         }
 
         params.setIsAvailable(availabilityBoolean);
-
+        params.setMinPrice(filterViewModel.getMinPrice().getValue());
+        params.setMaxPrice(filterViewModel.getMaxPrice().getValue());
 
 
         Call<List<GetProductDTO>> call = ClientUtils.productService.filterProvidedProducts(auth, params);

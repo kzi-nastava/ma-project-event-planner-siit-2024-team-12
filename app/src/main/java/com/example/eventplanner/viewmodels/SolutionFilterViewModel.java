@@ -16,6 +16,9 @@ public class SolutionFilterViewModel extends AndroidViewModel {
     private final MutableLiveData<List<String>> selectedEventTypes = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<List<String>> selectedAvailability = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<List<String>> selectedDescriptions = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<Double> minPrice = new MutableLiveData<>();
+    private final MutableLiveData<Double> maxPrice = new MutableLiveData<>();
+
 
     public SolutionFilterViewModel(@NonNull Application application) {
         super(application);
@@ -103,6 +106,24 @@ public class SolutionFilterViewModel extends AndroidViewModel {
         List<String> updatedDescriptions = new ArrayList<>(getSelectedDescriptions().getValue());
         updatedDescriptions.remove(description);
         selectedDescriptions.setValue(updatedDescriptions);
+    }
+
+
+
+    public LiveData<Double> getMinPrice() {
+        return minPrice;
+    }
+
+    public LiveData<Double> getMaxPrice() {
+        return maxPrice;
+    }
+
+    public void setMinPrice(Double value) {
+        minPrice.setValue(value);
+    }
+
+    public void setMaxPrice(Double value) {
+        maxPrice.setValue(value);
     }
 
 }

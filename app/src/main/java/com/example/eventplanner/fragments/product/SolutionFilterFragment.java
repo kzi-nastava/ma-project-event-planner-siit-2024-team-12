@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,12 +39,14 @@ public class SolutionFilterFragment extends DialogFragment {
     private List<String> descriptionOptions = new ArrayList<>();
     private Button filterBtn;
     private SolutionFilterViewModel filterViewModel;
+    private View view;
+    private EditText minPrice, maxPrice;
 
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_solution_filter, container, false);
+        view = inflater.inflate(R.layout.fragment_solution_filter, container, false);
 
         filterViewModel = new ViewModelProvider(requireActivity()).get(SolutionFilterViewModel.class);
 
@@ -59,6 +62,10 @@ public class SolutionFilterFragment extends DialogFragment {
         setupFilter(view, R.id.descriptionFilter, getString(R.string.description_filter), descriptionOptions, filterViewModel.getSelectedDescriptions().getValue());
 
 
+        minPrice = view.findViewById(R.id.minPrice);
+        maxPrice = view.findViewById(R.id.maxPrice);
+        setUpExistingPriceRange();
+
 
         filterBtn = view.findViewById(R.id.filterBtn);
         filterBtn.setOnClickListener(v -> {
@@ -71,6 +78,8 @@ public class SolutionFilterFragment extends DialogFragment {
             filterViewModel.setSelectedEventTypes(selectedEventTypes);
             filterViewModel.setSelectedAvailability(selectedAvailability);
             filterViewModel.setSelectedDescriptions(selectedDescriptions);
+
+            setUpPriceRange();
 
             dismiss();
         });
@@ -193,6 +202,32 @@ public class SolutionFilterFragment extends DialogFragment {
                 Toast.makeText(getActivity(), "Failed to load descriptions!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+
+    private void setUpPriceRange() {
+        try {
+            filterViewModel.setMinPrice(Double.parseDouble(minPrice.getText().toString().trim()));
+        } catch (NumberFormatException e) {
+            filterViewModel.setMinPrice(null);
+        }
+
+        try {
+            filterViewModel.setMaxPrice(Double.parseDouble(maxPrice.getText().toString().trim()));
+        } catch (NumberFormatException e) {
+            filterViewModel.setMaxPrice(null);
+        }
+    }
+
+
+    private void setUpExistingPriceRange() {
+
+        Double minPriceVal = filterViewModel.getMinPrice().getValue();
+        Double maxPriceVal = filterViewModel.getMaxPrice().getValue();
+
+        minPrice.setText(minPriceVal == null ? "" : String.valueOf(minPriceVal));
+        maxPrice.setText(maxPriceVal == null ? "" : String.valueOf(maxPriceVal));
+
     }
 
 }

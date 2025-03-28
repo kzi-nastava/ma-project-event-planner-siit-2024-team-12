@@ -313,4 +313,8 @@
     <string name="description_filter">Description</string>
     <string name="event_type_filter">Event type</string>
 
+    <string name="from_min_price">From %.1f</string>
+    <string name="to_max_price">To %.1f</string>
+    <string name="min_to_max">%.1f - %.1f</string>
+    
 </resources>
