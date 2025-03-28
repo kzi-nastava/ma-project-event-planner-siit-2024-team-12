@@ -99,6 +99,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
         filterBtn.setOnClickListener(v -> {
             SolutionFilterFragment filterFragment = new SolutionFilterFragment();
             filterFragment.show(getSupportFragmentManager(), "Filter");
+            filterProducts();
         });
 
 
@@ -111,6 +112,12 @@ public class ProvidedProductsActivity extends AppCompatActivity {
         filterViewModel.getSelectedEventTypes().observe(this, selectedEventTypes -> updateChips());
         filterViewModel.getSelectedAvailability().observe(this, selectedAvailability -> updateChips());
         filterViewModel.getSelectedDescriptions().observe(this, selectedDescriptions -> updateChips());
+
+
+        filterViewModel.getSelectedCategories().observe(this, selectedCategories -> filterProducts());
+        filterViewModel.getSelectedEventTypes().observe(this, selectedEventTypes -> filterProducts());
+        filterViewModel.getSelectedAvailability().observe(this, selectedAvailability -> filterProducts());
+        filterViewModel.getSelectedDescriptions().observe(this, selectedDescriptions -> filterProducts());
 
 
     }
@@ -250,5 +257,54 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             chipGroup.addView(chip);
         }
     }
+
+
+
+
+    private void filterProducts() {
+        String auth = ClientUtils.getAuthorization(this);
+
+        SolutionFilterParams params = new SolutionFilterParams();
+        params.setCategories(filterViewModel.getSelectedCategories().getValue());
+        params.setEventTypes(filterViewModel.getSelectedEventTypes().getValue());
+        params.setDescriptions(filterViewModel.getSelectedDescriptions().getValue());
+
+
+        List<String> availabilityVM = filterViewModel.getSelectedAvailability().getValue();
+        List<Boolean> availabilityBoolean = new ArrayList<>();
+
+        assert availabilityVM != null;
+        for (String availability : availabilityVM) {
+            availabilityBoolean.add(availability.equals(getString(R.string.available)));
+        }
+
+        params.setIsAvailable(availabilityBoolean);
+
+
+
+        Call<List<GetProductDTO>> call = ClientUtils.productService.filterProvidedProducts(auth, params);
+        call.enqueue(new Callback<List<GetProductDTO>>() {
+            @Override
+            public void onResponse(Call<List<GetProductDTO>> call, Response<List<GetProductDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<GetProductDTO> filtered = response.body();
+                    allProducts.clear();
+                    for (GetProductDTO dto : filtered) {
+                        allProducts.add(new FavSolutionDTO(dto.getId(), dto.getName(),
+                                dto.getDescription(), dto.getMainImageUrl(), dto.getCity(),
+                                dto.getPrice(), dto.getDiscount(), dto.getCategoryName()));
+                    }
+                    loadPage(currentPage);  // reload the page with the filtered products
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GetProductDTO>> call, Throwable t) {
+                Toast.makeText(ProvidedProductsActivity.this, "Failed to load filtered products!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
 }

@@ -4,6 +4,7 @@ import com.example.eventplanner.dto.product.CreateProductDTO;
 import com.example.eventplanner.dto.product.GetProductDTO;
 import com.example.eventplanner.dto.product.UpdateProductDTO;
 import com.example.eventplanner.dto.product.UpdatedProductDTO;
+import com.example.eventplanner.dto.solution.SolutionFilterParams;
 
 import java.util.List;
 
@@ -44,6 +45,9 @@ public interface ProductService {
     Call<List<String>> getProductDescriptions(@Header("Authorization") String auth);
 
 
+    @POST("products/provided-filter")
+    Call<List<GetProductDTO>> filterProvidedProducts(@Header("Authorization") String auth,
+                                                     @Body SolutionFilterParams params);
 
 
 }
