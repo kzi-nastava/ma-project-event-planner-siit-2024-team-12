@@ -38,6 +38,7 @@ import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.dto.location.CreateLocationDTO;
 import com.example.eventplanner.fragments.eventcreation.AgendaDialogFragment;
 import com.example.eventplanner.model.Activity;
+import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.viewmodels.EventEditViewModel;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -309,7 +310,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             return;
         }
 
-        Call<ResponseBody> call = ClientUtils.userService.addToFavorites(auth, userEmail, currentEventId);
+        Call<ResponseBody> call = ClientUtils.userService.addFavoriteEvent(auth, userEmail, currentEventId);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -372,7 +373,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             return;
         }
 
-        Call<Void> call = ClientUtils.userService.removeFromFavorites(auth, email, currentEventId);
+        Call<Void> call = ClientUtils.userService.removeFavoriteEvent(auth, email, currentEventId);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -572,6 +573,18 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
 
+    private boolean validateInputFields() {
+        if (!ValidationUtils.isFieldValid(name, "Name is required!")) return false;
+        if (!ValidationUtils.isFieldValid(date, "Date is required!")) return false;
+        if (!ValidationUtils.isDateValid(date)) return false;
+        if (!ValidationUtils.isFieldValid(maxGuests, "Max guests number is required!")) return false;
+        if (!ValidationUtils.isNumberValid(maxGuests, "Invalid number!", "Negative number!")) return false;
+        if (!ValidationUtils.isFieldValid(description, "Description is required!")) return false;
+        if (!ValidationUtils.isFieldValid(location, "Location is required!")) return false;
+
+        return true;
+    }
+
 
     private void setUpEditBtn() {
         editBtn = findViewById(R.id.editBtn);
@@ -589,6 +602,11 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private void updateEvent() {
         String auth = ClientUtils.getAuthorization(this);
+
+        if (!validateInputFields()) {
+            return;
+        }
+
         setUpUpdateEventDetailsDTO();
 
         Set<CreateActivityDTO> unique = new HashSet<>(editViewModel.getDto().getValue().getActivities());

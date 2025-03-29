@@ -6,7 +6,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.ServiceCreationPagerAdapter;
+import com.example.eventplanner.adapters.solution.ServiceCreationPagerAdapter;
 
 public class ServiceCreationActivity extends AppCompatActivity {
 

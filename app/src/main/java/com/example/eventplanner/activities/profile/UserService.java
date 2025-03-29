@@ -62,7 +62,7 @@ public interface UserService {
 
 
     @POST("users/{email}/favorite-event-addition")
-    Call<ResponseBody> addToFavorites(@Header("Authorization") String token,
+    Call<ResponseBody> addFavoriteEvent(@Header("Authorization") String token,
                                       @Path("email") String email,
                                       @Body Long eventId);
 
@@ -74,8 +74,26 @@ public interface UserService {
 
 
     @DELETE("users/{email}/remove-favorite-event")
-    Call<Void> removeFromFavorites(@Header("Authorization") String token,
+    Call<Void> removeFavoriteEvent(@Header("Authorization") String token,
                                    @Path("email") String email,
                                    @Query("eventId") Long eventId);
+
+
+    @GET("users/{email}/is-favorite-product")
+    Call<Boolean> isProductFavorite(@Header("Authorization") String token,
+                                    @Path("email") String email,
+                                    @Query("productId") Long productId);
+
+
+    @POST("users/{email}/favorite-product-addition")
+    Call<ResponseBody> addFavoriteProduct(@Header("Authorization") String token,
+                                          @Path("email") String email,
+                                          @Body Long productId);
+
+
+    @DELETE("users/{email}/remove-favorite-product")
+    Call<Void> removeFavoriteProduct(@Header("Authorization") String token,
+                                     @Path("email") String email,
+                                     @Query("productId") Long productId);
 
 }

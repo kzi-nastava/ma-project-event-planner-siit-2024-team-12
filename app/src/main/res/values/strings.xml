@@ -282,5 +282,40 @@
 
     <string name="activity_name_in_table"><b>Activity name*</b>\n%s</string>
     <string name="location_in_table"><b>Location*</b>\n%s</string>
+    <string name="create_product">Create product</string>
+    <string name="category_ast">Category*</string>
+    <string name="event_types_ast">Event types*</string>
+    <string name="select_event_types">Select event types</string>
+
+    <string name="add_category_recommendation">Add category recommendation</string>
+    <string name="availability_ast">Availability*</string>
+    <string name="visibility_ast">Visibility*</string>
+    <string name="available">Available</string>
+    <string name="unavailable">Unavailable</string>
+    <string name="price_ast">Price*</string>
+    <string name="discount_ast">Discount [ % ]*</string>
+    <string name="visible">Visible</string>
+    <string name="invisible">Invisible</string>
+    <string name="create_product_II">Create product II</string>
+    <string name="sign_up_II">Sign up II</string>
+    <string name="sign_up_III">Sign up III</string>
+    <string name="create_event_II">Create event II</string>
+    <string name="business_reg_II">Business registration II</string>
+    <string name="offered_products">Products your business offers</string>
+
+    <string name="discount_off">%s%% off</string>
+    <string name="see_event_types">See event types</string>
+    <string name="min_price">Min price :</string>
+    <string name="max_price">Max price :</string>
+    <string name="filter">Filter</string>
+    <string name="category">Category</string>
+    <string name="availability">Availability</string>
+    <string name="description_filter">Description</string>
+    <string name="event_type_filter">Event type</string>
+
+    <string name="from_min_price">From %.1f</string>
+    <string name="to_max_price">To %.1f</string>
+    <string name="min_to_max">%.1f - %.1f</string>
+    <string name="page">Page %d / %d</string>
 
 </resources>

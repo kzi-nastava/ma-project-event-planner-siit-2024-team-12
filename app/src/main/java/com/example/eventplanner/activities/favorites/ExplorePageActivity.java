@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.FavoriteEventsAdapter;
+import com.example.eventplanner.adapters.favorites.FavoriteEventsAdapter;
 import com.example.eventplanner.dto.event.FavEventDTO;
 
 import java.util.ArrayList;

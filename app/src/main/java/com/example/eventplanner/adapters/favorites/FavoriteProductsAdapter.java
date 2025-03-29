@@ -1,5 +1,7 @@
-package com.example.eventplanner.adapters;
+package com.example.eventplanner.adapters.favorites;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +12,19 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.product.ProductDetailsActivity;
+import com.example.eventplanner.activities.product.ProductService;
+import com.example.eventplanner.dto.product.GetProductDTO;
 import com.example.eventplanner.dto.solution.FavSolutionDTO;
+import com.example.eventplanner.utils.ClientUtils;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProductsAdapter.ViewHolder> {
     private List<FavSolutionDTO> products;
@@ -33,9 +45,13 @@ public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProduc
     public void onBindViewHolder(FavoriteProductsAdapter.ViewHolder holder, int position) {
         FavSolutionDTO product = products.get(position);
 
+        int discountValue = (int) Math.floor(product.getDiscount());
+        String discountOff = holder.itemView.getContext().getString(R.string.discount_off, discountValue);
+
         holder.productTitle.setText(product.getName());
         holder.productLocation.setText(product.getCity());
         holder.productPrice.setText(product.getPrice().toString());
+        holder.discount.setText(discountOff);
         holder.productCategory.setText(product.getCategoryName());
 
 
@@ -52,10 +68,33 @@ public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProduc
         }
 
         holder.seeMore.setOnClickListener(v -> {
-
+            Context context = v.getContext();
+            loadProductDetails(context, product.getId());
         });
     }
 
+
+
+    private void loadProductDetails(Context context, Long productId) {
+        String auth = ClientUtils.getAuthorization(context);
+
+        Call<GetProductDTO> call = ClientUtils.productService.getProduct(auth, productId);
+        call.enqueue(new Callback<GetProductDTO>() {
+            @Override
+            public void onResponse(Call<GetProductDTO> call, Response<GetProductDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Intent intent = new Intent(context, ProductDetailsActivity.class);
+                    intent.putExtra("id", productId);
+                    context.startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetProductDTO> call, Throwable t) {
+
+            }
+        });
+    }
 
 
 
@@ -64,9 +103,11 @@ public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProduc
         return products.size();
     }
 
+
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView productImage;
-        TextView productTitle, seeMore, productLocation, productPrice, productCategory;
+        TextView productTitle, seeMore, productLocation, productPrice, productCategory, discount;
         LinearLayout container, textContainer;
 
         public ViewHolder(View itemView) {
@@ -79,6 +120,7 @@ public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProduc
             productLocation = itemView.findViewById(R.id.productLocation);
             productPrice = itemView.findViewById(R.id.productPrice);
             productCategory = itemView.findViewById(R.id.productCategory);
+            discount = itemView.findViewById(R.id.discount);
         }
     }
 }

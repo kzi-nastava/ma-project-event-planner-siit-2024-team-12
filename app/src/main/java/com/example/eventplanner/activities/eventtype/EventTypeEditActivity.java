@@ -287,7 +287,6 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
         String auth = ClientUtils.getAuthorization(this);
 
-        Log.d("PARAMETRI ", "Params " + dto.getSuggestedCategoryNames());
         Call<GetEventTypeDTO> call = ClientUtils.eventTypeService.updateEventType(auth, dto, Long.parseLong(id));
 
         call.enqueue(new Callback<GetEventTypeDTO>() {

@@ -7,18 +7,20 @@ public class FavSolutionDTO {
     private String mainImageUrl;
     private String city;
     private Double price;
+    private Double discount;
     private String categoryName;
 
     public FavSolutionDTO() {}
 
     public FavSolutionDTO(Long id, String name, String description, String mainImageUrl, String city,
-                          Double price, String categoryName) {
+                          Double price, Double discount, String categoryName) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.mainImageUrl = mainImageUrl;
         this.city = city;
         this.price = price;
+        this.discount = discount;
         this.categoryName = categoryName;
     }
 
@@ -39,6 +41,9 @@ public class FavSolutionDTO {
 
     public Double getPrice() {return price;}
     public void setPrice(Double price) {this.price = price;}
+
+    public Double getDiscount() { return discount; }
+    public void setDiscount(Double discount) { this.discount = discount; }
 
     public String getCategoryName() {return categoryName;}
     public void setCategoryName(String categoryName) {this.categoryName = categoryName;}

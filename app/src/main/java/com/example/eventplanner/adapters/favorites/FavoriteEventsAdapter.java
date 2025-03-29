@@ -1,4 +1,4 @@
-package com.example.eventplanner.adapters;
+package com.example.eventplanner.adapters.favorites;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -75,7 +75,7 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
 
 
 
-    void loadEventDetails(Context context, Long eventId) {
+    private void loadEventDetails(Context context, Long eventId) {
         String token = ClientUtils.getAuthorization(context);
 
         Call<EventDetailsDTO> call = ClientUtils.eventService.getEvent(token, eventId);

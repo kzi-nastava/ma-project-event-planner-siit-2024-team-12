@@ -9,13 +9,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.AgendaAdapter;
+import com.example.eventplanner.adapters.event.AgendaAdapter;
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
 import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.model.Activity;
@@ -23,7 +22,6 @@ import com.example.eventplanner.viewmodels.EventCreationViewModel;
 import com.example.eventplanner.viewmodels.EventEditViewModel;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;

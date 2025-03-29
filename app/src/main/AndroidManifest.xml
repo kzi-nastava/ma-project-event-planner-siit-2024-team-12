@@ -19,7 +19,15 @@
         android:theme="@style/Theme.EventPlanner"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <activity
+            android:name=".activities.product.ProductDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.product.ProvidedProductsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.product.ProductCreationActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.event.EventDetailsActivity"
             android:exported="false" />

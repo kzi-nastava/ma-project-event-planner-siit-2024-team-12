@@ -109,18 +109,22 @@ public class ActivityFormFragment extends DialogFragment {
     }
 
 
-    private void validateFields() {
-        if (!ValidationUtils.isFieldValid(timeField, "Time is required!")) return;
-        if (!ValidationUtils.isActivityTimeValid(timeField)) return;
-        if (!ValidationUtils.isFieldValid(nameField, "Name is required!")) return;
-        if (!ValidationUtils.isFieldValid(descriptionField, "Description is required!")) return;
-        if (!ValidationUtils.isFieldValid(venueField, "Venue is required!")) return;
+    private boolean validateFields() {
+        if (!ValidationUtils.isFieldValid(timeField, "Time is required!")) return false;
+        if (!ValidationUtils.isActivityTimeValid(timeField)) return false;
+        if (!ValidationUtils.isFieldValid(nameField, "Name is required!")) return false;
+        if (!ValidationUtils.isFieldValid(descriptionField, "Description is required!")) return false;
+        if (!ValidationUtils.isFieldValid(venueField, "Venue is required!")) return false;
+
+        return true;
     }
 
 
     private void addActivity() {
         // validate input data
-        validateFields();
+        if (!validateFields()) {
+            return;
+        }
 
         // if valid, save
         String time = timeField.getText().toString();
