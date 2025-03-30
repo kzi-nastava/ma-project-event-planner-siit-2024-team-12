@@ -57,6 +57,14 @@
         android:padding="8dp"
         android:weightSum="2">
 
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/attach_money_filled"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="-10dp"/>
+
+
         <EditText
             android:id="@+id/minPrice"
             android:layout_width="0dp"

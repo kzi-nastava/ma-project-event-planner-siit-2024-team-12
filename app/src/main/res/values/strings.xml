@@ -317,7 +317,7 @@
     <string name="to_max_price">To %.1f</string>
     <string name="min_to_max">%.1f - %.1f</string>
     <string name="page">Page %d / %d</string>
-    
+
     <string name="name_simple">Name</string>
     <string name="id">ID</string>
     <string name="status_simple">Status</string>
@@ -338,5 +338,6 @@
     <string name="event_type_updated">Event type updated successfully!</string>
     <string name="active">Active</string>
     <string name="inactive">Inactive</string>
+    <string name="filter_parameter">Filter parameter</string>
 
 </resources>
