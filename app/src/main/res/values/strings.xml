@@ -317,5 +317,26 @@
     <string name="to_max_price">To %.1f</string>
     <string name="min_to_max">%.1f - %.1f</string>
     <string name="page">Page %d / %d</string>
+    
+    <string name="name_simple">Name</string>
+    <string name="id">ID</string>
+    <string name="status_simple">Status</string>
+    <string name="view">View</string>
+    <string name="deactivation_confirmation">Are you sure you want to deactivate this event type?</string>
+    <string name="activation_confirmation">Are you sure you want to activate this event type?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="activated_event_type">Activated event type!</string>
+    <string name="failed_to_activate">Failed to activate: </string>
+    <string name="error">Error: </string>
+    <string name="deactivated_event_type">Deactivated event type!</string>
+    <string name="failed_to_deactivate">"Failed to deactivate: "</string>
+    <string name="no_categories_available">No categories available!</string>
+    <string name="failed_to_load_categories">Failed to load categories!</string>
+    <string name="ok">OK</string>
+    <string name="failed_to_update">"Failed to update: "</string>
+    <string name="event_type_updated">Event type updated successfully!</string>
+    <string name="active">Active</string>
+    <string name="inactive">Inactive</string>
 
 </resources>

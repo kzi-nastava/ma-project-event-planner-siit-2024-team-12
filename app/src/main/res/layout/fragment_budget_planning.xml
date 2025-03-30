@@ -40,6 +40,7 @@
         android:layout_width="257dp"
         android:layout_height="29dp"
         android:entries="@array/roles_spinner"
+        android:background="@drawable/spinner_background"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
