@@ -56,7 +56,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private RadioButton availableBtn, unavailableBtn, visibleBtn, invisibleBtn;
     private List<String> selectedEventTypes = new ArrayList<>();
     private String currentCompanyEmail, loadedCompanyEmail;
-    private TextView moreInfo;
+    private TextView moreInfo, visible;
 
 
 
@@ -136,6 +136,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private void displayOrganizersView() {
         editBtn.setVisibility(View.GONE);
+        visibility.setVisibility(View.GONE);
+        visible.setVisibility(View.GONE);
         moreInfo.setVisibility(View.VISIBLE);
         chatBtn.setVisibility(View.VISIBLE);
         shoppingCart.setVisibility(View.VISIBLE);
@@ -204,6 +206,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         moreInfo = findViewById(R.id.more_info);
         chatBtn = findViewById(R.id.chatBtn);
         shoppingCart = findViewById(R.id.shop);
+        visible = findViewById(R.id.visible);
 
     }
 
