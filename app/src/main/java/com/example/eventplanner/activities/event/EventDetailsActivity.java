@@ -642,7 +642,6 @@ public class EventDetailsActivity extends AppCompatActivity {
     private void setUpEditBtn() {
         editBtn = findViewById(R.id.editBtn);
 
-
         editBtn.setOnClickListener(v -> {
             if (isEditable) {
                 updateEvent();

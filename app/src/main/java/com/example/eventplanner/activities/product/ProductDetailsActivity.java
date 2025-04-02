@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -22,6 +24,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.UserRole;
 import com.example.eventplanner.activities.eventtype.EventTypeEditActivity;
 import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
@@ -31,6 +34,8 @@ import com.example.eventplanner.dto.product.UpdateProductDTO;
 import com.example.eventplanner.dto.product.UpdatedProductDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.utils.ValidationUtils;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,14 +48,15 @@ import retrofit2.Response;
 public class ProductDetailsActivity extends AppCompatActivity {
 
     private EditText name, availability, visibility, price, discount, category, description;
-    private Button seeEventTypes, editBtn, deleteBtn;
-    private ImageView fav, favOutline, exitBtn;
+    private Button seeEventTypes, editBtn, deleteBtn, chatBtn;
+    private ImageView fav, favOutline, exitBtn, shoppingCart;
     private Long currentProductId;
     private Boolean isFavorite, isEditable = false;
     private RadioGroup availabilityGroup, visibilityGroup;
     private RadioButton availableBtn, unavailableBtn, visibleBtn, invisibleBtn;
     private List<String> selectedEventTypes = new ArrayList<>();
     private String currentCompanyEmail, loadedCompanyEmail;
+    private TextView moreInfo;
 
 
 
@@ -92,9 +98,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     GetProductDTO productDTO = response.body();
                     loadedCompanyEmail = productDTO.getCompanyEmail();
+                    Log.d("iz load ", loadedCompanyEmail);
                     populateTextViews(productDTO);
                     setUpEventTypes(productDTO);
-                    loadCurrentCompany();
+                    displayBasedOnRole();
                 }
                 else {
                     Toast.makeText(ProductDetailsActivity.this, "Error loading product details!", Toast.LENGTH_SHORT).show();
@@ -107,6 +114,31 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+
+
+    private void displayBasedOnRole() {
+        // currently logged in user
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String role = prefs.getString("userRole", "");
+
+
+        if (role.equals(UserRole.ROLE_ORGANIZER.toString())) {
+            displayOrganizersView();
+        }
+        else if (role.equals(UserRole.ROLE_PROVIDER.toString())) {
+            loadCurrentCompany();
+        }
+
+    }
+
+
+    private void displayOrganizersView() {
+        editBtn.setVisibility(View.GONE);
+        moreInfo.setVisibility(View.VISIBLE);
+        chatBtn.setVisibility(View.VISIBLE);
+        shoppingCart.setVisibility(View.VISIBLE);
     }
 
 
@@ -124,11 +156,14 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                     checkEditPermission();
                 }
+                else {
+                    Toast.makeText(ProductDetailsActivity.this, "Error loading current business!", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onFailure(Call<GetBusinessDTO> call, Throwable t) {
-
+                Toast.makeText(ProductDetailsActivity.this, "Failed to load current business!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -139,6 +174,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             editBtn.setVisibility(View.GONE);
         }
     }
+    
 
 
 
@@ -164,6 +200,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
         invisibleBtn = findViewById(R.id.invisibleBtn);
 
         deleteBtn = findViewById(R.id.deleteBtn);
+
+        moreInfo = findViewById(R.id.more_info);
+        chatBtn = findViewById(R.id.chatBtn);
+        shoppingCart = findViewById(R.id.shop);
 
     }
 

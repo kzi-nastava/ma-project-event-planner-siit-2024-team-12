@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventplanner.UserRole;
+import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
 import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.activities.product.ProvidedProductsActivity;
 import com.example.eventplanner.utils.ClientUtils;
@@ -125,8 +127,22 @@ public class FavoriteProductsActivity extends AppCompatActivity {
         return (int) Math.ceil((double) allProducts.size() / PAGE_SIZE);
     }
 
+
     public void closeForm(View view) {
-        Intent intent = new Intent(FavoriteProductsActivity.this, ProviderHomepageActivity.class);
-        startActivity(intent);
+        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String role = pref.getString("userRole", UserRole.ROLE_ORGANIZER.toString());
+
+        if (role.equals(UserRole.ROLE_ORGANIZER.toString())) {
+            Intent intent = new Intent(FavoriteProductsActivity.this, OrganiserHomepageActivity.class);
+            startActivity(intent);
+        }
+        else if (role.equals(UserRole.ROLE_PROVIDER.toString())) {
+            Intent intent = new Intent(FavoriteProductsActivity.this, ProviderHomepageActivity.class);
+            startActivity(intent);
+        }
+        else {
+            setResult(RESULT_CANCELED);
+            finish();
+        }
     }
 }

@@ -339,5 +339,7 @@
     <string name="active">Active</string>
     <string name="inactive">Inactive</string>
     <string name="filter_parameter">Filter parameter</string>
+    <string name="chat_with_us">Chat with us</string>
+    <string name="need_more_info">Need more info?</string>
 
 </resources>
