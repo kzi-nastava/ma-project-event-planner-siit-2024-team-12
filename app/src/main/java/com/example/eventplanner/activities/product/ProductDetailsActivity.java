@@ -24,6 +24,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.eventtype.EventTypeEditActivity;
 import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
+import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.product.GetProductDTO;
 import com.example.eventplanner.dto.product.UpdateProductDTO;
@@ -49,6 +50,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private RadioGroup availabilityGroup, visibilityGroup;
     private RadioButton availableBtn, unavailableBtn, visibleBtn, invisibleBtn;
     private List<String> selectedEventTypes = new ArrayList<>();
+    private String currentCompanyEmail, loadedCompanyEmail;
 
 
 
@@ -67,7 +69,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
         findFields();
 
         loadProductDetails();
-
 
         setUpFavProducts();
         setUpExitBtn();
@@ -90,8 +91,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
             public void onResponse(Call<GetProductDTO> call, Response<GetProductDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     GetProductDTO productDTO = response.body();
+                    loadedCompanyEmail = productDTO.getCompanyEmail();
                     populateTextViews(productDTO);
                     setUpEventTypes(productDTO);
+                    loadCurrentCompany();
                 }
                 else {
                     Toast.makeText(ProductDetailsActivity.this, "Error loading product details!", Toast.LENGTH_SHORT).show();
@@ -104,6 +107,37 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+
+
+    private void loadCurrentCompany() {
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<GetBusinessDTO> call = ClientUtils.businessService.getBusinessForCurrentUser(auth);
+        call.enqueue(new Callback<GetBusinessDTO>() {
+            @Override
+            public void onResponse(Call<GetBusinessDTO> call, Response<GetBusinessDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetBusinessDTO dto = response.body();
+                    currentCompanyEmail = dto.getCompanyEmail();
+
+                    checkEditPermission();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetBusinessDTO> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+    private void checkEditPermission() {
+        if (!currentCompanyEmail.equals(loadedCompanyEmail)) {
+            editBtn.setVisibility(View.GONE);
+        }
     }
 
 

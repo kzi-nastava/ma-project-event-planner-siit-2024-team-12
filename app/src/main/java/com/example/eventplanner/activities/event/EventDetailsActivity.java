@@ -29,6 +29,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.dto.event.UpdatedEventDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
+import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.fragments.eventcreation.AgendaEditFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
@@ -76,12 +77,12 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private WebView mapWebView;
     private EditText name, date, maxGuests, description, location;
-    private String nameTxt, eventTypeTxt, dateTxt, maxGuestsTxt, descriptionTxt, locationText;
+    private String nameTxt, eventTypeTxt, dateTxt, maxGuestsTxt, descriptionTxt, locationText, currentUser;
     private Long currentEventId;
     private Boolean isFavorite, isEditable = false;
     private ImageView fav, favOutline, exitBtn;
     private EventDetailsDTO eventDetailsDTO = new EventDetailsDTO();
-    Button editBtn, seeAgendaButton, pdfBtn;
+    private Button editBtn, seeAgendaButton, pdfBtn;
     private List<CreateActivityDTO> activities = new ArrayList<>();
     private CreateLocationDTO locationDTO = new CreateLocationDTO();
     private List<String> eventTypeNames = new ArrayList<>();
@@ -107,13 +108,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         findTextViews();
 
-        Intent intent = getIntent();
-        if (intent != null) {
-            populateTextViews(intent);
-            getTextValues();
-            setUpEventDetailsDTO();
-            setUpAgendaBtn(intent);
-        }
+        loadEventDetails();
 
         loadActiveEventTypes();
         setUpEditBtn();
@@ -123,6 +118,32 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     }
 
+    private void loadEventDetails() {
+        String auth = ClientUtils.getAuthorization(this);
+
+        currentEventId = getIntent().getLongExtra("id", 0);
+
+        Call<EventDetailsDTO> call = ClientUtils.eventService.getEvent(auth, currentEventId);
+        call.enqueue(new Callback<EventDetailsDTO>() {
+            @Override
+            public void onResponse(Call<EventDetailsDTO> call, Response<EventDetailsDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    EventDetailsDTO dto = response.body();
+                    populateTextViews(dto);
+                    getTextValues();
+                    setUpEventDetailsDTO(dto);
+                    setUpAgendaBtn();
+                    loadCurrentUser();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventDetailsDTO> call, Throwable t) {
+
+            }
+        });
+
+    }
 
 
     private void loadActiveEventTypes() {
@@ -489,17 +510,18 @@ public class EventDetailsActivity extends AppCompatActivity {
         locationDTO = new CreateLocationDTO(" ", parts[0], parts[1], parts[2]);  // venue name is " "
     }
 
-    private void setUpEventDetailsDTO() {
-        getTextValues();
+    private void setUpEventDetailsDTO(EventDetailsDTO dto) {
 
-        eventDetailsDTO.setId(currentEventId);
-        eventDetailsDTO.setName(nameTxt);
-        eventDetailsDTO.setEventType(eventTypeTxt);
-        eventDetailsDTO.setDate(LocalDate.parse(dateTxt));
-        eventDetailsDTO.setMaxGuests(maxGuestsTxt);
-        eventDetailsDTO.setDescription(descriptionTxt);
-        eventDetailsDTO.setActivities(activities);
-        eventDetailsDTO.setLocation(locationDTO);
+        eventDetailsDTO.setId(dto.getId());
+        eventDetailsDTO.setName(dto.getName());
+        eventDetailsDTO.setEventType(dto.getEventType());
+        eventDetailsDTO.setDate(dto.getDate());
+        eventDetailsDTO.setMaxGuests(dto.getMaxGuests());
+        eventDetailsDTO.setDescription(dto.getDescription());
+        eventDetailsDTO.setActivities(dto.getActivities());
+        eventDetailsDTO.setLocation(dto.getLocation());
+        eventDetailsDTO.setOrganizer(dto.getOrganizer());
+
     }
 
 
@@ -518,16 +540,17 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
 
-    private void populateTextViews(Intent intent) {
-        currentEventId = intent.getLongExtra("id", 0L);
-        eventTypeTxt = intent.getStringExtra("eventType");
-        name.setText(intent.getStringExtra("name"));
-        date.setText(intent.getStringExtra("date"));
-        maxGuests.setText(intent.getStringExtra("maxGuests"));
-        description.setText(intent.getStringExtra("description"));
-        activities = (List<CreateActivityDTO>) intent.getSerializableExtra("activities");
+    private void populateTextViews(EventDetailsDTO dto) {
+        eventTypeTxt = dto.getEventType();
+        name.setText(dto.getName());
+        date.setText(dto.getDate().toString());
+        maxGuests.setText(dto.getMaxGuests());
+        description.setText(dto.getDescription());
+        activities = dto.getActivities();
 
-        locationText = intent.getStringExtra("location");
+        locationText = dto.getLocation().getAddress() + ", " + dto.getLocation().getCity() + ", " +
+                       dto.getLocation().getCountry();
+
         if (locationText != null && !locationText.trim().isEmpty()) {
             location.setText(locationText);
             loadMap(locationText);
@@ -551,7 +574,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
 
-    private void setUpAgendaBtn(Intent intent) {
+    private void setUpAgendaBtn() {
         seeAgendaButton = findViewById(R.id.seeAgenda);
         List<Activity> adapterActivities = new ArrayList<>();
 
@@ -586,8 +609,39 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
 
+    private void loadCurrentUser() {
+        String auth = ClientUtils.getAuthorization(this);
+
+        Call<GetUserDTO> call = ClientUtils.authService.getCurrentUser(auth);
+        call.enqueue(new Callback<GetUserDTO>() {
+            @Override
+            public void onResponse(Call<GetUserDTO> call, Response<GetUserDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    currentUser = response.body().getEmail();
+                    checkEditPermission();
+                }
+                else {
+                    Toast.makeText(EventDetailsActivity.this, "Error loading current user!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetUserDTO> call, Throwable t) {
+                Toast.makeText(EventDetailsActivity.this, "Failed to load current user!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void checkEditPermission() {
+        if (!currentUser.equals(eventDetailsDTO.getOrganizer())) {
+            editBtn.setVisibility(View.GONE);
+        }
+    }
+
     private void setUpEditBtn() {
         editBtn = findViewById(R.id.editBtn);
+
 
         editBtn.setOnClickListener(v -> {
             if (isEditable) {
@@ -629,7 +683,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                     // refresh agenda ui
                     activities.clear();
                     activities.addAll(dto.getActivities());
-                    setUpAgendaBtn(getIntent());
+                    setUpAgendaBtn();
 
                     loadMap(dto.getLocation().getAddress() + ", " + dto.getLocation().getCity() + ", " + dto.getLocation().getCountry());
                     isEditable = false;

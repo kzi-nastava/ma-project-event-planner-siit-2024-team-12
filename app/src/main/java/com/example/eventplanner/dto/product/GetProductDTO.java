@@ -15,6 +15,7 @@ public class GetProductDTO {
     private List<String> eventTypeNames;
     private String mainImageUrl;
     private String city;
+    private String companyEmail;
 
     public GetProductDTO() {super();}
 
@@ -68,6 +69,9 @@ public class GetProductDTO {
 
     public String getCity() { return this.city; }
     public void setCity(String city) { this.city = city; }
+
+    public String getCompanyEmail() { return companyEmail; }
+    public void setCompanyEmail(String companyEmail) { this.companyEmail = companyEmail; }
 
     @Override
     public String toString() {

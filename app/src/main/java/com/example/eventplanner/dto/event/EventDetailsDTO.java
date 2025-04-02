@@ -16,6 +16,7 @@ public class EventDetailsDTO implements Serializable {
     private CreateLocationDTO location;
     private LocalDate date;
     private List<CreateActivityDTO> activities;
+    private String organizer;
 
     public EventDetailsDTO() {}
 
@@ -53,6 +54,9 @@ public class EventDetailsDTO implements Serializable {
 
     public List<CreateActivityDTO> getActivities() { return activities; }
     public void setActivities(List<CreateActivityDTO> activities) { this.activities = activities; }
+
+    public String getOrganizer() { return organizer; }
+    public void setOrganizer(String organizer) { this.organizer = organizer; }
 
     @Override
     public String toString() {
