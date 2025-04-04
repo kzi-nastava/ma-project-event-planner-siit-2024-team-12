@@ -3,6 +3,7 @@ package com.example.eventplanner.adapters.viewholders;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,7 +15,8 @@ public class AgendaViewHolder extends RecyclerView.ViewHolder {
 
     public TextView activityTime, activityName, activityDescription, activityVenue;
     public ImageView expandArrow;
-    public Button editButton;
+    public Button editButton, deleteButton;
+    public LinearLayout buttonLayout;
 
     public AgendaViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -24,5 +26,7 @@ public class AgendaViewHolder extends RecyclerView.ViewHolder {
         activityVenue = itemView.findViewById(R.id.activityVenue);
         expandArrow = itemView.findViewById(R.id.expandArrow);
         editButton = itemView.findViewById(R.id.editButton);
+        deleteButton = itemView.findViewById(R.id.deleteButton);
+        buttonLayout = itemView.findViewById(R.id.buttonLayout);
     }
 }

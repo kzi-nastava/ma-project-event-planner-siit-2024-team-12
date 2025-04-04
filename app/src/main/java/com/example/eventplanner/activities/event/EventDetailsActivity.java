@@ -285,7 +285,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private String getNextReportFileName(String directoryPath) {
         File directory = new File(directoryPath);
-        File[] files = directory.listFiles((dir, name) -> name.startsWith("Details_") && name.endsWith(".pdf"));
+        File[] files = directory.listFiles((dir, name) -> name.startsWith("Event_details_") && name.endsWith(".pdf"));
 
         int highestNumber = 0;
 

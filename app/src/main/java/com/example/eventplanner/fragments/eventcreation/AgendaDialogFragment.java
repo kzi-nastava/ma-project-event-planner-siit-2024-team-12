@@ -15,6 +15,7 @@ import com.example.eventplanner.adapters.event.AgendaAdapter;
 import com.example.eventplanner.model.Activity;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class AgendaDialogFragment extends DialogFragment {
@@ -34,4 +35,14 @@ public class AgendaDialogFragment extends DialogFragment {
         recyclerView.setAdapter(agendaAdapter);
         return view;
     }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null) {
+            Objects.requireNonNull(getDialog().getWindow()).setLayout(1000, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+    }
+
 }
