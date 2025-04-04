@@ -567,10 +567,18 @@ public class EventDetailsActivity extends AppCompatActivity {
     private void setEditViewModel() {
         editViewModel.updateEventAttributes("id", currentEventId.toString());
 
+        List<CreateActivityDTO> existing = editViewModel.getDto().getValue().getActivities();
+
+        if (existing == null) {
+            existing = new ArrayList<>();
+        }
+
         for (CreateActivityDTO dto : eventDetailsDTO.getActivities()) {
-            editViewModel.updateAgenda(dto, null);
+            int index = existing.indexOf(dto);
+            editViewModel.updateAgenda(dto, index >= 0 ? index : null);
         }
     }
+
 
 
 
