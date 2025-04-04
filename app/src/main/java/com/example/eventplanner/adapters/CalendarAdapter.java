@@ -3,11 +3,13 @@ package com.example.eventplanner.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -154,28 +156,19 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
             @Override
             public void onResponse(Call<EventDetailsDTO> call, Response<EventDetailsDTO> response) {
                 if (response.isSuccessful()) {
-
                     EventDetailsDTO event = response.body();
                     Intent intent = new Intent(context, EventDetailsActivity.class);
-
                     intent.putExtra("id", event.getId());
-                    intent.putExtra("name", event.getName());
-                    intent.putExtra("eventType", event.getEventType());
-                    intent.putExtra("date", event.getDate().toString());
-                    intent.putExtra("maxGuests", event.getMaxGuests());
-                    intent.putExtra("description", event.getDescription());
-                    intent.putExtra("location", event.getLocation().getAddress() + ", " +
-                            event.getLocation().getCity() + ", " + event.getLocation().getCountry());
-                    intent.putExtra("activities", (Serializable) event.getActivities());
-
                     context.startActivity(intent);
-
+                }
+                else {
+                    Toast.makeText(context, "Error loading event details!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<EventDetailsDTO> call, Throwable t) {
-
+                Toast.makeText(context, "Failed to load event details!", Toast.LENGTH_SHORT).show();
             }
         });
     }
