@@ -88,14 +88,6 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
 
                     Intent intent = new Intent(context, EventDetailsActivity.class);
                     intent.putExtra("id", eventId);
-                    intent.putExtra("name", event.getName());
-                    intent.putExtra("eventType", event.getEventType());
-                    intent.putExtra("date", event.getDate().toString());
-                    intent.putExtra("maxGuests", event.getMaxGuests());
-                    intent.putExtra("description", event.getDescription());
-                    intent.putExtra("location", event.getLocation().getAddress() + ", " +
-                            event.getLocation().getCity() + ", " + event.getLocation().getCountry());
-                    intent.putExtra("activities", (Serializable) event.getActivities());
                     context.startActivity(intent);
                 }
             }

@@ -2,9 +2,11 @@ package com.example.eventplanner.adapters.event;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,16 +39,20 @@ public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeViewHolder> 
     public void onBindViewHolder(@NonNull EventTypeViewHolder holder, int position) {
         GetEventTypeDTO eventType = eventTypeList.get(position);
 
-        holder.idTextView.setText(eventType.getId());
+        holder.idTextView.setText(String.valueOf(eventType.getId()));
         holder.nameTextView.setText(eventType.getName());
 
+
+
+
         // Show or hide status and buttons based on expansion state
-        if (eventType.isExpanded()) {
+        if (eventType.getIsExpanded()) {
             holder.statusTextView.setVisibility(View.VISIBLE);
             holder.viewButton.setVisibility(View.VISIBLE);
             holder.editButton.setVisibility(View.VISIBLE);
 
-            holder.statusTextView.setText(eventType.getActive() ? "Active" : "Inactive");
+            holder.statusTextView.setText(eventType.getIsActive() ? holder.itemView.getContext().getString(R.string.active)
+                    : holder.itemView.getContext().getString(R.string.inactive));
 
             holder.expandArrow.setRotation(180f);
         } else {
@@ -64,7 +70,7 @@ public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeViewHolder> 
         }
 
         holder.itemView.setOnClickListener(v -> {
-            eventType.setExpanded(!eventType.isExpanded());
+            eventType.setIsExpanded(!eventType.getIsExpanded());
             notifyItemChanged(position);
         });
 
@@ -91,7 +97,7 @@ public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeViewHolder> 
             intent.putExtra("eventTypeName", eventType.getName());
             intent.putExtra("eventTypeDescription", eventType.getDescription());
             intent.putExtra("suggestedCategoryNames", new ArrayList<>(eventType.getSuggestedCategoryNames()));
-            intent.putExtra("isActive", eventType.getActive());
+            intent.putExtra("isActive", eventType.getIsActive());
 
             context.startActivity(intent);
         });

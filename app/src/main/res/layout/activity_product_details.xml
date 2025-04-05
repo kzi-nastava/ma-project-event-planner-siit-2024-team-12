@@ -9,8 +9,8 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="364dp"
-        android:layout_height="445dp"
+        android:layout_width="363dp"
+        android:layout_height="472dp"
         android:background="@drawable/form_frame"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,19 +23,20 @@
 
         <EditText
             android:id="@+id/name"
-            android:layout_width="237dp"
+            android:layout_width="195dp"
             android:layout_height="wrap_content"
             android:focusableInTouchMode="false"
             android:padding="5dp"
             android:paddingStart="7dp"
-            android:textSize="17sp"
+            android:textSize="20sp"
             android:textStyle="bold"
+            android:background="@android:color/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.122"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.067" />
+            app:layout_constraintVertical_bias="0.074" />
 
         <ImageView
             android:id="@+id/favOutline"
@@ -64,6 +65,20 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.079" />
 
+
+        <ImageView
+            android:id="@+id/shop"
+            android:layout_width="39dp"
+            android:layout_height="36dp"
+            android:src="@drawable/shopping_cart"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.698"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.081" />
+
         <ImageView
             android:id="@+id/images"
             android:layout_width="39dp"
@@ -84,10 +99,11 @@
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.039"
+            app:layout_constraintHorizontal_bias="0.035"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.275" />
+            app:layout_constraintVertical_bias="0.218" />
+
 
         <EditText
             android:id="@+id/availability"
@@ -101,19 +117,18 @@
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.055"
+            app:layout_constraintHorizontal_bias="0.051"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.33" />
-
+            app:layout_constraintVertical_bias="0.271" />
 
         <RadioGroup
             android:id="@+id/availabilityGroup"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="-7dp"
             android:orientation="horizontal"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
@@ -135,19 +150,14 @@
                 android:id="@+id/unavailableBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="-17dp"
                 android:buttonTint="@color/radio_button_color"
                 android:scaleX="0.8"
                 android:scaleY="0.8"
-                android:layout_marginStart="-17dp"
                 android:text="@string/unavailable"
                 android:textSize="15sp" />
 
         </RadioGroup>
-
-
-
-
-
 
 
         <TextView
@@ -158,10 +168,10 @@
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.625"
+            app:layout_constraintHorizontal_bias="0.624"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.275" />
+            app:layout_constraintVertical_bias="0.218" />
 
         <EditText
             android:id="@+id/visibility"
@@ -178,16 +188,15 @@
             app:layout_constraintHorizontal_bias="0.923"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.33" />
-
+            app:layout_constraintVertical_bias="0.271" />
 
 
         <RadioGroup
             android:id="@+id/visibilityGroup"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.923"
@@ -209,17 +218,14 @@
                 android:id="@+id/invisibleBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="-12dp"
                 android:buttonTint="@color/radio_button_color"
                 android:scaleX="0.8"
                 android:scaleY="0.8"
-                android:layout_marginStart="-12dp"
                 android:text="@string/invisible"
                 android:textSize="15sp" />
 
         </RadioGroup>
-
-
-
 
 
         <TextView
@@ -230,10 +236,10 @@
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.036"
+            app:layout_constraintHorizontal_bias="0.032"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.436" />
+            app:layout_constraintVertical_bias="0.375" />
 
         <EditText
             android:id="@+id/price"
@@ -247,10 +253,10 @@
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.055"
+            app:layout_constraintHorizontal_bias="0.051"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
+            app:layout_constraintVertical_bias="0.432" />
 
         <TextView
             android:id="@+id/discount_ast"
@@ -263,7 +269,7 @@
             app:layout_constraintHorizontal_bias="0.674"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.436" />
+            app:layout_constraintVertical_bias="0.375" />
 
         <EditText
             android:id="@+id/discount"
@@ -280,7 +286,7 @@
             app:layout_constraintHorizontal_bias="0.923"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
+            app:layout_constraintVertical_bias="0.432" />
 
 
         <TextView
@@ -291,29 +297,29 @@
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.038"
+            app:layout_constraintHorizontal_bias="0.034"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.605" />
+            app:layout_constraintVertical_bias="0.542" />
+
 
         <EditText
             android:id="@+id/category"
             android:layout_width="135dp"
             android:layout_height="wrap_content"
-            android:minHeight="24dp"
             android:background="@drawable/display_field"
             android:focusableInTouchMode="false"
+            android:minHeight="24dp"
             android:paddingStart="7dp"
             android:paddingTop="2dp"
             android:textColor="@color/black"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.06"
+            app:layout_constraintHorizontal_bias="0.051"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.668" />
-
+            app:layout_constraintVertical_bias="0.608" />
 
         <TextView
             android:id="@+id/eventTypeAst"
@@ -326,15 +332,15 @@
             app:layout_constraintHorizontal_bias="0.859"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.605" />
+            app:layout_constraintVertical_bias="0.542" />
 
 
         <Button
             android:id="@+id/seeEventTypes"
             android:layout_width="135dp"
             android:layout_height="wrap_content"
-            android:minHeight="24dp"
             android:background="@drawable/display_field"
+            android:minHeight="24dp"
             android:text="@string/see_event_types"
             android:textAllCaps="false"
             android:textSize="10sp"
@@ -343,7 +349,7 @@
             app:layout_constraintHorizontal_bias="0.923"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.665" />
+            app:layout_constraintVertical_bias="0.608" />
 
         <TextView
             android:id="@+id/textView17"
@@ -353,27 +359,29 @@
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintHorizontal_bias="0.036"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.769" />
+            app:layout_constraintVertical_bias="0.708" />
+
 
         <EditText
             android:id="@+id/description"
             android:layout_width="304dp"
             android:layout_height="wrap_content"
-            android:minHeight="31dp"
             android:background="@drawable/display_field"
             android:focusableInTouchMode="false"
+            android:minHeight="31dp"
             android:paddingStart="7dp"
             android:paddingTop="2dp"
             android:textColor="@color/black"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.37"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.859" />
+            app:layout_constraintVertical_bias="0.811" />
 
 
         <Button
@@ -389,6 +397,41 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+
+        <TextView
+            android:id="@+id/more_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/need_more_info"
+            android:textColor="@color/black"
+            android:textSize="13sp"
+            android:textStyle="bold|italic"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.042"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.905" />
+
+        <Button
+            android:id="@+id/chatBtn"
+            android:layout_width="105dp"
+            android:layout_height="33dp"
+            android:background="@drawable/form_button"
+            android:backgroundTint="@color/black"
+            android:text="@string/chat_with_us"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.044"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />

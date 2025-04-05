@@ -16,7 +16,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="ID"
+            android:text="@string/id"
             android:padding="8dp"
             android:textColor="@android:color/black" />
 
@@ -25,7 +25,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="Name"
+            android:text="@string/name_simple"
             android:padding="8dp"
             android:textColor="@android:color/black" />
 
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_expand_arrow"
             android:padding="8dp"
-            android:layout_marginRight="50dp"
+            android:layout_marginEnd="50dp"
             android:contentDescription="@string/expand_arrow" />
     </LinearLayout>
 
@@ -44,7 +44,7 @@
         android:id="@+id/eventTypeStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Status"
+        android:text="@string/status_simple"
         android:visibility="gone"
         android:padding="8dp"
         android:textColor="@android:color/black" />
@@ -61,7 +61,7 @@
             android:id="@+id/viewButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="View"
+            android:text="@string/view"
             android:backgroundTint="@color/black"
             android:textColor="@color/white"
             android:visibility="gone"
@@ -71,7 +71,7 @@
             android:id="@+id/editButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit"
+            android:text="@string/edit"
             android:backgroundTint="@color/dark_gray"
             android:textColor="@color/white"
             android:visibility="gone" />

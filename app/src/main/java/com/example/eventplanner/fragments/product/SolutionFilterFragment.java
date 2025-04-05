@@ -23,7 +23,9 @@ import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.viewmodels.SolutionFilterViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -41,6 +43,7 @@ public class SolutionFilterFragment extends DialogFragment {
     private SolutionFilterViewModel filterViewModel;
     private View view;
     private EditText minPrice, maxPrice;
+    private Map<String, Integer> filterIcons = new HashMap<>();;
 
 
 
@@ -97,7 +100,17 @@ public class SolutionFilterFragment extends DialogFragment {
 
     private void setupFilter(View parentView, int filterId, String filterName, List<String> options, List<String> selectedItems) {
         View filterView = parentView.findViewById(filterId);
-        ((TextView) filterView.findViewById(R.id.parameterName)).setText(filterName);
+        TextView parameterName = filterView.findViewById(R.id.parameterName);
+
+        parameterName.setText(filterName);
+
+        setUpFilterIcons();
+
+        Integer iconResId = filterIcons.get(filterName);
+        if (iconResId != null) {
+            parameterName.setCompoundDrawablesWithIntrinsicBounds(iconResId, 0, 0, 0);
+            parameterName.setCompoundDrawablePadding(20);
+        }
 
         RecyclerView recyclerView = filterView.findViewById(R.id.options);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -111,9 +124,11 @@ public class SolutionFilterFragment extends DialogFragment {
 
         filterView.setOnClickListener(v -> {
             if (recyclerView.getVisibility() == View.GONE) {
+                filterView.findViewById(R.id.expandArrow).setRotation(180f);
                 recyclerView.setVisibility(View.VISIBLE);
             } else {
                 recyclerView.setVisibility(View.GONE);
+                filterView.findViewById(R.id.expandArrow).setRotation(0f);
             }
         });
     }
@@ -233,6 +248,13 @@ public class SolutionFilterFragment extends DialogFragment {
         minPrice.setText(minPriceVal == null ? "" : String.valueOf(minPriceVal));
         maxPrice.setText(maxPriceVal == null ? "" : String.valueOf(maxPriceVal));
 
+    }
+
+    private void setUpFilterIcons() {
+        filterIcons.put(requireContext().getString(R.string.category), R.drawable.category_filled);
+        filterIcons.put(getString(R.string.event_type_filter), R.drawable.celebration);
+        filterIcons.put(requireContext().getString(R.string.availability), R.drawable.availability);
+        filterIcons.put(requireContext().getString(R.string.description_filter), R.drawable.description);
     }
 
 }

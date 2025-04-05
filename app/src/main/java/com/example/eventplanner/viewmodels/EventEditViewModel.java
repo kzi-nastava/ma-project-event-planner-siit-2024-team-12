@@ -82,4 +82,24 @@ public class EventEditViewModel extends AndroidViewModel {
         }
 
     }
+
+
+    public void deleteActivity(CreateActivityDTO activityDTO) {
+        EventDetailsDTO current = dto.getValue();
+
+        if (current != null) {
+            List<CreateActivityDTO> activities = current.getActivities();
+
+            if (activities == null) {
+                activities = new ArrayList<>();
+            } else {
+                activities = new ArrayList<>(activities);
+            }
+
+            activities.remove(activityDTO);
+
+            current.setActivities(activities);
+            dto.setValue(current);
+        }
+    }
 }

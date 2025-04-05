@@ -124,7 +124,7 @@ public class EventTypeCreationActivity extends AppCompatActivity {
         if (!ValidationUtils.isFieldValid(descriptionText, "Description is required!")) return;
 
         // admin doesn't have to select suggested categories when creating event type
-        // in case no appropriate categories are available in that moment
+        // in case no appropriate categories are available at that moment
         // categories can always be added in event type edit
         /*
         if (selectedCategoryNames.isEmpty()) {
