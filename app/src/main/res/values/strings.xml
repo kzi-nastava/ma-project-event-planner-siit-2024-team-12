@@ -341,5 +341,6 @@
     <string name="filter_parameter">Filter parameter</string>
     <string name="chat_with_us">Chat with us</string>
     <string name="need_more_info">Need more info?</string>
+    <string name="add_company_images">Add company images</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.example.eventplanner.fragments.businessregistration;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,17 +21,26 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.eventplanner.dto.business.CreatedBusinessDTO;
+import com.example.eventplanner.fragments.gallery.GalleryService;
+import com.example.eventplanner.fragments.gallery.ImagePicker;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.utils.ImageHelper;
 import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.activities.business.BusinessInfoActivity;
 import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
 import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.viewmodels.BusinessViewModel;
+import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -76,18 +87,29 @@ public class BusinessRegistration2 extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        selectedImage = view.findViewById(R.id.selectedImage);
         uploadImageButton = view.findViewById(R.id.uploadImageButton);
 
-        uploadImageButton.setOnClickListener(v -> openImageChooser());
+        uploadImageButton.setOnClickListener(v -> {
+            if (ImageHelper.hasImagePermission(requireContext())) {
+                openImagePickerDialog();
+            } else {
+                ImageHelper.requestImagePermission(this);
+            }
+        });
     }
 
-    private void openImageChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+
+    private void openImagePickerDialog() {
+        ImagePicker dialog = new ImagePicker();
+        dialog.setImageDialogListener(images -> {
+            for (Uri imageUri : images) {
+                viewModel.addImage(imageUri);
+            }
+            //Toast.makeText(getContext(), "Selected " + images.size() + " images", Toast.LENGTH_SHORT).show();
+        });
+        dialog.show(getParentFragmentManager(), "imagePicker");
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -162,6 +184,18 @@ public class BusinessRegistration2 extends Fragment {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
+                        String json;
+                        try {
+                            json = response.body().string();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        Gson gson = new Gson();
+                        CreatedBusinessDTO dto = gson.fromJson(json, CreatedBusinessDTO.class);
+
+                        Long businessId = dto.getId();
+                        uploadBusinessImages(businessId);
+
                         Intent intent = new Intent(getActivity(), BusinessInfoActivity.class);
                         startActivity(intent);
 
@@ -186,5 +220,77 @@ public class BusinessRegistration2 extends Fragment {
             });
         }
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == ImageHelper.REQUEST_CODE_PERMISSIONS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openImagePickerDialog();
+            } else {
+                Toast.makeText(getContext(), "Permission denied to read images", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+
+
+    private void uploadBusinessImages(Long businessId) {
+        List<Uri> imageUris = viewModel.getImages().getValue();
+
+        if (imageUris == null || imageUris.isEmpty()) return;
+
+        String authorization = ClientUtils.getAuthorization(requireContext());
+
+        List<MultipartBody.Part> multipartList = new ArrayList<>();
+
+        for (int i = 0; i < imageUris.size(); i++) {
+            try {
+                MultipartBody.Part part = ImageHelper.prepareFilePart(requireContext(), "files", imageUris.get(i));
+                multipartList.add(part);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(getContext(), "Failed to prepare image: " + i, Toast.LENGTH_SHORT).show();
+            }
+        }
+
+
+        RequestBody type = RequestBody.create(MultipartBody.FORM, "company");
+        RequestBody entityId = RequestBody.create(MultipartBody.FORM, String.valueOf(businessId));
+        RequestBody isMain = RequestBody.create(MultipartBody.FORM, "false");
+
+        String auth = ClientUtils.getAuthorization(requireContext());
+
+        Call<ResponseBody> call = ClientUtils.galleryService.uploadImages(
+                auth,
+                type,
+                entityId,
+                multipartList,
+                isMain
+        );
+
+
+
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Log.d("UPLOAD", "Images uploaded successfully");
+                } else {
+                    Log.e("UPLOAD", "Upload failed with code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("UPLOAD", "Upload failed: " + t.getMessage());
+            }
+        });
+    }
+
 
 }

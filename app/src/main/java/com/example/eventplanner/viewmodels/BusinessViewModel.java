@@ -1,6 +1,7 @@
 package com.example.eventplanner.viewmodels;
 
 import android.app.Application;
+import android.net.Uri;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -15,6 +16,7 @@ public class BusinessViewModel extends AndroidViewModel {
     private final MutableLiveData<CreateBusinessDTO> dto = new MutableLiveData<>(new CreateBusinessDTO());
 
     public BusinessViewModel(Application application) {super(application);}
+    private final MutableLiveData<List<Uri>> imageUris = new MutableLiveData<>(new ArrayList<>());
 
     public LiveData<CreateBusinessDTO> getDto() { return dto; }
 
@@ -47,19 +49,21 @@ public class BusinessViewModel extends AndroidViewModel {
         }
     }
 
-    public void updateImages(String imageUrl) {
-        CreateBusinessDTO current = dto.getValue();
 
-        if (current != null) {
-            List<String> existingUrls = current.getImageUrls();
+    public LiveData<List<Uri>> getImages() {
+        return imageUris;
+    }
 
-            if (existingUrls == null) {
-                existingUrls = new ArrayList<>();
-            }
-
-            existingUrls.add(imageUrl);
-            current.setImageUrls(existingUrls);
-            dto.setValue(current);
+    public void addImage(Uri imageUri) {
+        List<Uri> currentList = imageUris.getValue();
+        if (currentList == null) {
+            currentList = new ArrayList<>();
         }
+        currentList.add(imageUri);
+        imageUris.setValue(currentList);
+    }
+
+    public void setImages(List<Uri> uris) {
+        imageUris.setValue(uris);
     }
 }
