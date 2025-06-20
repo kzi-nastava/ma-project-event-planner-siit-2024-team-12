@@ -1,6 +1,5 @@
 package com.example.eventplanner.activities.product;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -24,8 +23,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.UserRole;
-import com.example.eventplanner.activities.eventtype.EventTypeEditActivity;
+import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
@@ -34,8 +32,6 @@ import com.example.eventplanner.dto.product.UpdateProductDTO;
 import com.example.eventplanner.dto.product.UpdatedProductDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.utils.ValidationUtils;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;

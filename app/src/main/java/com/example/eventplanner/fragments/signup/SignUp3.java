@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.UserRole;
+import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.auth.SignUpActivity;

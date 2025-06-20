@@ -59,7 +59,7 @@
             android:layout_height="32dp"
             android:background="@drawable/input_field"
             android:ems="10"
-            android:hint="@string/phone"
+            android:hint="@string/phone_format"
             android:inputType="text"
             android:paddingStart="12dp"
             android:textSize="12sp"

@@ -4,6 +4,8 @@ import com.example.eventplanner.dto.event.CreateEventDTO;
 import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.dto.event.UpdatedEventDTO;
 
+import java.util.List;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -30,5 +32,10 @@ public interface EventService {
     Call<UpdatedEventDTO> updateEvent(@Header("Authorization") String token,
                                       @Path("id") Long eventId,
                                       @Body EventDetailsDTO updateEventDTO);
+
+
+    @GET("events/{eventId}/accepted-guests")
+    Call<List<String>> getAcceptedGuests(@Header("Authorization") String token,
+                                         @Path("eventId") Long eventId);
 }
 

@@ -2,6 +2,7 @@ package com.example.eventplanner.dto.event;
 
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
 import com.example.eventplanner.dto.location.CreateLocationDTO;
+import com.example.eventplanner.enumeration.PrivacyType;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ public class EventDetailsDTO implements Serializable {
     private LocalDate date;
     private List<CreateActivityDTO> activities;
     private String organizer;
+    private PrivacyType privacyType;
 
     public EventDetailsDTO() {}
 
@@ -57,6 +59,9 @@ public class EventDetailsDTO implements Serializable {
 
     public String getOrganizer() { return organizer; }
     public void setOrganizer(String organizer) { this.organizer = organizer; }
+
+    public PrivacyType getPrivacyType() { return privacyType; }
+    public void setPrivacyType(PrivacyType privacyType) { this.privacyType = privacyType; }
 
     @Override
     public String toString() {

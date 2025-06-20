@@ -13,7 +13,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.UserRole;
+import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.activities.homepage.AdminHomepageActivity;
 import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 

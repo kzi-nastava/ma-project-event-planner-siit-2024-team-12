@@ -19,7 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.UserRole;
+import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
 import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
@@ -183,6 +183,11 @@ public class ProfileViewActivity extends AppCompatActivity {
                     Toast.makeText(ProfileViewActivity.this, "Deactivated account!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(ProfileViewActivity.this, HomepageActivity.class);
                     startActivity(intent);
+
+                }
+                else if (response.code() == 403) {
+                    Toast.makeText(ProfileViewActivity.this, "Account cannot be deactivated!" +
+                            " You have created future events.", Toast.LENGTH_SHORT).show();
                 }
             }
 

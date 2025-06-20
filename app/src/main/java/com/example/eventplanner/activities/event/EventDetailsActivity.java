@@ -30,6 +30,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.eventplanner.dto.event.UpdatedEventDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.user.GetUserDTO;
+import com.example.eventplanner.enumeration.PrivacyType;
 import com.example.eventplanner.fragments.eventcreation.AgendaEditFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
@@ -88,6 +89,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private List<String> eventTypeNames = new ArrayList<>();
     private Spinner eventTypeSpinner;
     private EventEditViewModel editViewModel;
+    private List<String> acceptedGuests;
 
 
     @Override
@@ -118,6 +120,29 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     }
 
+
+    private void setGuestList(EventDetailsDTO dto) {
+        if (dto.getPrivacyType().equals(PrivacyType.CLOSED)) {
+            String token = ClientUtils.getAuthorization(this);
+
+            Call<List<String>> call = ClientUtils.eventService.getAcceptedGuests(token, dto.getId());
+            call.enqueue(new Callback<List<String>>() {
+                @Override
+                public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                    if (response.isSuccessful()) {
+                        acceptedGuests = response.body();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<String>> call, Throwable t) {
+                    Toast.makeText(EventDetailsActivity.this, "Failed to load guest list!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+    }
+
     private void loadEventDetails() {
         String auth = ClientUtils.getAuthorization(this);
 
@@ -134,6 +159,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                     setUpEventDetailsDTO(dto);
                     setUpAgendaBtn();
                     loadCurrentUser();
+                    setGuestList(dto);
                 }
             }
 
@@ -247,29 +273,49 @@ public class EventDetailsActivity extends AppCompatActivity {
             document.add(new Paragraph("\nAgenda:\n"));
 
 
-            // add detailed table
-            Table table = new Table(4);
-            table.setWidth(UnitValue.createPercentValue(100));
+            // agenda table
+            Table agendaTable = new Table(4);
+            agendaTable.setWidth(UnitValue.createPercentValue(100));
 
-            // set header
             DeviceRgb headerColor = new DeviceRgb(44, 62, 80);
             DeviceRgb white = new DeviceRgb(255, 255, 255);
-            table.addCell(new Cell().add(new Paragraph("Time")).setBackgroundColor(headerColor).setFontColor(white));
-            table.addCell(new Cell().add(new Paragraph("Activity name")).setBackgroundColor(headerColor).setFontColor(white));
-            table.addCell(new Cell().add(new Paragraph("Description")).setBackgroundColor(headerColor).setFontColor(white));
-            table.addCell(new Cell().add(new Paragraph("Location")).setBackgroundColor(headerColor).setFontColor(white));
-
             DeviceRgb firstColumnColor = new DeviceRgb(44, 62, 80);
 
-            // populate table
+            // header
+            agendaTable.addCell(new Cell().add(new Paragraph("Time")).setBackgroundColor(headerColor).setFontColor(white));
+            agendaTable.addCell(new Cell().add(new Paragraph("Activity name")).setBackgroundColor(headerColor).setFontColor(white));
+            agendaTable.addCell(new Cell().add(new Paragraph("Description")).setBackgroundColor(headerColor).setFontColor(white));
+            agendaTable.addCell(new Cell().add(new Paragraph("Location")).setBackgroundColor(headerColor).setFontColor(white));
+
             for (CreateActivityDTO activityDTO : activities) {
-                table.addCell(new Cell().add(new Paragraph(activityDTO.getTime())).setBackgroundColor(firstColumnColor).setFontColor(white));
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(activityDTO.getName()))));
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(activityDTO.getDescription()))));
-                table.addCell(new Cell().add(new Paragraph(activityDTO.getLocation())));
+                agendaTable.addCell(new Cell().add(new Paragraph(activityDTO.getTime())).setBackgroundColor(firstColumnColor).setFontColor(white));
+                agendaTable.addCell(new Cell().add(new Paragraph(String.valueOf(activityDTO.getName()))));
+                agendaTable.addCell(new Cell().add(new Paragraph(String.valueOf(activityDTO.getDescription()))));
+                agendaTable.addCell(new Cell().add(new Paragraph(activityDTO.getLocation())));
             }
 
-            document.add(table);
+            document.add(agendaTable);
+
+            // guest list table for private events
+            if (acceptedGuests != null && !acceptedGuests.isEmpty()) {
+                document.add(new Paragraph("\nGuest list:\n"));
+
+                Table guestTable = new Table(2);
+                guestTable.setWidth(UnitValue.createPercentValue(100));
+
+                // Header
+                guestTable.addCell(new Cell().add(new Paragraph("#")).setBackgroundColor(headerColor).setFontColor(white));
+                guestTable.addCell(new Cell().add(new Paragraph("Email")).setBackgroundColor(headerColor).setFontColor(white));
+
+                // Rows
+                for (int i = 0; i < acceptedGuests.size(); i++) {
+                    String email = acceptedGuests.get(i);
+                    guestTable.addCell(new Cell().add(new Paragraph(String.valueOf(i + 1))).setBackgroundColor(firstColumnColor).setFontColor(white));
+                    guestTable.addCell(new Cell().add(new Paragraph(email)));
+                }
+
+                document.add(guestTable);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -604,6 +650,17 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
 
+    private boolean validateLocationFormat() {
+        String locationInput = location.getText().toString();
+        String[] parts = locationInput.split(",");
+        if (parts.length != 3) {
+            Toast.makeText(EventDetailsActivity.this, "Location format is [address, city, country]!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+
     private boolean validateInputFields() {
         if (!ValidationUtils.isFieldValid(name, "Name is required!")) return false;
         if (!ValidationUtils.isFieldValid(date, "Date is required!")) return false;
@@ -612,6 +669,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         if (!ValidationUtils.isNumberValid(maxGuests, "Invalid number!", "Negative number!")) return false;
         if (!ValidationUtils.isFieldValid(description, "Description is required!")) return false;
         if (!ValidationUtils.isFieldValid(location, "Location is required!")) return false;
+        if (!validateLocationFormat()) return false;
 
         return true;
     }

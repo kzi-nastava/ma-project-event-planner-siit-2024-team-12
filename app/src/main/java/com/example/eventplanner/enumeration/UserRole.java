@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.enumeration;
 
 public enum UserRole {
     ROLE_ORGANIZER,
