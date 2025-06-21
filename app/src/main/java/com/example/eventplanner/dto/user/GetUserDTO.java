@@ -8,6 +8,8 @@ public class GetUserDTO {
     private String address;
     private String phone;
     private String role;
+    private String imageUrl;
+
 
     public GetUserDTO() {
         super();
@@ -68,5 +70,8 @@ public class GetUserDTO {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public String getImageUrl() {return imageUrl;}
+    public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
 }
 
