@@ -112,12 +112,13 @@ public class ProductCreationFragment2 extends DialogFragment {
                     Long productId = dto.getId();
                     uploadProductImages(productId);
 
-
-
                     Toast.makeText(getActivity(), "Successfully created product!", Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(getActivity(), ProvidedProductsActivity.class);
                     startActivity(intent);
+                }
+                else if (response.code() == 409) {
+                    Toast.makeText(getActivity(), "Register business first!", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Toast.makeText(getActivity(), "Error creating product!", Toast.LENGTH_SHORT).show();

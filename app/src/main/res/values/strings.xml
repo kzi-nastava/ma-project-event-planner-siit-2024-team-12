@@ -342,5 +342,6 @@
     <string name="chat_with_us">Chat with us</string>
     <string name="need_more_info">Need more info?</string>
     <string name="add_company_images">Add company images</string>
+    <string name="add_images">Add images</string>
 
 </resources>

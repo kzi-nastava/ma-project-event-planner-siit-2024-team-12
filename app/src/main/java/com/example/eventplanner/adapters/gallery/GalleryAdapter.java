@@ -22,9 +22,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
 
     private List<String> imageUrls;
     private OnImageDeleteListener deleteListener;
+    private boolean canModify;
 
-    public GalleryAdapter(List<String> imageUrls, OnImageDeleteListener deleteListener) {
+    public GalleryAdapter(List<String> imageUrls, boolean canModify, OnImageDeleteListener deleteListener) {
         this.imageUrls = imageUrls;
+        this.canModify = canModify;
         this.deleteListener = deleteListener;
     }
 
@@ -50,11 +52,18 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
                 .placeholder(R.drawable.user_logo)
                 .into(holder.imageView);
 
-        holder.deleteButton.setOnClickListener(v -> {
-            if (deleteListener != null) {
-                deleteListener.onImageDelete(imageUrl);
-            }
-        });
+
+        if (canModify) {
+            holder.deleteButton.setVisibility(View.VISIBLE);
+            holder.deleteButton.setOnClickListener(v -> {
+                if (deleteListener != null) {
+                    deleteListener.onImageDelete(imageUrl);
+                }
+            });
+        } else {
+            holder.deleteButton.setVisibility(View.GONE);
+            holder.deleteButton.setOnClickListener(null);
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities.business;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -42,6 +43,7 @@ import retrofit2.Response;
 public class BusinessEditActivity extends AppCompatActivity {
     private Uri selectedImageUri = null;
     private Long businessId;
+    private String businessName;
 
 
     @Override
@@ -78,9 +80,14 @@ public class BusinessEditActivity extends AppCompatActivity {
 
 
     private void openBusinessGallery() {
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String currentUser = prefs.getString("email", "");
+
         Intent intent = new Intent(this, GalleryDisplayActivity.class);
         intent.putExtra("type", "company");
         intent.putExtra("id", businessId);
+        intent.putExtra("entityName", businessName);
+        intent.putExtra("ownerEmail", currentUser);
         startActivity(intent);
 
     }
@@ -105,6 +112,7 @@ public class BusinessEditActivity extends AppCompatActivity {
 
     public void setUpInitialForm(GetBusinessDTO dto) {
         businessId = dto.getId();
+        businessName = dto.getCompanyName();
 
         TextView name = findViewById(R.id.name);
         name.setText(dto.getCompanyName());

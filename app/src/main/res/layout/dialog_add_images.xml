@@ -16,7 +16,10 @@
 
     <Button
         android:id="@+id/selectImagesBtn"
-        android:text="Add images"
+        android:text="@string/add_images"
+        android:backgroundTint="@color/pink"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

@@ -53,7 +53,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private RadioGroup availabilityGroup, visibilityGroup;
     private RadioButton availableBtn, unavailableBtn, visibleBtn, invisibleBtn;
     private List<String> selectedEventTypes = new ArrayList<>();
-    private String currentCompanyEmail, loadedCompanyEmail;
+    private String currentCompanyEmail, loadedCompanyEmail, productName;
     private TextView moreInfo, visible;
     private Uri selectedImageUri = null;
 
@@ -88,9 +88,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
     private void openProductGallery() {
+
         Intent intent = new Intent(this, GalleryDisplayActivity.class);
         intent.putExtra("type", "product");
         intent.putExtra("id", currentProductId);
+        intent.putExtra("entityName", productName);
+        intent.putExtra("ownerEmail", loadedCompanyEmail);
+        intent.putExtra("currentCompanyEmail", currentCompanyEmail);
         startActivity(intent);
 
     }
@@ -110,6 +114,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     GetProductDTO productDTO = response.body();
                     loadedCompanyEmail = productDTO.getCompanyEmail();
                     Log.d("iz load ", loadedCompanyEmail);
+                    productName = productDTO.getName();
                     populateTextViews(productDTO);
                     setUpEventTypes(productDTO);
                     displayBasedOnRole();

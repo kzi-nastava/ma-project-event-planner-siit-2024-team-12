@@ -1,12 +1,15 @@
 package com.example.eventplanner.activities.gallery;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -34,32 +37,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 public class GalleryDisplayActivity extends AppCompatActivity {
-
-    private RecyclerView recyclerView;
-    private GalleryAdapter adapter;
-    private String type;
+    private String type, ownerEmail, currentUserEmail, currentCompanyEmail;
     private Long entityId;
+    private GalleryAdapter adapter;
     private static final String BASE_IMAGE_URL = "http://10.0.2.2:8080";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery_display);
 
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        adapter = new GalleryAdapter(new ArrayList<>(), imageUrl -> {
-            String relativePath = imageUrl.replace("http://10.0.2.2:8080", "");
-            deleteImage(relativePath, imageUrl);
-
-        });
-
-        recyclerView.setAdapter(adapter);
-
-        type = getIntent().getStringExtra("type");
-        entityId = getIntent().getLongExtra("id", -1);
+        initData();
+        setupUI();
 
         if (type == null || entityId == -1) {
             Toast.makeText(this, "Invalid gallery arguments", Toast.LENGTH_SHORT).show();
@@ -67,20 +58,68 @@ public class GalleryDisplayActivity extends AppCompatActivity {
             return;
         }
 
+        setUpTitle();
         fetchImages();
+    }
 
+    private void initData() {
+        type = getIntent().getStringExtra("type");
+        entityId = getIntent().getLongExtra("id", -1);
+        ownerEmail = getIntent().getStringExtra("ownerEmail");
+        currentCompanyEmail = getIntent().getStringExtra("currentCompanyEmail");
 
-        Button addImageButton = findViewById(R.id.addImageButton);
-        addImageButton.setOnClickListener(v -> {
-            ImagePicker imagePicker = new ImagePicker();
-            imagePicker.setImageDialogListener(selectedUris -> {
-                ImageHelper.uploadMultipleImages(this, selectedUris, type, entityId,
-                        "false", this::fetchImages, () -> {});
-            });
-            imagePicker.show(getSupportFragmentManager(), "image_picker");
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        currentUserEmail = prefs.getString("email", "");
+    }
+
+    private void setupUI() {
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+        boolean canModify = false;
+
+        if ("product".equals(type)) {
+            canModify = currentCompanyEmail != null && currentCompanyEmail.equals(ownerEmail);
+        } else {
+            canModify = currentUserEmail.equals(ownerEmail);
+        }
+
+        boolean finalCanModify = canModify;
+        adapter = new GalleryAdapter(new ArrayList<>(), canModify, imageUrl -> {
+            if (finalCanModify) {
+                String relativePath = imageUrl.replace(BASE_IMAGE_URL, "");
+                deleteImage(relativePath, imageUrl);
+            } else {
+                Toast.makeText(this, "Not authorized for image deletion.", Toast.LENGTH_SHORT).show();
+            }
         });
 
+        recyclerView.setAdapter(adapter);
 
+        Button addImageButton = findViewById(R.id.addImageButton);
+        if (!canModify) {
+            addImageButton.setVisibility(View.GONE);
+        } else {
+            addImageButton.setOnClickListener(v -> {
+                ImagePicker imagePicker = new ImagePicker();
+                imagePicker.setImageDialogListener(selectedUris -> {
+                    ImageHelper.uploadMultipleImages(this, selectedUris, type, entityId,
+                            "false", this::fetchImages, () -> {});
+                });
+                imagePicker.show(getSupportFragmentManager(), "image_picker");
+            });
+        }
+    }
+
+
+    private void setUpTitle() {
+        TextView titleTextView = findViewById(R.id.titleTextView);
+        String entityName = getIntent().getStringExtra("entityName");
+        if (entityName != null && !entityName.isEmpty()) {
+            titleTextView.setText(entityName + " photos");
+        } else {
+            titleTextView.setText("Photos");
+        }
     }
 
     private void fetchImages() {
@@ -113,8 +152,6 @@ public class GalleryDisplayActivity extends AppCompatActivity {
     }
 
 
-
-
     private void deleteImage(String relativePath, String fullUrl) {
         String auth = ClientUtils.getAuthorization(this);
 
@@ -123,7 +160,6 @@ public class GalleryDisplayActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
-                            //Toast.makeText(GalleryDisplayActivity.this, "Image deleted", Toast.LENGTH_SHORT).show();
                             adapter.removeImage(fullUrl);
                         } else {
                             try {
@@ -141,6 +177,4 @@ public class GalleryDisplayActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
 }
