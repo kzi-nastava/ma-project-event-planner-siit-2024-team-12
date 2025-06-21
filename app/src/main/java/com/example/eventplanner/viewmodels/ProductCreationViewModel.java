@@ -2,6 +2,7 @@ package com.example.eventplanner.viewmodels;
 
 
 import android.app.Application;
+import android.net.Uri;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.eventplanner.dto.product.CreateProductDTO;
@@ -26,7 +28,7 @@ public class ProductCreationViewModel extends AndroidViewModel {
     public boolean isEventTypeSet = false;
     private boolean isAvailable = true;
     private boolean isVisible = true;
-
+    private final MutableLiveData<List<Uri>> imageUris = new MutableLiveData<>(new ArrayList<>());
 
     public void updateAttributes(String key, String value) {
         CreateProductDTO current = dto.getValue();
@@ -96,4 +98,24 @@ public class ProductCreationViewModel extends AndroidViewModel {
     public void setVisible(boolean visible) {
         this.isVisible = visible;
     }
+
+
+    public LiveData<List<Uri>> getImages() {
+        return imageUris;
+    }
+
+    public void addImage(Uri imageUri) {
+        List<Uri> currentList = imageUris.getValue();
+        if (currentList == null) {
+            currentList = new ArrayList<>();
+        }
+        currentList.add(imageUri);
+        imageUris.setValue(currentList);
+    }
+
+    public void setImages(List<Uri> uris) {
+        imageUris.setValue(uris);
+    }
+
+
 }

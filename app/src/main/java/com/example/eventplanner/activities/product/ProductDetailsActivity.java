@@ -3,6 +3,7 @@ package com.example.eventplanner.activities.product;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +24,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.gallery.GalleryDisplayActivity;
 import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
@@ -53,6 +55,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private List<String> selectedEventTypes = new ArrayList<>();
     private String currentCompanyEmail, loadedCompanyEmail;
     private TextView moreInfo, visible;
+    private Uri selectedImageUri = null;
 
 
 
@@ -76,9 +79,21 @@ public class ProductDetailsActivity extends AppCompatActivity {
         setUpExitBtn();
         setUpEditBtn();
 
+        ImageView galleryBtn = findViewById(R.id.images);
+        galleryBtn.setOnClickListener(v -> {
+            openProductGallery();
+        });
+
     }
 
 
+    private void openProductGallery() {
+        Intent intent = new Intent(this, GalleryDisplayActivity.class);
+        intent.putExtra("type", "product");
+        intent.putExtra("id", currentProductId);
+        startActivity(intent);
+
+    }
 
 
     private void loadProductDetails() {
