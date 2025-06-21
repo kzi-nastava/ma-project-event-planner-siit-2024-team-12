@@ -37,7 +37,7 @@
             app:srcCompat="@drawable/exit_form" />
 
         <ImageView
-            android:id="@+id/imageView4"
+            android:id="@+id/mainImage"
             android:layout_width="105dp"
             android:layout_height="109dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -62,7 +62,7 @@
 
 
         <Button
-            android:id="@+id/editButton3"
+            android:id="@+id/galleryBtn"
             android:layout_width="114dp"
             android:layout_height="33dp"
             android:background="@drawable/form_button"

@@ -272,9 +272,6 @@ public class BusinessRegistration2 extends Fragment {
                 isMain
         );
 
-
-
-
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -291,6 +288,5 @@ public class BusinessRegistration2 extends Fragment {
             }
         });
     }
-
 
 }
