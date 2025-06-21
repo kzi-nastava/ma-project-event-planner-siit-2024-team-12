@@ -17,14 +17,22 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
+import com.example.eventplanner.utils.ImageHelper;
 import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.dto.user.UpdateUserDTO;
 import com.example.eventplanner.dto.user.UpdatedUserDTO;
 import com.example.eventplanner.fragments.others.ChangePasswordFragment;
 
+import java.io.IOException;
+import java.util.List;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,7 +40,11 @@ import retrofit2.Response;
 public class ProfileEditActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
-    private ImageView imageView4;
+    private Uri selectedImageUri = null;
+    private ImageView profileImage;
+    private Long userId = null;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +52,6 @@ public class ProfileEditActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile_edit);
 
-        imageView4 = findViewById(R.id.imageView4);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -56,6 +67,10 @@ public class ProfileEditActivity extends AppCompatActivity {
         saveBtn.setOnClickListener(v -> {
             update();
         });
+
+
+        profileImage = findViewById(R.id.profileImage);
+
     }
 
 
@@ -65,17 +80,16 @@ public class ProfileEditActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri imageUri = data.getData();
-            imageView4.setImageURI(imageUri);
-
+            selectedImageUri = data.getData();
+            profileImage.setImageURI(selectedImageUri);
         }
     }
+
 
     public void openChangePassword(View view) {
         ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
@@ -129,12 +143,15 @@ public class ProfileEditActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<UpdatedUserDTO> call, Response<UpdatedUserDTO> response) {
                 if (response.isSuccessful()) {
-                    Intent intent = new Intent(ProfileEditActivity.this, ProfileViewActivity.class);
-                    startActivity(intent);
-
-                    Toast.makeText(ProfileEditActivity.this, "Successful update!", Toast.LENGTH_SHORT).show();
+                    if (selectedImageUri != null) {
+                        uploadProfileImage();
+                    } else {
+                        openProfileView();
+                        Toast.makeText(ProfileEditActivity.this, "Successful update!", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
+        }
+
 
 
             @Override
@@ -143,6 +160,22 @@ public class ProfileEditActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    private void setMainImage(GetUserDTO dto) {
+        String imageUrl = dto.getImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            String fullUrl = "http://10.0.2.2:8080" + imageUrl;
+
+            Glide.with(ProfileEditActivity.this)
+                    .load(fullUrl)
+                    .placeholder(R.drawable.user_logo)
+                    .error(R.drawable.user_logo)
+                    .into(profileImage);
+        }
+
+    }
+
 
 
     public void setUpInitialForm() {
@@ -156,20 +189,26 @@ public class ProfileEditActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     GetUserDTO dto = response.body();
 
-                    EditText nameField = findViewById(R.id.name);
-                    nameField.setText(dto.getName());
+                    if (dto != null) {
+                        userId = dto.getId();
 
-                    EditText surnameField = findViewById(R.id.surname);
-                    surnameField.setText(dto.getSurname());
+                        EditText nameField = findViewById(R.id.name);
+                        nameField.setText(dto.getName());
 
-                    TextView emailField = findViewById(R.id.email);
-                    emailField.setText(dto.getEmail());
+                        EditText surnameField = findViewById(R.id.surname);
+                        surnameField.setText(dto.getSurname());
 
-                    EditText phoneField = findViewById(R.id.phone);
-                    phoneField.setText(dto.getPhone());
+                        TextView emailField = findViewById(R.id.email);
+                        emailField.setText(dto.getEmail());
 
-                    EditText addressField = findViewById(R.id.address);
-                    addressField.setText(dto.getAddress());
+                        EditText phoneField = findViewById(R.id.phone);
+                        phoneField.setText(dto.getPhone());
+
+                        EditText addressField = findViewById(R.id.address);
+                        addressField.setText(dto.getAddress());
+
+                        setMainImage(dto);
+                    }
                 }
             }
 
@@ -178,6 +217,56 @@ public class ProfileEditActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+
+    private void uploadProfileImage() {
+        if (selectedImageUri == null || userId == null) {
+            openProfileView();
+            return;
+        }
+
+        MultipartBody.Part imagePart;
+        try {
+            imagePart = ImageHelper.prepareFilePart(this, "files", selectedImageUri);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to prepare image", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        RequestBody typePart = RequestBody.create(MultipartBody.FORM, "user");
+        RequestBody entityIdPart = RequestBody.create(MultipartBody.FORM, String.valueOf(userId));
+        RequestBody isMainPart = RequestBody.create(MultipartBody.FORM, "true");
+
+        String auth = ClientUtils.getAuthorization(this);
+
+        ClientUtils.galleryService.uploadImages(auth, typePart, entityIdPart, List.of(imagePart), isMainPart)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(ProfileEditActivity.this, "Profile image uploaded!", Toast.LENGTH_SHORT).show();
+                            openProfileView();
+                        } else {
+                            Toast.makeText(ProfileEditActivity.this, "Upload failed: " + response.code(), Toast.LENGTH_SHORT).show();
+                            openProfileView();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(ProfileEditActivity.this, "Upload error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        openProfileView();
+                    }
+                });
+    }
+
+
+    private void openProfileView() {
+        Intent intent = new Intent(ProfileEditActivity.this, ProfileViewActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 }

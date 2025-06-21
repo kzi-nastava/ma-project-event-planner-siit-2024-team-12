@@ -18,7 +18,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.UserRole;
+import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.activities.homepage.AdminHomepageActivity;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;

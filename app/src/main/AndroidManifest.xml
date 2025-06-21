@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:allowBackup="true"
@@ -19,6 +20,9 @@
         android:theme="@style/Theme.EventPlanner"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".activities.gallery.GalleryDisplayActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.product.ProductDetailsActivity"
             android:exported="false" />

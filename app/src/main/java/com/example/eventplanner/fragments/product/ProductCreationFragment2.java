@@ -1,6 +1,7 @@
 package com.example.eventplanner.fragments.product;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
@@ -12,15 +13,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.product.ProvidedProductsActivity;
+import com.example.eventplanner.dto.business.CreatedBusinessDTO;
+import com.example.eventplanner.dto.product.CreatedProductDTO;
+import com.example.eventplanner.fragments.gallery.ImagePicker;
 import com.example.eventplanner.utils.ClientUtils;
+import com.example.eventplanner.utils.ImageHelper;
 import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.viewmodels.ProductCreationViewModel;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -61,9 +71,23 @@ public class ProductCreationFragment2 extends DialogFragment {
 
         setupRadioButtons();
 
+        ImageView imagesIcon = view.findViewById(R.id.images);
+        imagesIcon.setOnClickListener(v -> openImagePicker());
+
         return view;
     }
 
+
+    private void openImagePicker() {
+        ImagePicker dialog = new ImagePicker();
+        dialog.setImageDialogListener(images -> {
+            for (Uri imageUri : images) {
+                viewModel.addImage(imageUri);
+            }
+            //Toast.makeText(getContext(), "Selected " + images.size() + " images", Toast.LENGTH_SHORT).show();
+        });
+        dialog.show(getParentFragmentManager(), "imagePicker");
+    }
 
 
     private void saveProduct() {
@@ -74,10 +98,27 @@ public class ProductCreationFragment2 extends DialogFragment {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
+
+                    String json;
+                    try {
+                        json = response.body().string();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    Gson gson = new Gson();
+
+                    CreatedProductDTO dto = gson.fromJson(json, CreatedProductDTO.class);
+
+                    Long productId = dto.getId();
+                    uploadProductImages(productId);
+
                     Toast.makeText(getActivity(), "Successfully created product!", Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(getActivity(), ProvidedProductsActivity.class);
                     startActivity(intent);
+                }
+                else if (response.code() == 409) {
+                    Toast.makeText(getActivity(), "Register business first!", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Toast.makeText(getActivity(), "Error creating product!", Toast.LENGTH_SHORT).show();
@@ -145,6 +186,18 @@ public class ProductCreationFragment2 extends DialogFragment {
                 viewModel.setVisible(false);
             }
         });
+    }
+
+
+    private void uploadProductImages(Long productId) {
+        List<Uri> imageUris = viewModel.getImages().getValue();
+
+        if (imageUris == null || imageUris.isEmpty()) return;
+
+        ImageHelper.uploadMultipleImages(requireContext(), imageUris, "product", productId,
+                "false", () -> {
+                }, () -> {
+                });
     }
 
 }

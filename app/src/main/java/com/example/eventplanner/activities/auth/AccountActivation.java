@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities.auth;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
@@ -55,7 +56,17 @@ public class AccountActivation extends AppCompatActivity {
                     Toast.makeText(AccountActivation.this, "Successful account activation!", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Toast.makeText(AccountActivation.this, "Failed account activation!", Toast.LENGTH_SHORT).show();
+                    if (response.code() == 404) {
+                        Toast.makeText(AccountActivation.this, "User not found!", Toast.LENGTH_SHORT).show();
+                    }
+                    else if (response.code() == 410) {
+                        Toast.makeText(AccountActivation.this, "Expired activation link! Sign up again.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(AccountActivation.this, SignUpActivity.class);
+                        startActivity(intent);
+                    }
+                    else {
+                        Toast.makeText(AccountActivation.this, "Failed account activation!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 

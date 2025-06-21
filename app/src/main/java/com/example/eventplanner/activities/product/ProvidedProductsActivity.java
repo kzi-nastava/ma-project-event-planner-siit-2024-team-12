@@ -197,7 +197,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ArrayList<GetProductDTO>> call, Throwable t) {
-                Toast.makeText(ProvidedProductsActivity.this, "Failed to load provided products!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ProvidedProductsActivity.this, "Failed to load provided products!", Toast.LENGTH_SHORT).show();
             }
         });
     }

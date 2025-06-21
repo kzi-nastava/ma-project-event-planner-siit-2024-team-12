@@ -1,8 +1,7 @@
 package com.example.eventplanner.dto.business;
 
-import java.util.List;
 
-public class GetBusinessDTO {
+public class CreatedBusinessDTO {
     private Long id;
     private String companyName;
     private String companyEmail;
@@ -10,10 +9,10 @@ public class GetBusinessDTO {
     private String phone;
     private String description;
     private String owner;
-    private String mainImageUrl;
-    private List<String> imageUrls;
 
-    public GetBusinessDTO() {super();}
+    public CreatedBusinessDTO() {
+        super();
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -36,15 +35,5 @@ public class GetBusinessDTO {
     public String getOwner() {return owner;}
     public void setOwner(String owner) {this.owner = owner;}
 
-    public String getMainImageUrl() {return mainImageUrl;}
-    public void setMainImageUrl(String mainImageUrl) {this.mainImageUrl = mainImageUrl;}
 
-    public List<String> getImageUrls() {return imageUrls;}
-    public void setImageUrls(List<String> imageUrls) {this.imageUrls = imageUrls;}
-
-    @Override
-    public String toString() {
-        return "BusinessDTO [id=" + id + ", companyName=" + companyName + ", companyEmail=" + companyEmail
-                + ", address=" + address + ", phone=" + phone + ", description=" + description + ", owner=" + owner;
-    }
 }

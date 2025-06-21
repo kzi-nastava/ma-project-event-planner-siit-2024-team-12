@@ -1,9 +1,9 @@
 package com.example.eventplanner.activities.product;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,8 +24,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.UserRole;
-import com.example.eventplanner.activities.eventtype.EventTypeEditActivity;
+import com.example.eventplanner.activities.gallery.GalleryDisplayActivity;
+import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
@@ -34,8 +34,6 @@ import com.example.eventplanner.dto.product.UpdateProductDTO;
 import com.example.eventplanner.dto.product.UpdatedProductDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.utils.ValidationUtils;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +53,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private RadioGroup availabilityGroup, visibilityGroup;
     private RadioButton availableBtn, unavailableBtn, visibleBtn, invisibleBtn;
     private List<String> selectedEventTypes = new ArrayList<>();
-    private String currentCompanyEmail, loadedCompanyEmail;
+    private String currentCompanyEmail, loadedCompanyEmail, productName;
     private TextView moreInfo, visible;
+    private Uri selectedImageUri = null;
 
 
 
@@ -80,9 +79,25 @@ public class ProductDetailsActivity extends AppCompatActivity {
         setUpExitBtn();
         setUpEditBtn();
 
+        ImageView galleryBtn = findViewById(R.id.images);
+        galleryBtn.setOnClickListener(v -> {
+            openProductGallery();
+        });
+
     }
 
 
+    private void openProductGallery() {
+
+        Intent intent = new Intent(this, GalleryDisplayActivity.class);
+        intent.putExtra("type", "product");
+        intent.putExtra("id", currentProductId);
+        intent.putExtra("entityName", productName);
+        intent.putExtra("ownerEmail", loadedCompanyEmail);
+        intent.putExtra("currentCompanyEmail", currentCompanyEmail);
+        startActivity(intent);
+
+    }
 
 
     private void loadProductDetails() {
@@ -99,6 +114,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     GetProductDTO productDTO = response.body();
                     loadedCompanyEmail = productDTO.getCompanyEmail();
                     Log.d("iz load ", loadedCompanyEmail);
+                    productName = productDTO.getName();
                     populateTextViews(productDTO);
                     setUpEventTypes(productDTO);
                     displayBasedOnRole();

@@ -17,6 +17,7 @@ import com.example.eventplanner.activities.profile.UserService;
 import com.example.eventplanner.activities.solutioncategory.SolutionCategoryService;
 import com.example.eventplanner.adapters.datetime.LocalDateAdapter;
 import com.example.eventplanner.adapters.datetime.LocalTimeAdapter;
+import com.example.eventplanner.fragments.gallery.GalleryService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -74,5 +75,7 @@ public class ClientUtils {
     public static ChartService chartService = retrofit.create(ChartService.class);
 
     public static ProductService productService = retrofit.create(ProductService.class);
+
+    public static GalleryService galleryService = retrofit.create(GalleryService.class);
 
 }

@@ -82,7 +82,7 @@
 
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/mainImage"
             android:layout_width="77dp"
             android:layout_height="85dp"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,9 +18,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
+import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.UserRole;
+import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
 import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
@@ -148,9 +151,23 @@ public class ProfileViewActivity extends AppCompatActivity {
         TextView phone = findViewById(R.id.phone);
         phone.setText(getUserDTO.getPhone());
 
+        setMainImage(getUserDTO);
 
     }
 
+
+    private void setMainImage(GetUserDTO getUserDTO) {
+        ImageView mainImage = findViewById(R.id.mainImage);
+        String mainImageUrl = getUserDTO.getImageUrl();
+
+        String fullUrl = "http://10.0.2.2:8080" + mainImageUrl;
+
+        Glide.with(this)
+                .load(fullUrl)
+                .placeholder(R.drawable.user_logo)
+                .error(R.drawable.user_logo)
+                .into(mainImage);
+    }
 
 
 
@@ -183,6 +200,11 @@ public class ProfileViewActivity extends AppCompatActivity {
                     Toast.makeText(ProfileViewActivity.this, "Deactivated account!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(ProfileViewActivity.this, HomepageActivity.class);
                     startActivity(intent);
+
+                }
+                else if (response.code() == 403) {
+                    Toast.makeText(ProfileViewActivity.this, "Account cannot be deactivated!" +
+                            " You have created future events.", Toast.LENGTH_SHORT).show();
                 }
             }
 
