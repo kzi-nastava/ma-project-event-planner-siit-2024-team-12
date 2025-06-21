@@ -243,50 +243,10 @@ public class BusinessRegistration2 extends Fragment {
 
         if (imageUris == null || imageUris.isEmpty()) return;
 
-        String authorization = ClientUtils.getAuthorization(requireContext());
-
-        List<MultipartBody.Part> multipartList = new ArrayList<>();
-
-        for (int i = 0; i < imageUris.size(); i++) {
-            try {
-                MultipartBody.Part part = ImageHelper.prepareFilePart(requireContext(), "files", imageUris.get(i));
-                multipartList.add(part);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(getContext(), "Failed to prepare image: " + i, Toast.LENGTH_SHORT).show();
-            }
-        }
-
-
-        RequestBody type = RequestBody.create(MultipartBody.FORM, "company");
-        RequestBody entityId = RequestBody.create(MultipartBody.FORM, String.valueOf(businessId));
-        RequestBody isMain = RequestBody.create(MultipartBody.FORM, "false");
-
-        String auth = ClientUtils.getAuthorization(requireContext());
-
-        Call<ResponseBody> call = ClientUtils.galleryService.uploadImages(
-                auth,
-                type,
-                entityId,
-                multipartList,
-                isMain
-        );
-
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    Log.d("UPLOAD", "Images uploaded successfully");
-                } else {
-                    Log.e("UPLOAD", "Upload failed with code: " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("UPLOAD", "Upload failed: " + t.getMessage());
-            }
-        });
+        ImageHelper.uploadMultipleImages(requireContext(), imageUris, "company", businessId,
+                "false", () -> {
+                }, () -> {
+                });
     }
 
 }

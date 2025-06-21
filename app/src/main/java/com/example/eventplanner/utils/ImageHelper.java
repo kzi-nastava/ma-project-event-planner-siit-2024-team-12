@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -15,10 +16,16 @@ import androidx.fragment.app.Fragment;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ImageHelper {
 
@@ -70,8 +77,55 @@ public class ImageHelper {
                 fileBytes
         );
 
-
         return MultipartBody.Part.createFormData(partName, "image.jpg", requestFile);
+    }
+
+
+    public static void uploadMultipleImages(
+            Context context,
+            List<Uri> selectedUris,
+            String type,
+            Long entityId,
+            String isMain,
+            Runnable onSuccess,
+            Runnable onFailure
+    ) {
+        try {
+            List<MultipartBody.Part> parts = new ArrayList<>();
+            for (Uri uri : selectedUris) {
+                MultipartBody.Part part = ImageHelper.prepareFilePart(context, "files", uri);
+                parts.add(part);
+            }
+
+            RequestBody typePart = RequestBody.create(MultipartBody.FORM, type);
+            RequestBody idPart = RequestBody.create(MultipartBody.FORM, String.valueOf(entityId));
+            RequestBody isMainPart = RequestBody.create(MultipartBody.FORM, isMain);
+
+            String auth = ClientUtils.getAuthorization(context);
+            ClientUtils.galleryService.uploadImages(auth, typePart, idPart, parts, isMainPart)
+                    .enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (response.isSuccessful()) {
+                                //Toast.makeText(context, "Images uploaded", Toast.LENGTH_SHORT).show();
+                                if (onSuccess != null) onSuccess.run();
+                            } else {
+                                Toast.makeText(context, "Upload failed: " + response.message(), Toast.LENGTH_SHORT).show();
+                                if (onFailure != null) onFailure.run();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Toast.makeText(context, "Upload failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            if (onFailure != null) onFailure.run();
+                        }
+                    });
+
+        } catch (IOException e) {
+            Toast.makeText(context, "Failed to prepare images", Toast.LENGTH_SHORT).show();
+            if (onFailure != null) onFailure.run();
+        }
     }
 
 }
