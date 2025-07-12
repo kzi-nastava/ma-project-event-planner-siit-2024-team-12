@@ -1,10 +1,12 @@
 package com.example.eventplanner.dto.user;
 
 
+import com.example.eventplanner.dto.LocationDTO;
+
 public class UpdateUserDTO {
     private String name;
     private String surname;
-    private String address;
+    private LocationDTO location;
     private String phone;
     private String role;
     private Boolean isDeactivated;
@@ -12,10 +14,10 @@ public class UpdateUserDTO {
     public UpdateUserDTO() {super();}
 
 
-    public UpdateUserDTO(String name, String surname, String address, String phone, Boolean isDeactivated) {
+    public UpdateUserDTO(String name, String surname, LocationDTO location, String phone, Boolean isDeactivated) {
         this.name = name;
         this.surname = surname;
-        this.address = address;
+        this.location = location;
         this.phone = phone;
         this.isDeactivated = isDeactivated;
     }
@@ -28,8 +30,8 @@ public class UpdateUserDTO {
     public String getSurname() {return surname;}
     public void setSurname(String surname) {this.surname = surname;}
 
-    public String getAddress() {return address;}
-    public void setAddress(String address) {this.address = address;}
+    public LocationDTO getLocation() {return location;}
+    public void setLocation(LocationDTO location) {this.location = location;}
 
     public String getPhone() {return phone;}
     public void setPhone(String phone) {this.phone = phone;}

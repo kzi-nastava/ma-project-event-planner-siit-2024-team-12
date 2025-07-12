@@ -146,7 +146,9 @@ public class ProfileViewActivity extends AppCompatActivity {
         email.setText(getUserDTO.getEmail());
 
         TextView address = findViewById(R.id.address);
-        address.setText(getUserDTO.getAddress());
+        String fullAddress = getUserDTO.getLocation().getAddress() + ", " +
+                             getUserDTO.getLocation().getCity() + ", " + getUserDTO.getLocation().getCountry();
+        address.setText(fullAddress);
 
         TextView phone = findViewById(R.id.phone);
         phone.setText(getUserDTO.getPhone());

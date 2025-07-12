@@ -90,6 +90,7 @@
             android:layout_width="106dp"
             android:layout_height="39dp"
             android:background="@drawable/form_button"
+            android:backgroundTint="@color/dark_gray"
             android:text="@string/next"
             android:textAllCaps="false"
             android:textColor="@android:color/white"

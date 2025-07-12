@@ -666,7 +666,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         if (!ValidationUtils.isFieldValid(date, "Date is required!")) return false;
         if (!ValidationUtils.isDateValid(date)) return false;
         if (!ValidationUtils.isFieldValid(maxGuests, "Max guests number is required!")) return false;
-        if (!ValidationUtils.isNumberValid(maxGuests, "Invalid number!", "Negative number!")) return false;
+        if (!ValidationUtils.isNumberValid(maxGuests)) return false;
         if (!ValidationUtils.isFieldValid(description, "Description is required!")) return false;
         if (!ValidationUtils.isFieldValid(location, "Location is required!")) return false;
         if (!validateLocationFormat()) return false;

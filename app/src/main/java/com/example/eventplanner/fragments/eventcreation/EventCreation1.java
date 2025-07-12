@@ -45,7 +45,7 @@ public class EventCreation1 extends Fragment {
                 // validate input data
                 if (!ValidationUtils.isFieldValid(nameField, "Name is required!")) return;
                 if (!ValidationUtils.isFieldValid(maxGuestsField, "Max number is required!")) return;
-                if (!ValidationUtils.isNumberValid(maxGuestsField, "Enter a number!!", "Enter a positive number!!")) return;
+                if (!ValidationUtils.isNumberValid(maxGuestsField)) return;
                 if (!ValidationUtils.isFieldValid(descriptionField, "Description is required!")) return;
 
                 // save validated data
