@@ -2,6 +2,7 @@ package com.example.eventplanner.fragments.signup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +78,7 @@ public class SignUp3 extends Fragment {
             EditText phoneField = view.findViewById(R.id.phone);
 
             if (!ValidationUtils.isFieldValid(addressField, "Address is required!")) return;
+            if (!ValidationUtils.isAddressFormatValid(addressField)) return;
             if (!ValidationUtils.isFieldValid(phoneField, "Phone is required!")) return;
             if (!ValidationUtils.isPhoneValid(phoneField, phoneField.getText().toString())) return;
 

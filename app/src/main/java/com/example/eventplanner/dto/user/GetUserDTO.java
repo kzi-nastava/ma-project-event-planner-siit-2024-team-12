@@ -1,11 +1,13 @@
 package com.example.eventplanner.dto.user;
 
+import com.example.eventplanner.dto.LocationDTO;
+
 public class GetUserDTO {
     private Long id;
     private String email;
     private String name;
     private String surname;
-    private String address;
+    private LocationDTO location;
     private String phone;
     private String role;
     private String imageUrl;
@@ -47,12 +49,12 @@ public class GetUserDTO {
         this.surname = surname;
     }
 
-    public String getAddress() {
-        return address;
+    public LocationDTO getLocation() {
+        return location;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setLocation(LocationDTO location) {
+        this.location = location;
     }
 
     public String getPhone() {

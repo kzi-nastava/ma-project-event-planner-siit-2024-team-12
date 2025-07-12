@@ -76,17 +76,22 @@ public class ValidationUtils {
 
 
 
-    public static boolean isNumberValid(EditText field, String invalidNumberMessage, String negativeNumberMessage) {
+    public static boolean isNumberValid(EditText field) {
         String value = field.getText().toString().trim();
         try {
             int number = Integer.parseInt(value);
             if (number < 0) {
-                field.setError(negativeNumberMessage);
+                field.setError("Enter a positive number!!");
+                field.requestFocus();
+                return false;
+            }
+            else if (number > 10000) {
+                field.setError("Enter a number less than 10 000!");
                 field.requestFocus();
                 return false;
             }
         } catch (NumberFormatException e) {
-            field.setError(invalidNumberMessage);
+            field.setError("Enter a number!!");
             field.requestFocus();
             return false;
         }
@@ -153,7 +158,6 @@ public class ValidationUtils {
     }
 
 
-
     public static boolean isActivityTimeValid(EditText timeField) {
         String timePattern = "^([01]\\d|2[0-3]):[0-5]\\d - ([01]\\d|2[0-3]):[0-5]\\d$"; // HH:mm - HH:mm
         String timeInput = timeField.getText().toString().trim();
@@ -187,6 +191,18 @@ public class ValidationUtils {
             return false;
         }
 
+        return true;
+    }
+
+
+    public static boolean isAddressFormatValid(EditText addressField) {
+        String address = addressField.getText().toString();
+        String[] parts = address.split(",");
+        if (parts.length != 3) {
+            addressField.setError("Incorrect address format!");
+            addressField.requestFocus();
+            return false;
+        }
         return true;
     }
 

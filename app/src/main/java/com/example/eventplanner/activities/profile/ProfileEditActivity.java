@@ -18,6 +18,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.example.eventplanner.dto.LocationDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.utils.ImageHelper;
@@ -117,16 +118,20 @@ public class ProfileEditActivity extends AppCompatActivity {
         if (!ValidationUtils.isFieldValid(phoneField, "Phone is required!")) return;
         if (!ValidationUtils.isPhoneValid(phoneField, phoneField.getText().toString())) return;
         if (!ValidationUtils.isFieldValid(addressField, "Address is required")) return;
+        if (!ValidationUtils.isAddressFormatValid(addressField)) return;
 
         // email is not validated or updated as it is read-only and cannot be changed
 
         String name = nameField.getText().toString().trim();
         String surname = surnameField.getText().toString().trim();
         String phone = phoneField.getText().toString().trim();
+
         String address = addressField.getText().toString().trim();
+        String[] addressParts = address.split(",");
+        LocationDTO location = new LocationDTO("", addressParts[0], addressParts[1], addressParts[2]);
 
         String email = emailField.getText().toString();
-        UpdateUserDTO updateUserDTO = new UpdateUserDTO(name, surname, address, phone, false);
+        UpdateUserDTO updateUserDTO = new UpdateUserDTO(name, surname, location, phone, false);
 
         updateUser(email, updateUserDTO);
 
@@ -205,7 +210,9 @@ public class ProfileEditActivity extends AppCompatActivity {
                         phoneField.setText(dto.getPhone());
 
                         EditText addressField = findViewById(R.id.address);
-                        addressField.setText(dto.getAddress());
+                        String fullAddress = dto.getLocation().getAddress() + ", " +
+                                dto.getLocation().getCity() + ", " + dto.getLocation().getCountry();
+                        addressField.setText(fullAddress);
 
                         setMainImage(dto);
                     }
