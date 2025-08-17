@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.LoginActivity">
+    tools:context=".activities.auth.LoginActivity">
 
 
     <!-- form frame -->
@@ -25,7 +25,7 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sign_up"
+            android:text="@string/sign_up_II"
             android:textAlignment="center"
             android:textColor="@color/dark_gray"
             android:textSize="35sp"
@@ -54,7 +54,7 @@
 
 
         <EditText
-            android:id="@+id/editTextText"
+            android:id="@+id/name"
             android:layout_width="240dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
@@ -70,7 +70,7 @@
             app:layout_constraintVertical_bias="0.414" />
 
         <EditText
-            android:id="@+id/editTextText3"
+            android:id="@+id/surname"
             android:layout_width="240dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
@@ -90,6 +90,7 @@
             android:layout_width="106dp"
             android:layout_height="39dp"
             android:background="@drawable/form_button"
+            android:backgroundTint="@color/dark_gray"
             android:text="@string/next"
             android:textAllCaps="false"
             android:textColor="@android:color/white"

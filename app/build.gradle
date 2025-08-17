@@ -2,6 +2,14 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+
+def getIpAddress() {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty('ip_addr')
+}
+
+
 android {
     namespace 'com.example.eventplanner'
     compileSdk 34
@@ -12,8 +20,12 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0"
-
+        buildConfigField "String", "IP_ADDR", "\""+getIpAddress()+"\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 
     buildTypes {
@@ -40,4 +52,21 @@ dependencies {
     androidTestImplementation libs.espresso.core
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'com.google.android.material:material:1.9.0'
+    implementation('com.google.code.gson:gson:2.8.7')
+    implementation('com.squareup.retrofit2:retrofit:2.3.0')
+    implementation('com.squareup.retrofit2:converter-gson:2.3.0')
+    implementation('com.squareup.okhttp3:logging-interceptor:3.12.1')
+    implementation ('com.auth0:java-jwt:3.18.1')
+    implementation ('com.googlecode.libphonenumber:libphonenumber:8.13.19')
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    implementation 'com.itextpdf:itext7-core:7.2.2'
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
+    implementation 'org.osmdroid:osmdroid-android:6.1.16'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
+
+
+
+
 }

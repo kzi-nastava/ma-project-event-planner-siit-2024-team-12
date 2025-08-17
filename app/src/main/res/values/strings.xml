@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EventPlanner</string>
+    <string name="app_name">Event Planner</string>
 
 
     <!-- Service management -->
@@ -63,7 +63,9 @@
     <string name="description">Description :</string>
     <string name="images">Images :</string>
     <string name="register">Register</string>
+    <string name="business_reg_success">Successful business registration!</string>
     <string name="registration_success">Successful registration! Visit the link we sent to your email address.</string>
+    <string name="gallery">Gallery</string>
 
 
     <!-- Search and filters -->
@@ -147,7 +149,6 @@
 
     <!-- drawer menu items -->
     <string name="home">Home</string>
-    <string name="about_us">About us</string>
     <string name="events_menu">Events</string>
     <string name="products">Products</string>
     <string name="services">Services</string>
@@ -155,13 +156,21 @@
 
     <!-- organiser menu items -->
     <string name="create_event">Create event</string>
-    <string name="fav_events">Favourite events</string>
+    <string name="explore_events">Explore events</string>
     <string name="calendar">Calendar</string>
-    <string name="solutions">Solutions</string>
-    <string name="view_profile">View profile</string>
-    <string name="change_pass">Change password</string>
+    <string name="fav_events">Favorite events</string>
+    <string name="fav_services">Favorite services</string>
+    <string name="fav_products">Favorite products</string>
     <string name="notifications">Notifications</string>
+    <string name="view_profile">View profile</string>
     <string name="log_out">Log out</string>
+
+
+    <!-- provider menu -->
+    <string name="create_business">Business registration</string>
+    <string name="view_business">Business info</string>
+    <string name="categories">Categories</string>
+    <string name="event_types">Event types</string>
 
 
     <!-- Buttons -->
@@ -180,8 +189,7 @@
     <!-- password change -->
     <string name="old_pass">Old password :</string>
     <string name="new_pass">New password :</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="change_pass">Change password</string>
 
     <!-- chat options -->
     <string name="chat">Chat</string>
@@ -195,5 +203,146 @@
     <string name="product_service_description_goes_here">Product/Service description goes here</string>
     <string name="event_title">Event Title</string>
     <string name="event_description_goes_here">Event description goes here</string>
+
+    <!-- Asterisks -->
+    <string name="name_ast">Name*</string>
+    <string name="surname_ast">Surname*</string>
+    <string name="email_ast">Email*</string>
+    <string name="phone_ast">Phone*</string>
+    <string name="address_ast">Address*</string>
+
+    <string name="company_name_ast">Company name*</string>
+    <string name="company_email_ast">Company email*</string>
+    <string name="description_ast">Description*</string>
+
+
+    <string name="expand_arrow">Expand arrow</string>
+
+    <string name="event_type_details">Event type details</string>
+    <string name="recommended_categories">Recommended categories</string>
+    <string name="recommended_categories_ast">Recommended categories*</string>
+    <string name="event_type_edit">Edit event type</string>
+    <string name="create_event_type">Create event type</string>
+    <string name="event_types_overview">Event types overview</string>
+
+    <string name="create">Create</string>
+    <string name="max_guests">Max number of guests :</string>
+    <string name="date">Date [ yyyy-mm-dd ] :</string>
+    <string name="location">Location</string>
+
+    <string name="privacy_type">Privacy type*</string>
+    <string-array name="privacy_types">
+        <item>OPEN</item>
+        <item>CLOSED</item>
+    </string-array>
+    <string name="add_agenda">Add agenda</string>
+
+    <string name="location_details">Location details</string>
+    <string name="venue_name">Venue name :</string>
+    <string name="city">City :</string>
+    <string name="country">Country :</string>
+
+    <string name="provider_event_types">Event types for your solutions</string>
+    <string name="provider_categories">Solution categories you offer</string>
+
+    <string name="activity">Activity</string>
+    <string name="time">Time [ HH:mm - HH:mm ] :</string>
+    <string name="activity_name">Activity name</string>
+    <string name="add">Add</string>
+    <string name="agenda">Agenda</string>
+    <string name="add_activity">Add activity</string>
+
+    <string name="send_invitations">Send invitations</string>
+
+    <string name="plan_budget">Plan budget</string>
+    <string name="event_type">Event type :</string>
+    <string name="clearer_view">*Click for clearer view</string>
+    <string name="phone_format">Phone [ + [country code] [local number] ] :</string>
+    <string name="status">Status :</string>
+
+    <string name="description_in_table_row"><b>Description*</b>\n%s</string>
+    <string name="status_in_table_row"><b>Status*</b>\n%s</string>
+
+    <string name="accepted">Accepted</string>
+    <string name="created">Created</string>
+    <string name="no_events">No events</string>
+    <string name="close">Close</string>
+    <string name="events_title">Events</string>
+    <string name="explore_public_events">Explore public events</string>
+    <string name="attendance_chart">Event attendance chart\n</string>
+    <string name="ratings_chart">Event ratings chart</string>
+    <string name="more_details">For more details :</string>
+    <string name="generate_pdf">Generate pdf report</string>
+    <string name="event_type_ast">Event type*</string>
+    <string name="date_ast">Date*</string>
+    <string name="max_guests_ast">Max guests*</string>
+    <string name="generate_pdf_event">Generate pdf</string>
+    <string name="location_ast">Location*</string>
+    <string name="see_agenda">See agenda</string>
+
+    <string name="activity_name_in_table"><b>Activity name*</b>\n%s</string>
+    <string name="location_in_table"><b>Location*</b>\n%s</string>
+    <string name="create_product">Create product</string>
+    <string name="category_ast">Category*</string>
+    <string name="event_types_ast">Event types*</string>
+    <string name="select_event_types">Select event types</string>
+
+    <string name="add_category_recommendation">Add category recommendation</string>
+    <string name="availability_ast">Availability*</string>
+    <string name="visibility_ast">Visibility*</string>
+    <string name="available">Available</string>
+    <string name="unavailable">Unavailable</string>
+    <string name="price_ast">Price*</string>
+    <string name="discount_ast">Discount [ % ]*</string>
+    <string name="visible">Visible</string>
+    <string name="invisible">Invisible</string>
+    <string name="create_product_II">Create product II</string>
+    <string name="sign_up_II">Sign up II</string>
+    <string name="sign_up_III">Sign up III</string>
+    <string name="create_event_II">Create event II</string>
+    <string name="business_reg_II">Business registration II</string>
+    <string name="offered_products">Products your business offers</string>
+
+    <string name="discount_off">%s%% off</string>
+    <string name="see_event_types">See event types</string>
+    <string name="min_price">Min price :</string>
+    <string name="max_price">Max price :</string>
+    <string name="filter">Filter</string>
+    <string name="category">Category</string>
+    <string name="availability">Availability</string>
+    <string name="description_filter">Description</string>
+    <string name="event_type_filter">Event type</string>
+
+    <string name="from_min_price">From %.1f</string>
+    <string name="to_max_price">To %.1f</string>
+    <string name="min_to_max">%.1f - %.1f</string>
+    <string name="page">Page %d / %d</string>
+
+    <string name="name_simple">Name</string>
+    <string name="id">ID</string>
+    <string name="status_simple">Status</string>
+    <string name="view">View</string>
+    <string name="deactivation_confirmation">Are you sure you want to deactivate this event type?</string>
+    <string name="activation_confirmation">Are you sure you want to activate this event type?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="activated_event_type">Activated event type!</string>
+    <string name="failed_to_activate">Failed to activate: </string>
+    <string name="error">Error: </string>
+    <string name="deactivated_event_type">Deactivated event type!</string>
+    <string name="failed_to_deactivate">"Failed to deactivate: "</string>
+    <string name="no_categories_available">No categories available!</string>
+    <string name="failed_to_load_categories">Failed to load categories!</string>
+    <string name="ok">OK</string>
+    <string name="failed_to_update">"Failed to update: "</string>
+    <string name="event_type_updated">Event type updated successfully!</string>
+    <string name="active">Active</string>
+    <string name="inactive">Inactive</string>
+    <string name="filter_parameter">Filter parameter</string>
+    <string name="chat_with_us">Chat with us</string>
+    <string name="need_more_info">Need more info?</string>
+    <string name="add_company_images">Add company images</string>
+    <string name="add_images">Add images</string>
+    <string name="address_format">Address [street, city, country] :</string>
 
 </resources>

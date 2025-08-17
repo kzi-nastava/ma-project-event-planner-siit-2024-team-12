@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.ServiceCreationActivity;
+import com.example.eventplanner.activities.service.ServiceCreationActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,7 +33,7 @@ public class ServiceCreation3 extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this factory method to create a.java new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.

@@ -2,15 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EventPlanner"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
             android:name=".activities.gallery.GalleryDisplayActivity"
@@ -20,6 +28,9 @@
             android:exported="false" />
         <activity
             android:name=".activities.product.ProvidedProductsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.product.ProductCreationActivity"
             android:exported="false" />
         <activity
             android:name=".activities.event.EventDetailsActivity"
@@ -40,10 +51,16 @@
             android:name=".activities.favorites.FavoriteEventsActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.event.AgendaActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.solutioncategory.CategoriesTableActivity"
             android:exported="false" />
         <activity
             android:name=".activities.eventtype.EventTypeTableActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.event.LocationDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".activities.event.EventCreationActivity"
@@ -70,37 +87,62 @@
             android:name=".activities.business.BusinessInfoActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.ChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.profile.ProfileEditActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.OrganiserHomepageActivity"
+            android:name=".activities.homepage.OrganiserHomepageActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ProfileViewActivity"
+            android:name=".activities.profile.ProfileViewActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ServiceEditActivity"
+            android:name=".activities.service.ServiceEditActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.CategoryCreationActivity"
+            android:name=".activities.solutioncategory.CategoryCreationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ServiceCreationActivity"
+            android:name=".activities.service.ServiceCreationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.BusinessRegistrationActivity"
+            android:name=".activities.business.BusinessRegistrationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SignUpActivity"
+            android:name=".activities.auth.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.HomepageActivity"
+            android:name=".activities.homepage.HomepageActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".activities.auth.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SplashScreenActivity"
+            android:name=".activities.favorites.ExplorePageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.auth.AccountActivation"
+            android:exported="true">
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="10.0.2.2"
+                    android:scheme="http" />
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".activities.homepage.ProviderHomepageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.homepage.SplashScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -108,6 +150,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="org.osmdroid.config"
+            android:value="osmdroid" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.eventplanner.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

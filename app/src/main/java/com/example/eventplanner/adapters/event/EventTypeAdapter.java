@@ -1,0 +1,111 @@
+package com.example.eventplanner.adapters.event;
+
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.viewholders.EventTypeViewHolder;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
+import com.example.eventplanner.activities.eventtype.EventTypeViewActivity;
+import com.example.eventplanner.activities.eventtype.EventTypeEditActivity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeViewHolder> {
+    private List<GetEventTypeDTO> eventTypeList;
+
+    public EventTypeAdapter(List<GetEventTypeDTO> eventTypeList) {
+        this.eventTypeList = eventTypeList;
+    }
+
+    @NonNull
+    @Override
+    public EventTypeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_event_type_row, parent, false);
+        return new EventTypeViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull EventTypeViewHolder holder, int position) {
+        GetEventTypeDTO eventType = eventTypeList.get(position);
+
+        holder.idTextView.setText(String.valueOf(eventType.getId()));
+        holder.nameTextView.setText(eventType.getName());
+
+
+
+
+        // Show or hide status and buttons based on expansion state
+        if (eventType.getIsExpanded()) {
+            holder.statusTextView.setVisibility(View.VISIBLE);
+            holder.viewButton.setVisibility(View.VISIBLE);
+            holder.editButton.setVisibility(View.VISIBLE);
+
+            holder.statusTextView.setText(eventType.getIsActive() ? holder.itemView.getContext().getString(R.string.active)
+                    : holder.itemView.getContext().getString(R.string.inactive));
+
+            holder.expandArrow.setRotation(180f);
+        } else {
+            holder.statusTextView.setVisibility(View.GONE);
+            holder.viewButton.setVisibility(View.GONE);
+            holder.editButton.setVisibility(View.GONE);
+            holder.expandArrow.setRotation(0f);
+        }
+
+        // Alternate row background color
+        if (position % 2 == 0) {
+            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.even_row_color));
+        } else {
+            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.odd_row_color));
+        }
+
+        holder.itemView.setOnClickListener(v -> {
+            eventType.setIsExpanded(!eventType.getIsExpanded());
+            notifyItemChanged(position);
+        });
+
+
+        // Set click listeners for the buttons
+        holder.viewButton.setOnClickListener(v -> {
+            Context context = v.getContext();
+            Intent intent = new Intent(context, EventTypeViewActivity.class);
+
+            // Pass event type details to EventTypeViewActivity
+            intent.putExtra("eventTypeName", eventType.getName());
+            intent.putExtra("eventTypeDescription", eventType.getDescription());
+            intent.putExtra("suggestedCategoryNames", new ArrayList<>(eventType.getSuggestedCategoryNames()));
+
+            context.startActivity(intent);
+        });
+
+
+        holder.editButton.setOnClickListener(v -> {
+            Context context = v.getContext();
+            Intent intent = new Intent(context, EventTypeEditActivity.class);
+
+            intent.putExtra("eventTypeId", eventType.getId());
+            intent.putExtra("eventTypeName", eventType.getName());
+            intent.putExtra("eventTypeDescription", eventType.getDescription());
+            intent.putExtra("suggestedCategoryNames", new ArrayList<>(eventType.getSuggestedCategoryNames()));
+            intent.putExtra("isActive", eventType.getIsActive());
+
+            context.startActivity(intent);
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return eventTypeList.size();
+    }
+
+}

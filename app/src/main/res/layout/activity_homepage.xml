@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Toolbar sa ikonom za otvaranje drawer-a -->
+        <!-- Toolbar sa ikonom za otvaranje drawer-a.java -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/tool_bar"
             android:layout_width="match_parent"
