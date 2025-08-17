@@ -13,10 +13,64 @@
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
         <activity
-            android:name=".activities.ChatActivity"
+            android:name=".activities.gallery.GalleryDisplayActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ProfileEditActivity"
+            android:name=".activities.product.ProductDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.product.ProvidedProductsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.event.EventDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.charts.RatingsChart"
+            android:exported="false" />
+        <activity
+            android:name=".activities.charts.AttendanceChart"
+            android:exported="false" />
+        <activity
+            android:name=".activities.favorites.FavoriteServicesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.favorites.FavoriteProductsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.favorites.FavoriteEventsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.solutioncategory.CategoriesTableActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.eventtype.EventTypeTableActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.event.EventCreationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.eventtype.EventTypeCreationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.homepage.AdminHomepageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.calendar.CalendarActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.eventtype.EventTypeEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.eventtype.EventTypeViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.business.BusinessEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.business.BusinessInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.profile.ProfileEditActivity"
             android:exported="false" />
         <activity
             android:name=".activities.OrganiserHomepageActivity"
