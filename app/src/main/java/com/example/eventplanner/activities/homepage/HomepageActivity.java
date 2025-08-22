@@ -1,24 +1,19 @@
 package com.example.eventplanner.activities.homepage;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
@@ -39,17 +34,13 @@ import com.example.eventplanner.activities.product.ProvidedProductsActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
-import com.example.eventplanner.adapters.ChatAdapter;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
-import com.example.eventplanner.fragments.homepage.HomepageCardsFragment;
+import com.example.eventplanner.fragments.homepage.TopEventsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
-import com.example.eventplanner.fragments.homepage.HomepageProductsServicesFragment;
-import com.example.eventplanner.fragments.homepage.PSListFragment;
+import com.example.eventplanner.fragments.homepage.TopSolutionsFragment;
+import com.example.eventplanner.fragments.homepage.SolutionListFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
 import com.google.android.material.navigation.NavigationView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HomepageActivity extends AppCompatActivity {
 
@@ -83,7 +74,7 @@ public class HomepageActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (savedInstanceState == null) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.cards_fragment_container, new HomepageCardsFragment())
+                    .replace(R.id.cards_fragment_container, new TopEventsFragment())
                     .commit();
 
             fragmentManager.beginTransaction()
@@ -95,7 +86,7 @@ public class HomepageActivity extends AppCompatActivity {
                     .commit();
 
             fragmentManager.beginTransaction()
-                    .replace(R.id.cards_products_fragment_container, new HomepageProductsServicesFragment())
+                    .replace(R.id.cards_products_fragment_container, new TopSolutionsFragment())
                     .commit();
 
             fragmentManager.beginTransaction()
@@ -103,7 +94,7 @@ public class HomepageActivity extends AppCompatActivity {
                     .commit();
 
             fragmentManager.beginTransaction()
-                    .replace(R.id.ps_list_fragment_container, new PSListFragment())
+                    .replace(R.id.ps_list_fragment_container, new SolutionListFragment())
                     .commit();
         }
     }
@@ -156,7 +147,7 @@ public class HomepageActivity extends AppCompatActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.cards_fragment_container, new HomepageCardsFragment())
+                .replace(R.id.cards_fragment_container, new TopEventsFragment())
                 .commit();
 
         fragmentManager.beginTransaction()
@@ -168,7 +159,7 @@ public class HomepageActivity extends AppCompatActivity {
                 .commit();
 
         fragmentManager.beginTransaction()
-                .replace(R.id.cards_products_fragment_container, new HomepageProductsServicesFragment())
+                .replace(R.id.cards_products_fragment_container, new TopSolutionsFragment())
                 .commit();
 
         fragmentManager.beginTransaction()
@@ -176,7 +167,7 @@ public class HomepageActivity extends AppCompatActivity {
                 .commit();
 
         fragmentManager.beginTransaction()
-                .replace(R.id.ps_list_fragment_container, new PSListFragment())
+                .replace(R.id.ps_list_fragment_container, new SolutionListFragment())
                 .commit();
 
     }

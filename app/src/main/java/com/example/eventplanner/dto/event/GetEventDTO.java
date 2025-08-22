@@ -1,10 +1,11 @@
 package com.example.eventplanner.dto.event;
 
+import com.example.eventplanner.activities.homepage.CardItem;
 import com.google.gson.annotations.SerializedName;
 
 import java.time.LocalDate;
 
-public class GetEventDTO {
+public class GetEventDTO implements CardItem {
 
     @SerializedName("id")
     private Long id;

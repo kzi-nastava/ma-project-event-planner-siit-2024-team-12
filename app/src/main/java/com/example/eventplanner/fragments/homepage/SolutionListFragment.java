@@ -13,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,7 +22,7 @@ import com.example.eventplanner.adapters.PSAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PSListFragment extends Fragment {
+public class SolutionListFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private Button prevPageButton, nextPageButton;

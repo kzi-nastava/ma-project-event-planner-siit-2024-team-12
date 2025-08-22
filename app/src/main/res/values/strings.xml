@@ -19,7 +19,7 @@
     <!-- Unregistered user homepage -->
     <string name="open_drawer">Open Navigation Drawer</string>
     <string name="close_drawer">Close Navigation Drawer</string>
-    <string name="events">MOST POPULAR EVENTS IN YOUR CITY</string>
+    <string name="events">MOST POPULAR EVENTS</string>
     <string name="event_1">Event 1</string>
     <string name="event_2">Event 2</string>
     <string name="event_3">Event 3</string>
@@ -87,7 +87,7 @@
 
 
     <!-- Products and services -->
-    <string name="products_services">MOST POPULAR PRODUCTS/SERVICES IN YOUR CITY</string>
+    <string name="products_services">MOST POPULAR PRODUCTS&amp;SERVICES</string>
     <string name="product_1">Product 1</string>
     <string name="product_2">Product 2</string>
     <string name="product_3">Product 3</string>

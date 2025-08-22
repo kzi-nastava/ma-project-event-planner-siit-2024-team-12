@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.homepage.HomepageService;
-import com.example.eventplanner.adapters.homepage.EventCardAdapter;
+import com.example.eventplanner.adapters.homepage.CardAdapter;
 import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.utils.ClientUtils;
 
@@ -26,10 +26,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomepageCardsFragment extends Fragment {
+public class TopEventsFragment extends Fragment {
 
     private RecyclerView eventsRv;
-    private EventCardAdapter adapter;
+    private CardAdapter adapter;
     private HomepageService service;
 
     @Override
@@ -48,7 +48,7 @@ public class HomepageCardsFragment extends Fragment {
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
         );
 
-        adapter = new EventCardAdapter(requireContext());
+        adapter = new CardAdapter(requireContext());
         eventsRv.setAdapter(adapter);
 
         service = ClientUtils.retrofit.create(HomepageService.class);

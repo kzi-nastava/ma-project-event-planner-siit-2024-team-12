@@ -1,6 +1,5 @@
 package com.example.eventplanner.adapters.homepage;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -14,21 +13,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.event.EventDetailsActivity;
-import com.example.eventplanner.dto.event.GetEventDTO;
+import com.example.eventplanner.activities.homepage.CardItem;
+import com.example.eventplanner.activities.product.ProductDetailsActivity;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.EventViewHolder> {
+public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventViewHolder> {
 
     private final Context context;
-    private final List<GetEventDTO> items = new ArrayList<>();
+    private final List<CardItem> items = new ArrayList<>();
     public static final String IP_ADDR = "192.168.0.28";
 
-    public EventCardAdapter(Context context) { this.context = context; }
+    public CardAdapter(Context context) {
+        this.context = context;
+    }
 
-    public void setItems(List<GetEventDTO> data) {
+    public void setItems(List<? extends CardItem> data) {
         items.clear();
         if (data != null) items.addAll(data);
         notifyDataSetChanged();
@@ -44,11 +46,11 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.Even
 
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-        GetEventDTO e = items.get(position);
+        CardItem item = items.get(position);
 
-        holder.title.setText(e.getName() != null ? e.getName() : "");
+        holder.title.setText(item.getName() != null ? item.getName() : "");
 
-        String img = e.getImageUrl();
+        String img = item.getImageUrl();
         if (img != null && !img.isEmpty()) {
             img = "http://" + IP_ADDR + ":8080" + img;
 
@@ -62,15 +64,35 @@ public class EventCardAdapter extends RecyclerView.Adapter<EventCardAdapter.Even
             holder.image.setImageResource(R.drawable.event1);
         }
 
-
-        View.OnClickListener open = v -> {
-            Intent i = new Intent(context, EventDetailsActivity.class);
-            i.putExtra("id", e.getId());
-            context.startActivity(i);
-        };
-        holder.itemView.setOnClickListener(open);
-        holder.viewDetails.setOnClickListener(open);
+        holder.itemView.setOnClickListener(v -> openDetails(item));
+        holder.viewDetails.setOnClickListener(v -> openDetails(item));
     }
+
+    private void openDetails(CardItem item) {
+        Intent i = null;
+
+        if (item instanceof com.example.eventplanner.dto.event.GetEventDTO) {
+            i = new Intent(context, EventDetailsActivity.class);
+            i.putExtra("id", item.getId());
+
+        } else if (item instanceof com.example.eventplanner.dto.solution.GetHomepageSolutionDTO) {
+            com.example.eventplanner.dto.solution.GetHomepageSolutionDTO solution =
+                    (com.example.eventplanner.dto.solution.GetHomepageSolutionDTO) item;
+
+            if ("product".equalsIgnoreCase(solution.getType())) {
+                i = new Intent(context, ProductDetailsActivity.class);
+            } 
+
+            if (i != null) {
+                i.putExtra("id", solution.getId());
+            }
+        }
+
+        if (i != null) {
+            context.startActivity(i);
+        }
+    }
+
 
     @Override
     public int getItemCount() { return items.size(); }
