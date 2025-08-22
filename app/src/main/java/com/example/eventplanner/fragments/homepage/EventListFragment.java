@@ -1,5 +1,7 @@
 package com.example.eventplanner.fragments.homepage;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,111 +20,146 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.event.EventAdapter;
+import com.example.eventplanner.activities.homepage.HomepageService;
+import com.example.eventplanner.adapters.event.EventListAdapter;
+import com.example.eventplanner.dto.event.GetEventDTO;
+import com.example.eventplanner.utils.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EventListFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private Button prevPageButton, nextPageButton;
+    private LinearLayout paginationIndicators;
+
+    private EventListAdapter adapter;
+    private HomepageService service;
+
+    private final List<GetEventDTO> allEvents = new ArrayList<>();
     private int currentPage = 0;
     private final int pageSize = 2;
-    private final List<String> eventTitles = new ArrayList<>();
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_event_list, container, false);
 
         recyclerView = view.findViewById(R.id.eventRecyclerView);
         prevPageButton = view.findViewById(R.id.prevPageButton);
         nextPageButton = view.findViewById(R.id.nextPageButton);
+        paginationIndicators = view.findViewById(R.id.paginationIndicators);
 
-        // dummy data
-        for (int i = 1; i <= 30; i++) {
-            eventTitles.add("Event " + i);
-        }
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new EventListAdapter(requireContext());
+        recyclerView.setAdapter(adapter);
 
-        setupRecyclerView();
+        service = ClientUtils.retrofit.create(HomepageService.class);
 
-        setupPagination();
+        loadAllEventsFromBackend();
+
+        setupPaginationButtons();
 
         return view;
     }
 
-    private void setupRecyclerView() {
+    private void loadAllEventsFromBackend() {
+        SharedPreferences sp = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        String token = sp.getString("token", null);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new EventAdapter(getCurrentPage()));
+        Call<List<GetEventDTO>> call = service.searchEvents(
+                null, null, null, null, null, null, null,
+                null, null, null, null,
+                "date", "asc", 0, 1000, false, true
+        );
+
+        if (token != null && !token.isEmpty()) {
+            call = service.searchEvents(
+                    null, null, null, null, null, null, null,
+                    null, null, null, null,
+                    "date", "asc", 0, 1000, false, true
+            );
+        }
+
+        call.enqueue(new Callback<List<GetEventDTO>>() {
+            @Override
+            public void onResponse(Call<List<GetEventDTO>> call, Response<List<GetEventDTO>> response) {
+                if (!isAdded()) return;
+
+                if (response.isSuccessful() && response.body() != null) {
+                    allEvents.clear();
+                    allEvents.addAll(response.body());
+                    currentPage = 0;
+                    updateRecyclerView();
+                } else {
+                    Toast.makeText(requireContext(), "No events to show.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GetEventDTO>> call, Throwable t) {
+                if (!isAdded()) return;
+                Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-
-
-    private void setupPagination() {
-        int totalPages = (int) Math.ceil((double) eventTitles.size() / pageSize);
-
+    private void setupPaginationButtons() {
         prevPageButton.setOnClickListener(v -> {
             if (currentPage > 0) {
                 currentPage--;
-                updateRecyclerView(totalPages);
+                updateRecyclerView();
             }
         });
 
         nextPageButton.setOnClickListener(v -> {
-            if ((currentPage + 1) * pageSize < eventTitles.size()) {
+            if ((currentPage + 1) * pageSize < allEvents.size()) {
                 currentPage++;
-                updateRecyclerView(totalPages);
+                updateRecyclerView();
             }
         });
-
-
-        addPageIndicators(totalPages);
     }
 
-    private void updateRecyclerView(int totalPages) {
-
-        ((EventAdapter) recyclerView.getAdapter()).updateData(getCurrentPage());
-
-        addPageIndicators(totalPages);
+    private void updateRecyclerView() {
+        int totalPages = (int) Math.ceil((double) allEvents.size() / pageSize);
+        int start = currentPage * pageSize;
+        int end = Math.min(start + pageSize, allEvents.size());
+        adapter.updateData(allEvents.subList(start, end));
+        updatePaginationIndicators(totalPages);
     }
 
-    private void addPageIndicators(int totalPages) {
-
-        if (getView() == null) {
-            return;
-        }
-
-        LinearLayout paginationIndicators = getView().findViewById(R.id.paginationIndicators);
+    private void updatePaginationIndicators(int totalPages) {
+        if (getView() == null) return;
         paginationIndicators.removeAllViews();
 
         int lastPage = totalPages - 1;
 
         if (currentPage > 0) {
-            addCircle(paginationIndicators, 0, false); // prvi
-            addEllipsis(paginationIndicators);
+            addCircle(0, false);
+            addEllipsis();
         }
 
-        if (currentPage > 0) {
-            addCircle(paginationIndicators, currentPage - 1, false);
-        }
+        if (currentPage > 0) addCircle(currentPage - 1, false);
 
-        addCircle(paginationIndicators, currentPage, true);
+        addCircle(currentPage, true);
 
-        if (currentPage < lastPage) {
-            addCircle(paginationIndicators, currentPage + 1, false);
-        }
+        if (currentPage < lastPage) addCircle(currentPage + 1, false);
 
         if (lastPage > currentPage + 1) {
-            addEllipsis(paginationIndicators);
-            addCircle(paginationIndicators, lastPage, false); // poslednja
+            addEllipsis();
+            addCircle(lastPage, false);
         }
     }
 
-    private void addCircle(LinearLayout paginationIndicators, int page, boolean isCurrent) {
+    private void addCircle(int page, boolean isCurrent) {
         TextView circle = new TextView(getContext());
-        circle.setText(String.valueOf(page + 1)); // Stranice su 0-based, pa dodajemo 1
+        circle.setText(String.valueOf(page + 1));
         circle.setTextSize(12);
         circle.setTextColor(isCurrent ? Color.WHITE : Color.GRAY);
         circle.setBackgroundResource(R.drawable.circle_indicator);
@@ -135,7 +173,7 @@ public class EventListFragment extends Fragment {
         paginationIndicators.addView(circle);
     }
 
-    private void addEllipsis(LinearLayout paginationIndicators) {
+    private void addEllipsis() {
         TextView ellipsis = new TextView(getContext());
         ellipsis.setText("...");
         ellipsis.setTextSize(12);
@@ -144,10 +182,5 @@ public class EventListFragment extends Fragment {
 
         paginationIndicators.addView(ellipsis);
     }
-
-    private List<String> getCurrentPage() {
-        int start = currentPage * pageSize;
-        int end = Math.min(start + pageSize, eventTitles.size());
-        return eventTitles.subList(start, end);
-    }
 }
+

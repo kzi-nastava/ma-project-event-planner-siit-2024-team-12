@@ -5,13 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Glavni sadržaj sa Toolbar-om i RecyclerView-om -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Toolbar sa ikonom za otvaranje drawer-a.java -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/tool_bar"
             android:layout_width="match_parent"
@@ -46,7 +44,8 @@
                 <FrameLayout
                     android:id="@+id/events_list_fragment_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
 
                 <FrameLayout
                     android:id="@+id/cards_products_fragment_container"
@@ -82,13 +81,11 @@
         android:layout_gravity="end"
         android:background="@android:color/white">
 
-        <!-- Glavni Layout za poruke i unos -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <!-- Naslov "Inbox" -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -105,7 +102,6 @@
                     android:textStyle="bold"
                     android:gravity="center" />
 
-                <!-- Linija ispod naslova -->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
@@ -113,7 +109,6 @@
                     android:layout_marginTop="8dp" />
             </LinearLayout>
 
-            <!-- RecyclerView za poruke -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/chat_recycler_view"
                 android:layout_width="match_parent"
@@ -122,7 +117,6 @@
                 android:padding="10dp"
                 android:clipToPadding="false" />
 
-            <!-- Layout za unos nove poruke -->
             <LinearLayout
                 android:id="@+id/inputLayout"
                 android:layout_width="match_parent"
@@ -131,7 +125,6 @@
                 android:padding="10dp"
                 android:background="@color/light_gray">
 
-                <!-- Spinner za izbor korisnika -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -158,13 +151,11 @@
                         android:hint="@string/select_recipient" />
                 </LinearLayout>
 
-                <!-- Horizontalni layout za unos poruke -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <!-- EditText za unos poruke -->
                     <EditText
                         android:id="@+id/messageEditText"
                         android:layout_width="0dp"
@@ -175,7 +166,6 @@
                         android:padding="10dp"
                         android:inputType="text" />
 
-                    <!-- Dugme za slanje poruke -->
                     <ImageView
                         android:id="@+id/sendButton"
                         android:layout_width="50dp"
