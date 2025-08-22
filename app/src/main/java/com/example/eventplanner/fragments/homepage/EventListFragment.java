@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +36,7 @@ import retrofit2.Response;
 public class EventListFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private Button prevPageButton, nextPageButton;
+    private ImageButton prevPageButton, nextPageButton;
     private LinearLayout paginationIndicators;
 
     private EventListAdapter adapter;
@@ -138,24 +139,15 @@ public class EventListFragment extends Fragment {
         if (getView() == null) return;
         paginationIndicators.removeAllViews();
 
-        int lastPage = totalPages - 1;
+        TextView pageInfo = new TextView(getContext());
+        pageInfo.setText((currentPage + 1) + " / " + totalPages);
+        pageInfo.setTextSize(14);
+        pageInfo.setTextColor(Color.DKGRAY);
+        pageInfo.setGravity(Gravity.CENTER);
 
-        if (currentPage > 0) {
-            addCircle(0, false);
-            addEllipsis();
-        }
-
-        if (currentPage > 0) addCircle(currentPage - 1, false);
-
-        addCircle(currentPage, true);
-
-        if (currentPage < lastPage) addCircle(currentPage + 1, false);
-
-        if (lastPage > currentPage + 1) {
-            addEllipsis();
-            addCircle(lastPage, false);
-        }
+        paginationIndicators.addView(pageInfo);
     }
+
 
     private void addCircle(int page, boolean isCurrent) {
         TextView circle = new TextView(getContext());

@@ -19,22 +19,22 @@
         android:gravity="center"
         android:padding="8dp">
 
-        <androidx.appcompat.widget.AppCompatButton
+        <!-- Previous arrow -->
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/prevPageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="@string/previous"
-            android:textSize="11sp"
-            android:layout_marginTop="4dp"
-            android:background="@drawable/rounded_button"
-            android:textColor="@android:color/white"
-            android:layout_marginBottom="4dp" />
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:contentDescription="@string/previous"
+            android:src="@drawable/ic_chevron_left"
+            android:tint="@color/black" />
 
         <Space
             android:layout_width="16dp"
             android:layout_height="wrap_content" />
 
+        <!-- Page indicator -->
         <LinearLayout
             android:id="@+id/paginationIndicators"
             android:orientation="horizontal"
@@ -42,25 +42,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-
-            <!-- Placeholder for pagination numbers -->
-        </LinearLayout>
+            android:layout_marginBottom="8dp" />
 
         <Space
             android:layout_width="16dp"
             android:layout_height="wrap_content" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <!-- Next arrow -->
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/nextPageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="@string/next"
-            android:textSize="11sp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:background="@drawable/rounded_button"
-            android:textColor="@android:color/white" />
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:contentDescription="@string/next"
+            android:src="@drawable/ic_chevron_right"
+            android:tint="@color/black" />
     </LinearLayout>
 </LinearLayout>
