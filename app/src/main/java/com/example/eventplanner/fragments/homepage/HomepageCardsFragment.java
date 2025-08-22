@@ -1,66 +1,105 @@
 package com.example.eventplanner.fragments.homepage;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.homepage.HomepageService;
+import com.example.eventplanner.adapters.homepage.EventCardAdapter;
+import com.example.eventplanner.dto.event.GetEventDTO;
+import com.example.eventplanner.utils.ClientUtils;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomepageCardsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.Collections;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class HomepageCardsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public HomepageCardsFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a.java new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomepageCardsFragment newInstance(String param1, String param2) {
-        HomepageCardsFragment fragment = new HomepageCardsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private RecyclerView eventsRv;
+    private EventCardAdapter adapter;
+    private HomepageService service;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_homepage_cards, container, false);
     }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        eventsRv = view.findViewById(R.id.eventsRecyclerView);
+
+        eventsRv.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
+        );
+
+        adapter = new EventCardAdapter(requireContext());
+        eventsRv.setAdapter(adapter);
+
+        service = ClientUtils.retrofit.create(HomepageService.class);
+
+        loadTopEvents();
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.setItems(Collections.emptyList());
+        loadTopEvents();
+    }
+
+    private void loadTopEvents() {
+        adapter.setItems(Collections.emptyList());
+        SharedPreferences sp = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        String token = sp.getString("token", null);
+
+        Call<List<GetEventDTO>> call;
+        if (token != null && !token.isEmpty()) {
+            call = service.getTop5Events("Bearer " + token);
+        } else {
+            call = service.getTop5Events(null);
+        }
+
+        call.enqueue(new Callback<List<GetEventDTO>>() {
+            @Override
+            public void onResponse(Call<List<GetEventDTO>> call, Response<List<GetEventDTO>> response) {
+                if (!isAdded()) return;
+
+                if (response.isSuccessful() && response.body() != null) {
+                    adapter.setItems(response.body());
+                } else {
+                    adapter.setItems(Collections.emptyList());
+                    String msg = (response.code() == 401)
+                            ? "Prijavi se za personalizovane događaje."
+                            : "Nema događaja za prikaz.";
+                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GetEventDTO>> call, Throwable t) {
+                if (!isAdded()) return;
+                adapter.setItems(Collections.emptyList());
+                Toast.makeText(requireContext(), "Greška mreže: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 }

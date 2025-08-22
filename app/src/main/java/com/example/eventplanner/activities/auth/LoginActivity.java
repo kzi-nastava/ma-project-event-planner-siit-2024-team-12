@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.enumeration.UserRole;
@@ -106,7 +107,6 @@ public class LoginActivity extends AppCompatActivity {
                     String token = userToken.getAccessToken();
                     DecodedJWT decodedJWT = JWT.decode(token);
                     String userRole = decodedJWT.getClaim("role").asString();
-                    // email is stored under the "sub" key in jwt
                     String email = decodedJWT.getClaim("sub").asString();
 
                     SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
@@ -116,20 +116,11 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString("email", email);
                     editor.apply();
 
-
-                    if (userRole.equalsIgnoreCase(UserRole.ROLE_ORGANIZER.toString())) {
-                        Intent intent = new Intent(LoginActivity.this, OrganiserHomepageActivity.class);
-                        startActivity(intent);
-                    }
-                    else if (userRole.equalsIgnoreCase(UserRole.ROLE_PROVIDER.toString())) {
-                        Intent intent = new Intent(LoginActivity.this, ProviderHomepageActivity.class);
-                        startActivity(intent);
-                    }
-                    else if (userRole.equalsIgnoreCase(UserRole.ROLE_ADMIN.toString())) {
-                        Intent intent = new Intent(LoginActivity.this, AdminHomepageActivity.class);
-                        startActivity(intent);
-                    }
+                    Intent intent = new Intent(LoginActivity.this, HomepageActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
+
                 else if (response.code() == 401) {
                     Toast.makeText(LoginActivity.this, "Wrong password!", Toast.LENGTH_SHORT).show();
                 }
