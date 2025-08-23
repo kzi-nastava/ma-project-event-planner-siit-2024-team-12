@@ -39,9 +39,4 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
             viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
         }
     }
-
-    public void closeForm(View view) {
-        setResult(RESULT_CANCELED);
-        finish();
-    }
 }

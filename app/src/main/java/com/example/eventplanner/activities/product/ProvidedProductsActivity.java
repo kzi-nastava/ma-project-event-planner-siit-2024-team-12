@@ -49,7 +49,6 @@ public class ProvidedProductsActivity extends AppCompatActivity {
     private static final int PAGE_SIZE = 3;
     private int currentPage = 1;
     private Button addProductBtn, filterBtn;
-    private ImageView exitBtn;
     private ChipGroup chipGroup;
     private SolutionFilterViewModel filterViewModel;
     private EditText searchBar;
@@ -75,9 +74,6 @@ public class ProvidedProductsActivity extends AppCompatActivity {
         updatePageUI();
 
         setUpAddProductBtn();
-
-        exitBtn = findViewById(R.id.exitBtn);
-        exitBtn.setOnClickListener(this::closeForm);
 
         setUpFilterBtn();
 
@@ -217,12 +213,6 @@ public class ProvidedProductsActivity extends AppCompatActivity {
 
     private int getTotalPages() {
         return (int) Math.ceil((double) allProducts.size() / PAGE_SIZE);
-    }
-
-
-    public void closeForm(View view) {
-        Intent intent = new Intent(ProvidedProductsActivity.this, ProviderHomepageActivity.class);
-        startActivity(intent);
     }
 
 

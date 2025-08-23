@@ -102,14 +102,6 @@ public class BusinessEditActivity extends AppCompatActivity {
     }
 
 
-
-
-    public void closeForm(View view) {
-        setResult(RESULT_CANCELED);
-        finish();
-    }
-
-
     public void setUpInitialForm(GetBusinessDTO dto) {
         businessId = dto.getId();
         businessName = dto.getCompanyName();
