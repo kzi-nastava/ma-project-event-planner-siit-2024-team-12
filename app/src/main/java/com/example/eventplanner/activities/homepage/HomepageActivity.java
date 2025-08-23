@@ -34,6 +34,7 @@ import com.example.eventplanner.activities.product.ProvidedProductsActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
+import com.example.eventplanner.fragments.homepage.EventFilterFragment;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.TopEventsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
@@ -77,9 +78,6 @@ public class HomepageActivity extends AppCompatActivity {
                     .replace(R.id.cards_fragment_container, new TopEventsFragment())
                     .commit();
 
-            fragmentManager.beginTransaction()
-                    .replace(R.id.filter_fragment_container, new HomepageFilterFragment())
-                    .commit();
 
             fragmentManager.beginTransaction()
                     .replace(R.id.events_list_fragment_container, new EventListFragment())
@@ -150,9 +148,6 @@ public class HomepageActivity extends AppCompatActivity {
                 .replace(R.id.cards_fragment_container, new TopEventsFragment())
                 .commit();
 
-        fragmentManager.beginTransaction()
-                .replace(R.id.filter_fragment_container, new HomepageFilterFragment())
-                .commit();
 
         fragmentManager.beginTransaction()
                 .replace(R.id.events_list_fragment_container, new EventListFragment())

@@ -4,6 +4,7 @@ import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.dto.solution.GetHomepageSolutionDTO;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -20,6 +21,7 @@ public interface HomepageService {
 
     @GET("homepage/events/filter")
     Call<List<GetEventDTO>> searchEvents(
+            @Header("Authorization") String bearer,
             @Query("name") String name,
             @Query("description") String description,
             @Query("eventType") String eventType,
@@ -38,4 +40,7 @@ public interface HomepageService {
             @Query("limitTo10") boolean limitTo10,
             @Query("ignoreCityFilter") boolean ignoreCityFilter
     );
+
+    @GET("homepage/events/filters")
+    Call<Map<String, Object>> getAvailableEventFilters();
 }

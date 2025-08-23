@@ -345,4 +345,13 @@
     <string name="add_images">Add images</string>
     <string name="address_format">Address [street, city, country] :</string>
 
+
+    <!-- Filters -->
+    <string name="start_date">Start date</string>
+    <string name="end_date">End date</string>
+    <string name="rating">Rating</string>
+    <string name="apply">Apply</string>
+    <string name="all_events">ALL EVENTS</string>
+    <string name="only_from_my_city">Only from my city</string>
+
 </resources>
