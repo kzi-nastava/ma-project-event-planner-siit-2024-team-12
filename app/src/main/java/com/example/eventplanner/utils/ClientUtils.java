@@ -14,6 +14,7 @@ import com.example.eventplanner.activities.event.EventService;
 import com.example.eventplanner.activities.eventtype.EventTypeService;
 import com.example.eventplanner.activities.product.ProductService;
 import com.example.eventplanner.activities.profile.UserService;
+import com.example.eventplanner.activities.service.ServiceSolutionService;
 import com.example.eventplanner.activities.solutioncategory.SolutionCategoryService;
 import com.example.eventplanner.adapters.datetime.LocalDateAdapter;
 import com.example.eventplanner.adapters.datetime.LocalTimeAdapter;
@@ -77,5 +78,7 @@ public class ClientUtils {
     public static ProductService productService = retrofit.create(ProductService.class);
 
     public static GalleryService galleryService = retrofit.create(GalleryService.class);
+
+    public static ServiceSolutionService serviceSolutionService = retrofit.create(ServiceSolutionService.class);
 
 }

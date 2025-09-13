@@ -14,6 +14,8 @@
     <string name="service_4">Service 4</string>
     <string name="service_5">Service 5</string>
     <string name="desc">The best service...</string>
+    <string name="service_title_placeholder">Service Title</string>
+    <string name="service_image_description">Image of the service</string>
 
 
     <!-- Unregistered user homepage -->
