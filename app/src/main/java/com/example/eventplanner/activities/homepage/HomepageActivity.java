@@ -2,6 +2,7 @@ package com.example.eventplanner.activities.homepage;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 
 import androidx.annotation.NonNull;
@@ -68,31 +69,6 @@ public class HomepageActivity extends AppCompatActivity {
                 else if (id == R.id.nav_signup) {
                     Intent intent = new Intent(HomepageActivity.this, SignUpActivity.class);
                     startActivity(intent);
-                }else if(id==R.id.nav_services){
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.homepage_fragment_container, new ServiceManagement())
-                            .commit();
-
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.cards_fragment_container))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.cards_products_fragment_container))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container_products))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.events_list_fragment_container))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.ps_list_fragment_container))
-                            .commit();
                 }
 
                 // Close the drawer after an item is selected

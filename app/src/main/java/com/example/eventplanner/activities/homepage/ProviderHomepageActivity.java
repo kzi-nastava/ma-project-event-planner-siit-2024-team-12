@@ -146,30 +146,42 @@ public class ProviderHomepageActivity extends AppCompatActivity {
                 }
 
                 else if (id == R.id.nav_log_out) { logOut();}
-                else if (id == R.id.nav_services) {
+                else if (id == R.id.nav_service) {
                     FragmentManager fragmentManager = getSupportFragmentManager();
+
+                    if (fragmentManager.findFragmentById(R.id.cards_fragment_container) != null) {
+                        fragmentManager.beginTransaction()
+                                .remove(fragmentManager.findFragmentById(R.id.cards_fragment_container))
+                                .commit();
+                    }
+                    if (fragmentManager.findFragmentById(R.id.filter_fragment_container) != null) {
+                        fragmentManager.beginTransaction()
+                                .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container))
+                                .commit();
+                    }
+                    if (fragmentManager.findFragmentById(R.id.cards_products_fragment_container) != null) {
+                        fragmentManager.beginTransaction()
+                                .remove(fragmentManager.findFragmentById(R.id.cards_products_fragment_container))
+                                .commit();
+                    }
+                    if (fragmentManager.findFragmentById(R.id.filter_fragment_container_products) != null) {
+                        fragmentManager.beginTransaction()
+                                .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container_products))
+                                .commit();
+                    }
+                    if (fragmentManager.findFragmentById(R.id.events_list_fragment_container) != null) {
+                        fragmentManager.beginTransaction()
+                                .remove(fragmentManager.findFragmentById(R.id.events_list_fragment_container))
+                                .commit();
+                    }
+                    if (fragmentManager.findFragmentById(R.id.ps_list_fragment_container) != null) {
+                        fragmentManager.beginTransaction()
+                                .remove(fragmentManager.findFragmentById(R.id.ps_list_fragment_container))
+                                .commit();
+                    }
 
                     fragmentManager.beginTransaction()
                             .replace(R.id.homepage_fragment_container, new ServiceManagement())
-                            .commit();
-
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.cards_fragment_container))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.cards_products_fragment_container))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.filter_fragment_container_products))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.events_list_fragment_container))
-                            .commit();
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentById(R.id.ps_list_fragment_container))
                             .commit();
                 }
 
