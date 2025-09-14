@@ -17,6 +17,53 @@
     <string name="service_title_placeholder">Service Title</string>
     <string name="service_image_description">Image of the service</string>
 
+    <!-- Create service form -->
+    <string name="price">Price</string>
+    <string name="discount">Discount</string>
+    <string name="plus_button">Add service</string>
+    <string name="create_service">Create service</string>
+    <string name="create_category_title">Create category</string>
+    <string-array name="service_category_spinner">
+        <item>Category 1</item>
+        <item>Category 2</item>
+        <item>Category 3</item>
+    </string-array>
+    <string name="service_name">Service name:</string>
+    <string name="Service_duration">Duration:</string>
+    <string name="create_category">Create new</string>
+    <string name="create_price">Price:</string>
+    <string name="create_discount">Discount:</string>
+    <string name="create_res_deadline">Reservation deadline:</string>
+    <string-array name="service_visibility_spinner">
+        <item>Visible</item>
+        <item>Invisible</item>
+    </string-array>
+    <string-array name="service_availability_spinner">
+        <item>Available</item>
+        <item>Unavailable</item>
+    </string-array>
+    <string-array name="service_event_type_spinner">
+        <item>Event 1</item>
+        <item>Event 2</item>
+        <item>Event 3</item>
+    </string-array>
+    <string-array name="service_reservation_confirmation_spinner">
+        <item>Automatic</item>
+        <item>Manual</item>
+    </string-array>
+    <string name="service_description">Description:</string>
+    <string name="service_image_url">Image url:</string>
+    <string name="service_specificities">Specificities</string>
+    <string name="service_created">Service created successfully!</string>
+    <string name="category_created">Category created successfully!</string>
+    <string name="service_edited">Service edited successfully!</string>
+    <string name="service_deleted">Service deleted successfully!</string>
+    <string name="close_form_description">Close form</string>
+    <string name="fixed">Fixed duration</string>
+    <string name="flexible">Flexible duration</string>
+    <string name="hours">Hours:</string>
+    <string name="minutes">Minutes:</string>
+    <string name="from">From:</string>
 
     <!-- Unregistered user homepage -->
     <string name="open_drawer">Open Navigation Drawer</string>
@@ -97,48 +144,6 @@
     <string name="product_5">Product 5</string>
     <string name="category1">Category 1</string>
 
-
-    <!-- Create service form -->
-    <string name="price">Price</string>
-    <string name="discount">Discount</string>
-    <string name="plus_button">Add service</string>
-    <string name="create_service">Create service</string>
-    <string name="create_category_title">Create category</string>
-    <string-array name="service_category_spinner">
-        <item>Category 1</item>
-        <item>Category 2</item>
-        <item>Category 3</item>
-    </string-array>
-    <string name="service_name">Service name:</string>
-    <string name="Service_duration">Duration:</string>
-    <string name="create_category">Create new</string>
-    <string name="create_price">Price:</string>
-    <string name="create_discount">Discount:</string>
-    <string name="create_res_deadline">Reservation deadline:</string>
-    <string-array name="service_visibility_spinner">
-        <item>Visible</item>
-        <item>Invisible</item>
-    </string-array>
-    <string-array name="service_availability_spinner">
-        <item>Available</item>
-        <item>Unavailable</item>
-    </string-array>
-    <string-array name="service_event_type_spinner">
-        <item>Event 1</item>
-        <item>Event 2</item>
-        <item>Event 3</item>
-    </string-array>
-    <string-array name="service_reservation_confirmation_spinner">
-        <item>Automatic</item>
-        <item>Manual</item>
-    </string-array>
-    <string name="service_description">Description:</string>
-    <string name="service_image_url">Image url:</string>
-    <string name="service_specificities">Specificities</string>
-    <string name="service_created">Service created successfully!</string>
-    <string name="category_created">Category created successfully!</string>
-    <string name="service_edited">Service edited successfully!</string>
-    <string name="service_deleted">Service deleted successfully!</string>
 
 
     <!-- Account activation/verification -->

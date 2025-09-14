@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.solutioncategory.CategoryCreationActivity;
@@ -86,6 +88,10 @@ public class ServiceCreation extends Fragment {
         ImageButton newCategoryButton = view.findViewById(R.id.dugme);
         ImageView xButton = view.findViewById(R.id.imageView5);
 
+        RadioGroup durationRadioGroup = view.findViewById(R.id.duration_radio_group);
+        LinearLayout fixedDurationLayout = view.findViewById(R.id.fixed_duration_layout);
+        LinearLayout flexibleDurationLayout = view.findViewById(R.id.flexible_duration_layout);
+
         nextButton.setOnClickListener(v -> {
             Fragment parentFragment=getParentFragment();
             if (parentFragment instanceof ServiceCreationContainer) {
@@ -101,6 +107,16 @@ public class ServiceCreation extends Fragment {
         xButton.setOnClickListener(v ->{
             if (getActivity() != null) {
                 getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+
+        durationRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.fixed_duration_radio) {
+                fixedDurationLayout.setVisibility(View.VISIBLE);
+                flexibleDurationLayout.setVisibility(View.GONE);
+            } else if (checkedId == R.id.flexible_duration_radio) {
+                fixedDurationLayout.setVisibility(View.GONE);
+                flexibleDurationLayout.setVisibility(View.VISIBLE);
             }
         });
 
