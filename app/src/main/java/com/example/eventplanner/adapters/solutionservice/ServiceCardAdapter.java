@@ -44,7 +44,7 @@ public class ServiceCardAdapter extends RecyclerView.Adapter<ServiceCardAdapter.
     public void onBindViewHolder(@NonNull ServiceCardViewHolder holder, int position) {
         GetServiceDTO service = services.get(position);
         holder.serviceTitle.setText(service.getName());
-        
+
          Glide.with(holder.itemView.getContext())
              .load(ClientUtils.BASE_IMAGE_URL + service.getImageUrl())
              .placeholder(R.drawable.shopping_cart)

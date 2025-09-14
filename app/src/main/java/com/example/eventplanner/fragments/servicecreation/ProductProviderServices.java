@@ -86,26 +86,12 @@ public class ProductProviderServices extends Fragment {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        // Obradi rezultat ovde ako je potrebno
                         Intent data = result.getData();
-                        // Na primer, možeš pročitati podatke iz Intent-a.java ovde
                     }
                 }
         );
     }
 
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        View view = inflater.inflate(R.layout.fragment_product_provider_services, container, false);
-//        AppCompatButton serviceEditButton = view.findViewById(R.id.service_details_button);
-//        serviceEditButton.setOnClickListener(v -> {
-//            Intent intent = new Intent(getActivity(), ServiceEditActivity.class);
-//            activityResultLauncher.launch(intent);
-//        });
-//        return view;
-//    }
 @Override
 public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                          Bundle savedInstanceState) {
@@ -113,11 +99,9 @@ public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
 
     servicesRecyclerView = view.findViewById(R.id.services_horizontal_recycler_view);
 
-    // Postavljanje LayoutManager-a za horizontalni prikaz
     LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
     servicesRecyclerView.setLayoutManager(layoutManager);
 
-    // Inicijalizacija adaptera sa praznom listom
     serviceCardAdapter = new ServiceCardAdapter(new ArrayList<>());
     servicesRecyclerView.setAdapter(serviceCardAdapter);
 
@@ -131,18 +115,15 @@ public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
 //        activityResultLauncher.launch(intent);
 //    });
 
-    // Pozivanje metode za dohvaćanje podataka sa servera
     fetchProvidedServices();
 
     return view;
 }
 
     private void fetchProvidedServices() {
-        // Pretpostavka: auth token i email su dostupni negde u vašem kodu.
-        // Na primer, iz SharedPreferences ili Singleton klase
+
         String auth = ClientUtils.getAuthorization(getContext());
 
-        // Kreiranje Retrofit poziva
         Call<List<GetServiceDTO>> call = ClientUtils.serviceSolutionService.getProvidedServices(auth);
 
         call.enqueue(new Callback<List<GetServiceDTO>>() {
@@ -151,21 +132,17 @@ public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                 if (response.isSuccessful()) {
                     List<GetServiceDTO> services = response.body();
                     if (services != null && !services.isEmpty()) {
-                        // Uspešno učitavanje podataka, ažurirajte adapter
                         serviceCardAdapter.updateServices(services);
                         Log.d("API_CALL", "Successfully loaded " + services.size() + " services.");
                     } else if (response.code() == 204) {
-                        // Nema sadržaja (204 No Content), lista je prazna
                         serviceCardAdapter.updateServices(new ArrayList<>());
                         Log.d("API_CALL", "No services found (204 No Content).");
                         Toast.makeText(getContext(), "Nema dostupnih usluga.", Toast.LENGTH_SHORT).show();
                     } else {
-                        // Greška, telo odgovora je prazno
                         Toast.makeText(getContext(), "Greška pri učitavanju usluga.", Toast.LENGTH_SHORT).show();
                         Log.e("API_CALL", "Error: Body is null or empty, code: " + response.code());
                     }
                 } else {
-                    // Neuspešan odgovor servera (npr. 401, 403, 500)
                     Toast.makeText(getContext(), "Greška: " + response.message() + " (" + response.code() + ")", Toast.LENGTH_SHORT).show();
                     Log.e("API_CALL", "Unsuccessful response from server: " + response.code());
                 }
@@ -173,7 +150,6 @@ public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
 
             @Override
             public void onFailure(Call<List<GetServiceDTO>> call, Throwable t) {
-                // Greška na mreži (npr. nema interneta)
                 Toast.makeText(getContext(), "Greška na mreži: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("API_CALL", "Network failure: " + t.getMessage());
             }
