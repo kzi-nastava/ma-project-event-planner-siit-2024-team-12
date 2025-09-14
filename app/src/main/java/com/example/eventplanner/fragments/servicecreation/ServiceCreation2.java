@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.example.eventplanner.R;
 /**
@@ -64,6 +65,7 @@ public class ServiceCreation2 extends Fragment {
         View view = inflater.inflate(R.layout.fragment_service_creation2, container, false);
         Button nextButton = view.findViewById(R.id.nextServiceCreate2);
         Button backButton = view.findViewById(R.id.backServiceCreate);
+        ImageView xButton = view.findViewById(R.id.imageView5);
 
         nextButton.setOnClickListener(v -> {
             Fragment parentFragment = getParentFragment();
@@ -76,6 +78,12 @@ public class ServiceCreation2 extends Fragment {
             Fragment parentFragment = getParentFragment();
             if (parentFragment instanceof ServiceCreationContainer) {
                 ((ServiceCreationContainer) parentFragment).previousPage();
+            }
+        });
+
+        xButton.setOnClickListener(v ->{
+            if (getActivity() != null) {
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.eventplanner.R;
@@ -66,8 +67,9 @@ public class ServiceCreation4 extends Fragment {
         View view = inflater.inflate(R.layout.fragment_service_creation4, container, false);
         Button backButton = view.findViewById(R.id.backServiceCreate4);
         Button submitButton = view.findViewById(R.id.submitService);
+        ImageView xButton = view.findViewById(R.id.imageView5);
 
-        String ServiceCreatedMessage = getString(R.string.service_created);
+        String serviceCreatedMessage = getString(R.string.service_created);
 
         backButton.setOnClickListener(v -> {
             Fragment parentFragment = getParentFragment();
@@ -77,7 +79,13 @@ public class ServiceCreation4 extends Fragment {
         });
 
         submitButton.setOnClickListener(v -> {
-            Toast.makeText(getActivity(), ServiceCreatedMessage, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), serviceCreatedMessage, Toast.LENGTH_SHORT).show();
+        });
+
+        xButton.setOnClickListener(v ->{
+            if (getActivity() != null) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
         });
 
         return view;

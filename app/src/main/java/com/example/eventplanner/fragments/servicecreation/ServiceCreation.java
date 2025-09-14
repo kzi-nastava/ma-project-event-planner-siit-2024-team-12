@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.solutioncategory.CategoryCreationActivity;
@@ -83,6 +84,7 @@ public class ServiceCreation extends Fragment {
         View view = inflater.inflate(R.layout.fragment_service_creation, container, false);
         Button nextButton = view.findViewById(R.id.nextServiceCreate);
         ImageButton newCategoryButton = view.findViewById(R.id.dugme);
+        ImageView xButton = view.findViewById(R.id.imageView5);
 
         nextButton.setOnClickListener(v -> {
             Fragment parentFragment=getParentFragment();
@@ -94,6 +96,12 @@ public class ServiceCreation extends Fragment {
         newCategoryButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), CategoryCreationActivity.class);
             activityResultLauncher.launch(intent);
+        });
+
+        xButton.setOnClickListener(v ->{
+            if (getActivity() != null) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
         });
 
 
