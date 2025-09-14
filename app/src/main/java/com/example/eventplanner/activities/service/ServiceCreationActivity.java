@@ -20,7 +20,7 @@ public class ServiceCreationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_service_creation);
 
         viewPager = findViewById(R.id.serviceCreationPager);
-        adapter = new ServiceCreationPagerAdapter(this);
+//        adapter = new ServiceCreationPagerAdapter(this);
         viewPager.setAdapter(adapter);
 
 

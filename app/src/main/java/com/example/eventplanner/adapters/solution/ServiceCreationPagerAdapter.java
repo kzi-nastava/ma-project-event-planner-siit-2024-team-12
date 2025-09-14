@@ -12,8 +12,8 @@ import com.example.eventplanner.fragments.servicecreation.ServiceCreation4;
 
 public class ServiceCreationPagerAdapter extends FragmentStateAdapter {
 
-    public ServiceCreationPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
-        super(fragmentActivity);
+    public ServiceCreationPagerAdapter(@NonNull Fragment fragment) {
+        super(fragment);
     }
 
     @NonNull

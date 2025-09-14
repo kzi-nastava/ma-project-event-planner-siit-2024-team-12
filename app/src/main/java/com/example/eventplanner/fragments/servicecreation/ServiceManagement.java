@@ -74,13 +74,21 @@ public class ServiceManagement extends Fragment {
         imgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create an intent to start ServiceCreationActivity
-                Intent intent = new Intent(getActivity(), ServiceCreationActivity.class);
-                startActivity(intent);
+                openServiceCreationFragment();
             }
         });
 
         return rootView;
+    }
+
+    private void openServiceCreationFragment() {
+        ServiceCreationContainer serviceCreationContainerFragment = new ServiceCreationContainer();
+
+        getParentFragmentManager()
+                .beginTransaction()
+                .replace(R.id.homepage_fragment_container, serviceCreationContainerFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override

@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.service.ServiceCreationActivity;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ServiceCreation3#newInstance} factory method to
@@ -68,14 +66,16 @@ public class ServiceCreation3 extends Fragment {
         Button backButton = view.findViewById(R.id.backServiceCreate3);
 
         nextButton.setOnClickListener(v -> {
-            if (getActivity() instanceof ServiceCreationActivity) {
-                ((ServiceCreationActivity) getActivity()).nextPage();
+            Fragment parentFragment = getParentFragment();
+            if (parentFragment instanceof ServiceCreationContainer) {
+                ((ServiceCreationContainer) parentFragment).nextPage();
             }
         });
 
         backButton.setOnClickListener(v -> {
-            if (getActivity() instanceof ServiceCreationActivity) {
-                ((ServiceCreationActivity) getActivity()).previousPage();
+            Fragment parentFragment = getParentFragment();
+            if (parentFragment instanceof ServiceCreationContainer) {
+                ((ServiceCreationContainer) parentFragment).previousPage();
             }
         });
 

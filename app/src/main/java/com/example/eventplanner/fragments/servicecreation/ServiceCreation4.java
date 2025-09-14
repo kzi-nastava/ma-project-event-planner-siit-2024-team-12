@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.service.ServiceCreationActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -71,8 +70,9 @@ public class ServiceCreation4 extends Fragment {
         String ServiceCreatedMessage = getString(R.string.service_created);
 
         backButton.setOnClickListener(v -> {
-            if (getActivity() instanceof ServiceCreationActivity) {
-                ((ServiceCreationActivity) getActivity()).previousPage();
+            Fragment parentFragment = getParentFragment();
+            if (parentFragment instanceof ServiceCreationContainer) {
+                ((ServiceCreationContainer) parentFragment).previousPage();
             }
         });
 

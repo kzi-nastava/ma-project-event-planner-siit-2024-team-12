@@ -16,8 +16,6 @@ import android.widget.ImageButton;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.solutioncategory.CategoryCreationActivity;
-import com.example.eventplanner.activities.service.ServiceCreationActivity;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ServiceCreation#newInstance} factory method to
@@ -87,8 +85,9 @@ public class ServiceCreation extends Fragment {
         ImageButton newCategoryButton = view.findViewById(R.id.dugme);
 
         nextButton.setOnClickListener(v -> {
-            if (getActivity() instanceof ServiceCreationActivity) {
-                ((ServiceCreationActivity) getActivity()).nextPage();
+            Fragment parentFragment=getParentFragment();
+            if (parentFragment instanceof ServiceCreationContainer) {
+                ((ServiceCreationContainer) parentFragment).nextPage();
             }
         });
 
