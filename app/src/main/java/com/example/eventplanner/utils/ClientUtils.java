@@ -16,12 +16,14 @@ import com.example.eventplanner.activities.product.ProductService;
 import com.example.eventplanner.activities.profile.UserService;
 import com.example.eventplanner.activities.service.ServiceSolutionService;
 import com.example.eventplanner.activities.solutioncategory.SolutionCategoryService;
+import com.example.eventplanner.adapters.datetime.DurationAdapter;
 import com.example.eventplanner.adapters.datetime.LocalDateAdapter;
 import com.example.eventplanner.adapters.datetime.LocalTimeAdapter;
 import com.example.eventplanner.fragments.gallery.GalleryService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -31,11 +33,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ClientUtils {
 
     public static final String SERVICE_API_PATH = "http://" + BuildConfig.IP_ADDR + ":8080/api/";
-
+    public static final String BASE_IMAGE_URL = "http://" + BuildConfig.IP_ADDR + ":8080";
     // add adapters for proper LocalDate and LocalTime parsing
     static Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
             .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationAdapter())
             .create();
 
     public static Retrofit retrofit = new Retrofit.Builder()

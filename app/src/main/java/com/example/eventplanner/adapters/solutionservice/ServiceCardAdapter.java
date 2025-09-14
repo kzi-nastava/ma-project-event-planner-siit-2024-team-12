@@ -7,9 +7,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.service.ServiceEditActivity;
 import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
+import com.example.eventplanner.utils.ClientUtils;
 import com.google.android.material.imageview.ShapeableImageView;
 import java.util.List;
 
@@ -41,14 +44,11 @@ public class ServiceCardAdapter extends RecyclerView.Adapter<ServiceCardAdapter.
     public void onBindViewHolder(@NonNull ServiceCardViewHolder holder, int position) {
         GetServiceDTO service = services.get(position);
         holder.serviceTitle.setText(service.getName());
-
-        // Ovdje postavite sliku za servis
-        // Preporučuje se upotreba biblioteka poput Glide ili Picasso za efikasno učitavanje slika s URL-a.
-        // Primjer:
-        // Glide.with(holder.itemView.getContext())
-        //     .load(service.getImageUrl())
-        //     .placeholder(R.drawable.placeholder_image)
-        //     .into(holder.serviceImage);
+        
+         Glide.with(holder.itemView.getContext())
+             .load(ClientUtils.BASE_IMAGE_URL + service.getImageUrl())
+             .placeholder(R.drawable.shopping_cart)
+             .into(holder.serviceImage);
 
         holder.detailsButton.setOnClickListener(v -> {
             if (listener != null) {
@@ -62,7 +62,6 @@ public class ServiceCardAdapter extends RecyclerView.Adapter<ServiceCardAdapter.
         return services != null ? services.size() : 0;
     }
 
-    // Metoda za ažuriranje liste servisa
     public void updateServices(List<GetServiceDTO> newServices) {
         this.services = newServices;
         notifyDataSetChanged();

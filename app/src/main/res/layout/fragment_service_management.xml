@@ -6,12 +6,12 @@
     android:padding="16dp">
 
     <!-- SearchView na vrhu -->
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/search_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/border_background"
-        android:queryHint="Search services" />
+<!--    <androidx.appcompat.widget.SearchView-->
+<!--        android:id="@+id/search_view"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@drawable/border_background"-->
+<!--        android:queryHint="Search services" />-->
 
     <!-- Relativni layout za MY SERVICES i ImageButton -->
     <RelativeLayout
