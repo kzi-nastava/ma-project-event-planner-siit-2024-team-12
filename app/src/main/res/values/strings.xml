@@ -34,6 +34,7 @@
     <string name="create_price">Price:</string>
     <string name="create_discount">Discount:</string>
     <string name="create_res_deadline">Reservation deadline:</string>
+    <string name="create_cancel_deadline">Cancellation deadline:</string>
     <string-array name="service_visibility_spinner">
         <item>Visible</item>
         <item>Invisible</item>

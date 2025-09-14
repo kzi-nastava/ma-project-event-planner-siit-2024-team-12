@@ -62,7 +62,7 @@
             android:background="@drawable/input_field"
             android:ems="10"
             android:hint="@string/create_price"
-            android:inputType="text"
+            android:inputType="number"
             android:paddingStart="12dp"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -78,14 +78,30 @@
             android:background="@drawable/input_field"
             android:ems="10"
             android:hint="@string/create_res_deadline"
-            android:inputType="text"
+            android:inputType="number"
             android:paddingStart="12dp"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.587" />
+            app:layout_constraintVertical_bias="0.56" />
+
+        <EditText
+            android:id="@+id/editTextText5"
+            android:layout_width="240dp"
+            android:layout_height="32dp"
+            android:background="@drawable/input_field"
+            android:ems="10"
+            android:hint="@string/create_cancel_deadline"
+            android:inputType="number"
+            android:paddingStart="12dp"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.675" />
 
         <EditText
             android:id="@+id/editTextTextEdit2"
@@ -94,14 +110,14 @@
             android:background="@drawable/input_field"
             android:ems="10"
             android:hint="@string/create_discount"
-            android:inputType="text"
+            android:inputType="number"
             android:paddingStart="12dp"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.45" />
+            app:layout_constraintVertical_bias="0.442" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/nextServiceCreate2"
