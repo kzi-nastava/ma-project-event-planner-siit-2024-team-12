@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -79,7 +80,9 @@ public class ServiceCreation4 extends Fragment {
         });
 
         submitButton.setOnClickListener(v -> {
-            Toast.makeText(getActivity(), serviceCreatedMessage, Toast.LENGTH_SHORT).show();
+            if(validateForm()){
+                Toast.makeText(getActivity(), serviceCreatedMessage, Toast.LENGTH_SHORT).show();
+            }
         });
 
         xButton.setOnClickListener(v ->{
@@ -89,5 +92,22 @@ public class ServiceCreation4 extends Fragment {
         });
 
         return view;
+    }
+
+    public boolean validateForm() {
+        EditText serviceDescriptionEditText = requireView().findViewById(R.id.service_description_edittext);
+        EditText serviceSpecificitiesEditText = requireView().findViewById(R.id.service_specificities_edittext);
+
+        if (serviceDescriptionEditText.getText().toString().trim().isEmpty()) {
+            serviceDescriptionEditText.setError("Opis usluge ne može biti prazan.");
+            return false;
+        }
+
+        if (serviceSpecificitiesEditText.getText().toString().trim().isEmpty()) {
+            serviceSpecificitiesEditText.setError("Specifičnosti ne mogu biti prazne.");
+            return false;
+        }
+
+        return true;
     }
 }

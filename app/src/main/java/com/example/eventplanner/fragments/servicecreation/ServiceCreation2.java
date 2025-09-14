@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.eventplanner.R;
@@ -68,9 +69,11 @@ public class ServiceCreation2 extends Fragment {
         ImageView xButton = view.findViewById(R.id.imageView5);
 
         nextButton.setOnClickListener(v -> {
-            Fragment parentFragment = getParentFragment();
-            if (parentFragment instanceof ServiceCreationContainer) {
-                ((ServiceCreationContainer) parentFragment).nextPage();
+            if(validateForm()){
+                Fragment parentFragment = getParentFragment();
+                if (parentFragment instanceof ServiceCreationContainer) {
+                    ((ServiceCreationContainer) parentFragment).nextPage();
+                }
             }
         });
 
@@ -88,5 +91,61 @@ public class ServiceCreation2 extends Fragment {
         });
 
         return view;
+    }
+
+    public boolean validateForm() {
+        EditText priceEditText = requireView().findViewById(R.id.editTextTextEdit);
+        EditText discountEditText = requireView().findViewById(R.id.editTextTextEdit2);
+        EditText resDeadlineEditText = requireView().findViewById(R.id.editTextText4);
+        EditText cancelDeadlineEditText = requireView().findViewById(R.id.editTextText5);
+
+        if (priceEditText.getText().toString().trim().isEmpty()) {
+            priceEditText.setError("Cena ne može biti prazna.");
+            return false;
+        }
+        if (discountEditText.getText().toString().trim().isEmpty()) {
+            discountEditText.setError("Popust ne može biti prazan.");
+            return false;
+        }
+        if (resDeadlineEditText.getText().toString().trim().isEmpty()) {
+            resDeadlineEditText.setError("Rok za rezervaciju ne može biti prazan.");
+            return false;
+        }
+        if (cancelDeadlineEditText.getText().toString().trim().isEmpty()) {
+            cancelDeadlineEditText.setError("Rok za otkazivanje ne može biti prazan.");
+            return false;
+        }
+
+        int price;
+        int discount;
+        int resDeadline;
+        int cancelDeadline;
+
+        try {
+            price = Integer.parseInt(priceEditText.getText().toString().trim());
+            discount = Integer.parseInt(discountEditText.getText().toString().trim());
+            resDeadline = Integer.parseInt(resDeadlineEditText.getText().toString().trim());
+            cancelDeadline = Integer.parseInt(cancelDeadlineEditText.getText().toString().trim());
+        } catch (NumberFormatException e) {
+            priceEditText.setError("Unesite ispravne brojeve.");
+            return false;
+        }
+
+        if (price < 1) {
+            priceEditText.setError("Cena mora biti najmanje 1.");
+            return false;
+        }
+
+        if (discount < 0 || discount > 99) {
+            discountEditText.setError("Popust mora biti između 0 i 99.");
+            return false;
+        }
+
+        if (resDeadline <= cancelDeadline) {
+            resDeadlineEditText.setError("Rok za rezervaciju mora biti duži od roka za otkazivanje.");
+            return false;
+        }
+
+        return true;
     }
 }

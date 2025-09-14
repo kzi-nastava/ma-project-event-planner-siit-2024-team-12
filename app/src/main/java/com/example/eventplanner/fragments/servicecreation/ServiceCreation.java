@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -93,9 +94,11 @@ public class ServiceCreation extends Fragment {
         LinearLayout flexibleDurationLayout = view.findViewById(R.id.flexible_duration_layout);
 
         nextButton.setOnClickListener(v -> {
-            Fragment parentFragment=getParentFragment();
-            if (parentFragment instanceof ServiceCreationContainer) {
-                ((ServiceCreationContainer) parentFragment).nextPage();
+            if(validateForm()){
+                Fragment parentFragment=getParentFragment();
+                if (parentFragment instanceof ServiceCreationContainer) {
+                    ((ServiceCreationContainer) parentFragment).nextPage();
+                }
             }
         });
 
@@ -124,5 +127,89 @@ public class ServiceCreation extends Fragment {
 
 
         return view;
+    }
+
+    public boolean validateForm() {
+        EditText serviceNameEditText = requireView().findViewById(R.id.editTextServiceName);
+        if (serviceNameEditText.getText().toString().trim().isEmpty()) {
+            serviceNameEditText.setError("Naziv usluge ne može biti prazan.");
+            return false;
+        }
+
+        RadioGroup durationRadioGroup = requireView().findViewById(R.id.duration_radio_group);
+        int checkedRadioButtonId = durationRadioGroup.getCheckedRadioButtonId();
+
+        if (checkedRadioButtonId == R.id.fixed_duration_radio) {
+            EditText fixedHoursEditText = requireView().findViewById(R.id.fixed_hours_edittext);
+            EditText fixedMinutesEditText = requireView().findViewById(R.id.fixed_minutes_edittext);
+
+            String hoursString = fixedHoursEditText.getText().toString().trim();
+            String minutesString = fixedMinutesEditText.getText().toString().trim();
+
+            if (hoursString.isEmpty()) {
+                fixedHoursEditText.setError("Unesite sate.");
+                return false;
+            }
+            if (minutesString.isEmpty()) {
+                fixedMinutesEditText.setError("Unesite minute.");
+                return false;
+            }
+
+            try {
+                int hours = Integer.parseInt(hoursString);
+                int minutes = Integer.parseInt(minutesString);
+
+                if (hours < 0) {
+                    fixedHoursEditText.setError("Sati ne mogu biti manji od 0.");
+                    return false;
+                }
+                if (minutes < 0 || minutes > 59) {
+                    fixedMinutesEditText.setError("Minuti moraju biti između 0 i 59.");
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                fixedHoursEditText.setError("Unesite ispravan broj.");
+                return false;
+            }
+
+        } else if (checkedRadioButtonId == R.id.flexible_duration_radio) {
+            EditText flexibleFromEditText = requireView().findViewById(R.id.flexible_from_edittext);
+            EditText flexibleToEditText = requireView().findViewById(R.id.flexible_to_edittext);
+
+            String fromString = flexibleFromEditText.getText().toString().trim();
+            String toString = flexibleToEditText.getText().toString().trim();
+
+            if (fromString.isEmpty()) {
+                flexibleFromEditText.setError("Unesite početnu vrednost.");
+                return false;
+            }
+            if (toString.isEmpty()) {
+                flexibleToEditText.setError("Unesite krajnju vrednost.");
+                return false;
+            }
+
+            try {
+                int fromValue = Integer.parseInt(fromString);
+                int toValue = Integer.parseInt(toString);
+
+                if (fromValue < 0) {
+                    flexibleFromEditText.setError("Vrednost ne može biti manja od 0.");
+                    return false;
+                }
+                if (toValue < 0) {
+                    flexibleToEditText.setError("Vrednost ne može biti manja od 0.");
+                    return false;
+                }
+                if (fromValue >= toValue) {
+                    flexibleToEditText.setError("Krajnja vrednost mora biti veća od početne.");
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                flexibleFromEditText.setError("Unesite ispravan broj.");
+                return false;
+            }
+        }
+
+        return true;
     }
 }

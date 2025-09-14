@@ -31,8 +31,8 @@
     <string name="service_name">Service name:</string>
     <string name="Service_duration">Duration:</string>
     <string name="create_category">Create new</string>
-    <string name="create_price">Price:</string>
-    <string name="create_discount">Discount:</string>
+    <string name="create_price">Price ($):</string>
+    <string name="create_discount">Discount (%):</string>
     <string name="create_res_deadline">Reservation deadline:</string>
     <string name="create_cancel_deadline">Cancellation deadline:</string>
     <string-array name="service_visibility_spinner">
