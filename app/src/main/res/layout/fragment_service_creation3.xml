@@ -55,17 +55,37 @@
             app:layout_constraintVertical_bias="0.12" />
 
 
-        <Spinner
-            android:id="@+id/spinnerServiceCreate"
+        <LinearLayout
+            android:id="@+id/eventTypeContainer"
             android:layout_width="240dp"
-            android:layout_height="29dp"
-            android:entries="@array/service_event_type_spinner"
-            android:spinnerMode="dropdown"
+            android:layout_height="wrap_content"
+            android:background="@drawable/input_field"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.307" />
+            app:layout_constraintVertical_bias="0.307" >
+
+            <TextView
+                android:id="@+id/eventTypeTextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="8dp"
+                android:text="Odaberite tipove događaja"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/eventTypeArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingEnd="12dp"
+                android:src="@drawable/ic_expand_arrow" />
+        </LinearLayout>
 
         <Spinner
             android:id="@+id/spinnerServiceCreate4"

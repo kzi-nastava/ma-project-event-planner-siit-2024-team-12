@@ -3,6 +3,7 @@ package com.example.eventplanner.fragments.servicecreation;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.viewmodels.ServiceCreationViewModel;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ServiceCreation2#newInstance} factory method to
@@ -23,6 +26,7 @@ public class ServiceCreation2 extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private ServiceCreationViewModel viewModel;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -57,6 +61,7 @@ public class ServiceCreation2 extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        viewModel = new ViewModelProvider(requireActivity()).get(ServiceCreationViewModel.class);
     }
 
     @Override
@@ -126,6 +131,10 @@ public class ServiceCreation2 extends Fragment {
             discount = Integer.parseInt(discountEditText.getText().toString().trim());
             resDeadline = Integer.parseInt(resDeadlineEditText.getText().toString().trim());
             cancelDeadline = Integer.parseInt(cancelDeadlineEditText.getText().toString().trim());
+            viewModel.addData("price", price);
+            viewModel.addData("discount", discount);
+            viewModel.addData("reservationDeadline", resDeadline);
+            viewModel.addData("cancellationDeadline", cancelDeadline);
         } catch (NumberFormatException e) {
             priceEditText.setError("Unesite ispravne brojeve.");
             return false;
