@@ -9,6 +9,7 @@ import com.example.eventplanner.fragments.servicecreation.ServiceCreation;
 import com.example.eventplanner.fragments.servicecreation.ServiceCreation2;
 import com.example.eventplanner.fragments.servicecreation.ServiceCreation3;
 import com.example.eventplanner.fragments.servicecreation.ServiceCreation4;
+import com.example.eventplanner.fragments.servicecreation.ServiceCreation5;
 
 public class ServiceCreationPagerAdapter extends FragmentStateAdapter {
 
@@ -26,6 +27,8 @@ public class ServiceCreationPagerAdapter extends FragmentStateAdapter {
                 return new ServiceCreation3();
             case 3:
                 return new ServiceCreation4();
+            case 4:
+                return new ServiceCreation5();
             default:
                 return new ServiceCreation();
         }
@@ -33,6 +36,6 @@ public class ServiceCreationPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 4; // steps
+        return 5; // steps
     }
 }

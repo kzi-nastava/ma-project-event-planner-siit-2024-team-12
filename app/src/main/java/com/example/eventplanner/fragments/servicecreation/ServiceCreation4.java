@@ -81,7 +81,10 @@ public class ServiceCreation4 extends Fragment {
 
         submitButton.setOnClickListener(v -> {
             if(validateForm()){
-                Toast.makeText(getActivity(), serviceCreatedMessage, Toast.LENGTH_SHORT).show();
+                Fragment parentFragment = getParentFragment();
+                if (parentFragment instanceof ServiceCreationContainer) {
+                    ((ServiceCreationContainer) parentFragment).nextPage();
+                }
             }
         });
 

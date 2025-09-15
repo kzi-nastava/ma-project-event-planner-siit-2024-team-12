@@ -116,7 +116,7 @@
             android:layout_width="106dp"
             android:layout_height="39dp"
             android:background="@drawable/form_button"
-            android:text="@string/submit"
+            android:text="@string/next"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="11sp"

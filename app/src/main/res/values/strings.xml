@@ -65,6 +65,18 @@
     <string name="hours">Hours:</string>
     <string name="minutes">Minutes:</string>
     <string name="from">From:</string>
+    <string name="unavailable_dates">Unavailable dates</string>
+    <string name="select_date">Select date</string>
+    <string name="available_days">Available days</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
+    <string name="working_hours">Working hours</string>
+    <string name="select_time">Select time</string>
 
     <!-- Unregistered user homepage -->
     <string name="open_drawer">Open Navigation Drawer</string>
@@ -144,7 +156,6 @@
     <string name="product_4">Product 4</string>
     <string name="product_5">Product 5</string>
     <string name="category1">Category 1</string>
-
 
 
     <!-- Account activation/verification -->
