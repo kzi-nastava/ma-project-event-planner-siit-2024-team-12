@@ -142,7 +142,7 @@ public class ServiceCreation extends Fragment {
             }
         });
 
-        viewModel.fetchServiceCategories();
+        viewModel.fetchAcceptedCategories();
 
         nextButton.setOnClickListener(v -> {
             if(validateForm()){
