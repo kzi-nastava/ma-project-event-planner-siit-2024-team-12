@@ -7,19 +7,29 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.solutioncategory.CategoryCreationActivity;
+import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
+import com.example.eventplanner.viewmodels.ServiceCreationViewModel;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ServiceCreation#newInstance} factory method to
@@ -28,6 +38,10 @@ import com.example.eventplanner.activities.solutioncategory.CategoryCreationActi
 public class ServiceCreation extends Fragment {
 
     private ActivityResultLauncher<Intent> activityResultLauncher;
+
+    private ServiceCreationViewModel viewModel;
+    private Spinner categorySpinner;
+    private List<GetSolutionCategoryDTO> categoryList;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -67,6 +81,7 @@ public class ServiceCreation extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        viewModel = new ViewModelProvider(requireActivity()).get(ServiceCreationViewModel.class);
 
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -92,6 +107,42 @@ public class ServiceCreation extends Fragment {
         RadioGroup durationRadioGroup = view.findViewById(R.id.duration_radio_group);
         LinearLayout fixedDurationLayout = view.findViewById(R.id.fixed_duration_layout);
         LinearLayout flexibleDurationLayout = view.findViewById(R.id.flexible_duration_layout);
+
+        categorySpinner = view.findViewById(R.id.spinnerServiceCreate);
+
+        viewModel.getServiceCategories().observe(getViewLifecycleOwner(), categories -> {
+            if (categories != null && !categories.isEmpty()) {
+                this.categoryList = categories;
+                List<String> categoryNames = categories.stream()
+                        .map(GetSolutionCategoryDTO::getName)
+                        .collect(Collectors.toList());
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                        android.R.layout.simple_spinner_item, categoryNames);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                categorySpinner.setAdapter(adapter);
+            }
+        });
+
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (categoryList != null && position >= 0 && position < categoryList.size()) {
+                    GetSolutionCategoryDTO selectedCategory = categoryList.get(position);
+
+                    String selectedCategoryId = selectedCategory.getId();
+
+                    viewModel.addData("categoryId", selectedCategoryId);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                viewModel.addData("categoryId", 1);
+            }
+        });
+
+        viewModel.fetchServiceCategories();
 
         nextButton.setOnClickListener(v -> {
             if(validateForm()){
@@ -135,6 +186,7 @@ public class ServiceCreation extends Fragment {
             serviceNameEditText.setError("Naziv usluge ne može biti prazan.");
             return false;
         }
+        viewModel.addData("name", serviceNameEditText.getText().toString());
 
         RadioGroup durationRadioGroup = requireView().findViewById(R.id.duration_radio_group);
         int checkedRadioButtonId = durationRadioGroup.getCheckedRadioButtonId();
@@ -167,6 +219,9 @@ public class ServiceCreation extends Fragment {
                     fixedMinutesEditText.setError("Minuti moraju biti između 0 i 59.");
                     return false;
                 }
+                viewModel.addData("fixedTime", hours*60+minutes);
+                viewModel.addData("minTime", 0);
+                viewModel.addData("maxTime", 0);
             } catch (NumberFormatException e) {
                 fixedHoursEditText.setError("Unesite ispravan broj.");
                 return false;
@@ -204,6 +259,9 @@ public class ServiceCreation extends Fragment {
                     flexibleToEditText.setError("Krajnja vrednost mora biti veća od početne.");
                     return false;
                 }
+                viewModel.addData("minTime", fromValue);
+                viewModel.addData("maxTime", toValue);
+                viewModel.addData("fixedTime", 0);
             } catch (NumberFormatException e) {
                 flexibleFromEditText.setError("Unesite ispravan broj.");
                 return false;

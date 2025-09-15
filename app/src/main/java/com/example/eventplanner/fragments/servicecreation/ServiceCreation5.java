@@ -53,19 +53,14 @@ public class ServiceCreation5 extends Fragment {
         satCheckBox = view.findViewById(R.id.sat_checkbox);
         sunCheckBox = view.findViewById(R.id.sun_checkbox);
 
-        // OnClickListener za odabir datuma
         selectDateButton.setOnClickListener(v -> showDatePicker());
 
-        // OnClickListener za odabir vremena "od"
         selectFromTimeButton.setOnClickListener(v -> showTimePicker(selectFromTimeButton));
 
-        // OnClickListener za odabir vremena "do"
         selectToTimeButton.setOnClickListener(v -> showTimePicker(selectToTimeButton));
 
-        // OnClickListener za Submit dugme
         submitButton.setOnClickListener(v -> {
             if (validateForm()) {
-                // Pozovite metodu za slanje podataka na server
                 Toast.makeText(getContext(), "Podaci uspešno validirani i poslati!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -107,12 +102,10 @@ public class ServiceCreation5 extends Fragment {
     }
 
     private boolean validateForm() {
-        // Validacija za odabir datuma (pretpostavljamo da ne mora biti unet, ali ako jeste, ne sme biti podrazumevana vrednost)
-        if (selectDateButton.getText().toString().equals(getString(R.string.select_date))) {
-            // Ako datum nije odabran, ne smatramo to greškom, jer se može preskočiti
-        }
+//        if (selectDateButton.getText().toString().equals(getString(R.string.select_date))) {
+//            // Ako datum nije odabran, ne smatramo to greškom, jer se može preskočiti
+//        }
 
-        // Validacija za odabir dana u nedelji
         if (!monCheckBox.isChecked() && !tueCheckBox.isChecked() && !wedCheckBox.isChecked() &&
                 !thuCheckBox.isChecked() && !friCheckBox.isChecked() && !satCheckBox.isChecked() &&
                 !sunCheckBox.isChecked()) {
@@ -120,7 +113,6 @@ public class ServiceCreation5 extends Fragment {
             return false;
         }
 
-        // Validacija za radno vreme
         String fromTime = selectFromTimeButton.getText().toString();
         String toTime = selectToTimeButton.getText().toString();
 
@@ -129,9 +121,7 @@ public class ServiceCreation5 extends Fragment {
             return false;
         }
 
-        // Provera da li je početno vreme pre krajnjeg
         try {
-            // Parse time strings to minutes for easy comparison
             String[] fromParts = fromTime.split(":");
             int fromMinutes = Integer.parseInt(fromParts[0]) * 60 + Integer.parseInt(fromParts[1]);
 
