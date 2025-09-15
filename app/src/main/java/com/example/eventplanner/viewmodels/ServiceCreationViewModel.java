@@ -1,6 +1,7 @@
 package com.example.eventplanner.viewmodels;
 
 import android.app.Application;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -28,6 +29,16 @@ public class ServiceCreationViewModel extends AndroidViewModel {
     private final MutableLiveData<List<GetSolutionCategoryDTO>> serviceCategories = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<GetEventTypeDTO>> eventTypes = new MutableLiveData<>();
     private final MutableLiveData<List<Long>> selectedEventTypeIds = new MutableLiveData<>(new ArrayList<>());
+
+    private final MutableLiveData<Uri> serviceImageUri = new MutableLiveData<>();
+
+    public MutableLiveData<Uri> getServiceImageUri() {
+        return serviceImageUri;
+    }
+
+    public void setServiceImageUri(Uri uri) {
+        serviceImageUri.setValue(uri);
+    }
 
     public MutableLiveData<ArrayList<GetEventTypeDTO>> getEventTypes() {
         return eventTypes;
