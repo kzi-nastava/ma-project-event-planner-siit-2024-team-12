@@ -23,6 +23,11 @@ public class EventFilterViewModel extends ViewModel {
     private final MutableLiveData<FilterPayload> appliedFilters = new MutableLiveData<>();
 
     private final MutableLiveData<Boolean> ignoreCityFilter = new MutableLiveData<>(false);
+
+    private final MutableLiveData<String> searchQuery = new MutableLiveData<>("");
+
+    public LiveData<String> getSearchQuery() { return searchQuery; }
+    public void setSearchQuery(@Nullable String query) { searchQuery.setValue(query == null ? "" : query); }
     public LiveData<Boolean> getIgnoreCityFilter() { return ignoreCityFilter; }
     public void setIgnoreCityFilter(boolean ignore) { ignoreCityFilter.setValue(ignore); }
 
@@ -45,6 +50,11 @@ public class EventFilterViewModel extends ViewModel {
     public void setMinDate(String date) { minDate.setValue(date == null ? "" : date); }
     public void setMaxDate(String date) { maxDate.setValue(date == null ? "" : date); }
 
+    public void setSearchQueryAndApply(@Nullable String query) {
+        setSearchQuery(query);
+        applyNow();
+    }
+
     public void removeCity(String city) {
         List<String> cur = selectedCities.getValue();
         if (cur != null && cur.remove(city)) selectedCities.setValue(new ArrayList<>(cur));
@@ -56,6 +66,7 @@ public class EventFilterViewModel extends ViewModel {
     }
 
     public void clearFilters() {
+        searchQuery.setValue("");
         selectedCities.setValue(new ArrayList<>());
         selectedEventTypes.setValue(new ArrayList<>());
         selectedRating.setValue(null);
@@ -71,6 +82,7 @@ public class EventFilterViewModel extends ViewModel {
 
     private FilterPayload buildPayload() {
         return new FilterPayload(
+                searchQuery.getValue(),
                 selectedCities.getValue() == null ? new ArrayList<>() : selectedCities.getValue(),
                 selectedEventTypes.getValue() == null ? new ArrayList<>() : selectedEventTypes.getValue(),
                 selectedRating.getValue(),
@@ -93,8 +105,11 @@ public class EventFilterViewModel extends ViewModel {
 
         public final boolean ignoreCityFilter;
 
-        public FilterPayload(List<String> cities, List<String> eventTypes, Integer rating,
+        public final String searchQuery;
+
+        public FilterPayload(String searchQuery, List<String> cities, List<String> eventTypes, Integer rating,
                              String sortBy, String sortDir, String startDate, String endDate,  boolean ignoreCityFilter) {
+            this.searchQuery = searchQuery == null ? "" : searchQuery;
             this.cities = cities;
             this.eventTypes = eventTypes;
             this.rating = rating;
@@ -116,6 +131,8 @@ public class EventFilterViewModel extends ViewModel {
             if (endDate != null && !endDate.isEmpty()) m.put("endDate", endDate);
             return m;
         }
+
+        public String getSearchQuery() { return searchQuery; }
 
         public List<String> getEventTypes() { return eventTypes;
         }
@@ -151,6 +168,7 @@ public class EventFilterViewModel extends ViewModel {
         sortDir.setValue(null);
         minDate.setValue("");
         maxDate.setValue("");
+        searchQuery.setValue("");
 
         applyNow();
     }

@@ -10,9 +10,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import androidx.appcompat.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -106,6 +108,36 @@ public class EventListFragment extends Fragment {
         boolean isPrivileged = role.equals(UserRole.ROLE_ORGANIZER.toString()) ||
                 role.equals(UserRole.ROLE_PROVIDER.toString());
 
+        SearchView searchView = view.findViewById(R.id.searchView);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String submittedQuery = query.trim();
+                if (!submittedQuery.isEmpty()) {
+                    addSearchChip(submittedQuery);
+                    performSearch(submittedQuery);
+
+                    searchView.setQuery("", false);
+                    searchView.clearFocus();
+
+                    InputMethodManager imm = (InputMethodManager) requireContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm != null) {
+                        imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+                    }
+                }
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+
         if (isPrivileged) {
             onlyFromMyCityBtn.setVisibility(View.VISIBLE);
 
@@ -160,13 +192,14 @@ public class EventListFragment extends Fragment {
 
             boolean ignoreCityParam = !isPrivileged || payload.isIgnoreCityFilter();
 
-
+            String searchQuery = payload.getSearchQuery();
+            String searchQueryParam = (searchQuery != null && !searchQuery.isEmpty()) ? searchQuery : null;
 
             Log.d("EventListFragment", "ignoreCityFilter to API: " + ignoreCityParam + " (privileged=" + isPrivileged + ")");
 
             service.searchEvents(
                     bearer,
-                    null, // name
+                    searchQueryParam, // name
                     null, // description
                     typeParam,
                     null, // maxGuests
@@ -385,6 +418,13 @@ public class EventListFragment extends Fragment {
     private void updateChips(EventFilterViewModel.FilterPayload p) {
         chipGroup.removeAllViews();
 
+        if (p.getSearchQuery() != null && !p.getSearchQuery().isEmpty()) {
+            addFilterChip("Search: " + p.getSearchQuery(), () -> {
+                filterViewModel.setSearchQuery(null);
+                filterViewModel.applyNow();
+            });
+        }
+
         for (String c : p.cities) addFilterChip("City: " + c, () -> {
             filterViewModel.removeCity(c);
             filterViewModel.applyNow();
@@ -464,6 +504,19 @@ public class EventListFragment extends Fragment {
             e.printStackTrace();
             return null;
         }
+    }
+
+
+    private void performSearch(String query) {
+        if (filterViewModel == null || query == null || query.isEmpty()) return;
+
+        filterViewModel.setSearchQuery(query);
+        filterViewModel.applyNow();
+    }
+
+    private void addSearchChip(String query) {
+        if (query == null || query.isEmpty()) return;
+        filterViewModel.setSearchQuery(query);
     }
 
 

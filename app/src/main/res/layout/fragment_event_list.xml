@@ -27,6 +27,9 @@
         android:layout_marginBottom="8dp"
         android:background="@drawable/search_bar_background"
         android:queryHint="Search events"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:iconifiedByDefault="false"
         android:padding="8dp"/>
 
     <!-- Filter button + Reset button row -->
