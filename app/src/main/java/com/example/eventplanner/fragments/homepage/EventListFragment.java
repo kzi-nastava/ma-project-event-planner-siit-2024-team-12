@@ -35,8 +35,11 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import retrofit2.Call;
@@ -151,8 +154,8 @@ public class EventListFragment extends Fragment {
 
             String cityParam = payload.getCities().isEmpty() ? null : payload.getCities().get(0);
             String typeParam = payload.getEventTypes().isEmpty() ? null : payload.getEventTypes().get(0);
-            String startDateParam = emptyToNull(payload.getStartDate());
-            String endDateParam = emptyToNull(payload.getEndDate());
+            String startDateParam = formatDate(payload.getStartDate());
+            String endDateParam = formatDate(payload.getEndDate());
             Integer ratingParam = payload.getRating();
 
             boolean ignoreCityParam = !isPrivileged || payload.isIgnoreCityFilter();
@@ -445,12 +448,24 @@ public class EventListFragment extends Fragment {
                 })
                 .start();
 
-        // Opcionalno: promjena background boje
         int bgColor = isActive
                 ? ContextCompat.getColor(requireContext(), R.color.activeButtonBackground)
                 : ContextCompat.getColor(requireContext(), R.color.inactiveButtonBackground);
         button.setBackgroundColor(bgColor);
     }
+
+    private String formatDate(String rawDate) {
+        if (rawDate == null || rawDate.isEmpty()) return null;
+        try {
+            SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            SimpleDateFormat output = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            return output.format(input.parse(rawDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 
 }
