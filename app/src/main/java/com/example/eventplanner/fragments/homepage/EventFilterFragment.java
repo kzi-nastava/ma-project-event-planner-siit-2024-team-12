@@ -52,7 +52,7 @@ public class EventFilterFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_event_filter, container, false);
 
-        filterViewModel = new ViewModelProvider(requireActivity()).get(EventFilterViewModel.class);
+        filterViewModel = new ViewModelProvider(requireParentFragment()).get(EventFilterViewModel.class);
 
         startDateText = view.findViewById(R.id.startDate);
         endDateText = view.findViewById(R.id.endDate);
@@ -106,7 +106,7 @@ public class EventFilterFragment extends DialogFragment {
         filterViewModel.setSelectedEventTypes(selectedEventTypes);
         filterViewModel.setSelectedRating(selectedRating);
 
-            filterViewModel.setSelectedSortOptions(selectedSortBy);
+        filterViewModel.setSelectedSortOptions(selectedSortBy);
 
         filterViewModel.setSortDir(selectedSortDir);
         filterViewModel.setMinDate(startDateText.getText().toString());
@@ -120,7 +120,9 @@ public class EventFilterFragment extends DialogFragment {
         Log.d("EventFilterFragment", "Start Date: " + startDateText.getText());
         Log.d("EventFilterFragment", "End Date: " + endDateText.getText());
 
-        Toast.makeText(getContext(), "Filters applied: " + selectedCities.size() + " cities", Toast.LENGTH_SHORT).show();
+        if (isAdded()) {
+            Toast.makeText(getContext(), "Filters applied: " + selectedCities.size() + " cities", Toast.LENGTH_SHORT).show();
+        }
 
         filterViewModel.applyNow();
 
@@ -244,6 +246,7 @@ public class EventFilterFragment extends DialogFragment {
         service.getAvailableEventFilters().enqueue(new Callback<Map<String, Object>>() {
             @Override
             public void onResponse(@NonNull Call<Map<String, Object>> call, @NonNull Response<Map<String, Object>> response) {
+                if (!isAdded()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     Map<String, Object> filters = response.body();
                     if (filters.get("eventTypes") instanceof List)
@@ -263,6 +266,7 @@ public class EventFilterFragment extends DialogFragment {
 
             @Override
             public void onFailure(@NonNull Call<Map<String, Object>> call, @NonNull Throwable t) {
+                if (!isAdded()) return;
                 Toast.makeText(getContext(), "Greška u mreži: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
