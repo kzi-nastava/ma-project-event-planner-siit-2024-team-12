@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 
+import com.example.eventplanner.viewmodels.EventFilterViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -60,6 +61,8 @@ public abstract class BaseListFragment<T extends CardItem, V extends ViewModel> 
     protected abstract void loadItemsFromBackend(Object payloadObj);
     protected abstract void showFilterDialog();
     protected abstract void addSearchChip(String query);
+
+    protected abstract void resetFilters();
 
     @Nullable
     @Override
@@ -146,9 +149,7 @@ public abstract class BaseListFragment<T extends CardItem, V extends ViewModel> 
         if (filterButtonsLayout.getVisibility() == View.VISIBLE) {
             Button resetFiltersButton = view.findViewById(R.id.resetFiltersButton);
             if (resetFiltersButton != null) {
-                resetFiltersButton.setOnClickListener(v -> {
-
-                });
+                resetFiltersButton.setOnClickListener(v -> resetFilters());
             }
 
             Button filterButton = view.findViewById(R.id.filterButton);

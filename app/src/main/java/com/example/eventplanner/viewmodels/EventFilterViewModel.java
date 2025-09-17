@@ -173,6 +173,19 @@ public class EventFilterViewModel extends ViewModel {
         applyNow();
     }
 
+    public void resetFilters() {
+        searchQuery.setValue(null);
+        selectedCities.setValue(new ArrayList<>());
+        selectedEventTypes.setValue(new ArrayList<>());
+        selectedRating.setValue(null);
+        selectedSortOptions.setValue(null);
+        sortDir.setValue(null);
+        minDate.setValue("");
+        maxDate.setValue("");
+        ignoreCityFilter.setValue(false);
+        applyNow();
+    }
+
 
 
 }

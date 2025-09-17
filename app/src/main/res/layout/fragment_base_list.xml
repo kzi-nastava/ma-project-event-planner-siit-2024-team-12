@@ -12,7 +12,6 @@
         android:id="@+id/listTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/all_events"
         android:textSize="20sp"
         android:textColor="@color/black"
         android:gravity="start"
@@ -48,17 +47,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/all"
-            android:checked="true"/>
+            android:checked="true"
+            android:buttonTint="@color/radio_button_color"/>
         <RadioButton
             android:id="@+id/radioProducts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/products" />
+            android:text="@string/products"
+            android:buttonTint="@color/radio_button_color"/>
         <RadioButton
             android:id="@+id/radioServices"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/services" />
+            android:text="@string/services"
+            android:buttonTint="@color/radio_button_color"/>
     </RadioGroup>
 
     <LinearLayout

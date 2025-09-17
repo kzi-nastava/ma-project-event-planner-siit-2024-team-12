@@ -84,11 +84,12 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
             GetHomepageSolutionDTO solution = (GetHomepageSolutionDTO) item;
 
             holder.eventSpecificLayout.setVisibility(View.GONE);
+            holder.solutionSpecificLayout.setVisibility(View.VISIBLE);
 
             holder.location.setText(solution.getCity() != null ? solution.getCity() : "");
             holder.category.setText(solution.getCategoryName() != null ? solution.getCategoryName() : "");
 
-            holder.price.setText(String.format(Locale.getDefault(), "%.2f €", solution.getPrice()));
+            holder.price.setText(String.format(Locale.getDefault(), "%.2f $", solution.getPrice()));
 
             if (solution.getDiscount() != null && solution.getDiscount() > 0) {
                 holder.discountLayout.setVisibility(View.VISIBLE);
