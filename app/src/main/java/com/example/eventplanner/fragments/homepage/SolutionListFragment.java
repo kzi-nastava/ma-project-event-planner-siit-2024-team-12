@@ -1,153 +1,132 @@
 package com.example.eventplanner.fragments.homepage;
 
-import android.graphics.Color;
-import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.PSAdapter;
+import com.example.eventplanner.activities.homepage.HomepageService;
+import com.example.eventplanner.adapters.homepage.ListItemAdapter;
+import com.example.eventplanner.dto.solution.GetHomepageSolutionDTO;
+import com.example.eventplanner.enumeration.UserRole;
+import com.example.eventplanner.fragments.product.SolutionFilterFragment;
+import com.example.eventplanner.utils.ClientUtils;
+import com.example.eventplanner.viewmodels.HomeSolutionFilterViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class SolutionListFragment extends Fragment {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-    private RecyclerView recyclerView;
-    private Button prevPageButton, nextPageButton;
-    private int currentPage = 0;
-    private final int pageSize = 2;
-    private final List<String> eventTitles = new ArrayList<>();
+public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDTO, HomeSolutionFilterViewModel> {
 
-    @Nullable
+    private HomepageService service;
+
+    private boolean isPrivileged;
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_p_s_list, container, false);
+    protected int getLayoutResId() {
+        return R.layout.fragment_base_list;
+    }
 
-        recyclerView = view.findViewById(R.id.psRecyclerView);
-        prevPageButton = view.findViewById(R.id.prevPageButton);
-        nextPageButton = view.findViewById(R.id.nextPageButton);
+    @Override
+    protected void setupViewModel() {
+        filterViewModel = new ViewModelProvider(this).get(HomeSolutionFilterViewModel.class);
+        service = ClientUtils.retrofit.create(HomepageService.class);
 
-        // dummy data
-        for (int i = 1; i <= 30; i++) {
-            eventTitles.add("Product/Service " + i);
+        if (listTitle != null) listTitle.setVisibility(View.GONE);
+        if (filterButtonsLayout != null) filterButtonsLayout.setVisibility(View.VISIBLE);
+        if (solutionTypeRadioGroup != null) solutionTypeRadioGroup.setVisibility(View.VISIBLE);
+
+        SharedPreferences sp = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        String role = sp.getString("userRole", UserRole.ROLE_UNREGISTERED_USER.toString());
+        isPrivileged = role.equals(UserRole.ROLE_ORGANIZER.toString()) || role.equals(UserRole.ROLE_PROVIDER.toString());
+
+        if (onlyFromMyCityBtn != null) {
+            onlyFromMyCityBtn.setVisibility(isPrivileged ? View.VISIBLE : View.GONE);
+            if (isPrivileged) {
+                filterViewModel.getIgnoreCityFilter().observe(getViewLifecycleOwner(), ignoreCity -> {
+                    updateButtonAppearance(onlyFromMyCityBtn, !ignoreCity);
+                });
+
+                onlyFromMyCityBtn.setOnClickListener(v -> {
+                    boolean currentIgnoreState = Boolean.TRUE.equals(filterViewModel.getIgnoreCityFilter().getValue());
+                    filterViewModel.setIgnoreCityFilter(!currentIgnoreState);
+                    filterViewModel.applyNow();
+                });
+            }
         }
 
-        setupRecyclerView();
+        filterViewModel.getAppliedFilters().observe(getViewLifecycleOwner(), payload -> {
+            loadItemsFromBackend(payload);
 
-        setupPagination();
-
-        return view;
-    }
-
-    private void setupRecyclerView() {
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new PSAdapter(getCurrentPage()));
-    }
-
-
-
-    private void setupPagination() {
-        int totalPages = (int) Math.ceil((double) eventTitles.size() / pageSize);
-
-        prevPageButton.setOnClickListener(v -> {
-            if (currentPage > 0) {
-                currentPage--;
-                updateRecyclerView(totalPages);
-            }
         });
 
-        nextPageButton.setOnClickListener(v -> {
-            if ((currentPage + 1) * pageSize < eventTitles.size()) {
-                currentPage++;
-                updateRecyclerView(totalPages);
+        filterViewModel.applyNow();
+    }
+
+    @Override
+    protected RecyclerView.Adapter<?> createAdapter() {
+        return new ListItemAdapter(getContext());
+    }
+
+    @Override
+    protected void loadItemsFromBackend(Object payloadObj) {
+        HomeSolutionFilterViewModel.FilterPayload payload = (HomeSolutionFilterViewModel.FilterPayload) payloadObj;
+        if (payload == null) return;
+
+        String bearer = ClientUtils.getAuthorization(requireContext());
+
+        service.searchSolutions(
+                bearer,
+                null,
+                payload.descriptions.isEmpty() ? null : payload.descriptions.get(0),
+                payload.categories.isEmpty() ? null : payload.categories.get(0),
+                null, // city
+                payload.minPrice != null ? payload.minPrice.intValue() : null,
+                payload.maxPrice != null ? payload.maxPrice.intValue() : null,
+                null, // minDiscount
+                null, // maxDiscount
+                payload.eventTypes.isEmpty() ? null : payload.eventTypes.get(0),
+                null, // rating
+                null, // sortBy
+                null, // sortDir
+                0, // page
+                100, // size
+                null, // type
+                false, // limitTo10
+                false // ignoreCityFilter
+        ).enqueue(new Callback<List<GetHomepageSolutionDTO>>() {
+            @Override
+            public void onResponse(Call<List<GetHomepageSolutionDTO>> call, Response<List<GetHomepageSolutionDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    allItems.clear();
+                    allItems.addAll(response.body());
+                    currentPage = 0;
+                    updateRecyclerView();
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GetHomepageSolutionDTO>> call, Throwable t) {
+
             }
         });
-
-
-        addPageIndicators(totalPages);
     }
 
-    private void updateRecyclerView(int totalPages) {
-
-        ((PSAdapter) recyclerView.getAdapter()).updateData(getCurrentPage());
-
-        addPageIndicators(totalPages);
+    @Override
+    protected void showFilterDialog() {
+        new SolutionFilterFragment().show(getChildFragmentManager(), "SolutionFilterDialog");
     }
 
-    private void addPageIndicators(int totalPages) {
+    @Override
+    protected void addSearchChip(String query) {
 
-        if (getView() == null) {
-            return;
-        }
-
-        LinearLayout paginationIndicators = getView().findViewById(R.id.paginationIndicators);
-        paginationIndicators.removeAllViews();
-
-        int lastPage = totalPages - 1;
-
-        if (currentPage > 0) {
-            addCircle(paginationIndicators, 0, false); // prvi
-            addEllipsis(paginationIndicators);
-        }
-
-        if (currentPage > 0) {
-            addCircle(paginationIndicators, currentPage - 1, false);
-        }
-
-        addCircle(paginationIndicators, currentPage, true);
-
-        if (currentPage < lastPage) {
-            addCircle(paginationIndicators, currentPage + 1, false);
-        }
-
-        if (lastPage > currentPage + 1) {
-            addEllipsis(paginationIndicators);
-            addCircle(paginationIndicators, lastPage, false); // poslednja
-        }
-    }
-
-    private void addCircle(LinearLayout paginationIndicators, int page, boolean isCurrent) {
-        TextView circle = new TextView(getContext());
-        circle.setText(String.valueOf(page + 1)); // Stranice su 0-based, pa dodajemo 1
-        circle.setTextSize(12);
-        circle.setTextColor(isCurrent ? Color.WHITE : Color.GRAY);
-        circle.setBackgroundResource(R.drawable.circle_indicator);
-        circle.setGravity(Gravity.CENTER);
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(8, 0, 8, 0);
-        circle.setLayoutParams(params);
-
-        paginationIndicators.addView(circle);
-    }
-
-    private void addEllipsis(LinearLayout paginationIndicators) {
-        TextView ellipsis = new TextView(getContext());
-        ellipsis.setText("...");
-        ellipsis.setTextSize(12);
-        ellipsis.setTextColor(Color.GRAY);
-        ellipsis.setGravity(Gravity.CENTER);
-
-        paginationIndicators.addView(ellipsis);
-    }
-
-    private List<String> getCurrentPage() {
-        int start = currentPage * pageSize;
-        int end = Math.min(start + pageSize, eventTitles.size());
-        return eventTitles.subList(start, end);
     }
 }

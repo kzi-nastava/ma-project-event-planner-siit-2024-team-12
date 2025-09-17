@@ -353,5 +353,6 @@
     <string name="apply">Apply</string>
     <string name="all_events">ALL EVENTS</string>
     <string name="only_from_my_city">Only from my city</string>
+    <string name="all">All</string>
 
 </resources>

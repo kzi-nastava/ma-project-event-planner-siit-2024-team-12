@@ -43,4 +43,27 @@ public interface HomepageService {
 
     @GET("homepage/events/filters")
     Call<Map<String, Object>> getAvailableEventFilters();
+
+    @GET("homepage/solutions/filter")
+    Call<List<GetHomepageSolutionDTO>> searchSolutions(
+            @Header("Authorization") String bearer,
+            @Query("name") String name,
+            @Query("description") String description,
+            @Query("category") String category,
+            @Query("city") String city,
+            @Query("minPrice") Integer minPrice,
+            @Query("maxPrice") Integer maxPrice,
+            @Query("minDiscount") Integer minDiscount,
+            @Query("maxDiscount") Integer maxDiscount,
+            @Query("eventType") String eventType,
+            @Query("rating") Integer rating,
+            @Query("sortBy") String sortBy,
+            @Query("sortDir") String sortDir,
+            @Query("page") int page,
+            @Query("size") int size,
+            @Query("type") String type,
+            @Query("limitTo10") boolean limitTo10,
+            @Query("ignoreCityFilter") boolean ignoreCityFilter
+
+    );
 }

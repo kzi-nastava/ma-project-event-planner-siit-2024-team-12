@@ -88,10 +88,6 @@ public class HomepageActivity extends AppCompatActivity {
                     .commit();
 
             fragmentManager.beginTransaction()
-                    .replace(R.id.filter_fragment_container_products, new HomepageFilterFragment())
-                    .commit();
-
-            fragmentManager.beginTransaction()
                     .replace(R.id.ps_list_fragment_container, new SolutionListFragment())
                     .commit();
         }
@@ -155,10 +151,6 @@ public class HomepageActivity extends AppCompatActivity {
 
         fragmentManager.beginTransaction()
                 .replace(R.id.cards_products_fragment_container, new TopSolutionsFragment())
-                .commit();
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.filter_fragment_container_products, new HomepageFilterFragment())
                 .commit();
 
         fragmentManager.beginTransaction()

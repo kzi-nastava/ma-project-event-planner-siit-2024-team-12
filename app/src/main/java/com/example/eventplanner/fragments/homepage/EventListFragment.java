@@ -13,6 +13,7 @@
     import com.example.eventplanner.R;
     import com.example.eventplanner.activities.homepage.HomepageService;
     import com.example.eventplanner.adapters.event.EventListAdapter;
+    import com.example.eventplanner.adapters.homepage.ListItemAdapter;
     import com.example.eventplanner.dto.event.GetEventDTO;
     import com.example.eventplanner.enumeration.UserRole;
     import com.example.eventplanner.utils.ClientUtils;
@@ -36,7 +37,7 @@
 
         @Override
         protected int getLayoutResId() {
-            return R.layout.fragment_event_list;
+            return R.layout.fragment_base_list;
         }
 
         @Override
@@ -74,7 +75,7 @@
 
         @Override
         protected RecyclerView.Adapter<?> createAdapter() {
-            return new EventListAdapter(requireContext());
+            return new ListItemAdapter(requireContext());
         }
 
         @Override
@@ -192,18 +193,6 @@
             });
         }
 
-        @Override
-        protected void updateRecyclerView() {
-            int totalPages = (int) Math.ceil((double) allItems.size() / pageSize);
-            int start = currentPage * pageSize;
-            int end = Math.min(start + pageSize, allItems.size());
-
-            if (recyclerView.getAdapter() instanceof EventListAdapter) {
-                ((EventListAdapter) recyclerView.getAdapter()).updateData(allItems.subList(start, end));
-            }
-
-            updatePaginationIndicators(totalPages);
-        }
 
         private String formatDate(String rawDate) {
             if (rawDate == null || rawDate.isEmpty()) return null;
