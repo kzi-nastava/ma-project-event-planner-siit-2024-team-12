@@ -64,6 +64,8 @@ public interface HomepageService {
             @Query("type") String type,
             @Query("limitTo10") boolean limitTo10,
             @Query("ignoreCityFilter") boolean ignoreCityFilter
-
     );
+
+    @GET("homepage/solutions/filters")
+    Call<Map<String, Object>> getAvailableSolutionFilters();
 }

@@ -10,15 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeSolutionFilterViewModel extends AndroidViewModel {
-    private final MutableLiveData<List<String>> selectedCategories = new MutableLiveData<>(new ArrayList<>());
-    private final MutableLiveData<List<String>> selectedEventTypes = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<String> selectedCategory = new MutableLiveData<>();
+    private final MutableLiveData<String> selectedEventType = new MutableLiveData<>();
     private final MutableLiveData<String> searchQuery = new MutableLiveData<>();
     private final MutableLiveData<Double> minPrice = new MutableLiveData<>();
     private final MutableLiveData<Double> maxPrice = new MutableLiveData<>();
+    private final MutableLiveData<Double> minDiscount = new MutableLiveData<>();
+    private final MutableLiveData<Double> maxDiscount = new MutableLiveData<>();
     private final MutableLiveData<Double> rating = new MutableLiveData<>();
     private final MutableLiveData<String> sortBy = new MutableLiveData<>();
     private final MutableLiveData<String> sortDir = new MutableLiveData<>();
-    private final MutableLiveData<String> type = new MutableLiveData<>(); // For "All", "PRODUCT", "SERVICE"
+    private final MutableLiveData<String> type = new MutableLiveData<>();
     private final MutableLiveData<Boolean> ignoreCityFilter = new MutableLiveData<>(false);
 
     private final MutableLiveData<FilterPayload> appliedFilters = new MutableLiveData<>();
@@ -27,24 +29,29 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
         super(application);
     }
 
+    public LiveData<Double> getMinDiscount() { return minDiscount; }
+    public void setMinDiscount(Double value) { minDiscount.setValue(value); }
+
+    public LiveData<Double> getMaxDiscount() { return maxDiscount; }
+    public void setMaxDiscount(Double value) { maxDiscount.setValue(value); }
 
     public LiveData<String> getSearchQuery() { return searchQuery; }
     public void setSearchQuery(String query) { searchQuery.setValue(query); }
 
-    public LiveData<List<String>> getSelectedCategories() { return selectedCategories; }
-    public void setSelectedCategories(List<String> categories) { selectedCategories.setValue(categories); }
+    public LiveData<String> getSelectedCategory() { return selectedCategory; }
+    public void setSelectedCategory(String category) { selectedCategory.setValue(category); }
     public void removeCategory(String category) {
-        List<String> updatedCategories = new ArrayList<>(selectedCategories.getValue());
-        updatedCategories.remove(category);
-        selectedCategories.setValue(updatedCategories);
+        String updatedCategories = selectedCategory.getValue();
+
+        selectedCategory.setValue(updatedCategories);
     }
 
-    public LiveData<List<String>> getSelectedEventTypes() { return selectedEventTypes; }
-    public void setSelectedEventTypes(List<String> eventTypes) { selectedEventTypes.setValue(eventTypes); }
+    public LiveData<String> getSelectedEventType() { return selectedEventType; }
+    public void setSelectedEventType(String eventType) { selectedEventType.setValue(eventType); }
     public void removeEventType(String eventType) {
-        List<String> updatedEventTypes = new ArrayList<>(selectedEventTypes.getValue());
-        updatedEventTypes.remove(eventType);
-        selectedEventTypes.setValue(updatedEventTypes);
+        String updatedEventTypes = selectedEventType.getValue();
+
+        selectedEventType.setValue(updatedEventTypes);
     }
 
     public LiveData<Double> getMinPrice() { return minPrice; }
@@ -70,10 +77,12 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
 
     public void applyNow() {
         appliedFilters.setValue(new FilterPayload(
-                selectedCategories.getValue(),
-                selectedEventTypes.getValue(),
+                selectedCategory.getValue(),
+                selectedEventType.getValue(),
                 minPrice.getValue(),
                 maxPrice.getValue(),
+                minDiscount.getValue(),
+                maxDiscount.getValue(),
                 searchQuery.getValue(),
                 rating.getValue(),
                 sortBy.getValue(),
@@ -88,22 +97,26 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
     }
 
     public static class FilterPayload {
-        public final List<String> categories;
-        public final List<String> eventTypes;
+        public final String category;
+        public final String eventType;
         public final Double minPrice;
         public final Double maxPrice;
+        public final Double minDiscount;
+        public final Double maxDiscount;
         public final String searchQuery;
         public final Double rating;
         public final String sortBy;
         public final String sortDir;
-        public final String type; // "PRODUCT", "SERVICE", null for "All"
+        public final String type;
         public final boolean ignoreCityFilter;
 
-        public FilterPayload(List<String> categories, List<String> eventTypes, Double minPrice, Double maxPrice, String searchQuery, Double rating, String sortBy, String sortDir, String type, boolean ignoreCityFilter) {
-            this.categories = categories != null ? categories : new ArrayList<>();
-            this.eventTypes = eventTypes != null ? eventTypes : new ArrayList<>();
+        public FilterPayload(String category, String eventType, Double minPrice, Double maxPrice, Double minDiscount, Double maxDiscount, String searchQuery, Double rating, String sortBy, String sortDir, String type, boolean ignoreCityFilter) {
+            this.category = category;
+            this.eventType = eventType;
             this.minPrice = minPrice;
             this.maxPrice = maxPrice;
+            this.minDiscount = minDiscount;
+            this.maxDiscount = maxDiscount;
             this.searchQuery = searchQuery;
             this.rating = rating;
             this.sortBy = sortBy;
@@ -120,12 +133,13 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
         public boolean isIgnoreCityFilter() { return ignoreCityFilter; }
     }
 
-
     public void resetFilters() {
-        selectedCategories.setValue(new ArrayList<>());
-        selectedEventTypes.setValue(new ArrayList<>());
+        selectedCategory.setValue(null);
+        selectedEventType.setValue(null);
         minPrice.setValue(null);
         maxPrice.setValue(null);
+        minDiscount.setValue(null);
+        maxDiscount.setValue(null);
         rating.setValue(null);
         sortBy.setValue(null);
         sortDir.setValue(null);

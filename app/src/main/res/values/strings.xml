@@ -355,5 +355,8 @@
     <string name="only_from_my_city">Only from my city</string>
     <string name="all">All</string>
     <string name="all_products_services">ALL PRODUCTS &amp; SERVICES</string>
+    <string name="max_discount">Max discount</string>
+    <string name="min_discount">Min discount</string>
+    <string name="sort_by">Sort by</string>
 
 </resources>

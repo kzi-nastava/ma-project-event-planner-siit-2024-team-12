@@ -17,7 +17,6 @@ import com.example.eventplanner.activities.homepage.HomepageService;
 import com.example.eventplanner.adapters.homepage.ListItemAdapter;
 import com.example.eventplanner.dto.solution.GetHomepageSolutionDTO;
 import com.example.eventplanner.enumeration.UserRole;
-import com.example.eventplanner.fragments.product.SolutionFilterFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.viewmodels.HomeSolutionFilterViewModel;
 
@@ -115,13 +114,13 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
                 bearer,
                 payload.getSearchQuery(), // name
                 null,
-                payload.categories != null && !payload.categories.isEmpty() ? payload.categories.get(0) : null,
+                payload.category != null && !payload.category.isEmpty() ? payload.category : null,
                 null,
                 payload.minPrice != null ? payload.minPrice.intValue() : null,
                 payload.maxPrice != null ? payload.maxPrice.intValue() : null,
                 null, // minDiscount
                 null, // maxDiscount
-                payload.eventTypes != null && !payload.eventTypes.isEmpty() ? payload.eventTypes.get(0) : null, // eventType
+                payload.eventType != null && !payload.eventType.isEmpty() ? payload.eventType : null, // eventType
                 payload.getRating() != null ? payload.getRating().intValue() : null, // rating
                 payload.getSortBy(),
                 payload.getSortDir(),
@@ -155,7 +154,7 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
 
     @Override
     protected void showFilterDialog() {
-        new SolutionFilterFragment().show(getChildFragmentManager(), "SolutionFilterDialog");
+        new HomeSolutionFilterFragment().show(getChildFragmentManager(), "SolutionFilterDialog");
     }
 
     @Override
@@ -176,15 +175,15 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
             });
         }
 
-        if (p.categories != null && !p.categories.isEmpty()) {
-            addFilterChip("Category: " + p.categories.get(0), () -> {
-                filterViewModel.setSelectedCategories(new ArrayList<>());
+        if (p.category != null && !p.category.isEmpty()) {
+            addFilterChip("Category: " + p.category, () -> {
+                filterViewModel.setSelectedCategory(null);
                 filterViewModel.applyNow();
             });
         }
-        if (p.eventTypes != null && !p.eventTypes.isEmpty()) {
-            addFilterChip("Event Type: " + p.eventTypes.get(0), () -> {
-                filterViewModel.setSelectedEventTypes(new ArrayList<>());
+        if (p.eventType != null && !p.eventType.isEmpty()) {
+            addFilterChip("Event Type: " + p.eventType, () -> {
+                filterViewModel.setSelectedEventType(null);
                 filterViewModel.applyNow();
             });
         }
