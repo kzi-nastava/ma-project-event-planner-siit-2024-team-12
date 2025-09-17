@@ -13,10 +13,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.viewmodels.ServiceCreationViewModel;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class ServiceCreation5 extends Fragment {
 
@@ -25,6 +30,7 @@ public class ServiceCreation5 extends Fragment {
     private Button selectToTimeButton;
     private Button submitButton;
     private CheckBox monCheckBox, tueCheckBox, wedCheckBox, thuCheckBox, friCheckBox, satCheckBox, sunCheckBox;
+    private ServiceCreationViewModel viewModel;
 
     public ServiceCreation5() {
         // Required empty public constructor
@@ -32,6 +38,11 @@ public class ServiceCreation5 extends Fragment {
 
     public static ServiceCreation5 newInstance() {
         return new ServiceCreation5();
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(requireActivity()).get(ServiceCreationViewModel.class);
     }
 
     @Override
@@ -100,6 +111,27 @@ public class ServiceCreation5 extends Fragment {
                 }, hour, minute, true); // true za 24-satni format
         timePickerDialog.show();
     }
+    private void sendDataToViewModel(LocalTime fromTime, LocalTime toTime) {
+        if (viewModel == null) {
+            return;
+        }
+
+        // Prikupljanje odabranih dana
+        List<Integer> selectedDaysList = new ArrayList<>();
+        if (monCheckBox.isChecked()) selectedDaysList.add(1);
+        if (tueCheckBox.isChecked()) selectedDaysList.add(2);
+        if (wedCheckBox.isChecked()) selectedDaysList.add(3);
+        if (thuCheckBox.isChecked()) selectedDaysList.add(4);
+        if (friCheckBox.isChecked()) selectedDaysList.add(5);
+        if (satCheckBox.isChecked()) selectedDaysList.add(6);
+        if (sunCheckBox.isChecked()) selectedDaysList.add(7);
+
+        // Postavljanje vrednosti u ViewModel
+        viewModel.setSelectedDays(selectedDaysList);
+        viewModel.setSelectedFromTime(fromTime);
+        viewModel.setSelectedToTime(toTime);
+
+    }
 
     private boolean validateForm() {
 //        if (selectDateButton.getText().toString().equals(getString(R.string.select_date))) {
@@ -122,20 +154,22 @@ public class ServiceCreation5 extends Fragment {
         }
 
         try {
-            String[] fromParts = fromTime.split(":");
-            int fromMinutes = Integer.parseInt(fromParts[0]) * 60 + Integer.parseInt(fromParts[1]);
+            LocalTime from = LocalTime.parse(fromTime);
+            LocalTime to = LocalTime.parse(toTime);
 
-            String[] toParts = toTime.split(":");
-            int toMinutes = Integer.parseInt(toParts[0]) * 60 + Integer.parseInt(toParts[1]);
-
-            if (fromMinutes >= toMinutes) {
+            if (from.isAfter(to) || from.equals(to)) {
                 Toast.makeText(getContext(), "Početno vreme mora biti pre krajnjeg.", Toast.LENGTH_SHORT).show();
                 return false;
             }
+
+            // Ako je validacija uspešna, pošaljite podatke u ViewModel
+            sendDataToViewModel(from, to);
+
         } catch (NumberFormatException e) {
             Toast.makeText(getContext(), "Greška pri parsiranju vremena.", Toast.LENGTH_SHORT).show();
             return false;
         }
+//        sendDataToViewModel();
 
         return true;
     }

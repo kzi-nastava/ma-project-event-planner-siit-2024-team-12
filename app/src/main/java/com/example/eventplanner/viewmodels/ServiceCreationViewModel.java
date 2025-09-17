@@ -14,10 +14,12 @@ import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
 import com.example.eventplanner.utils.ClientUtils;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -31,6 +33,33 @@ public class ServiceCreationViewModel extends AndroidViewModel {
     private final MutableLiveData<List<Long>> selectedEventTypeIds = new MutableLiveData<>(new ArrayList<>());
 
     private final MutableLiveData<Uri> serviceImageUri = new MutableLiveData<>();
+    private final MutableLiveData<List<Integer>> selectedDays = new MutableLiveData<>();
+    private final MutableLiveData<LocalTime> selectedFromTime = new MutableLiveData<>();
+    private final MutableLiveData<LocalTime> selectedToTime = new MutableLiveData<>();
+
+    public MutableLiveData<List<Integer>> getSelectedDays() {
+        return selectedDays;
+    }
+
+    public MutableLiveData<LocalTime> getSelectedFromTime() {
+        return selectedFromTime;
+    }
+
+    public MutableLiveData<LocalTime> getSelectedToTime() {
+        return selectedToTime;
+    }
+
+    public void setSelectedDays(List<Integer> days) {
+        selectedDays.setValue(days);
+    }
+
+    public void setSelectedFromTime(LocalTime time) {
+        selectedFromTime.setValue(time);
+    }
+
+    public void setSelectedToTime(LocalTime time) {
+        selectedToTime.setValue(time);
+    }
 
     public MutableLiveData<Uri> getServiceImageUri() {
         return serviceImageUri;
