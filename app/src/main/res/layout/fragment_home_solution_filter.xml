@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="236dp"
+        android:layout_height="32dp"
+        android:text="@string/filters"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp"/>
+
+    <include layout="@layout/item_filter_row" android:id="@+id/categoryFilter"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginVertical="8dp"/>
+
+    <include layout="@layout/item_filter_row" android:id="@+id/eventTypeFilter"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginVertical="8dp"/>
+
+    <include layout="@layout/item_filter_row" android:id="@+id/locationFilter"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginVertical="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/attach_money_filled"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <EditText
+            android:id="@+id/minPrice"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_field"
+            android:ems="10"
+            android:hint="@string/min_price"
+            android:inputType="numberDecimal"
+            android:paddingStart="12dp"
+            android:textSize="12sp"
+            android:layout_marginEnd="12dp"/>
+
+        <EditText
+            android:id="@+id/maxPrice"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_field"
+            android:ems="10"
+            android:hint="@string/max_price"
+            android:inputType="numberDecimal"
+            android:paddingStart="12dp"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginVertical="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_discount"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <EditText
+            android:id="@+id/minDiscount"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_field"
+            android:ems="10"
+            android:hint="@string/min_discount"
+            android:inputType="number"
+            android:paddingStart="12dp"
+            android:textSize="12sp"
+            android:layout_marginEnd="12dp"/>
+
+        <EditText
+            android:id="@+id/maxDiscount"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_field"
+            android:ems="10"
+            android:hint="@string/max_discount"
+            android:inputType="number"
+            android:paddingStart="12dp"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginVertical="8dp"/>
+
+    <include layout="@layout/item_filter_row" android:id="@+id/ratingFilter"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginVertical="8dp"/>
+
+    <include layout="@layout/item_filter_row" android:id="@+id/sortByFilter"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginVertical="8dp"/>
+    <include layout="@layout/item_filter_row" android:id="@+id/sortDirectionFilter"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginVertical="8dp"/>
+
+    <Button
+        android:id="@+id/filterBtn"
+        android:text="@string/apply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@drawable/form_button"
+        android:textColor="@color/white"/>
+</LinearLayout>

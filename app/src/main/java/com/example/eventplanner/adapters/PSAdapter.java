@@ -34,7 +34,7 @@ public class PSAdapter extends RecyclerView.Adapter<PSAdapter.PSViewHolder> {
         String title = eventTitles.get(position);
         holder.title.setText(title);
         holder.description.setText("Description for " + title);
-        holder.viewDetails.setOnClickListener(v -> {
+        holder.itemView.setOnClickListener(v -> {
 
         });
     }
@@ -59,7 +59,7 @@ public class PSAdapter extends RecyclerView.Adapter<PSAdapter.PSViewHolder> {
             image = itemView.findViewById(R.id.eventImage);
             title = itemView.findViewById(R.id.eventTitle);
             description = itemView.findViewById(R.id.eventDescription);
-            viewDetails = itemView.findViewById(R.id.viewDetailsButton);
+            //viewDetails = itemView.findViewById(R.id.viewDetailsButton);
         }
     }
 

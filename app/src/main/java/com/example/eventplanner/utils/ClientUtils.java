@@ -12,6 +12,7 @@ import com.example.eventplanner.activities.business.BusinessService;
 import com.example.eventplanner.activities.charts.ChartService;
 import com.example.eventplanner.activities.event.EventService;
 import com.example.eventplanner.activities.eventtype.EventTypeService;
+import com.example.eventplanner.activities.homepage.HomepageService;
 import com.example.eventplanner.activities.product.ProductService;
 import com.example.eventplanner.activities.profile.UserService;
 import com.example.eventplanner.activities.solutioncategory.SolutionCategoryService;
@@ -77,5 +78,6 @@ public class ClientUtils {
     public static ProductService productService = retrofit.create(ProductService.class);
 
     public static GalleryService galleryService = retrofit.create(GalleryService.class);
+    public static HomepageService homepageService = retrofit.create(HomepageService.class);
 
 }
