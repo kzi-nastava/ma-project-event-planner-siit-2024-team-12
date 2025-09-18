@@ -72,7 +72,9 @@ public class ServiceCreation5 extends Fragment {
         submitButton.setOnClickListener(v -> {
             if (validateForm()) {
                 viewModel.mapServiceDataAndCreateService();
-                Toast.makeText(getContext(), "Podaci uspešno validirani i poslati!", Toast.LENGTH_SHORT).show();
+//                if (getActivity() != null) {
+//                    getActivity().getSupportFragmentManager().popBackStack();
+//                }
             }
         });
 

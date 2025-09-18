@@ -123,7 +123,7 @@ public class ServiceCreationViewModel extends AndroidViewModel {
                 if (response.isSuccessful()) {
                     GetBusinessDTO business = response.body();
                     if (business != null) {
-                        currentBusiness.setValue(business); // Smeštanje DTO-a u LiveData
+                        currentBusiness.setValue(business);
                         Log.d("API_CALL", "Successfully fetched business: " + business.getCompanyName());
                         Toast.makeText(getApplication(), "Podaci o biznisu uspešno dobavljeni.", Toast.LENGTH_SHORT).show();
                     } else {
@@ -153,7 +153,7 @@ public class ServiceCreationViewModel extends AndroidViewModel {
             Log.e("ServiceCreation", "serviceData is null. Cannot map service.");
             return;
         }
-        fetchCurrentBusiness();
+//        fetchCurrentBusiness();
         if(currentBusiness==null){
             Log.e("Busines fetch", "currentBusiness is null. Cannot create service.");
             Toast.makeText(getApplication(), "Morate kreirati kompaniju pre kreiranja usluge.", Toast.LENGTH_SHORT).show();
@@ -183,8 +183,8 @@ public class ServiceCreationViewModel extends AndroidViewModel {
 
             service.setEventTypeIds(getMappedList(getSelectedEventTypeIds()));
             service.setWorkingDays(getMappedList(getSelectedDays()));
-            service.setWorkingHoursStart(getMappedValue(dataMap, "workingHoursStart", LocalTime.class));
-            service.setWorkingHoursEnd(getMappedValue(dataMap, "workingHoursEnd", LocalTime.class));
+            service.setWorkingHoursStart(selectedFromTime.getValue());
+            service.setWorkingHoursEnd(selectedToTime.getValue());
 
 
             submitService(service);
@@ -259,6 +259,7 @@ public class ServiceCreationViewModel extends AndroidViewModel {
             @Override
             public void onFailure(Call<CreatedServiceDTO> call, Throwable t) {
                 Log.e("API_CALL", "Network failure while creating service: " + t.getMessage());
+                Log.e("API_CALL", "submit service metoda: " + t.getMessage());
                 Toast.makeText(getApplication(), "Greška na mreži: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

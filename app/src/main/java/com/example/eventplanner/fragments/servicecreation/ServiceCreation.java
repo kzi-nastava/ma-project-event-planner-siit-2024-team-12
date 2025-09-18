@@ -151,6 +151,7 @@ public class ServiceCreation extends Fragment {
         });
 
         viewModel.fetchAcceptedCategories();
+        viewModel.fetchCurrentBusiness();
 
         nextButton.setOnClickListener(v -> {
             if(validateForm()){
