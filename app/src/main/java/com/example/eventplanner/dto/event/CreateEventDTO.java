@@ -4,6 +4,7 @@ import com.example.eventplanner.dto.agenda.CreateActivityDTO;
 import com.example.eventplanner.dto.location.CreateLocationDTO;
 
 import java.util.List;
+import java.util.Set;
 
 public class CreateEventDTO {
     private String name;
@@ -15,6 +16,9 @@ public class CreateEventDTO {
     private String eventTypeName;
     private String organizer;
     private List<CreateActivityDTO> agenda;
+
+    private Set<String> invitedEmails;
+    private String invitationContent;
 
     public CreateEventDTO() { super(); }
 
@@ -45,6 +49,12 @@ public class CreateEventDTO {
 
     public List<CreateActivityDTO> getAgenda() { return agenda; }
     public void setAgenda(List<CreateActivityDTO> agenda) { this.agenda = agenda; }
+
+    public Set<String> getInvitedEmails() { return invitedEmails; }
+    public void setInvitedEmails(Set<String> invitedEmails) { this.invitedEmails = invitedEmails; }
+
+    public String getInvitationContent() { return invitationContent; }
+    public void setInvitationContent(String invitationContent) { this.invitationContent = invitationContent; }
 
 
     @Override

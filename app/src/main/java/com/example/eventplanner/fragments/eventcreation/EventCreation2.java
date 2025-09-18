@@ -68,6 +68,11 @@ public class EventCreation2 extends Fragment {
         });
 
 
+        sendInvitationsText.setOnClickListener(v -> {
+            InvitationDialogFragment dialogFragment = new InvitationDialogFragment();
+            dialogFragment.show(getParentFragmentManager(), "invitationDialog");
+        });
+
         Button agendaBtn = view.findViewById(R.id.agendaBtn);
         agendaBtn.setOnClickListener(v -> {
             EditText dateField = view.findViewById(R.id.date);
