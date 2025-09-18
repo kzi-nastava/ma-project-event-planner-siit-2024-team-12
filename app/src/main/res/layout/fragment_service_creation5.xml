@@ -74,6 +74,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/unavailable_dates_text" />
 
+        <Button
+            android:id="@+id/show_dates_button"
+            android:layout_width="30dp"
+            android:layout_height="25dp"
+            android:background="@drawable/form_button_round"
+            android:text="..."
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.088"
+            app:layout_constraintStart_toEndOf="@+id/select_date_button"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.273" />
+
         <TextView
             android:id="@+id/available_days_text"
             android:layout_width="wrap_content"

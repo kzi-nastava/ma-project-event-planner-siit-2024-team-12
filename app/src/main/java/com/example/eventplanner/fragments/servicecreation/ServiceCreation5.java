@@ -1,5 +1,6 @@
 package com.example.eventplanner.fragments.servicecreation;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import java.util.List;
 public class ServiceCreation5 extends Fragment {
 
     private Button selectDateButton;
+    private Button showDatesButton;
     private Button selectFromTimeButton;
     private Button selectToTimeButton;
     private Button submitButton;
@@ -50,6 +52,7 @@ public class ServiceCreation5 extends Fragment {
         View view = inflater.inflate(R.layout.fragment_service_creation5, container, false);
 
         selectDateButton = view.findViewById(R.id.select_date_button);
+        showDatesButton = view.findViewById(R.id.show_dates_button);
         selectFromTimeButton = view.findViewById(R.id.select_from_time_button);
         selectToTimeButton = view.findViewById(R.id.select_to_time_button);
         submitButton = view.findViewById(R.id.submitService);
@@ -64,6 +67,7 @@ public class ServiceCreation5 extends Fragment {
         sunCheckBox = view.findViewById(R.id.sun_checkbox);
 
         selectDateButton.setOnClickListener(v -> showDatePicker());
+        showDatesButton.setOnClickListener(v -> showSelectedDatesDialog());
 
         selectFromTimeButton.setOnClickListener(v -> showTimePicker(selectFromTimeButton));
 
@@ -96,9 +100,44 @@ public class ServiceCreation5 extends Fragment {
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                 (view, selectedYear, selectedMonth, selectedDay) -> {
                     String date = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
-                    selectDateButton.setText(date);
+                    viewModel.addUnavailableDate(date);
+                    Toast.makeText(getContext(), "Datum " + date + " dodat.", Toast.LENGTH_SHORT).show();
                 }, year, month, day);
         datePickerDialog.show();
+    }
+    private void showSelectedDatesDialog() {
+        List<String> dates = viewModel.getUnavailableDates().getValue();
+        if (dates == null || dates.isEmpty()) {
+            Toast.makeText(getContext(), "Niste odabrali nijedan datum.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Odabrani datumi");
+
+        final String[] datesArray = dates.toArray(new String[0]);
+
+        builder.setItems(datesArray, (dialog, which) -> {
+        });
+
+        builder.setPositiveButton("Ukloni", (dialog, which) -> {
+            showRemoveDateDialog(datesArray);
+        });
+        builder.setNegativeButton("Zatvori", null);
+
+        builder.show();
+    }
+
+    private void showRemoveDateDialog(String[] dates) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Uklonite datum");
+        builder.setItems(dates, (dialog, which) -> {
+            String dateToRemove = dates[which];
+            viewModel.removeUnavailableDate(dateToRemove);
+            Toast.makeText(getContext(), "Datum " + dateToRemove + " uklonjen.", Toast.LENGTH_SHORT).show();
+        });
+        builder.setNegativeButton("Odustani", null);
+        builder.show();
     }
 
     private void showTimePicker(final Button button) {

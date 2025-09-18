@@ -17,6 +17,7 @@ import com.example.eventplanner.dto.solutionservice.CreateServiceDTO;
 import com.example.eventplanner.dto.solutionservice.CreatedServiceDTO;
 import com.example.eventplanner.enumeration.ReservationType;
 import com.example.eventplanner.utils.ClientUtils;
+import com.example.eventplanner.utils.ImageHelper;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -42,6 +43,11 @@ public class ServiceCreationViewModel extends AndroidViewModel {
     private final MutableLiveData<LocalTime> selectedFromTime = new MutableLiveData<>();
     private final MutableLiveData<LocalTime> selectedToTime = new MutableLiveData<>();
     private final MutableLiveData<GetBusinessDTO> currentBusiness = new MutableLiveData<>();
+    private final MutableLiveData<List<String>> unavailableDates = new MutableLiveData<>(new ArrayList<>());
+
+    public MutableLiveData<List<String>> getUnavailableDates() {
+        return unavailableDates;
+    }
 
     public MutableLiveData<GetBusinessDTO> getCurrentBusiness() {
         return currentBusiness;
@@ -106,6 +112,24 @@ public class ServiceCreationViewModel extends AndroidViewModel {
 
     public MutableLiveData<Map<String, Object>> getServiceData() {
         return serviceData;
+    }
+    public void addUnavailableDate(String date) {
+        List<String> currentDates = unavailableDates.getValue();
+        if (currentDates == null) {
+            currentDates = new ArrayList<>();
+        }
+        if (!currentDates.contains(date)) {
+            currentDates.add(date);
+            unavailableDates.setValue(currentDates);
+        }
+    }
+
+    public void removeUnavailableDate(String date) {
+        List<String> currentDates = unavailableDates.getValue();
+        if (currentDates != null) {
+            currentDates.remove(date);
+            unavailableDates.setValue(currentDates);
+        }
     }
     public void fetchCurrentBusiness() {
         String auth = ClientUtils.getAuthorization(getApplication());
@@ -228,12 +252,6 @@ public class ServiceCreationViewModel extends AndroidViewModel {
     }
 
     public void submitService(CreateServiceDTO serviceDto) {
-        // Implementirajte logiku za slanje podataka na server ovde
-        // serviceData.getValue() sadrži sve podatke
-//        Map<String, Object> data = serviceData.getValue();
-        // Primer: Pozivanje API-ja
-        // new ServiceApi().createService(data);
-
         String auth = ClientUtils.getAuthorization(getApplication());
 
         Call<CreatedServiceDTO> call = ClientUtils.serviceSolutionService.createService(auth, serviceDto);
@@ -245,7 +263,28 @@ public class ServiceCreationViewModel extends AndroidViewModel {
                     CreatedServiceDTO createdService = response.body();
                     if (createdService != null) {
                         Log.d("API_CALL", "Successfully created service with ID: " + createdService.getId());
-                        Toast.makeText(getApplication(), "Usluga uspešno kreirana.", Toast.LENGTH_SHORT).show();
+
+                        Uri imageUri = getServiceImageUri().getValue();
+                        if (imageUri != null) {
+                            List<Uri> uris = new ArrayList<>();
+                            uris.add(imageUri);
+
+                            ImageHelper.uploadMultipleImages(
+                                    getApplication(),
+                                    uris,
+                                    "service",
+                                    createdService.getId(),
+                                    "true",
+                                    () -> {
+                                        Toast.makeText(getApplication(), "Usluga i slika uspešno kreirane.", Toast.LENGTH_SHORT).show();
+                                    },
+                                    () -> {
+                                        Toast.makeText(getApplication(), "Usluga kreirana, ali slika nije postavljena.", Toast.LENGTH_SHORT).show();
+                                    }
+                            );
+                        } else {
+                            Toast.makeText(getApplication(), "Usluga uspešno kreirana (bez slike).", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
                         Log.e("API_CALL", "Service created, but response body is null.");
                         Toast.makeText(getApplication(), "Usluga kreirana, ali bez povratnih podataka.", Toast.LENGTH_SHORT).show();
@@ -259,7 +298,6 @@ public class ServiceCreationViewModel extends AndroidViewModel {
             @Override
             public void onFailure(Call<CreatedServiceDTO> call, Throwable t) {
                 Log.e("API_CALL", "Network failure while creating service: " + t.getMessage());
-                Log.e("API_CALL", "submit service metoda: " + t.getMessage());
                 Toast.makeText(getApplication(), "Greška na mreži: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
