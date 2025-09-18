@@ -358,5 +358,6 @@
     <string name="max_discount">Max discount</string>
     <string name="min_discount">Min discount</string>
     <string name="sort_by">Sort by</string>
+    <string name="sort_direction">Sort direction</string>
 
 </resources>

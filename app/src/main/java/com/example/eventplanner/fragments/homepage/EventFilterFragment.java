@@ -112,18 +112,6 @@ public class EventFilterFragment extends DialogFragment {
         filterViewModel.setMinDate(startDateText.getText().toString());
         filterViewModel.setMaxDate(endDateText.getText().toString());
 
-        Log.d("EventFilterFragment", "Selected Cities: " + selectedCities);
-        Log.d("EventFilterFragment", "Selected EventTypes: " + selectedEventTypes);
-        Log.d("EventFilterFragment", "Selected Rating: " + selectedRating);
-        Log.d("EventFilterFragment", "Selected SortBy: " + selectedSortBy);
-        Log.d("EventFilterFragment", "Selected SortDir: " + selectedSortDir);
-        Log.d("EventFilterFragment", "Start Date: " + startDateText.getText());
-        Log.d("EventFilterFragment", "End Date: " + endDateText.getText());
-
-        if (isAdded()) {
-            Toast.makeText(getContext(), "Filters applied: " + selectedCities.size() + " cities", Toast.LENGTH_SHORT).show();
-        }
-
         filterViewModel.applyNow();
 
         dismiss();

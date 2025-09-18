@@ -1,15 +1,20 @@
 package com.example.eventplanner.fragments.homepage;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +23,7 @@ import com.example.eventplanner.adapters.SingleSelectAdapter;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.viewmodels.HomeSolutionFilterViewModel;
 import com.example.eventplanner.activities.homepage.HomepageService;
+import com.example.eventplanner.enumeration.UserRole;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,28 +40,47 @@ public class HomeSolutionFilterFragment extends DialogFragment {
     private List<String> eventTypeOptions = new ArrayList<>();
     private List<String> ratingOptions = new ArrayList<>();
     private List<String> sortByOptions = new ArrayList<>();
+    private List<String> sortDirectionOptions = new ArrayList<>();
+    private List<String> locationOptions = new ArrayList<>();
+
     private Button filterBtn;
     private HomeSolutionFilterViewModel filterViewModel;
     private View view;
     private EditText minPrice, maxPrice, minDiscount, maxDiscount;
     private Map<String, Integer> filterIcons = new HashMap<>();
 
+    // Novi View za lokaciju
+    private LinearLayout locationFilterLayout;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home_solution_filter, container, false);
-        filterViewModel = new ViewModelProvider(requireActivity()).get(HomeSolutionFilterViewModel.class);
+        filterViewModel = new ViewModelProvider(requireParentFragment()).get(HomeSolutionFilterViewModel.class);
 
         minPrice = view.findViewById(R.id.minPrice);
         maxPrice = view.findViewById(R.id.maxPrice);
         minDiscount = view.findViewById(R.id.minDiscount);
         maxDiscount = view.findViewById(R.id.maxDiscount);
 
-        loadAvailableFiltersFromBackend();
+        locationFilterLayout = view.findViewById(R.id.locationFilter);
 
+        loadAvailableFiltersFromBackend();
         setUpExistingFilters();
 
         filterBtn = view.findViewById(R.id.filterBtn);
         filterBtn.setOnClickListener(v -> applyFilters());
+
+        filterViewModel.getIgnoreCityFilter().observe(getViewLifecycleOwner(), ignoreCity -> {
+            boolean enabled = !ignoreCity;
+            locationFilterLayout.setAlpha(enabled ? 1.0f : 0.5f);
+            locationFilterLayout.setEnabled(enabled);
+
+            RecyclerView recyclerView = locationFilterLayout.findViewById(R.id.options);
+            if (recyclerView != null) {
+                recyclerView.setVisibility(View.GONE);
+                locationFilterLayout.setOnClickListener(null);
+            }
+        });
 
         return view;
     }
@@ -81,13 +106,14 @@ public class HomeSolutionFilterFragment extends DialogFragment {
                             ratingOptions.add(String.valueOf(rating.intValue()));
                         }
                     }
+                    if (filters.get("cities") != null) {
+                        locationOptions = (List<String>) filters.get("cities");
+                    }
                     if (filters.get("sortOptions") != null) {
-                        List<String> rawSortOptions = (List<String>) filters.get("sortOptions");
-                        sortByOptions = new ArrayList<>();
-                        for (String option : rawSortOptions) {
-                            sortByOptions.add(option.substring(0, 1).toUpperCase() + option.substring(1) + " " + "ASC");
-                            sortByOptions.add(option.substring(0, 1).toUpperCase() + option.substring(1) + " " + "DESC");
-                        }
+                        sortByOptions = new ArrayList<>((List<String>) filters.get("sortOptions"));
+                        sortDirectionOptions = new ArrayList<>();
+                        sortDirectionOptions.add("ASC");
+                        sortDirectionOptions.add("DESC");
                     }
                     setUpExistingFilters();
                 } else {
@@ -106,27 +132,19 @@ public class HomeSolutionFilterFragment extends DialogFragment {
         String selectedCategory = ((SingleSelectAdapter)((RecyclerView) view.findViewById(R.id.categoryFilter).findViewById(R.id.options)).getAdapter()).getSelectedItem();
         String selectedEventType = ((SingleSelectAdapter)((RecyclerView) view.findViewById(R.id.eventTypeFilter).findViewById(R.id.options)).getAdapter()).getSelectedItem();
         String selectedRating = ((SingleSelectAdapter)((RecyclerView) view.findViewById(R.id.ratingFilter).findViewById(R.id.options)).getAdapter()).getSelectedItem();
-        String selectedSortBy = ((SingleSelectAdapter)((RecyclerView) view.findViewById(R.id.sortByFilter).findViewById(R.id.options)).getAdapter()).getSelectedItem();
+        String selectedLocation = ((SingleSelectAdapter)((RecyclerView) view.findViewById(R.id.locationFilter).findViewById(R.id.options)).getAdapter()).getSelectedItem();
+        String selectedSortByCriterion = ((SingleSelectAdapter)((RecyclerView) view.findViewById(R.id.sortByFilter).findViewById(R.id.options)).getAdapter()).getSelectedItem();
+        String selectedSortDirection = ((SingleSelectAdapter)((RecyclerView) view.findViewById(R.id.sortDirectionFilter).findViewById(R.id.options)).getAdapter()).getSelectedItem();
 
         filterViewModel.setSelectedCategory(selectedCategory);
         filterViewModel.setSelectedEventType(selectedEventType);
-
-        if (selectedRating != null) {
-            filterViewModel.setRating(Double.parseDouble(selectedRating));
-        } else {
-            filterViewModel.setRating(null);
-        }
-
-        if (selectedSortBy != null) {
-            String[] sortOptions = selectedSortBy.split(" ");
-            filterViewModel.setSortBy(sortOptions[0].toLowerCase());
-            filterViewModel.setSortDir(sortOptions[1].toUpperCase());
-        } else {
-            filterViewModel.setSortBy(null);
-            filterViewModel.setSortDir(null);
-        }
+        filterViewModel.setRating(selectedRating != null ? Double.parseDouble(selectedRating) : null);
+        filterViewModel.setSelectedLocation(selectedLocation);
+        filterViewModel.setSortBy(selectedSortByCriterion != null ? selectedSortByCriterion.toLowerCase() : null);
+        filterViewModel.setSortDir(selectedSortDirection != null ? selectedSortDirection.toUpperCase() : null);
 
         setUpPriceAndDiscountRange();
+
         filterViewModel.applyNow();
         dismiss();
     }
@@ -135,7 +153,9 @@ public class HomeSolutionFilterFragment extends DialogFragment {
         setupSingleSelectFilter(view, R.id.categoryFilter, getString(R.string.category), categoryOptions, filterViewModel.getSelectedCategory().getValue());
         setupSingleSelectFilter(view, R.id.eventTypeFilter, getString(R.string.event_type_filter), eventTypeOptions, filterViewModel.getSelectedEventType().getValue());
         setupSingleSelectFilter(view, R.id.ratingFilter, getString(R.string.rating), ratingOptions, filterViewModel.getRating().getValue() != null ? String.valueOf(filterViewModel.getRating().getValue().intValue()) : null);
-        setupSingleSelectFilter(view, R.id.sortByFilter, getString(R.string.sort_by), sortByOptions, filterViewModel.getSortBy().getValue() != null ? filterViewModel.getSortBy().getValue().substring(0, 1).toUpperCase() + filterViewModel.getSortBy().getValue().substring(1) + " " + filterViewModel.getSortDir().getValue() : null);
+        setupSingleSelectFilter(view, R.id.locationFilter, getString(R.string.location), locationOptions, filterViewModel.getSelectedLocation().getValue());
+        setupSingleSelectFilter(view, R.id.sortByFilter, getString(R.string.sort_by), sortByOptions, filterViewModel.getSortBy().getValue());
+        setupSingleSelectFilter(view, R.id.sortDirectionFilter, getString(R.string.sort_direction), sortDirectionOptions, filterViewModel.getSortDir().getValue());
 
         Double minPriceVal = filterViewModel.getMinPrice().getValue();
         Double maxPriceVal = filterViewModel.getMaxPrice().getValue();
@@ -214,9 +234,11 @@ public class HomeSolutionFilterFragment extends DialogFragment {
     }
 
     private void setUpFilterIcons() {
+        filterIcons.put("Location", R.drawable.ic_location);
         filterIcons.put(requireContext().getString(R.string.category), R.drawable.category_filled);
         filterIcons.put(getString(R.string.event_type_filter), R.drawable.celebration);
         filterIcons.put(requireContext().getString(R.string.rating), R.drawable.ic_rating);
         filterIcons.put(requireContext().getString(R.string.sort_by), R.drawable.ic_sort);
+        filterIcons.put("Sort direction", R.drawable.ic_sort_dir);
     }
 }

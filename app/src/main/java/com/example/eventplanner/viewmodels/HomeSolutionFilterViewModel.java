@@ -22,12 +22,17 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
     private final MutableLiveData<String> sortDir = new MutableLiveData<>();
     private final MutableLiveData<String> type = new MutableLiveData<>();
     private final MutableLiveData<Boolean> ignoreCityFilter = new MutableLiveData<>(false);
+    private final MutableLiveData<String> selectedLocation = new MutableLiveData<>();
 
     private final MutableLiveData<FilterPayload> appliedFilters = new MutableLiveData<>();
 
     public HomeSolutionFilterViewModel(@NonNull Application application) {
         super(application);
     }
+
+    public LiveData<String> getSelectedLocation() { return selectedLocation; }
+    public void setSelectedLocation(String location) { selectedLocation.setValue(location); }
+    public void removeLocation() { selectedLocation.setValue(null); }
 
     public LiveData<Double> getMinDiscount() { return minDiscount; }
     public void setMinDiscount(Double value) { minDiscount.setValue(value); }
@@ -41,18 +46,14 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
     public LiveData<String> getSelectedCategory() { return selectedCategory; }
     public void setSelectedCategory(String category) { selectedCategory.setValue(category); }
     public void removeCategory(String category) {
-        String updatedCategories = selectedCategory.getValue();
-
-        selectedCategory.setValue(updatedCategories);
+        selectedCategory.setValue(null);
+    }
+    public void removeEventType(String eventType) {
+        selectedEventType.setValue(null);
     }
 
     public LiveData<String> getSelectedEventType() { return selectedEventType; }
     public void setSelectedEventType(String eventType) { selectedEventType.setValue(eventType); }
-    public void removeEventType(String eventType) {
-        String updatedEventTypes = selectedEventType.getValue();
-
-        selectedEventType.setValue(updatedEventTypes);
-    }
 
     public LiveData<Double> getMinPrice() { return minPrice; }
     public void setMinPrice(Double value) { minPrice.setValue(value); }
@@ -88,7 +89,8 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
                 sortBy.getValue(),
                 sortDir.getValue(),
                 type.getValue(),
-                ignoreCityFilter.getValue()
+                ignoreCityFilter.getValue(),
+                selectedLocation.getValue()
         ));
     }
 
@@ -110,7 +112,9 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
         public final String type;
         public final boolean ignoreCityFilter;
 
-        public FilterPayload(String category, String eventType, Double minPrice, Double maxPrice, Double minDiscount, Double maxDiscount, String searchQuery, Double rating, String sortBy, String sortDir, String type, boolean ignoreCityFilter) {
+        public final String location;
+
+        public FilterPayload(String category, String eventType, Double minPrice, Double maxPrice, Double minDiscount, Double maxDiscount, String searchQuery, Double rating, String sortBy, String sortDir, String type, boolean ignoreCityFilter, String location) {
             this.category = category;
             this.eventType = eventType;
             this.minPrice = minPrice;
@@ -123,6 +127,7 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
             this.sortDir = sortDir;
             this.type = type;
             this.ignoreCityFilter = ignoreCityFilter;
+            this.location = location;
         }
 
         public String getSearchQuery() { return searchQuery; }
@@ -131,6 +136,7 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
         public String getSortBy() { return sortBy; }
         public String getSortDir() { return sortDir; }
         public boolean isIgnoreCityFilter() { return ignoreCityFilter; }
+        public String getLocation() { return location; }
     }
 
     public void resetFilters() {
@@ -146,6 +152,7 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
         searchQuery.setValue(null);
         type.setValue(null);
         ignoreCityFilter.setValue(false);
+        selectedLocation.setValue(null);
         applyNow();
     }
 }

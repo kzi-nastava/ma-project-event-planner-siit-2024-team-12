@@ -113,14 +113,14 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
         service.searchSolutions(
                 bearer,
                 payload.getSearchQuery(), // name
-                null,
-                payload.category != null && !payload.category.isEmpty() ? payload.category : null,
-                null,
+                null, // description
+                payload.category, // solutionCategory
+                payload.getLocation() != null ? payload.getLocation() : null, // location
                 payload.minPrice != null ? payload.minPrice.intValue() : null,
                 payload.maxPrice != null ? payload.maxPrice.intValue() : null,
-                null, // minDiscount
-                null, // maxDiscount
-                payload.eventType != null && !payload.eventType.isEmpty() ? payload.eventType : null, // eventType
+                payload.minDiscount != null ? payload.minDiscount.intValue() : null,
+                payload.maxDiscount != null ? payload.maxDiscount.intValue() : null,
+                payload.eventType, // eventType
                 payload.getRating() != null ? payload.getRating().intValue() : null, // rating
                 payload.getSortBy(),
                 payload.getSortDir(),
@@ -138,8 +138,9 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
                     allItems.addAll(response.body());
                     currentPage = 0;
                     updateRecyclerView();
+                    Log.d("FilterDebug", "Successfully loaded " + allItems.size() + " items.");
                 } else {
-                    // Handle API error, e.g., show a message
+                    Log.e("FilterDebug", "Failed to load solutions: " + response.code() + " " + response.message());
                     Toast.makeText(requireContext(), "Failed to load solutions.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -147,6 +148,7 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
             @Override
             public void onFailure(@NonNull Call<List<GetHomepageSolutionDTO>> call, @NonNull Throwable t) {
                 if (!isAdded()) return;
+                Log.e("FilterDebug", "Error loading solutions: ", t);
                 Toast.makeText(requireContext(), "Error loading solutions: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -175,6 +177,13 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
             });
         }
 
+        if (p.getLocation() != null && !p.getLocation().isEmpty()) {
+            addFilterChip("Location: " + p.getLocation(), () -> {
+                filterViewModel.setSelectedLocation(null);
+                filterViewModel.applyNow();
+            });
+        }
+
         if (p.category != null && !p.category.isEmpty()) {
             addFilterChip("Category: " + p.category, () -> {
                 filterViewModel.setSelectedCategory(null);
@@ -188,23 +197,34 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
             });
         }
         if (p.minPrice != null || p.maxPrice != null) {
-            String priceText = String.format(Locale.getDefault(), "Price: %.0f-%.0f",
-                    p.minPrice != null ? p.minPrice : 0,
-                    p.maxPrice != null ? p.maxPrice : Double.MAX_VALUE);
+            String priceText = String.format(Locale.getDefault(), "Price: %s-%s",
+                    p.minPrice != null ? String.format("%.0f", p.minPrice) : "min",
+                    p.maxPrice != null ? String.format("%.0f", p.maxPrice) : "max");
             addFilterChip(priceText, () -> {
                 filterViewModel.setMinPrice(null);
                 filterViewModel.setMaxPrice(null);
                 filterViewModel.applyNow();
             });
         }
+        if (p.minDiscount != null || p.maxDiscount != null) {
+            String discountText = String.format(Locale.getDefault(), "Discount: %s%%-%s%%",
+                    p.minDiscount != null ? String.valueOf(p.minDiscount.intValue()) : "min",
+                    p.maxDiscount != null ? String.valueOf(p.maxDiscount.intValue()) : "max");
+            addFilterChip(discountText, () -> {
+                filterViewModel.setMinDiscount(null);
+                filterViewModel.setMaxDiscount(null);
+                filterViewModel.applyNow();
+            });
+        }
         if (p.getRating() != null) {
-            addFilterChip("Rating: " + p.getRating(), () -> {
+            addFilterChip("Rating: " + p.getRating().intValue(), () -> {
                 filterViewModel.setRating(null);
                 filterViewModel.applyNow();
             });
         }
         if (p.getSortBy() != null) {
-            addFilterChip("Sort by: " + p.getSortBy(), () -> {
+            String sortByText = p.getSortBy().substring(0, 1).toUpperCase() + p.getSortBy().substring(1) + " " + p.getSortDir();
+            addFilterChip("Sort: " + sortByText, () -> {
                 filterViewModel.setSortBy(null);
                 filterViewModel.setSortDir(null);
                 filterViewModel.applyNow();
