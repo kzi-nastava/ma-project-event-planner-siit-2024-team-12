@@ -28,6 +28,7 @@ import com.example.eventplanner.enumeration.UserRole;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import retrofit2.Call;
@@ -124,11 +125,17 @@ public class HomeSolutionFilterFragment extends DialogFragment {
                         locationOptions = (List<String>) filters.get("cities");
                     }
                     if (filters.get("sortOptions") != null) {
-                        sortByOptions = new ArrayList<>((List<String>) filters.get("sortOptions"));
+                        List<String> rawSortOptions = (List<String>) filters.get("sortOptions");
+                        sortByOptions = new ArrayList<>();
+                        for (String opt : rawSortOptions) {
+                            sortByOptions.add(opt.toUpperCase(Locale.getDefault()));
+                        }
+
                         sortDirectionOptions = new ArrayList<>();
                         sortDirectionOptions.add("ASC");
                         sortDirectionOptions.add("DESC");
                     }
+
                     setUpExistingFilters();
                 } else {
                     Toast.makeText(getActivity(), "Error loading filters!", Toast.LENGTH_SHORT).show();

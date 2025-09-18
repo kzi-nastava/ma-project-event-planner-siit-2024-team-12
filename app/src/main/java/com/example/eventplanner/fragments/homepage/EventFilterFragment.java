@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -128,6 +130,18 @@ public class EventFilterFragment extends DialogFragment {
         String selectedSortDir = ((SingleSelectAdapter) ((RecyclerView) view.findViewById(R.id.sortDirectionFilter)
                 .findViewById(R.id.options)).getAdapter()).getSelectedItem();
 
+        EditText maxGuestsInput = view.findViewById(R.id.maxGuests);
+        Integer maxGuestsValue = null;
+        try {
+            String maxStr = maxGuestsInput.getText().toString().trim();
+            if (!maxStr.isEmpty()) {
+                maxGuestsValue = Integer.parseInt(maxStr);
+            }
+        } catch (NumberFormatException e) {
+            maxGuestsValue = null;
+        }
+        filterViewModel.setMaxGuests(maxGuestsValue);
+
         // Set into ViewModel
         filterViewModel.setSelectedCities(selectedCity != null ? List.of(selectedCity) : new ArrayList<>());
         filterViewModel.setSelectedEventTypes(selectedEventType != null ? List.of(selectedEventType) : new ArrayList<>());
@@ -211,11 +225,21 @@ public class EventFilterFragment extends DialogFragment {
                         for (Double r : ratings) ratingOptions.add(String.valueOf(r.intValue()));
                     }
                     if (filters.get("sortOptions") instanceof List) {
-                        sortByOptions.addAll((List<String>) filters.get("sortOptions"));
+                        List<String> sortOptions = (List<String>) filters.get("sortOptions");
+                        sortByOptions.clear();
+                        for (String s : sortOptions) {
+                            if (s.equalsIgnoreCase("price")) {
+                                sortByOptions.add(toAllUpperCase("Max Guests"));
+                            } else {
+                                sortByOptions.add(toAllUpperCase(s));
+                            }
+                        }
                         sortDirectionOptions.clear();
                         sortDirectionOptions.add("ASC");
                         sortDirectionOptions.add("DESC");
                     }
+
+
                     setUpExistingFilters();
                 }
             }
@@ -242,5 +266,10 @@ public class EventFilterFragment extends DialogFragment {
         filterIcons.put("Rating", R.drawable.ic_rating);
         filterIcons.put("Sort by", R.drawable.ic_sort);
         filterIcons.put("Sort direction", R.drawable.ic_sort_dir);
+    }
+
+    private String toAllUpperCase(String input) {
+        if (input == null) return null;
+        return input.toUpperCase(Locale.getDefault());
     }
 }

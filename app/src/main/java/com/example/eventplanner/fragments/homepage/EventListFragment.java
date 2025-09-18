@@ -99,19 +99,32 @@ public class EventListFragment extends BaseListFragment<GetEventDTO, EventFilter
         Integer ratingParam = payload.getRating();
         boolean ignoreCityParam = !isPrivileged || payload.isIgnoreCityFilter();
         String searchQueryParam = (payload.getSearchQuery() != null && !payload.getSearchQuery().isEmpty()) ? payload.getSearchQuery() : null;
+        Integer maxGuestsParam = payload.maxGuests;
+
+        String sortByParam = payload.getSortBy();
+        if (sortByParam != null) {
+            if ("MAX GUESTS".equals(sortByParam.toUpperCase(Locale.getDefault()))) {
+                sortByParam = "maxGuests";
+            } else {
+                sortByParam = sortByParam.substring(0,1).toLowerCase() + sortByParam.substring(1).toLowerCase();
+            }
+        }
+
 
         service.searchEvents(
                 bearer,
                 searchQueryParam,
                 null,
                 typeParam,
-                null, null, null,
+                maxGuestsParam,
+                null,
+                null,
                 cityParam,
                 startDateParam,
                 endDateParam,
                 null,
                 ratingParam,
-                payload.getSortBy(),
+                sortByParam,
                 payload.getSortDir(),
                 0,
                 100,
@@ -196,6 +209,12 @@ public class EventListFragment extends BaseListFragment<GetEventDTO, EventFilter
             filterViewModel.setMaxDate("");
             filterViewModel.applyNow();
         });
+        if (p.maxGuests != null) {
+            addFilterChip("Max Guests: " + p.maxGuests, () -> {
+                filterViewModel.setMaxGuests(null);
+                filterViewModel.applyNow();
+            });
+        }
     }
 
 

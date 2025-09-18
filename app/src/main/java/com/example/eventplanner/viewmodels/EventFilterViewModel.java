@@ -27,6 +27,11 @@ public class EventFilterViewModel extends ViewModel {
     private final MutableLiveData<String> searchQuery = new MutableLiveData<>("");
     private final MutableLiveData<Boolean> isPrivileged = new MutableLiveData<>(false);
 
+    private final MutableLiveData<Integer> maxGuests = new MutableLiveData<>(null);
+
+    public LiveData<Integer> getMaxGuests() { return maxGuests; }
+    public void setMaxGuests(@Nullable Integer value) { maxGuests.setValue(value); }
+
     public LiveData<Boolean> getIsPrivileged() {
         return isPrivileged;
     }
@@ -101,7 +106,8 @@ public class EventFilterViewModel extends ViewModel {
                 sortDir.getValue(),
                 minDate.getValue() == null ? "" : minDate.getValue(),
                 maxDate.getValue() == null ? "" : maxDate.getValue(),
-                Boolean.TRUE.equals(ignoreCityFilter.getValue())
+                Boolean.TRUE.equals(ignoreCityFilter.getValue()),
+                maxGuests.getValue()
         );
     }
 
@@ -118,8 +124,10 @@ public class EventFilterViewModel extends ViewModel {
 
         public final String searchQuery;
 
+        public final Integer maxGuests;
+
         public FilterPayload(String searchQuery, List<String> cities, List<String> eventTypes, Integer rating,
-                             String sortBy, String sortDir, String startDate, String endDate,  boolean ignoreCityFilter) {
+                             String sortBy, String sortDir, String startDate, String endDate,  boolean ignoreCityFilter, @Nullable Integer maxGuests) {
             this.searchQuery = searchQuery == null ? "" : searchQuery;
             this.cities = cities;
             this.eventTypes = eventTypes;
@@ -129,6 +137,7 @@ public class EventFilterViewModel extends ViewModel {
             this.startDate = startDate;
             this.endDate = endDate;
             this.ignoreCityFilter = ignoreCityFilter;
+            this.maxGuests = maxGuests;
         }
 
         public Map<String, Object> toMap() {
@@ -194,6 +203,7 @@ public class EventFilterViewModel extends ViewModel {
         minDate.setValue("");
         maxDate.setValue("");
         ignoreCityFilter.setValue(false);
+        maxGuests.setValue(null);
         applyNow();
     }
 

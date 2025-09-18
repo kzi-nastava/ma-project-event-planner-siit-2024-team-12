@@ -114,6 +114,8 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
         String token = sp.getString("token", null);
         String bearer = token != null ? "Bearer " + token : null;
 
+        String sortByParam = payload.getSortBy() != null ? payload.getSortBy().toLowerCase(Locale.getDefault()) : null;
+
         service.searchSolutions(
                 bearer,
                 payload.getSearchQuery(), // name
@@ -126,7 +128,7 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
                 payload.maxDiscount != null ? payload.maxDiscount.intValue() : null,
                 payload.eventType, // eventType
                 payload.getRating() != null ? payload.getRating().intValue() : null, // rating
-                payload.getSortBy(),
+                sortByParam,
                 payload.getSortDir(),
                 0, // page
                 100, // size
