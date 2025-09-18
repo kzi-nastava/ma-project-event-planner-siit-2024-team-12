@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.event.EventDetailsActivity;
 import com.example.eventplanner.activities.homepage.CardItem;
@@ -24,7 +25,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventViewHolde
 
     private final Context context;
     private final List<CardItem> items = new ArrayList<>();
-    public static final String IP_ADDR = "192.168.0.28";
 
     public CardAdapter(Context context) {
         this.context = context;
@@ -52,7 +52,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventViewHolde
 
         String img = item.getImageUrl();
         if (img != null && !img.isEmpty()) {
-            img = "http://" + IP_ADDR + ":8080" + img;
+            img = "http://" + BuildConfig.IP_ADDR + ":8080" + img;
 
             Glide.with(context)
                     .load(img)
