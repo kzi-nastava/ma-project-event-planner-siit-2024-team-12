@@ -69,6 +69,20 @@ public class EventCreation2 extends Fragment {
 
 
         sendInvitationsText.setOnClickListener(v -> {
+            EditText dateField = view.findViewById(R.id.date);
+
+            if (!ValidationUtils.isFieldValid(dateField, "Date is required!")) return;
+
+            if (!ValidationUtils.isDateValid(dateField)) return;
+
+            if (!viewModel.isLocationSet()) {
+                Toast.makeText(getActivity(), "Fill out location form!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String date = dateField.getText().toString();
+            viewModel.updateEventAttributes("date", date);
+            
             InvitationDialogFragment dialogFragment = new InvitationDialogFragment();
             dialogFragment.show(getParentFragmentManager(), "invitationDialog");
         });
