@@ -25,6 +25,15 @@ public class EventFilterViewModel extends ViewModel {
     private final MutableLiveData<Boolean> ignoreCityFilter = new MutableLiveData<>(false);
 
     private final MutableLiveData<String> searchQuery = new MutableLiveData<>("");
+    private final MutableLiveData<Boolean> isPrivileged = new MutableLiveData<>(false);
+
+    public LiveData<Boolean> getIsPrivileged() {
+        return isPrivileged;
+    }
+
+    public void setPrivileged(boolean privileged) {
+        isPrivileged.setValue(privileged);
+    }
 
     public LiveData<String> getSearchQuery() { return searchQuery; }
     public void setSearchQuery(@Nullable String query) { searchQuery.setValue(query == null ? "" : query); }
@@ -42,7 +51,9 @@ public class EventFilterViewModel extends ViewModel {
     public LiveData<FilterPayload> getAppliedFilters() { return appliedFilters; }
 
 
-    public void setSelectedCities(List<String> cities) { selectedCities.setValue(new ArrayList<>(cities)); }
+    public void setSelectedCities(List<String> cities) {
+        selectedCities.setValue(cities != null ? new ArrayList<>(cities) : new ArrayList<>());
+    }
     public void setSelectedEventTypes(List<String> types) { selectedEventTypes.setValue(new ArrayList<>(types)); }
     public void setSelectedRating(@Nullable Integer rating) { selectedRating.setValue(rating); } // NULL OK
     public void setSelectedSortOptions(@Nullable String sortBy) { selectedSortOptions.setValue(sortBy); }

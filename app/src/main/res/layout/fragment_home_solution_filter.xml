@@ -148,13 +148,10 @@
 
     <Button
         android:id="@+id/filterBtn"
-        android:layout_width="112dp"
-        android:layout_height="38dp"
-        android:background="@drawable/form_button"
         android:text="@string/apply"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="11sp"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="end"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@drawable/form_button"
+        android:textColor="@color/white"/>
 </LinearLayout>

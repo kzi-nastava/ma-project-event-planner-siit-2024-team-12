@@ -52,6 +52,7 @@ public class EventListFragment extends BaseListFragment<GetEventDTO, EventFilter
         SharedPreferences sp = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String role = sp.getString("userRole", UserRole.ROLE_UNREGISTERED_USER.toString());
         isPrivileged = role.equals(UserRole.ROLE_ORGANIZER.toString()) || role.equals(UserRole.ROLE_PROVIDER.toString());
+        filterViewModel.setPrivileged(isPrivileged);
 
         if (onlyFromMyCityBtn != null) {
             onlyFromMyCityBtn.setVisibility(isPrivileged ? View.VISIBLE : View.GONE);

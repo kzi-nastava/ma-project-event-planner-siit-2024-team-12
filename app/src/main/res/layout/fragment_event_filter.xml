@@ -14,66 +14,30 @@
 
     <!-- City filter -->
     <include layout="@layout/item_filter_row" android:id="@+id/cityFilter"/>
-
     <View android:layout_width="match_parent" android:layout_height="1dp"
         android:background="@android:color/darker_gray" android:layout_marginVertical="8dp"/>
 
     <!-- Event type filter -->
     <include layout="@layout/item_filter_row" android:id="@+id/eventTypeFilter"/>
-
     <View android:layout_width="match_parent" android:layout_height="1dp"
         android:background="@android:color/darker_gray" android:layout_marginVertical="8dp"/>
 
-    <!-- Rating label + spinner -->
-    <TextView
-        android:id="@+id/ratingLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rating"
-        android:drawableStart="@drawable/ic_rating"
-        android:drawablePadding="8dp"
-        android:textStyle="bold"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp"/>
-
-    <Spinner
-        android:id="@+id/ratingSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"/>
-
+    <!-- Rating filter -->
+    <include layout="@layout/item_filter_row" android:id="@+id/ratingFilter"/>
     <View android:layout_width="match_parent" android:layout_height="1dp"
         android:background="@android:color/darker_gray" android:layout_marginVertical="8dp"/>
 
-    <!-- Sort label + spinners -->
-    <TextView
-        android:id="@+id/sortLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sort by"
-        android:drawableStart="@drawable/ic_sort"
-        android:drawablePadding="8dp"
-        android:textStyle="bold"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp"/>
-
-    <Spinner
-        android:id="@+id/sortSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"/>
-
-    <Spinner
-        android:id="@+id/sortDirSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"
-        android:layout_marginTop="6dp"/>
-
+    <!-- Sort by filter -->
+    <include layout="@layout/item_filter_row" android:id="@+id/sortByFilter"/>
     <View android:layout_width="match_parent" android:layout_height="1dp"
         android:background="@android:color/darker_gray" android:layout_marginVertical="8dp"/>
 
-    <!-- Date filter -->
+    <!-- Sort direction filter -->
+    <include layout="@layout/item_filter_row" android:id="@+id/sortDirectionFilter"/>
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="@android:color/darker_gray" android:layout_marginVertical="8dp"/>
+
+    <!-- Date filter (ostaje) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

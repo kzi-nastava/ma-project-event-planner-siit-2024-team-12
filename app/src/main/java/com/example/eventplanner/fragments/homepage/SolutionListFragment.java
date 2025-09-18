@@ -53,6 +53,7 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
         SharedPreferences sp = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String role = sp.getString("userRole", UserRole.ROLE_UNREGISTERED_USER.toString());
         isPrivileged = role.equals(UserRole.ROLE_ORGANIZER.toString()) || role.equals(UserRole.ROLE_PROVIDER.toString());
+        filterViewModel.setPrivileged(isPrivileged);
 
         if (onlyFromMyCityBtn != null) {
             onlyFromMyCityBtn.setVisibility(isPrivileged ? View.VISIBLE : View.GONE);
@@ -63,6 +64,9 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
                 onlyFromMyCityBtn.setOnClickListener(v -> {
                     boolean currentIgnoreState = Boolean.TRUE.equals(filterViewModel.getIgnoreCityFilter().getValue());
                     filterViewModel.setIgnoreCityFilter(!currentIgnoreState);
+                    if (!currentIgnoreState) {
+                        filterViewModel.setSelectedLocation(null);
+                    }
                     filterViewModel.applyNow();
                 });
             }

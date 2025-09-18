@@ -48,8 +48,6 @@ public class HomeSolutionFilterFragment extends DialogFragment {
     private View view;
     private EditText minPrice, maxPrice, minDiscount, maxDiscount;
     private Map<String, Integer> filterIcons = new HashMap<>();
-
-    // Novi View za lokaciju
     private LinearLayout locationFilterLayout;
 
     @Override
@@ -71,16 +69,32 @@ public class HomeSolutionFilterFragment extends DialogFragment {
         filterBtn.setOnClickListener(v -> applyFilters());
 
         filterViewModel.getIgnoreCityFilter().observe(getViewLifecycleOwner(), ignoreCity -> {
-            boolean enabled = !ignoreCity;
-            locationFilterLayout.setAlpha(enabled ? 1.0f : 0.5f);
-            locationFilterLayout.setEnabled(enabled);
+            Boolean privileged = filterViewModel.getIsPrivileged().getValue();
+            boolean shouldDisableCityFilter = Boolean.TRUE.equals(privileged) && Boolean.FALSE.equals(ignoreCity);
+
+            locationFilterLayout.setAlpha(shouldDisableCityFilter ? 0.5f : 1.0f);
+            locationFilterLayout.setEnabled(!shouldDisableCityFilter);
+            locationFilterLayout.setClickable(!shouldDisableCityFilter);
 
             RecyclerView recyclerView = locationFilterLayout.findViewById(R.id.options);
             if (recyclerView != null) {
-                recyclerView.setVisibility(View.GONE);
-                locationFilterLayout.setOnClickListener(null);
+                if (shouldDisableCityFilter) {
+                    recyclerView.setVisibility(View.GONE);
+                    filterViewModel.setSelectedLocation(null);
+                } else {
+                    locationFilterLayout.setOnClickListener(v -> {
+                        if (recyclerView.getVisibility() == View.GONE) {
+                            locationFilterLayout.findViewById(R.id.expandArrow).setRotation(180f);
+                            recyclerView.setVisibility(View.VISIBLE);
+                        } else {
+                            recyclerView.setVisibility(View.GONE);
+                            locationFilterLayout.findViewById(R.id.expandArrow).setRotation(0f);
+                        }
+                    });
+                }
             }
         });
+
 
         return view;
     }

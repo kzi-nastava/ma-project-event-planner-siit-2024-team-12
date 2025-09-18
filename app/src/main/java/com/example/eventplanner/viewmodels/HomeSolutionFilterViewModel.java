@@ -26,6 +26,16 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
 
     private final MutableLiveData<FilterPayload> appliedFilters = new MutableLiveData<>();
 
+    private final MutableLiveData<Boolean> isPrivileged = new MutableLiveData<>(false);
+
+    public LiveData<Boolean> getIsPrivileged() {
+        return isPrivileged;
+    }
+
+    public void setPrivileged(boolean privileged) {
+        isPrivileged.setValue(privileged);
+    }
+
     public HomeSolutionFilterViewModel(@NonNull Application application) {
         super(application);
     }
