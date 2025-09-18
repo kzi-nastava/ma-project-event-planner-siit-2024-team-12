@@ -3,6 +3,7 @@ package com.example.eventplanner.adapters.datetime;
 import com.google.gson.*;
 import java.lang.reflect.Type;
 import java.time.Duration;
+import java.time.format.DateTimeParseException;
 
 public class DurationAdapter implements JsonSerializer<Duration>, JsonDeserializer<Duration> {
 
@@ -20,10 +21,15 @@ public class DurationAdapter implements JsonSerializer<Duration>, JsonDeserializ
         if (json == null || json.isJsonNull()) {
             return null;
         }
+        String durationString = json.getAsString();
         try {
-            return Duration.ofMinutes(json.getAsLong());
-        } catch (NumberFormatException e) {
-            throw new JsonParseException("Neuspešno parsiranje duration-a. Očekivan je broj, a dobijena vrednost: " + json.getAsString(), e);
+            return Duration.parse(durationString);
+        } catch (DateTimeParseException e) {
+            try {
+                return Duration.ofMinutes(Long.parseLong(durationString));
+            } catch (NumberFormatException ex) {
+                throw new JsonParseException("Neuspešno parsiranje duration-a. Očekivan je ISO 8601 format (PTxHxM) ili broj, a dobijena vrednost: " + durationString, ex);
+            }
         }
     }
 }

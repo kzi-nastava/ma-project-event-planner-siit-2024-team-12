@@ -20,13 +20,16 @@ import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.utils.ImageHelper;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -209,6 +212,7 @@ public class ServiceCreationViewModel extends AndroidViewModel {
             service.setWorkingDays(getMappedList(getSelectedDays()));
             service.setWorkingHoursStart(selectedFromTime.getValue());
             service.setWorkingHoursEnd(selectedToTime.getValue());
+            service.setUnavailableDates(parseUnavailableDates());
 
 
             submitService(service);
@@ -217,6 +221,26 @@ public class ServiceCreationViewModel extends AndroidViewModel {
             Log.e("ServiceCreation", "Error mapping service data", e);
             Toast.makeText(getApplication(), "Došlo je do greške sa podacima. Molimo pokušajte ponovo.", Toast.LENGTH_SHORT).show();
         }
+    }
+    private List<LocalDate> parseUnavailableDates() {
+        List<String> datesAsString = unavailableDates.getValue();
+        if (datesAsString == null || datesAsString.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+
+        return datesAsString.stream()
+                .map(dateStr -> {
+                    try {
+                        return LocalDate.parse(dateStr, formatter);
+                    } catch (Exception e) {
+                        Log.e("ServiceCreation", "Failed to parse date: " + dateStr, e);
+                        return null;
+                    }
+                })
+                .filter(java.util.Objects::nonNull)
+                .collect(Collectors.toList());
     }
     private <T> T getMappedValue(Map<String, Object> dataMap, String key, Class<T> clazz) {
         Object value = dataMap.get(key);
