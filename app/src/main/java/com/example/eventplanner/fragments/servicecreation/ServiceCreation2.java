@@ -121,14 +121,14 @@ public class ServiceCreation2 extends Fragment {
             return false;
         }
 
-        int price;
-        int discount;
+        Double price;
+        Double discount;
         int resDeadline;
         int cancelDeadline;
 
         try {
-            price = Integer.parseInt(priceEditText.getText().toString().trim());
-            discount = Integer.parseInt(discountEditText.getText().toString().trim());
+            price = Double.parseDouble(priceEditText.getText().toString().trim());
+            discount = Double.parseDouble(discountEditText.getText().toString().trim());
             resDeadline = Integer.parseInt(resDeadlineEditText.getText().toString().trim());
             cancelDeadline = Integer.parseInt(cancelDeadlineEditText.getText().toString().trim());
             viewModel.addData("price", price);

@@ -119,7 +119,7 @@ public class ServiceCreation3 extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 ReservationType selectedType = (ReservationType) parent.getItemAtPosition(position);
-                viewModel.addData("reservationType", selectedType.toString());
+                viewModel.addData("reservationType", selectedType);
             }
 
             @Override

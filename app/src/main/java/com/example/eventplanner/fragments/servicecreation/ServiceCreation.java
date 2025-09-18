@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,9 +131,16 @@ public class ServiceCreation extends Fragment {
                 if (categoryList != null && position >= 0 && position < categoryList.size()) {
                     GetSolutionCategoryDTO selectedCategory = categoryList.get(position);
 
-                    String selectedCategoryId = selectedCategory.getId();
+                    try {
+                        String selectedCategoryId = selectedCategory.getId();
 
-                    viewModel.addData("categoryId", selectedCategoryId);
+                        Long categoryIdAsLong = Long.parseLong(selectedCategoryId);
+
+                        viewModel.addData("categoryId", categoryIdAsLong);
+
+                    } catch (NumberFormatException e) {
+                        Log.e("ViewModel", "Failed to parse categoryId to Long", e);
+                    }
                 }
             }
 

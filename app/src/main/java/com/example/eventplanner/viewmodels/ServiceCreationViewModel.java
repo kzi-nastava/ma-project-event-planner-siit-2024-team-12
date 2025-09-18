@@ -10,10 +10,15 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
+import com.example.eventplanner.dto.solutionservice.CreateServiceDTO;
+import com.example.eventplanner.dto.solutionservice.CreatedServiceDTO;
+import com.example.eventplanner.enumeration.ReservationType;
 import com.example.eventplanner.utils.ClientUtils;
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +41,11 @@ public class ServiceCreationViewModel extends AndroidViewModel {
     private final MutableLiveData<List<Integer>> selectedDays = new MutableLiveData<>();
     private final MutableLiveData<LocalTime> selectedFromTime = new MutableLiveData<>();
     private final MutableLiveData<LocalTime> selectedToTime = new MutableLiveData<>();
+    private final MutableLiveData<GetBusinessDTO> currentBusiness = new MutableLiveData<>();
+
+    public MutableLiveData<GetBusinessDTO> getCurrentBusiness() {
+        return currentBusiness;
+    }
 
     public MutableLiveData<List<Integer>> getSelectedDays() {
         return selectedDays;
@@ -97,13 +107,161 @@ public class ServiceCreationViewModel extends AndroidViewModel {
     public MutableLiveData<Map<String, Object>> getServiceData() {
         return serviceData;
     }
+    public void fetchCurrentBusiness() {
+        String auth = ClientUtils.getAuthorization(getApplication());
 
-    public void submitService() {
+        if (auth.isEmpty()) {
+            Toast.makeText(getApplication(), "Korisnik nije autentifikovan.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Call<GetBusinessDTO> call = ClientUtils.businessService.getBusinessForCurrentUser(auth);
+
+        call.enqueue(new Callback<GetBusinessDTO>() {
+            @Override
+            public void onResponse(Call<GetBusinessDTO> call, Response<GetBusinessDTO> response) {
+                if (response.isSuccessful()) {
+                    GetBusinessDTO business = response.body();
+                    if (business != null) {
+                        currentBusiness.setValue(business); // Smeštanje DTO-a u LiveData
+                        Log.d("API_CALL", "Successfully fetched business: " + business.getCompanyName());
+                        Toast.makeText(getApplication(), "Podaci o biznisu uspešno dobavljeni.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        currentBusiness.setValue(null);
+                        Log.e("API_CALL", "No business found for current user (204 No Content).");
+                        Toast.makeText(getApplication(), "Nije pronađen biznis profil.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    currentBusiness.setValue(null);
+                    Log.e("API_CALL", "Unsuccessful response from server: " + response.code());
+                    Toast.makeText(getApplication(), "Greška pri dobavljanju biznis profila: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetBusinessDTO> call, Throwable t) {
+                currentBusiness.setValue(null);
+                Log.e("API_CALL", "Network failure while fetching business: " + t.getMessage());
+                Toast.makeText(getApplication(), "Greška na mreži: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void mapServiceDataAndCreateService() {
+        Map<String, Object> dataMap = serviceData.getValue();
+        if (dataMap == null) {
+            Log.e("ServiceCreation", "serviceData is null. Cannot map service.");
+            return;
+        }
+        fetchCurrentBusiness();
+        if(currentBusiness==null){
+            Log.e("Busines fetch", "currentBusiness is null. Cannot create service.");
+            Toast.makeText(getApplication(), "Morate kreirati kompaniju pre kreiranja usluge.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            CreateServiceDTO service = new CreateServiceDTO();
+
+            service.setCategoryId(getMappedValue(dataMap, "categoryId", Long.class));
+            service.setName(getMappedValue(dataMap, "name", String.class));
+            service.setFixedTime(getDurationInMinutes(dataMap, "fixedTime"));
+            service.setMaxTime(getDurationInHours(dataMap, "maxTime"));
+            service.setMinTime(getDurationInHours(dataMap, "minTime"));
+            service.setPrice(getMappedValue(dataMap, "price", Double.class));
+            service.setDiscount(getMappedValue(dataMap, "discount", Double.class));
+            service.setReservationDeadline(getMappedValue(dataMap, "reservationDeadline", Integer.class));
+            service.setCancellationDeadline(getMappedValue(dataMap, "cancellationDeadline", Integer.class));
+            service.setReservationType(getMappedValue(dataMap, "reservationType", ReservationType.class));
+            service.setVisible(getMappedValue(dataMap, "isVisible", Boolean.class));
+            service.setAvailability(getMappedValue(dataMap, "isAvailable", Boolean.class));
+            service.setDescription(getMappedValue(dataMap, "description", String.class));
+            service.setSpecifics(getMappedValue(dataMap, "specifics", String.class));
+            service.setCity("");
+            service.setImageUrl("");
+            service.setBusiness(currentBusiness.getValue().getCompanyEmail());
+
+            service.setEventTypeIds(getMappedList(getSelectedEventTypeIds()));
+            service.setWorkingDays(getMappedList(getSelectedDays()));
+            service.setWorkingHoursStart(getMappedValue(dataMap, "workingHoursStart", LocalTime.class));
+            service.setWorkingHoursEnd(getMappedValue(dataMap, "workingHoursEnd", LocalTime.class));
+
+
+            submitService(service);
+
+        } catch (NullPointerException | ClassCastException e) {
+            Log.e("ServiceCreation", "Error mapping service data", e);
+            Toast.makeText(getApplication(), "Došlo je do greške sa podacima. Molimo pokušajte ponovo.", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private <T> T getMappedValue(Map<String, Object> dataMap, String key, Class<T> clazz) {
+        Object value = dataMap.get(key);
+        if (clazz.isInstance(value)) {
+            return clazz.cast(value);
+        }
+        return null;
+    }
+
+    private Duration getDurationInMinutes(Map<String, Object> dataMap, String key) {
+        Object value = dataMap.get(key);
+        if (value instanceof Integer) {
+            return Duration.ofMinutes(((Integer) value).longValue());
+        } else if (value instanceof Long) {
+            return Duration.ofMinutes((Long) value);
+        }
+        return null;
+    }
+
+    private Duration getDurationInHours(Map<String, Object> dataMap, String key) {
+        Object value = dataMap.get(key);
+        if (value instanceof Integer) {
+            return Duration.ofHours(((Integer) value).longValue());
+        } else if (value instanceof Long) {
+            return Duration.ofHours((Long) value);
+        }
+        return null;
+    }
+
+    private <T> List<T> getMappedList(MutableLiveData<List<T>> liveData) {
+        List<T> list = liveData.getValue();
+        return list != null ? list : new ArrayList<>();
+    }
+
+    public void submitService(CreateServiceDTO serviceDto) {
         // Implementirajte logiku za slanje podataka na server ovde
         // serviceData.getValue() sadrži sve podatke
-        Map<String, Object> data = serviceData.getValue();
+//        Map<String, Object> data = serviceData.getValue();
         // Primer: Pozivanje API-ja
         // new ServiceApi().createService(data);
+
+        String auth = ClientUtils.getAuthorization(getApplication());
+
+        Call<CreatedServiceDTO> call = ClientUtils.serviceSolutionService.createService(auth, serviceDto);
+
+        call.enqueue(new Callback<CreatedServiceDTO>() {
+            @Override
+            public void onResponse(Call<CreatedServiceDTO> call, Response<CreatedServiceDTO> response) {
+                if (response.isSuccessful()) {
+                    CreatedServiceDTO createdService = response.body();
+                    if (createdService != null) {
+                        Log.d("API_CALL", "Successfully created service with ID: " + createdService.getId());
+                        Toast.makeText(getApplication(), "Usluga uspešno kreirana.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e("API_CALL", "Service created, but response body is null.");
+                        Toast.makeText(getApplication(), "Usluga kreirana, ali bez povratnih podataka.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Log.e("API_CALL", "Unsuccessful response from server: " + response.code() + " " + response.message());
+                    Toast.makeText(getApplication(), "Greška pri kreiranju usluge: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreatedServiceDTO> call, Throwable t) {
+                Log.e("API_CALL", "Network failure while creating service: " + t.getMessage());
+                Toast.makeText(getApplication(), "Greška na mreži: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void fetchEventTypes() {

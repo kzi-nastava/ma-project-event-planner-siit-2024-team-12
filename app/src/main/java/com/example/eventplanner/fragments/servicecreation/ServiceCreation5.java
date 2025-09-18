@@ -49,7 +49,6 @@ public class ServiceCreation5 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_service_creation5, container, false);
 
-        // Inicijalizacija View-a
         selectDateButton = view.findViewById(R.id.select_date_button);
         selectFromTimeButton = view.findViewById(R.id.select_from_time_button);
         selectToTimeButton = view.findViewById(R.id.select_to_time_button);
@@ -72,6 +71,7 @@ public class ServiceCreation5 extends Fragment {
 
         submitButton.setOnClickListener(v -> {
             if (validateForm()) {
+                viewModel.mapServiceDataAndCreateService();
                 Toast.makeText(getContext(), "Podaci uspešno validirani i poslati!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -108,7 +108,7 @@ public class ServiceCreation5 extends Fragment {
                 (view, hourOfDay, minuteOfHour) -> {
                     String time = String.format("%02d:%02d", hourOfDay, minuteOfHour);
                     button.setText(time);
-                }, hour, minute, true); // true za 24-satni format
+                }, hour, minute, true);
         timePickerDialog.show();
     }
     private void sendDataToViewModel(LocalTime fromTime, LocalTime toTime) {
@@ -116,7 +116,6 @@ public class ServiceCreation5 extends Fragment {
             return;
         }
 
-        // Prikupljanje odabranih dana
         List<Integer> selectedDaysList = new ArrayList<>();
         if (monCheckBox.isChecked()) selectedDaysList.add(1);
         if (tueCheckBox.isChecked()) selectedDaysList.add(2);
@@ -126,7 +125,6 @@ public class ServiceCreation5 extends Fragment {
         if (satCheckBox.isChecked()) selectedDaysList.add(6);
         if (sunCheckBox.isChecked()) selectedDaysList.add(7);
 
-        // Postavljanje vrednosti u ViewModel
         viewModel.setSelectedDays(selectedDaysList);
         viewModel.setSelectedFromTime(fromTime);
         viewModel.setSelectedToTime(toTime);
@@ -134,9 +132,6 @@ public class ServiceCreation5 extends Fragment {
     }
 
     private boolean validateForm() {
-//        if (selectDateButton.getText().toString().equals(getString(R.string.select_date))) {
-//            // Ako datum nije odabran, ne smatramo to greškom, jer se može preskočiti
-//        }
 
         if (!monCheckBox.isChecked() && !tueCheckBox.isChecked() && !wedCheckBox.isChecked() &&
                 !thuCheckBox.isChecked() && !friCheckBox.isChecked() && !satCheckBox.isChecked() &&
@@ -162,14 +157,12 @@ public class ServiceCreation5 extends Fragment {
                 return false;
             }
 
-            // Ako je validacija uspešna, pošaljite podatke u ViewModel
             sendDataToViewModel(from, to);
 
         } catch (NumberFormatException e) {
             Toast.makeText(getContext(), "Greška pri parsiranju vremena.", Toast.LENGTH_SHORT).show();
             return false;
         }
-//        sendDataToViewModel();
 
         return true;
     }
