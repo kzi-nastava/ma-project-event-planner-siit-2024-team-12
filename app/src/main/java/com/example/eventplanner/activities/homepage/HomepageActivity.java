@@ -187,6 +187,10 @@ public class HomepageActivity extends AppCompatActivity {
                         .replace(R.id.invited_events_container, new InvitedEventsListFragment())
                         .addToBackStack(null)
                         .commit();
+            } else if (id == R.id.nav_calendar_od) {
+                startActivity(new Intent(this, CalendarActivity.class));
+            } else if (id == R.id.nav_explore_events) {
+                startActivity(new Intent(this, ExplorePageActivity.class));
             } else if (id == R.id.nav_home) {
                 getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
