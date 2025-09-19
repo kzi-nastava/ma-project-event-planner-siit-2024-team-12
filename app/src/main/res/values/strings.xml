@@ -78,6 +78,33 @@
     <string name="working_hours">Working hours</string>
     <string name="select_time">Select time</string>
 
+    <!-- Edit service form -->
+
+    <string name="exit_form">Exit Form</string>
+    <string name="service_name_label">Naziv usluge:</string>
+    <string name="service_name_hint">Unesite naziv usluge</string>
+    <string name="service_category_label">Kategorija:</string>
+    <string name="category_hint">Kategorija usluge</string>
+    <string name="service_price_label">Cena:</string>
+    <string name="price_hint">0.00</string>
+    <string name="service_discount_label">Popust:</string>
+    <string name="discount_hint">0.00</string>
+    <string name="service_time_type_label">Tip vremena rezervacije:</string>
+    <string name="fixed_time">Fiksno vreme</string>
+    <string name="flexible_time">Fleksibilno vreme</string>
+    <string name="duration_hours_label">Sati:</string>
+    <string name="duration_minutes_label">Minuti:</string>
+    <string name="from_time_label">Od:</string>
+    <string name="to_time_label">Do:</string>
+    <string name="event_type_label">Tip događaja:</string>
+    <string name="reservation_type_label">Tip rezervacije:</string>
+    <string name="visibility_label">Vidljivost:</string>
+    <string name="availability_label">Dostupnost:</string>
+    <string name="description_label">Opis:</string>
+    <string name="description_hint">Unesite opis usluge</string>
+
+
+
     <!-- Unregistered user homepage -->
     <string name="open_drawer">Open Navigation Drawer</string>
     <string name="close_drawer">Close Navigation Drawer</string>
