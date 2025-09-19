@@ -74,7 +74,7 @@ public class ServiceCreation5 extends Fragment {
         selectFromTimeButton.setOnClickListener(v -> showTimePicker(selectFromTimeButton));
 
         selectToTimeButton.setOnClickListener(v -> showTimePicker(selectToTimeButton));
-        
+
         backButton.setOnClickListener(v -> {
             Fragment parentFragment = getParentFragment();
             if (parentFragment instanceof ServiceCreationContainer) {

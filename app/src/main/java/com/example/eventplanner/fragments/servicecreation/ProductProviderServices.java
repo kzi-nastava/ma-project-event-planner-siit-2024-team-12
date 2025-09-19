@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -105,15 +106,19 @@ public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
     serviceCardAdapter = new ServiceCardAdapter(new ArrayList<>());
     servicesRecyclerView.setAdapter(serviceCardAdapter);
 
-//    serviceCardAdapter.setOnItemClickListener(service -> {
-//        Intent intent = new Intent(getActivity(), ServiceEditActivity.class);
-//        // You should pass the service ID or full DTO to the new activity.
-//        // Make sure your GetServiceDTO class is Serializable or Parcelable.
-//        intent.putExtra("serviceId", service.getId());
-//        // or
-//        // intent.putExtra("serviceDTO", service);
-//        activityResultLauncher.launch(intent);
-//    });
+    serviceCardAdapter.setOnItemClickListener(service -> {
+        ServiceEditFragment serviceEditFragment = ServiceEditFragment.newInstance();
+
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+
+        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.homepage_fragment_container, serviceEditFragment)
+                .addToBackStack(null)
+                .commit();
+    });
 
     fetchProvidedServices();
 
