@@ -321,11 +321,16 @@ public class HomepageActivity extends AppCompatActivity {
                 .setTitle("Log out?")
                 .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("YES", (dialog, which) -> {
-                    // Clear shared prefs
-                    SharedPreferences sp = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-                    sp.edit().clear().apply();
 
-                    setupGuestUI();
+                    SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.remove("token");
+                    editor.remove("userRole");
+                    editor.apply();
+
+                    Intent intent = new Intent(HomepageActivity.this, HomepageActivity.class);
+                    startActivity(intent);
+                    finish();
                 })
                 .setNegativeButton("NO", (dialog, which) -> dialog.dismiss())
                 .create()

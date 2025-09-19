@@ -153,9 +153,7 @@ public class ProfileViewActivity extends AppCompatActivity {
 
             Button logOutBtn = findViewById(R.id.logOutBtn);
             if (logOutBtn != null) {
-                logOutBtn.setOnClickListener(v -> {
-                    Toast.makeText(this, "Log Out Clicked", Toast.LENGTH_SHORT).show();
-                });
+                logOutBtn.setOnClickListener(v -> logOut());
             }
 
 
@@ -246,6 +244,27 @@ public class ProfileViewActivity extends AppCompatActivity {
                 Toast.makeText(ProfileViewActivity.this, "Failed to deactivate account!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void logOut() {
+        new AlertDialog.Builder(this)
+                .setTitle("Log out?")
+                .setMessage("Are you sure you want to log out?")
+                .setPositiveButton("YES", (dialog, which) -> {
+
+                    SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.remove("token");
+                    editor.remove("userRole");
+                    editor.apply();
+
+                    Intent intent = new Intent(ProfileViewActivity.this, HomepageActivity.class);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton("NO", (dialog, which) -> dialog.dismiss())
+                .create()
+                .show();
     }
 
 }
