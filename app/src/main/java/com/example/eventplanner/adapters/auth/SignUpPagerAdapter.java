@@ -12,8 +12,13 @@ import com.example.eventplanner.fragments.signup.SignUp3;
 
 public class SignUpPagerAdapter extends FragmentStateAdapter {
 
-    public SignUpPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+    private final boolean isUpgrade;
+    private final String userEmail;
+
+    public SignUpPagerAdapter(@NonNull FragmentActivity fragmentActivity, boolean isUpgrade, String userEmail) {
         super(fragmentActivity);
+        this.isUpgrade = isUpgrade;
+        this.userEmail = userEmail;
     }
 
     @NonNull
@@ -21,11 +26,11 @@ public class SignUpPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 1:
-                return new SignUp2();
+                return SignUp2.newInstance(isUpgrade, userEmail);
             case 2:
-                return new SignUp3();
+                return SignUp3.newInstance(isUpgrade, userEmail);
             default:
-                return new SignUp1();
+                return SignUp1.newInstance(isUpgrade, userEmail);
         }
     }
 

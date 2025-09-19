@@ -19,6 +19,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.example.eventplanner.activities.auth.SignUpActivity;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.fragments.others.ChangePasswordFragment;
 import com.example.eventplanner.utils.ClientUtils;
@@ -139,7 +140,10 @@ public class ProfileViewActivity extends AppCompatActivity {
             Button upgradeRoleBtn = findViewById(R.id.upgradeRoleBtn);
             if (upgradeRoleBtn != null) {
                 upgradeRoleBtn.setOnClickListener(v -> {
-                    Toast.makeText(this, "Upgrade Role Clicked", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ProfileViewActivity.this, SignUpActivity.class);
+                    intent.putExtra("IS_UPGRADE", true);
+                    intent.putExtra("USER_EMAIL", getUserDTO.getEmail());
+                    startActivity(intent);
                 });
             }
 

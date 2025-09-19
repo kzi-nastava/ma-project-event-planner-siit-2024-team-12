@@ -18,6 +18,18 @@ import com.example.eventplanner.viewmodels.SignUpViewModel;
 
 public class SignUp2 extends Fragment {
 
+    private static final String ARG_IS_UPGRADE = "is_upgrade";
+    private static final String ARG_EMAIL = "email";
+
+    public static SignUp2 newInstance(boolean isUpgrade, String email) {
+        SignUp2 fragment = new SignUp2();
+        Bundle args = new Bundle();
+        args.putBoolean(ARG_IS_UPGRADE, isUpgrade);
+        args.putString(ARG_EMAIL, email);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
