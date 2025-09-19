@@ -34,6 +34,7 @@ import com.example.eventplanner.activities.product.ProvidedProductsActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
+import com.example.eventplanner.fragments.event.InvitedEventsListFragment;
 import com.example.eventplanner.fragments.homepage.EventFilterFragment;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.TopEventsFragment;
@@ -176,12 +177,31 @@ public class HomepageActivity extends AppCompatActivity {
             int id = item.getItemId();
             if (id == R.id.nav_view_profile) {
                 startActivity(new Intent(HomepageActivity.this, ProfileViewActivity.class));
-            }
-            else if (id == R.id.nav_log_out) {
+            } else if (id == R.id.nav_log_out) {
                 logOut();
+            } else if (id == R.id.nav_invited_events) {
+                findViewById(R.id.homepage_scroll_view).setVisibility(View.GONE);
+                findViewById(R.id.invited_events_container).setVisibility(View.VISIBLE);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.invited_events_container, new InvitedEventsListFragment())
+                        .addToBackStack(null)
+                        .commit();
+            } else if (id == R.id.nav_home) {
+                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
+                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
             }
             drawerLayout.closeDrawers();
             return true;
+        });
+
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            FragmentManager manager = getSupportFragmentManager();
+            if (manager.getBackStackEntryCount() == 0) {
+                findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
+                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
+            }
         });
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -213,7 +233,9 @@ public class HomepageActivity extends AppCompatActivity {
             int id = item.getItemId();
 
             if (id == R.id.nav_home) {
-                startActivity(new Intent(this, HomepageActivity.class));
+                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
+                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
             } else if (id == R.id.nav_fav_events) {
                 startActivity(new Intent(this, FavoriteEventsActivity.class));
             } else if (id == R.id.nav_services) {
@@ -249,6 +271,9 @@ public class HomepageActivity extends AppCompatActivity {
             int id = item.getItemId();
 
             if (id == R.id.nav_home) {
+                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
+                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
             } else if (id == R.id.nav_create_business) {
                 startActivity(new Intent(this, BusinessRegistrationActivity.class));
             } else if (id == R.id.nav_business_info) {
