@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -143,6 +145,58 @@ public class ServiceEditFragment extends Fragment {
         if (service.getCategory() != null) {
             serviceCategoryEditText.setText(service.getCategory());
         }
+
+        // Popunjavanje i postavljanje listenera za Visibility spinner
+        ArrayAdapter<CharSequence> visibilityAdapter = ArrayAdapter.createFromResource(requireContext(),
+                R.array.service_visibility_spinner, android.R.layout.simple_spinner_item);
+        visibilityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        visibilitySpinner.setAdapter(visibilityAdapter);
+        if (service.getVisible() != null) {
+            int position = service.getVisible() ? 0 : 1;
+            visibilitySpinner.setSelection(position);
+        }
+
+        // Dodavanje listenera za promenu selekcije
+        visibilitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Pozicija 0 je "Visible" (true), pozicija 1 je "Hidden" (false)
+                boolean isVisible = position == 0;
+                // Ažuriranje atributa u ViewModelu
+                viewModel.getServiceData().getValue().setVisible(isVisible);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Ne radite ništa
+            }
+        });
+
+        // Popunjavanje i postavljanje listenera za Availability spinner
+        ArrayAdapter<CharSequence> availabilityAdapter = ArrayAdapter.createFromResource(requireContext(),
+                R.array.service_availability_spinner, android.R.layout.simple_spinner_item);
+        availabilityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        availabilitySpinner.setAdapter(availabilityAdapter);
+        if (service.getAvailable() != null) {
+            int position = service.getAvailable() ? 0 : 1;
+            availabilitySpinner.setSelection(position);
+        }
+
+        // Dodavanje listenera za promenu selekcije
+        availabilitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Pozicija 0 je "Available" (true), pozicija 1 je "Not Available" (false)
+                boolean isAvailable = position == 0;
+                // Ažuriranje atributa u ViewModelu
+                viewModel.getServiceData().getValue().setAvailable(isAvailable);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Ne radite ništa
+            }
+        });
 
         // Primer za spinner (potrebno je imati adapter i listu opcija)
         // String[] reservationOptions = getResources().getStringArray(R.array.service_reservation_confirmation_spinner);

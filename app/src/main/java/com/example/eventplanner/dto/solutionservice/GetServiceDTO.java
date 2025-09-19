@@ -2,6 +2,7 @@ package com.example.eventplanner.dto.solutionservice;
 
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.enumeration.ReservationType;
+import com.google.gson.annotations.SerializedName;
 
 import java.time.Duration;
 import java.util.List;
@@ -15,7 +16,9 @@ public class GetServiceDTO {
     private Double discount;
     private String category;
     private String city;
+    @SerializedName("visible")
     private Boolean isVisible;
+    @SerializedName("available")
     private Boolean isAvailable;
     private String specifics;
     private Integer reservationDeadline;
