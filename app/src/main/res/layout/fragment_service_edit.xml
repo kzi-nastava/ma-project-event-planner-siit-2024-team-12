@@ -457,7 +457,7 @@
             android:layout_height="45dp"
             android:background="@drawable/input_field"
             android:ems="10"
-            android:hint="@string/description_hint"
+            android:hint="@string/specs_hint"
             android:inputType="text"
             android:paddingStart="12dp"
             android:textSize="12sp"

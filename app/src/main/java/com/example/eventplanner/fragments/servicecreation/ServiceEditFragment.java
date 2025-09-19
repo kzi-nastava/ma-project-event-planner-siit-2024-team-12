@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
+import com.example.eventplanner.enumeration.ReservationType;
 import com.example.eventplanner.viewmodels.ServiceEditViewModel;
 import com.google.android.material.imageview.ShapeableImageView;
 
@@ -195,6 +196,37 @@ public class ServiceEditFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // Ne radite ništa
+            }
+        });
+        // --- Postavljanje Reservation Type Spinnera ---
+        ArrayAdapter<CharSequence> reservationTypeAdapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.service_reservation_confirmation_spinner,
+                android.R.layout.simple_spinner_item
+        );
+        reservationTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        reservationTypeSpinner.setAdapter(reservationTypeAdapter);
+
+        // Postavljanje inicijalne selekcije na osnovu ucitane usluge
+        if (service.getReservationType() != null) {
+            int position = reservationTypeAdapter.getPosition(service.getReservationType().name());
+            if (position >= 0) {
+                reservationTypeSpinner.setSelection(position);
+            }
+        }
+
+        // Listener koji preslikava odabrani tip u DTO objekat
+        reservationTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedType = (String) parent.getItemAtPosition(position);
+                // Ažuriranje vrednosti u ViewModelu
+                viewModel.getServiceData().getValue().setReservationType(ReservationType.valueOf(selectedType));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Ne raditi ništa
             }
         });
 

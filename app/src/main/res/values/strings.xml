@@ -49,8 +49,8 @@
         <item>Event 3</item>
     </string-array>
     <string-array name="service_reservation_confirmation_spinner">
-        <item>Automatic</item>
-        <item>Manual</item>
+        <item>AUTOMATIC</item>
+        <item>MANUAL</item>
     </string-array>
     <string name="service_description">Description:</string>
     <string name="service_image_url">Image url:</string>
@@ -81,27 +81,29 @@
     <!-- Edit service form -->
 
     <string name="exit_form">Exit Form</string>
-    <string name="service_name_label">Naziv usluge:</string>
-    <string name="service_name_hint">Unesite naziv usluge</string>
-    <string name="service_category_label">Kategorija:</string>
-    <string name="category_hint">Kategorija usluge</string>
-    <string name="service_price_label">Cena:</string>
+    <string name="service_name_label">Service name:</string>
+    <string name="service_name_hint">Service name</string>
+    <string name="service_category_label">Category:</string>
+    <string name="category_hint">Category</string>
+    <string name="service_price_label">Price:</string>
     <string name="price_hint">0.00</string>
-    <string name="service_discount_label">Popust:</string>
+    <string name="service_discount_label">Discount:</string>
     <string name="discount_hint">0.00</string>
-    <string name="service_time_type_label">Tip vremena rezervacije:</string>
-    <string name="fixed_time">Fiksno vreme</string>
-    <string name="flexible_time">Fleksibilno vreme</string>
-    <string name="duration_hours_label">Sati:</string>
-    <string name="duration_minutes_label">Minuti:</string>
-    <string name="from_time_label">Od:</string>
-    <string name="to_time_label">Do:</string>
-    <string name="event_type_label">Tip događaja:</string>
-    <string name="reservation_type_label">Tip rezervacije:</string>
-    <string name="visibility_label">Vidljivost:</string>
-    <string name="availability_label">Dostupnost:</string>
-    <string name="description_label">Opis:</string>
-    <string name="description_hint">Unesite opis usluge</string>
+    <string name="service_time_type_label">Reservation type:</string>
+    <string name="fixed_time">Fixed time</string>
+    <string name="flexible_time">Flexible time</string>
+    <string name="duration_hours_label">Hours:</string>
+    <string name="duration_minutes_label">Minutes:</string>
+    <string name="from_time_label">From:</string>
+    <string name="to_time_label">To:</string>
+    <string name="event_type_label">Event type:</string>
+    <string name="reservation_type_label">Reservation type:</string>
+    <string name="visibility_label">Visibility:</string>
+    <string name="availability_label">Availability:</string>
+    <string name="description_label">Description:</string>
+    <string name="description_hint">Descrtiption</string>
+    <string name="specs_label">Specifics:</string>
+    <string name="specs_hint">Specifics</string>
 
 
 
