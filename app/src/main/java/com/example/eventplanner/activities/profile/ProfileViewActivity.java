@@ -63,20 +63,8 @@ public class ProfileViewActivity extends AppCompatActivity {
     }
 
     public void closeForm(View view) {
-        String role = getUserRole();
-
-        if (role.equalsIgnoreCase(UserRole.ROLE_ORGANIZER.toString())) {
-            Intent intent = new Intent(ProfileViewActivity.this, OrganiserHomepageActivity.class);
-            startActivity(intent);
-        }
-        else if (role.equalsIgnoreCase(UserRole.ROLE_PROVIDER.toString())) {
-            Intent intent = new Intent(ProfileViewActivity.this, ProviderHomepageActivity.class);
-            startActivity(intent);
-        }
-        else {
-            Intent intent = new Intent(ProfileViewActivity.this, HomepageActivity.class);
-            startActivity(intent);
-        }
+        Intent intent = new Intent(ProfileViewActivity.this, HomepageActivity.class);
+        startActivity(intent);
     }
 
 
@@ -135,27 +123,74 @@ public class ProfileViewActivity extends AppCompatActivity {
 
 
     private void setUpFormDetails(GetUserDTO getUserDTO) {
+        String userRole = getUserRole();
 
-        TextView name = findViewById(R.id.name);
-        name.setText(getUserDTO.getName());
+        View fullProfileView = findViewById(R.id.full_profile_view);
+        View authenticatedProfileView = findViewById(R.id.authenticated_profile_view);
 
-        TextView surname = findViewById(R.id.surname);
-        surname.setText(getUserDTO.getSurname());
+        if (userRole.equals(UserRole.ROLE_AUTHENTICATED_USER.toString())) {
+            // Prikaz za AK korisnika
+            if (fullProfileView != null) fullProfileView.setVisibility(View.GONE);
+            if (authenticatedProfileView != null) authenticatedProfileView.setVisibility(View.VISIBLE);
 
-        TextView email = findViewById(R.id.email);
-        email.setText(getUserDTO.getEmail());
+            TextView emailAK = findViewById(R.id.emailAK);
+            if (emailAK != null) emailAK.setText(getUserDTO.getEmail());
 
-        TextView address = findViewById(R.id.address);
-        String fullAddress = getUserDTO.getLocation().getAddress() + ", " +
-                             getUserDTO.getLocation().getCity() + ", " + getUserDTO.getLocation().getCountry();
-        address.setText(fullAddress);
+            Button upgradeRoleBtn = findViewById(R.id.upgradeRoleBtn);
+            if (upgradeRoleBtn != null) {
+                upgradeRoleBtn.setOnClickListener(v -> {
+                    // Logika za nadogradnju uloge
+                    Toast.makeText(this, "Upgrade Role Clicked", Toast.LENGTH_SHORT).show();
+                });
+            }
 
-        TextView phone = findViewById(R.id.phone);
-        phone.setText(getUserDTO.getPhone());
+            Button changePasswordBtn = findViewById(R.id.changePasswordBtn);
+            if (changePasswordBtn != null) {
+                changePasswordBtn.setOnClickListener(v -> {
+                    // Logika za promjenu lozinke
+                    Toast.makeText(this, "Change Password Clicked", Toast.LENGTH_SHORT).show();
+                });
+            }
 
-        setMainImage(getUserDTO);
+            Button logOutBtn = findViewById(R.id.logOutBtn);
+            if (logOutBtn != null) {
+                // Dodaj logiku za logOut ako je potrebno
+                logOutBtn.setOnClickListener(v -> {
+                    // Log out logika
+                    Toast.makeText(this, "Log Out Clicked", Toast.LENGTH_SHORT).show();
+                });
+            }
 
+
+        } else {
+            // Prikaz za ostale uloge (OD, PUP, Admin)
+            if (fullProfileView != null) fullProfileView.setVisibility(View.VISIBLE);
+            if (authenticatedProfileView != null) authenticatedProfileView.setVisibility(View.GONE);
+
+            TextView name = findViewById(R.id.name);
+            if (name != null) name.setText(getUserDTO.getName());
+
+            TextView surname = findViewById(R.id.surname);
+            if (surname != null) surname.setText(getUserDTO.getSurname());
+
+            TextView email = findViewById(R.id.email);
+            if (email != null) email.setText(getUserDTO.getEmail());
+
+            TextView address = findViewById(R.id.address);
+            if (address != null && getUserDTO.getLocation() != null) {
+                String fullAddress = getUserDTO.getLocation().getAddress() + ", " +
+                        getUserDTO.getLocation().getCity() + ", " + getUserDTO.getLocation().getCountry();
+                address.setText(fullAddress);
+            }
+
+            TextView phone = findViewById(R.id.phone);
+            if (phone != null) phone.setText(getUserDTO.getPhone());
+
+            ImageView mainImage = findViewById(R.id.mainImage);
+            setMainImage(getUserDTO);
+        }
     }
+
 
 
     private void setMainImage(GetUserDTO getUserDTO) {

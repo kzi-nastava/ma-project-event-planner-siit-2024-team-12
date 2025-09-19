@@ -106,6 +106,8 @@ public class HomepageActivity extends AppCompatActivity {
             setupProviderUI();
         } else if ("ROLE_ADMIN".equals(role)) {
             setupAdminUI();
+        } else if ("ROLE_AUTHENTICATED_USER".equals(role)) {
+            setupAuthenticatedUserUI();
         } else {
             setupGuestUI();
         }
@@ -134,6 +136,49 @@ public class HomepageActivity extends AppCompatActivity {
                 startActivity(new Intent(HomepageActivity.this, LoginActivity.class));
             } else if (id == R.id.nav_signup) {
                 startActivity(new Intent(HomepageActivity.this, SignUpActivity.class));
+            }
+            drawerLayout.closeDrawers();
+            return true;
+        });
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.cards_fragment_container, new TopEventsFragment())
+                .commit();
+
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.events_list_fragment_container, new EventListFragment())
+                .commit();
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.cards_products_fragment_container, new TopSolutionsFragment())
+                .commit();
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.ps_list_fragment_container, new SolutionListFragment())
+                .commit();
+
+    }
+
+
+    private void setupAuthenticatedUserUI() {
+        navigationView.getMenu().clear();
+        navigationView.inflateMenu(R.menu.authenticated_user_menu);
+
+        RecyclerView chatRecyclerView = findViewById(R.id.chat_recycler_view);
+        if (chatRecyclerView != null) chatRecyclerView.setVisibility(View.VISIBLE);
+
+        Spinner userSpinner = findViewById(R.id.userSpinner);
+        if (userSpinner != null) userSpinner.setVisibility(View.VISIBLE);
+
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_view_profile) {
+                startActivity(new Intent(HomepageActivity.this, ProfileViewActivity.class));
+            }
+            else if (id == R.id.nav_log_out) {
+                logOut();
             }
             drawerLayout.closeDrawers();
             return true;

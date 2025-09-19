@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:title="@string/home" />
+
+
+    <item
+        android:id="@+id/nav_calendar_od"
+        android:title="@string/calendar" />
+
+
+        <item
+            android:id="@+id/nav_explore_events"
+            android:title="@string/explore_events" />
+
+    <item
+        android:id="@+id/nav_notifications"
+        android:title="@string/notifications" />
+
+
+    <group android:id="@+id/profile">
+        <item
+            android:id="@+id/nav_view_profile"
+            android:title="@string/view_profile" />
+
+        <item
+            android:id="@+id/nav_log_out"
+            android:title="@string/log_out" />
+    </group>
+
+</menu>
