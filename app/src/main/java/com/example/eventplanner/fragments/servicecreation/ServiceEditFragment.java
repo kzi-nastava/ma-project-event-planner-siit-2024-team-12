@@ -18,19 +18,28 @@ import com.example.eventplanner.viewmodels.ServiceEditViewModel;
 public class ServiceEditFragment extends Fragment {
 
     private ServiceEditViewModel viewModel;
+    private static final String ARG_SERVICE_ID = "service_id";
 
     public ServiceEditFragment() {
         // Obavezan prazan konstruktor za fragmente
     }
 
-    public static ServiceEditFragment newInstance() {
-        return new ServiceEditFragment();
+    public static ServiceEditFragment newInstance(Long serviceId) {
+        ServiceEditFragment fragment = new ServiceEditFragment();
+        Bundle args = new Bundle();
+        args.putLong(ARG_SERVICE_ID, serviceId);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(ServiceEditViewModel.class);
+        if (getArguments() != null) {
+            Long serviceId = getArguments().getLong(ARG_SERVICE_ID);
+            viewModel.fetchService(serviceId);
+        }
     }
 
     @Nullable

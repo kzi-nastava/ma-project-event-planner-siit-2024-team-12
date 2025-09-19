@@ -12,6 +12,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ServiceSolutionService {
@@ -20,5 +21,10 @@ public interface ServiceSolutionService {
     Call<List<GetServiceDTO>> getProvidedServices(@Header("Authorization") String token);
     @POST("services")
     Call<CreatedServiceDTO> createService(@Header("Authorization") String auth, @Body CreateServiceDTO service);
+    @GET("services/{id}")
+    Call<GetServiceDTO> getService(
+            @Header("Authorization") String auth,
+            @Path("id") Long serviceId
+    );
 
 }

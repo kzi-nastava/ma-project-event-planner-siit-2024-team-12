@@ -107,7 +107,7 @@ public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
     servicesRecyclerView.setAdapter(serviceCardAdapter);
 
     serviceCardAdapter.setOnItemClickListener(service -> {
-        ServiceEditFragment serviceEditFragment = ServiceEditFragment.newInstance();
+        ServiceEditFragment serviceEditFragment = ServiceEditFragment.newInstance(service.getId());
 
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
 

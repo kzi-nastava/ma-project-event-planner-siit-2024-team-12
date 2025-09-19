@@ -37,32 +37,32 @@ public class ServiceEditViewModel extends AndroidViewModel {
      * Dobavlja podatke o usluzi sa servera na osnovu ID-a.
      * @param serviceId ID usluge.
      */
-//    public void fetchService(Long serviceId) {
-//        String auth = ClientUtils.getAuthorization(getApplication());
-//        if (auth.isEmpty()) {
-//            Log.e("ServiceEditViewModel", "Authentication token is missing.");
-//            return;
-//        }
-//
-//        ClientUtils.serviceSolutionService.getService(auth, serviceId).enqueue(new Callback<GetServiceDTO>() {
-//            @Override
-//            public void onResponse(Call<GetServiceDTO> call, Response<GetServiceDTO> response) {
-//                if (response.isSuccessful() && response.body() != null) {
-//                    serviceData.setValue(response.body());
-//                    Log.d("ServiceEditViewModel", "Service fetched successfully: " + response.body().getName());
-//                } else {
-//                    Log.e("ServiceEditViewModel", "Failed to fetch service. Code: " + response.code());
-//                    Toast.makeText(getApplication(), "Greška pri učitavanju usluge.", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<GetServiceDTO> call, Throwable t) {
-//                Log.e("ServiceEditViewModel", "Network error while fetching service: " + t.getMessage());
-//                Toast.makeText(getApplication(), "Greška na mreži pri učitavanju usluge.", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
+    public void fetchService(Long serviceId) {
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            Log.e("ServiceEditViewModel", "Authentication token is missing.");
+            return;
+        }
+
+        ClientUtils.serviceSolutionService.getService(auth, serviceId).enqueue(new Callback<GetServiceDTO>() {
+            @Override
+            public void onResponse(Call<GetServiceDTO> call, Response<GetServiceDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    serviceData.setValue(response.body());
+                    Log.d("ServiceEditViewModel", "Service fetched successfully: " + response.body().getName());
+                } else {
+                    Log.e("ServiceEditViewModel", "Failed to fetch service. Code: " + response.code());
+                    Toast.makeText(getApplication(), "Greška pri učitavanju usluge.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetServiceDTO> call, Throwable t) {
+                Log.e("ServiceEditViewModel", "Network error while fetching service: " + t.getMessage());
+                Toast.makeText(getApplication(), "Greška na mreži pri učitavanju usluge.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     /**
      * Ažurira postojeću uslugu na serveru.
