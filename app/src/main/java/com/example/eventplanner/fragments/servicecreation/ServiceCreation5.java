@@ -45,6 +45,7 @@ public class ServiceCreation5 extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(ServiceCreationViewModel.class);
+        viewModel.setUnavailableDates(new ArrayList<>());
     }
 
     @Override
@@ -57,6 +58,7 @@ public class ServiceCreation5 extends Fragment {
         selectToTimeButton = view.findViewById(R.id.select_to_time_button);
         submitButton = view.findViewById(R.id.submitService);
         ImageView xButton = view.findViewById(R.id.imageView5);
+        Button backButton = view.findViewById(R.id.backServiceCreate5);
 
         monCheckBox = view.findViewById(R.id.mon_checkbox);
         tueCheckBox = view.findViewById(R.id.tue_checkbox);
@@ -72,13 +74,27 @@ public class ServiceCreation5 extends Fragment {
         selectFromTimeButton.setOnClickListener(v -> showTimePicker(selectFromTimeButton));
 
         selectToTimeButton.setOnClickListener(v -> showTimePicker(selectToTimeButton));
+        
+        backButton.setOnClickListener(v -> {
+            Fragment parentFragment = getParentFragment();
+            if (parentFragment instanceof ServiceCreationContainer) {
+                ((ServiceCreationContainer) parentFragment).previousPage();
+            }
+        });
 
         submitButton.setOnClickListener(v -> {
             if (validateForm()) {
-                viewModel.mapServiceDataAndCreateService();
-//                if (getActivity() != null) {
-//                    getActivity().getSupportFragmentManager().popBackStack();
-//                }
+                viewModel.mapServiceDataAndCreateService(
+                        () -> {
+                            // Poziv za uspeh
+                            if (getActivity() != null) {
+                                getActivity().getSupportFragmentManager().popBackStack();
+                            }
+                        },
+                        () -> {
+                            // Poziv za neuspeh
+                        }
+                );
             }
         });
 

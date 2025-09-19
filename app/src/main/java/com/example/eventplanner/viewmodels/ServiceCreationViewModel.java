@@ -51,6 +51,9 @@ public class ServiceCreationViewModel extends AndroidViewModel {
     public MutableLiveData<List<String>> getUnavailableDates() {
         return unavailableDates;
     }
+    public void setUnavailableDates(List<String> dates) {
+        unavailableDates.setValue(dates);
+    }
 
     public MutableLiveData<GetBusinessDTO> getCurrentBusiness() {
         return currentBusiness;
@@ -152,16 +155,16 @@ public class ServiceCreationViewModel extends AndroidViewModel {
                     if (business != null) {
                         currentBusiness.setValue(business);
                         Log.d("API_CALL", "Successfully fetched business: " + business.getCompanyName());
-                        Toast.makeText(getApplication(), "Podaci o biznisu uspešno dobavljeni.", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplication(), "Podaci o biznisu uspešno dobavljeni.", Toast.LENGTH_SHORT).show();
                     } else {
                         currentBusiness.setValue(null);
                         Log.e("API_CALL", "No business found for current user (204 No Content).");
-                        Toast.makeText(getApplication(), "Nije pronađen biznis profil.", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplication(), "Nije pronađen biznis profil.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     currentBusiness.setValue(null);
                     Log.e("API_CALL", "Unsuccessful response from server: " + response.code());
-                    Toast.makeText(getApplication(), "Greška pri dobavljanju biznis profila: " + response.code(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplication(), "Greška pri dobavljanju biznis profila: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -174,7 +177,7 @@ public class ServiceCreationViewModel extends AndroidViewModel {
         });
     }
 
-    public void mapServiceDataAndCreateService() {
+    public void mapServiceDataAndCreateService(Runnable onSuccess, Runnable onFailure) {
         Map<String, Object> dataMap = serviceData.getValue();
         if (dataMap == null) {
             Log.e("ServiceCreation", "serviceData is null. Cannot map service.");
@@ -215,7 +218,7 @@ public class ServiceCreationViewModel extends AndroidViewModel {
             service.setUnavailableDates(parseUnavailableDates());
 
 
-            submitService(service);
+            submitService(service, onSuccess, onFailure);
 
         } catch (NullPointerException | ClassCastException e) {
             Log.e("ServiceCreation", "Error mapping service data", e);
@@ -275,7 +278,7 @@ public class ServiceCreationViewModel extends AndroidViewModel {
         return list != null ? list : new ArrayList<>();
     }
 
-    public void submitService(CreateServiceDTO serviceDto) {
+    public void submitService(CreateServiceDTO serviceDto, Runnable onSuccess, Runnable onFailure) {
         String auth = ClientUtils.getAuthorization(getApplication());
 
         Call<CreatedServiceDTO> call = ClientUtils.serviceSolutionService.createService(auth, serviceDto);
@@ -300,10 +303,12 @@ public class ServiceCreationViewModel extends AndroidViewModel {
                                     createdService.getId(),
                                     "true",
                                     () -> {
-                                        Toast.makeText(getApplication(), "Usluga i slika uspešno kreirane.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplication(), "Usluga uspešno kreirana.", Toast.LENGTH_SHORT).show();
+                                        if (onSuccess != null) onSuccess.run();
                                     },
                                     () -> {
                                         Toast.makeText(getApplication(), "Usluga kreirana, ali slika nije postavljena.", Toast.LENGTH_SHORT).show();
+                                        if (onSuccess != null) onSuccess.run();
                                     }
                             );
                         } else {

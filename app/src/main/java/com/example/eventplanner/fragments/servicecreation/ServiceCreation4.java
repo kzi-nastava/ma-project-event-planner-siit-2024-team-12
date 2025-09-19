@@ -74,6 +74,7 @@ public class ServiceCreation4 extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         viewModel = new ViewModelProvider(requireActivity()).get(ServiceCreationViewModel.class);
+        viewModel.setServiceImageUri(null);
     }
 
     @Override
