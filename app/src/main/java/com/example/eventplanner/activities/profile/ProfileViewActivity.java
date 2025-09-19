@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
+import com.example.eventplanner.fragments.others.ChangePasswordFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.enumeration.UserRole;
@@ -129,7 +130,6 @@ public class ProfileViewActivity extends AppCompatActivity {
         View authenticatedProfileView = findViewById(R.id.authenticated_profile_view);
 
         if (userRole.equals(UserRole.ROLE_AUTHENTICATED_USER.toString())) {
-            // Prikaz za AK korisnika
             if (fullProfileView != null) fullProfileView.setVisibility(View.GONE);
             if (authenticatedProfileView != null) authenticatedProfileView.setVisibility(View.VISIBLE);
 
@@ -139,7 +139,6 @@ public class ProfileViewActivity extends AppCompatActivity {
             Button upgradeRoleBtn = findViewById(R.id.upgradeRoleBtn);
             if (upgradeRoleBtn != null) {
                 upgradeRoleBtn.setOnClickListener(v -> {
-                    // Logika za nadogradnju uloge
                     Toast.makeText(this, "Upgrade Role Clicked", Toast.LENGTH_SHORT).show();
                 });
             }
@@ -147,23 +146,20 @@ public class ProfileViewActivity extends AppCompatActivity {
             Button changePasswordBtn = findViewById(R.id.changePasswordBtn);
             if (changePasswordBtn != null) {
                 changePasswordBtn.setOnClickListener(v -> {
-                    // Logika za promjenu lozinke
-                    Toast.makeText(this, "Change Password Clicked", Toast.LENGTH_SHORT).show();
+                    ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
+                    changePasswordFragment.show(getSupportFragmentManager(), "change_password_fragment");
                 });
             }
 
             Button logOutBtn = findViewById(R.id.logOutBtn);
             if (logOutBtn != null) {
-                // Dodaj logiku za logOut ako je potrebno
                 logOutBtn.setOnClickListener(v -> {
-                    // Log out logika
                     Toast.makeText(this, "Log Out Clicked", Toast.LENGTH_SHORT).show();
                 });
             }
 
 
         } else {
-            // Prikaz za ostale uloge (OD, PUP, Admin)
             if (fullProfileView != null) fullProfileView.setVisibility(View.VISIBLE);
             if (authenticatedProfileView != null) authenticatedProfileView.setVisibility(View.GONE);
 
