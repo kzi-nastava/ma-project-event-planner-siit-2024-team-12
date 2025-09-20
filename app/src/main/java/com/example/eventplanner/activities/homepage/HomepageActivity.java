@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,12 +36,11 @@ import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
 import com.example.eventplanner.fragments.event.InvitedEventsListFragment;
-import com.example.eventplanner.fragments.homepage.EventFilterFragment;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.TopEventsFragment;
-import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
 import com.example.eventplanner.fragments.homepage.TopSolutionsFragment;
 import com.example.eventplanner.fragments.homepage.SolutionListFragment;
+import com.example.eventplanner.fragments.notification.NotificationFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
 import com.google.android.material.navigation.NavigationView;
 
@@ -55,43 +55,28 @@ public class HomepageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
 
-        // Initialize DrawerLayout
         drawerLayout = findViewById(R.id.navigationView);
 
-        // Set up the toolbar as an action bar
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         toolbar.setOverflowIcon(null);
 
-        // Add toggle button for opening/closing the drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Initialize NavigationView
         navigationView = findViewById(R.id.nav_view);
 
-        // Load homepage fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
         if (savedInstanceState == null) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.cards_fragment_container, new TopEventsFragment())
-                    .commit();
-
-
-            fragmentManager.beginTransaction()
-                    .replace(R.id.events_list_fragment_container, new EventListFragment())
-                    .commit();
-
-            fragmentManager.beginTransaction()
-                    .replace(R.id.cards_products_fragment_container, new TopSolutionsFragment())
-                    .commit();
-
-            fragmentManager.beginTransaction()
-                    .replace(R.id.ps_list_fragment_container, new SolutionListFragment())
-                    .commit();
+            loadHomepageFragments();
         }
+
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                showMainContainers();
+            }
+        });
     }
 
     @Override
@@ -112,6 +97,39 @@ public class HomepageActivity extends AppCompatActivity {
         } else {
             setupGuestUI();
         }
+    }
+
+    private void loadHomepageFragments() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.cards_fragment_container, new TopEventsFragment())
+                .commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.events_list_fragment_container, new EventListFragment())
+                .commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.cards_products_fragment_container, new TopSolutionsFragment())
+                .commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.ps_list_fragment_container, new SolutionListFragment())
+                .commit();
+    }
+
+    private void showMainContainers() {
+        findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
+        findViewById(R.id.invited_events_container).setVisibility(View.GONE);
+        findViewById(R.id.notifications_container).setVisibility(View.GONE);
+    }
+
+    private void navigateToFragment(int containerId, Fragment fragment) {
+        findViewById(R.id.homepage_scroll_view).setVisibility(View.GONE);
+        findViewById(R.id.invited_events_container).setVisibility(View.GONE);
+        findViewById(R.id.notifications_container).setVisibility(View.GONE);
+        findViewById(containerId).setVisibility(View.VISIBLE);
+        getSupportFragmentManager().beginTransaction()
+                .replace(containerId, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
@@ -142,26 +160,8 @@ public class HomepageActivity extends AppCompatActivity {
             return true;
         });
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.cards_fragment_container, new TopEventsFragment())
-                .commit();
-
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.events_list_fragment_container, new EventListFragment())
-                .commit();
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.cards_products_fragment_container, new TopSolutionsFragment())
-                .commit();
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.ps_list_fragment_container, new SolutionListFragment())
-                .commit();
-
+        loadHomepageFragments();
     }
-
 
     private void setupAuthenticatedUserUI() {
         navigationView.getMenu().clear();
@@ -180,72 +180,37 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_log_out) {
                 logOut();
             } else if (id == R.id.nav_invited_events) {
-                findViewById(R.id.homepage_scroll_view).setVisibility(View.GONE);
-                findViewById(R.id.invited_events_container).setVisibility(View.VISIBLE);
-
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.invited_events_container, new InvitedEventsListFragment())
-                        .addToBackStack(null)
-                        .commit();
+                navigateToFragment(R.id.invited_events_container, new InvitedEventsListFragment());
             } else if (id == R.id.nav_calendar_od) {
                 startActivity(new Intent(this, CalendarActivity.class));
             } else if (id == R.id.nav_explore_events) {
                 startActivity(new Intent(this, ExplorePageActivity.class));
+            } else if (id == R.id.nav_notifications) {
+                navigateToFragment(R.id.notifications_container, new NotificationFragment());
             } else if (id == R.id.nav_home) {
                 getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
-                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
+                showMainContainers();
             }
             drawerLayout.closeDrawers();
             return true;
         });
 
-        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
-            FragmentManager manager = getSupportFragmentManager();
-            if (manager.getBackStackEntryCount() == 0) {
-                findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
-                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
-            }
-        });
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.cards_fragment_container, new TopEventsFragment())
-                .commit();
-
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.events_list_fragment_container, new EventListFragment())
-                .commit();
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.cards_products_fragment_container, new TopSolutionsFragment())
-                .commit();
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.ps_list_fragment_container, new SolutionListFragment())
-                .commit();
-
+        loadHomepageFragments();
     }
 
     private void setupOrganizerUI() {
-
         navigationView.getMenu().clear();
         navigationView.inflateMenu(R.menu.organiser_menu);
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-
             if (id == R.id.nav_home) {
                 getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
-                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
+                showMainContainers();
             } else if (id == R.id.nav_fav_events) {
                 startActivity(new Intent(this, FavoriteEventsActivity.class));
             } else if (id == R.id.nav_services) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.homepage_fragment_container, new ServiceManagement())
-                        .commit();
+                navigateToFragment(R.id.homepage_fragment_container, new ServiceManagement());
             } else if (id == R.id.nav_view_profile) {
                 startActivity(new Intent(this, ProfileViewActivity.class));
             } else if (id == R.id.nav_calendar_od) {
@@ -258,13 +223,15 @@ public class HomepageActivity extends AppCompatActivity {
                 startActivity(new Intent(this, FavoriteServicesActivity.class));
             } else if (id == R.id.nav_fav_products) {
                 startActivity(new Intent(this, FavoriteProductsActivity.class));
+            } else if (id == R.id.nav_notifications) {
+                navigateToFragment(R.id.notifications_container, new NotificationFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
             }
-
             drawerLayout.closeDrawers();
             return true;
         });
+        loadHomepageFragments();
     }
 
     private void setupProviderUI() {
@@ -273,11 +240,9 @@ public class HomepageActivity extends AppCompatActivity {
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-
             if (id == R.id.nav_home) {
                 getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
-                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
+                showMainContainers();
             } else if (id == R.id.nav_create_business) {
                 startActivity(new Intent(this, BusinessRegistrationActivity.class));
             } else if (id == R.id.nav_business_info) {
@@ -285,9 +250,7 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_products) {
                 startActivity(new Intent(this, ProvidedProductsActivity.class));
             } else if (id == R.id.nav_services) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.homepage_fragment_container, new ServiceManagement())
-                        .commit();
+                navigateToFragment(R.id.homepage_fragment_container, new ServiceManagement());
             } else if (id == R.id.nav_calendar_od) {
                 startActivity(new Intent(this, CalendarActivity.class));
             } else if (id == R.id.nav_fav_events) {
@@ -304,15 +267,16 @@ public class HomepageActivity extends AppCompatActivity {
                 startActivity(new Intent(this, CategoriesTableActivity.class));
             } else if (id == R.id.nav_event_types) {
                 startActivity(new Intent(this, EventTypeTableActivity.class));
+            } else if (id == R.id.nav_notifications) {
+                navigateToFragment(R.id.notifications_container, new NotificationFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
             }
-
             drawerLayout.closeDrawers();
             return true;
         });
+        loadHomepageFragments();
     }
-
 
     private void setupAdminUI() {
         navigationView.getMenu().clear();
@@ -320,8 +284,9 @@ public class HomepageActivity extends AppCompatActivity {
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-
             if (id == R.id.nav_home) {
+                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                showMainContainers();
             } else if (id == R.id.nav_create_event_type) {
                 startActivity(new Intent(this, EventTypeCreationActivity.class));
             } else if (id == R.id.nav_event_types_overview) {
@@ -334,23 +299,22 @@ public class HomepageActivity extends AppCompatActivity {
                 startActivity(new Intent(this, AttendanceChart.class));
             } else if (id == R.id.nav_ratings_chart) {
                 startActivity(new Intent(this, RatingsChart.class));
+            } else if (id == R.id.nav_notifications) {
+                navigateToFragment(R.id.notifications_container, new NotificationFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
             }
-
             drawerLayout.closeDrawers();
             return true;
         });
+        loadHomepageFragments();
     }
-
-
 
     private void logOut() {
         new AlertDialog.Builder(this)
                 .setTitle("Log out?")
                 .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("YES", (dialog, which) -> {
-
                     SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.remove("token");
@@ -365,5 +329,4 @@ public class HomepageActivity extends AppCompatActivity {
                 .create()
                 .show();
     }
-
 }

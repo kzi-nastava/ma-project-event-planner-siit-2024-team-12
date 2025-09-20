@@ -362,5 +362,15 @@
     <string name="invitation_text">We’re thrilled to welcome you to an unforgettable experience! Come and make memories, meet new people, and celebrate together!</string>
     <string name="invited_events_title">INVITED EVENTS</string>
     <string name="invited_events">Invited events</string>
+    <string name="your_notifications">Your Notifications</string>
+    <string name="mute_notifications">Mute Notifications</string>
+    <string name="notification_message">Notification content\n</string>
+    <string name="timestamp">Timestamp</string>
+    <string name="notification_icon">Notification icon</string>
+    <string name="notifications_muted_until">Muted until: %1$s</string>
+    <string name="mute_notifications_status">Mute Notifications</string>
+    <string name="mute_for">Mute for:</string>
+    <string name="unmute_notifications">Unmute Notifications</string>
+    <string name="unmute_indefinitely">Muted until: Until you turn it back on</string>
 
 </resources>
