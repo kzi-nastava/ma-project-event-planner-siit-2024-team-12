@@ -208,12 +208,38 @@
             app:layout_constraintVertical_bias="0.69"
             tools:ignore="DuplicateIds">
 
+            <RadioButton
+                android:id="@+id/radioFlexibleTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/flexible_time"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.673" />
+
+            <RadioButton
+                android:id="@+id/radioFixedTime"
+                android:layout_width="144dp"
+                android:layout_height="31dp"
+                android:checked="true"
+                android:text="@string/fixed_time"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.076"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.672" />
+
         </RadioGroup>
 
         <LinearLayout
             android:id="@+id/fixedTimeLayout"
             android:layout_width="302dp"
             android:layout_height="43dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -232,11 +258,11 @@
 
             <EditText
                 android:id="@+id/editTextFixedTimeHours"
-                android:layout_width="60dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="36dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/input_field"
-                android:hint="H"
+                android:hint="HH"
                 android:inputType="number"
                 android:paddingStart="12dp"
                 android:textSize="12sp" />
@@ -250,10 +276,10 @@
 
             <EditText
                 android:id="@+id/editTextFixedTimeMinutes"
-                android:layout_width="60dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="36dp"
                 android:background="@drawable/input_field"
-                android:hint="M"
+                android:hint="MM"
                 android:inputType="number"
                 android:paddingStart="12dp"
                 android:textSize="12sp" />
@@ -262,11 +288,13 @@
 
         <LinearLayout
             android:id="@+id/flexibleTimeLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="299dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/spinnerEventType"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/spinnerEventType"
             app:layout_constraintTop_toBottomOf="@+id/radioGroupTimeType">
 
@@ -279,14 +307,13 @@
 
             <EditText
                 android:id="@+id/editTextFlexibleFrom"
-                android:layout_width="80dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="16dp"
+                android:layout_width="50dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="46dp"
                 android:background="@drawable/input_field"
                 android:clickable="true"
-                android:focusable="false"
-                android:hint="HH:MM"
-                android:inputType="time"
+                android:hint="HH"
+                android:inputType="number"
                 android:paddingStart="12dp"
                 android:textSize="12sp" />
 
@@ -299,15 +326,15 @@
 
             <EditText
                 android:id="@+id/editTextFlexibleTo"
-                android:layout_width="80dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="36dp"
                 android:background="@drawable/input_field"
                 android:clickable="true"
-                android:focusable="false"
-                android:hint="HH:MM"
-                android:inputType="time"
+                android:hint="HH"
+                android:inputType="number"
                 android:paddingStart="12dp"
                 android:textSize="12sp" />
+
         </LinearLayout>
 
         <TextView
@@ -436,30 +463,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
 
-        <RadioButton
-            android:id="@+id/radioFlexibleTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/flexible_time"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.673" />
 
-        <RadioButton
-            android:id="@+id/radioFixedTime"
-            android:layout_width="144dp"
-            android:layout_height="31dp"
-            android:checked="true"
-            android:text="@string/fixed_time"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.076"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.672" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

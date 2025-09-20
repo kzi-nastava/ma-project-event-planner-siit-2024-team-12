@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -20,12 +23,15 @@ import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
+import com.example.eventplanner.dto.solutionservice.UpdateServiceDTO;
 import com.example.eventplanner.enumeration.ReservationType;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.utils.MultiSelectSpinner;
 import com.example.eventplanner.viewmodels.ServiceEditViewModel;
 import com.google.android.material.imageview.ShapeableImageView;
 
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,6 +53,15 @@ public class ServiceEditFragment extends Fragment {
     private EditText specsEditText;
     private MultiSelectSpinner eventTypeSpinner;
     private List<GetEventTypeDTO> allEventTypes;
+
+    private RadioButton fixedTimeRadioButton;
+    private RadioButton flexibleTimeRadioButton;
+    private LinearLayout fixedTimeLayout;
+    private LinearLayout flexibleTimeLayout;
+    private EditText fixedTimeHoursEditText;
+    private EditText fixedTimeMinutesEditText;
+    private EditText flexibleTimeFromEditText;
+    private EditText flexibleTimeToEditText;
 
     public ServiceEditFragment() {
         // Obavezan prazan konstruktor za fragmente
@@ -87,22 +102,31 @@ public class ServiceEditFragment extends Fragment {
         descriptionEditText = view.findViewById(R.id.editTextDescription);
         specsEditText = view.findViewById(R.id.editTextSpecs);
 
+        fixedTimeRadioButton = view.findViewById(R.id.radioFixedTime);
+        flexibleTimeRadioButton = view.findViewById(R.id.radioFlexibleTime);
+        fixedTimeLayout = view.findViewById(R.id.fixedTimeLayout);
+        flexibleTimeLayout = view.findViewById(R.id.flexibleTimeLayout);
+        fixedTimeHoursEditText = view.findViewById(R.id.editTextFixedTimeHours);
+        fixedTimeMinutesEditText = view.findViewById(R.id.editTextFixedTimeMinutes);
+        flexibleTimeFromEditText = view.findViewById(R.id.editTextFlexibleFrom);
+        flexibleTimeToEditText = view.findViewById(R.id.editTextFlexibleTo);
+
         AppCompatButton editButton = view.findViewById(R.id.saveServiceEdit);
         AppCompatButton deleteButton = view.findViewById(R.id.saveServiceDelete);
         View closeFormButton = view.findViewById(R.id.imageView5);
 
         editButton.setOnClickListener(v -> {
-            // Ažuriranje DTO-a s odabranim Event tipovima
-            List<GetEventTypeDTO> selectedEventTypes = eventTypeSpinner.getSelectedItems(allEventTypes);
-            if(viewModel.getServiceData().getValue() != null) {
-                viewModel.getServiceData().getValue().setEventTypes(selectedEventTypes); // Promeni setEventType u svom DTO-u ako je potrebno
-            }
+//            List<GetEventTypeDTO> selectedEventTypes = eventTypeSpinner.getSelectedItems(allEventTypes);
+//            if(viewModel.getServiceData().getValue() != null) {
+//                viewModel.getServiceData().getValue().setEventTypes(selectedEventTypes); // Promeni setEventType u svom DTO-u ako je potrebno
+//            }
+            updateServiceDataFromUI();
 
-            // viewModel.editService(); // Odkomentiraj ovo kada budeš imao implementiranu logiku za slanje izmjena
-            Toast.makeText(getContext(), R.string.service_edited, Toast.LENGTH_SHORT).show();
-            if (getActivity() != null) {
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
+            // viewModel.editService();
+//            Toast.makeText(getContext(), R.string.service_edited, Toast.LENGTH_SHORT).show();
+//            if (getActivity() != null) {
+//                getActivity().getSupportFragmentManager().popBackStack();
+//            }
         });
 
         deleteButton.setOnClickListener(v -> {
@@ -125,62 +149,91 @@ public class ServiceEditFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Kreiranje Observer-a za serviceData
         viewModel.getServiceData().observe(getViewLifecycleOwner(), service -> {
             if (service != null) {
                 populateFields(service);
             }
         });
-        // Kreiranje Observer-a za EventTypes
         viewModel.getEventTypes().observe(getViewLifecycleOwner(), eventTypes -> {
             if (eventTypes != null) {
                 this.allEventTypes = eventTypes;
-                // Popuni spinner nakon što se učitaju i EventTypes i ServiceData
                 if (viewModel.getServiceData().getValue() != null) {
                     populateFields(viewModel.getServiceData().getValue());
                 }
             }
         });
 
-        // Učitavanje tipova događaja
+        RadioGroup radioGroupTimeType = view.findViewById(R.id.radioGroupTimeType);
+
+        radioGroupTimeType.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.radioFixedTime) {
+                fixedTimeLayout.setVisibility(View.VISIBLE);
+                flexibleTimeLayout.setVisibility(View.GONE);
+                flexibleTimeFromEditText.setText("");
+                flexibleTimeToEditText.setText("");
+            } else if (checkedId == R.id.radioFlexibleTime) {
+                fixedTimeLayout.setVisibility(View.GONE);
+                flexibleTimeLayout.setVisibility(View.VISIBLE);
+                fixedTimeHoursEditText.setText("");
+                fixedTimeMinutesEditText.setText("");
+            }
+        });
+
+
         viewModel.fetchEventTypes();
     }
-
-    /**
-     * Puni View komponente sa podacima iz GetServiceDTO objekta.
-     * @param service Objekat sa podacima o usluzi.
-     */
     private void populateFields(GetServiceDTO service) {
-        // Popunjavanje EditText polja
         serviceNameEditText.setText(service.getName());
         servicePriceEditText.setText(String.format(Locale.getDefault(), "%.2f", service.getPrice()));
         serviceDiscountEditText.setText(String.format(Locale.getDefault(), "%.0f", service.getDiscount()));
         descriptionEditText.setText(service.getDescription());
         specsEditText.setText(service.getSpecifics());
 
-        // Popunjavanje Event Type Spinnera
+        if (service.getFixedTime() != null && service.getFixedTime() > 0) {
+            fixedTimeRadioButton.setChecked(true);
+            fixedTimeLayout.setVisibility(View.VISIBLE);
+            flexibleTimeLayout.setVisibility(View.GONE);
+
+            long totalMinutes = service.getFixedTime();
+            long hours = totalMinutes / 60;
+            long minutes = totalMinutes % 60;
+            fixedTimeHoursEditText.setText(String.valueOf(hours));
+            fixedTimeMinutesEditText.setText(String.valueOf(minutes));
+        } else if (service.getMinTime() != null && service.getMaxTime() != null) {
+            flexibleTimeRadioButton.setChecked(true);
+            fixedTimeLayout.setVisibility(View.GONE);
+            flexibleTimeLayout.setVisibility(View.VISIBLE);
+
+
+            if (service.getMinTime() != null) {
+                flexibleTimeFromEditText.setText(String.valueOf(service.getMinTime()));
+            }
+            if (service.getMaxTime() != null) {
+                flexibleTimeToEditText.setText(String.valueOf(service.getMaxTime()));
+            }
+
+        } else {
+            // Podrazumevano stanje (npr. fiksno vrijeme)
+            fixedTimeRadioButton.setChecked(true);
+            fixedTimeLayout.setVisibility(View.VISIBLE);
+            flexibleTimeLayout.setVisibility(View.GONE);
+        }
+
         if (allEventTypes != null && service.getEventTypes() != null) {
             eventTypeSpinner.setItems(allEventTypes, service.getEventTypes());
         }
 
-        // Popunjavanje ImageView (uz pomoć Glide biblioteke)
         if (service.getImageUrl() != null && !service.getImageUrl().isEmpty()) {
             Glide.with(this)
                     .load(ClientUtils.BASE_IMAGE_URL + service.getImageUrl())
-                    .placeholder(R.drawable.shopping_cart) // slika za učitavanje
+                    .placeholder(R.drawable.shopping_cart)
                     .into(serviceImage);
         }
 
-        // Popunjavanje Spinnera
-        // Napomena: Za spinnere, prvo morate dobiti ArrayAdapter,
-        // a zatim pronaći indeks itema i postaviti selekciju.
-
-        // Za kategoriju, koja je EditText, postavite ime
         if (service.getCategory() != null) {
             serviceCategoryEditText.setText(service.getCategory());
         }
 
-        // Popunjavanje i postavljanje listenera za Visibility spinner
         ArrayAdapter<CharSequence> visibilityAdapter = ArrayAdapter.createFromResource(requireContext(),
                 R.array.service_visibility_spinner, android.R.layout.simple_spinner_item);
         visibilityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -190,23 +243,18 @@ public class ServiceEditFragment extends Fragment {
             visibilitySpinner.setSelection(position);
         }
 
-        // Dodavanje listenera za promenu selekcije
         visibilitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Pozicija 0 je "Visible" (true), pozicija 1 je "Hidden" (false)
                 boolean isVisible = position == 0;
-                // Ažuriranje atributa u ViewModelu
                 viewModel.getServiceData().getValue().setVisible(isVisible);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Ne radite ništa
             }
         });
 
-        // Popunjavanje i postavljanje listenera za Availability spinner
         ArrayAdapter<CharSequence> availabilityAdapter = ArrayAdapter.createFromResource(requireContext(),
                 R.array.service_availability_spinner, android.R.layout.simple_spinner_item);
         availabilityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -216,22 +264,17 @@ public class ServiceEditFragment extends Fragment {
             availabilitySpinner.setSelection(position);
         }
 
-        // Dodavanje listenera za promenu selekcije
         availabilitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Pozicija 0 je "Available" (true), pozicija 1 je "Not Available" (false)
                 boolean isAvailable = position == 0;
-                // Ažuriranje atributa u ViewModelu
                 viewModel.getServiceData().getValue().setAvailable(isAvailable);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Ne radite ništa
             }
         });
-        // --- Postavljanje Reservation Type Spinnera ---
         ArrayAdapter<CharSequence> reservationTypeAdapter = ArrayAdapter.createFromResource(
                 requireContext(),
                 R.array.service_reservation_confirmation_spinner,
@@ -240,7 +283,6 @@ public class ServiceEditFragment extends Fragment {
         reservationTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         reservationTypeSpinner.setAdapter(reservationTypeAdapter);
 
-        // Postavljanje inicijalne selekcije na osnovu ucitane usluge
         if (service.getReservationType() != null) {
             int position = reservationTypeAdapter.getPosition(service.getReservationType().name());
             if (position >= 0) {
@@ -248,26 +290,85 @@ public class ServiceEditFragment extends Fragment {
             }
         }
 
-        // Listener koji preslikava odabrani tip u DTO objekat
         reservationTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedType = (String) parent.getItemAtPosition(position);
-                // Ažuriranje vrednosti u ViewModelu
                 viewModel.getServiceData().getValue().setReservationType(ReservationType.valueOf(selectedType));
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Ne raditi ništa
             }
         });
+    }
 
-        // Primer za spinner (potrebno je imati adapter i listu opcija)
-        // String[] reservationOptions = getResources().getStringArray(R.array.service_reservation_confirmation_spinner);
-        // int reservationIndex = Arrays.asList(reservationOptions).indexOf(service.getReservationType().toString());
-        // if (reservationIndex >= 0) {
-        //    reservationTypeSpinner.setSelection(reservationIndex);
-        // }
+    private void updateServiceDataFromUI() {
+        UpdateServiceDTO updateServiceDTO = new UpdateServiceDTO();
+
+        updateServiceDTO.setName(serviceNameEditText.getText().toString());
+        updateServiceDTO.setDescription(descriptionEditText.getText().toString());
+        updateServiceDTO.setSpecifics(specsEditText.getText().toString());
+
+        try {
+            if (!servicePriceEditText.getText().toString().isEmpty()) {
+                updateServiceDTO.setPrice(Double.parseDouble(servicePriceEditText.getText().toString()));
+            }
+            if (!serviceDiscountEditText.getText().toString().isEmpty()) {
+                updateServiceDTO.setDiscount(Double.parseDouble(serviceDiscountEditText.getText().toString()));
+            }
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "Please enter a valid number for price and discount.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        updateServiceDTO.setVisible(visibilitySpinner.getSelectedItemPosition() == 0);
+        updateServiceDTO.setAvailable(availabilitySpinner.getSelectedItemPosition() == 0);
+        String selectedReservationType = (String) reservationTypeSpinner.getSelectedItem();
+        updateServiceDTO.setReservationType(ReservationType.valueOf(selectedReservationType));
+
+        List<GetEventTypeDTO> selectedEventTypes = eventTypeSpinner.getSelectedItems(allEventTypes);
+        List<Long> eventTypeIds = new ArrayList<>();
+        for (GetEventTypeDTO eventType : selectedEventTypes) {
+            eventTypeIds.add(eventType.getId());
+        }
+        updateServiceDTO.setEventTypeIds(eventTypeIds);
+
+        if (fixedTimeRadioButton.isChecked()) {
+            long hours = 0;
+            long minutes = 0;
+            if (!fixedTimeHoursEditText.getText().toString().isEmpty()) {
+                hours = Long.parseLong(fixedTimeHoursEditText.getText().toString());
+            }
+            if (!fixedTimeMinutesEditText.getText().toString().isEmpty()) {
+                minutes = Long.parseLong(fixedTimeMinutesEditText.getText().toString());
+            }
+            long totalMinutes = hours * 60 + minutes;
+
+            updateServiceDTO.setFixedTime(Duration.ofMinutes(totalMinutes));
+            updateServiceDTO.setMinTime(Duration.ofHours(0));
+            updateServiceDTO.setMaxTime(Duration.ofHours(0));
+        } else if (flexibleTimeRadioButton.isChecked()) {
+            long minHours = 0;
+            long maxHours = 0;
+            if (!flexibleTimeFromEditText.getText().toString().isEmpty()) {
+                minHours = Long.parseLong(flexibleTimeFromEditText.getText().toString());
+            }
+            if (!flexibleTimeToEditText.getText().toString().isEmpty()) {
+                maxHours = Long.parseLong(flexibleTimeToEditText.getText().toString());
+            }
+
+            updateServiceDTO.setMinTime(Duration.ofHours(minHours));
+            updateServiceDTO.setMaxTime(Duration.ofHours(maxHours));
+            updateServiceDTO.setFixedTime(Duration.ofMinutes(0));
+        }
+
+        GetServiceDTO currentService = viewModel.getServiceData().getValue();
+        if (currentService != null) {
+            updateServiceDTO.setImageUrl(currentService.getImageUrl());
+            updateServiceDTO.setCategory(currentService.getCategory());
+        }
+
+        // viewModel.editService(updateServiceDTO);
     }
 }
