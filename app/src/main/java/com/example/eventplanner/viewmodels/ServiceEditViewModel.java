@@ -19,6 +19,7 @@ import com.example.eventplanner.utils.ClientUtils;
 
 import java.util.ArrayList;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -114,11 +115,9 @@ public class ServiceEditViewModel extends AndroidViewModel {
                 isSaving.setValue(false);
                 if (response.isSuccessful()) {
                     Log.d("ServiceEditViewModel", "Service updated successfully.");
-                    Toast.makeText(getApplication(), "Usluga uspešno ažurirana.", Toast.LENGTH_SHORT).show();
                     if (onSuccess != null) onSuccess.run();
                 } else {
                     Log.e("ServiceEditViewModel", "Failed to update service. Code: " + response.code());
-                    Toast.makeText(getApplication(), "Greška pri ažuriranju usluge.", Toast.LENGTH_SHORT).show();
                     if (onFailure != null) onFailure.run();
                 }
             }
@@ -127,47 +126,39 @@ public class ServiceEditViewModel extends AndroidViewModel {
             public void onFailure(Call<UpdatedServiceDTO> call, Throwable t) {
                 isSaving.setValue(false);
                 Log.e("ServiceEditViewModel", "Network error while updating service: " + t.getMessage());
-                Toast.makeText(getApplication(), "Greška na mreži pri ažuriranju.", Toast.LENGTH_SHORT).show();
                 if (onFailure != null) onFailure.run();
             }
         });
     }
-//
-//    /**
-//     * Briše uslugu sa servera.
-//     * @param serviceId ID usluge.
-//     */
-//    public void deleteService(Long serviceId, Runnable onSuccess, Runnable onFailure) {
-//        isSaving.setValue(true);
-//        String auth = ClientUtils.getAuthorization(getApplication());
-//        if (auth.isEmpty()) {
-//            Log.e("ServiceEditViewModel", "Authentication token is missing.");
-//            isSaving.setValue(false);
-//            return;
-//        }
-//
-//        ClientUtils.serviceSolutionService.deleteService(auth, serviceId).enqueue(new Callback<Void>() {
-//            @Override
-//            public void onResponse(Call<Void> call, Response<Void> response) {
-//                isSaving.setValue(false);
-//                if (response.isSuccessful()) {
-//                    Log.d("ServiceEditViewModel", "Service deleted successfully.");
-//                    Toast.makeText(getApplication(), "Usluga uspešno obrisana.", Toast.LENGTH_SHORT).show();
-//                    if (onSuccess != null) onSuccess.run();
-//                } else {
-//                    Log.e("ServiceEditViewModel", "Failed to delete service. Code: " + response.code());
-//                    Toast.makeText(getApplication(), "Greška pri brisanju usluge.", Toast.LENGTH_SHORT).show();
-//                    if (onFailure != null) onFailure.run();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Void> call, Throwable t) {
-//                isSaving.setValue(false);
-//                Log.e("ServiceEditViewModel", "Network error while deleting service: " + t.getMessage());
-//                Toast.makeText(getApplication(), "Greška na mreži pri brisanju.", Toast.LENGTH_SHORT).show();
-//                if (onFailure != null) onFailure.run();
-//            }
-//        });
-//    }
+
+    public void deleteService(Long serviceId, Runnable onSuccess, Runnable onFailure) {
+        isSaving.setValue(true);
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            Log.e("ServiceEditViewModel", "Authentication token is missing.");
+            isSaving.setValue(false);
+            return;
+        }
+
+        ClientUtils.serviceSolutionService.deleteService(auth, serviceId).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                isSaving.setValue(false);
+                if (response.isSuccessful()) {
+                    Log.d("ServiceEditViewModel", "Service deleted successfully.");
+                    if (onSuccess != null) onSuccess.run();
+                } else {
+                    Log.e("ServiceEditViewModel", "Failed to delete service. Code: " + response.code());
+                    if (onFailure != null) onFailure.run();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                isSaving.setValue(false);
+                Log.e("ServiceEditViewModel", "Network error while deleting service: " + t.getMessage());
+                if (onFailure != null) onFailure.run();
+            }
+        });
+    }
 }

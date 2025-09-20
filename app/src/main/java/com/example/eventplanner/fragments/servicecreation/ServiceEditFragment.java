@@ -124,11 +124,18 @@ public class ServiceEditFragment extends Fragment {
         });
 
         deleteButton.setOnClickListener(v -> {
-            // viewModel.deleteService();
-            Toast.makeText(getContext(), R.string.service_deleted, Toast.LENGTH_SHORT).show();
-            if (getActivity() != null) {
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
+            viewModel.deleteService(viewModel.getServiceData().getValue().getId(), () -> {
+                        Toast.makeText(getContext(), R.string.service_deleted, Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
+                    },
+                    () -> {
+                        Toast.makeText(getContext(), "Failed to delete service.", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
+                    });
         });
 
         closeFormButton.setOnClickListener(v -> {

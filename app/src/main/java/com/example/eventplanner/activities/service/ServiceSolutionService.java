@@ -11,6 +11,7 @@ import java.util.List;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -34,6 +35,11 @@ public interface ServiceSolutionService {
             @Header("Authorization") String auth,
             @Path("id") Long serviceId,
             @Body UpdateServiceDTO service
+    );
+    @DELETE("services/{id}")
+    Call<ResponseBody> deleteService(
+            @Header("Authorization") String auth,
+            @Path("id") Long serviceId
     );
 
 }
