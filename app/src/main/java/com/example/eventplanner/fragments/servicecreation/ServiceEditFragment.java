@@ -18,12 +18,15 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
 import com.example.eventplanner.enumeration.ReservationType;
 import com.example.eventplanner.utils.ClientUtils;
+import com.example.eventplanner.utils.MultiSelectSpinner;
 import com.example.eventplanner.viewmodels.ServiceEditViewModel;
 import com.google.android.material.imageview.ShapeableImageView;
 
+import java.util.List;
 import java.util.Locale;
 
 public class ServiceEditFragment extends Fragment {
@@ -36,13 +39,14 @@ public class ServiceEditFragment extends Fragment {
     private EditText servicePriceEditText;
     private EditText serviceDiscountEditText;
     private EditText serviceCategoryEditText;
-    private Spinner eventTypeSpinner;
     private Spinner reservationTypeSpinner;
     private Spinner visibilitySpinner;
     private Spinner availabilitySpinner;
     private EditText descriptionEditText;
 
     private EditText specsEditText;
+    private MultiSelectSpinner eventTypeSpinner;
+    private List<GetEventTypeDTO> allEventTypes;
 
     public ServiceEditFragment() {
         // Obavezan prazan konstruktor za fragmente
@@ -88,7 +92,13 @@ public class ServiceEditFragment extends Fragment {
         View closeFormButton = view.findViewById(R.id.imageView5);
 
         editButton.setOnClickListener(v -> {
-            // viewModel.editService();
+            // Ažuriranje DTO-a s odabranim Event tipovima
+            List<GetEventTypeDTO> selectedEventTypes = eventTypeSpinner.getSelectedItems(allEventTypes);
+            if(viewModel.getServiceData().getValue() != null) {
+                viewModel.getServiceData().getValue().setEventTypes(selectedEventTypes); // Promeni setEventType u svom DTO-u ako je potrebno
+            }
+
+            // viewModel.editService(); // Odkomentiraj ovo kada budeš imao implementiranu logiku za slanje izmjena
             Toast.makeText(getContext(), R.string.service_edited, Toast.LENGTH_SHORT).show();
             if (getActivity() != null) {
                 getActivity().getSupportFragmentManager().popBackStack();
@@ -121,6 +131,19 @@ public class ServiceEditFragment extends Fragment {
                 populateFields(service);
             }
         });
+        // Kreiranje Observer-a za EventTypes
+        viewModel.getEventTypes().observe(getViewLifecycleOwner(), eventTypes -> {
+            if (eventTypes != null) {
+                this.allEventTypes = eventTypes;
+                // Popuni spinner nakon što se učitaju i EventTypes i ServiceData
+                if (viewModel.getServiceData().getValue() != null) {
+                    populateFields(viewModel.getServiceData().getValue());
+                }
+            }
+        });
+
+        // Učitavanje tipova događaja
+        viewModel.fetchEventTypes();
     }
 
     /**
@@ -134,6 +157,11 @@ public class ServiceEditFragment extends Fragment {
         serviceDiscountEditText.setText(String.format(Locale.getDefault(), "%.0f", service.getDiscount()));
         descriptionEditText.setText(service.getDescription());
         specsEditText.setText(service.getSpecifics());
+
+        // Popunjavanje Event Type Spinnera
+        if (allEventTypes != null && service.getEventTypes() != null) {
+            eventTypeSpinner.setItems(allEventTypes, service.getEventTypes());
+        }
 
         // Popunjavanje ImageView (uz pomoć Glide biblioteke)
         if (service.getImageUrl() != null && !service.getImageUrl().isEmpty()) {

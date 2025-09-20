@@ -178,19 +178,6 @@
             app:layout_constraintBottom_toTopOf="@+id/editTextServiceDiscount"
             app:layout_constraintStart_toStartOf="@+id/editTextServiceDiscount" />
 
-        <!--        <TextView-->
-        <!--            android:id="@+id/textViewTimeType"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/service_time_type_label"-->
-        <!--            android:textSize="12sp"-->
-        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintHorizontal_bias="0.0"-->
-        <!--            app:layout_constraintStart_toStartOf="@+id/spinnerEventType"-->
-        <!--            app:layout_constraintTop_toTopOf="parent"-->
-        <!--            app:layout_constraintVertical_bias="0.65" />-->
-
         <EditText
             android:id="@+id/editTextServiceDiscount"
             android:layout_width="130dp"
@@ -335,11 +322,10 @@
             app:layout_constraintStart_toStartOf="@+id/spinnerEventType"
             app:layout_constraintVertical_bias="1.0" />
 
-        <Spinner
+        <com.example.eventplanner.utils.MultiSelectSpinner
             android:id="@+id/spinnerEventType"
             android:layout_width="142dp"
             android:layout_height="31dp"
-            android:entries="@array/service_event_type_spinner"
             android:spinnerMode="dropdown"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -358,23 +344,6 @@
             app:layout_constraintBottom_toTopOf="@+id/spinnerReservationType"
             app:layout_constraintStart_toStartOf="@+id/spinnerReservationType" />
 
-        <!--        <TextView-->
-        <!--            android:id="@+id/textViewVisibility"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/visibility_label"-->
-        <!--            android:textSize="12sp"-->
-        <!--            app:layout_constraintBottom_toTopOf="@+id/spinnerVisibility"-->
-        <!--            app:layout_constraintStart_toStartOf="@+id/spinnerVisibility" />-->
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/textViewAvailability"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/availability_label"-->
-        <!--            android:textSize="12sp"-->
-        <!--            app:layout_constraintBottom_toTopOf="@+id/spinnerAvailability"-->
-        <!--            app:layout_constraintStart_toStartOf="@+id/spinnerAvailability" />-->
 
         <Spinner
             android:id="@+id/spinnerReservationType"

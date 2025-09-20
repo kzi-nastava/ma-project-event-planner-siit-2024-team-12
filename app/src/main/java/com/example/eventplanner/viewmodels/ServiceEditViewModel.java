@@ -74,8 +74,6 @@ public class ServiceEditViewModel extends AndroidViewModel {
     }
 
     public void fetchEventTypes() {
-//        EventTypeService eventTypeService = RetrofitClient.getClient(ClientUtils.SERVICE_API_PATH).create(EventTypeService.class);
-//        Call<ArrayList<GetEventTypeDTO>> call = eventTypeService.getAllActive("Bearer " + ClientUtils.token);
         String auth = ClientUtils.getAuthorization(getApplication());
         if (auth.isEmpty()) {
             Log.e("ServiceEditViewModel", "Authentication token is missing.");
@@ -88,14 +86,12 @@ public class ServiceEditViewModel extends AndroidViewModel {
                 if (response.isSuccessful() && response.body() != null) {
                     eventTypes.setValue(response.body());
                 } else {
-                    // Logika za neuspešan poziv, npr. postavljanje prazne liste
                     eventTypes.setValue(new ArrayList<>());
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<GetEventTypeDTO>> call, Throwable t) {
-                // Logika za grešku u pozivu, npr. prikaz Toast poruke
                 eventTypes.setValue(new ArrayList<>());
             }
         });
