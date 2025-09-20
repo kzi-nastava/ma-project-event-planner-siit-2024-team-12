@@ -52,8 +52,8 @@ public class ManageCommentsAdapter extends RecyclerView.Adapter<ManageCommentsAd
     }
 
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
-        TextView userEmail, timestamp, content, status, viewDetails;
-        Button btnApprove, btnDelete;
+        TextView userEmail, timestamp, content, status;
+        Button btnApprove, btnDelete, viewDetails;
         private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
         public CommentViewHolder(@NonNull View itemView) {
@@ -61,8 +61,8 @@ public class ManageCommentsAdapter extends RecyclerView.Adapter<ManageCommentsAd
             userEmail = itemView.findViewById(R.id.userEmail);
             timestamp = itemView.findViewById(R.id.timestamp);
             content = itemView.findViewById(R.id.content);
-            status = itemView.findViewById(R.id.tvStatus);
-            viewDetails = itemView.findViewById(R.id.viewDetails);
+            status = itemView.findViewById(R.id.status);
+            viewDetails = itemView.findViewById(R.id.btnViewDetails);
             btnApprove = itemView.findViewById(R.id.btnApprove);
             btnDelete = itemView.findViewById(R.id.btnDelete);
         }

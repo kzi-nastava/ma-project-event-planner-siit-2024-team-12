@@ -1,5 +1,6 @@
 package com.example.eventplanner.fragments.comment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.event.EventDetailsActivity;
+import com.example.eventplanner.activities.product.ProductDetailsActivity;
 import com.example.eventplanner.adapters.comment.ManageCommentsAdapter;
 import com.example.eventplanner.dto.PageResponse;
 import com.example.eventplanner.dto.comment.GetCommentDTO;
@@ -168,7 +171,35 @@ public class ManageCommentsFragment extends Fragment implements ManageCommentsAd
 
     @Override
     public void onViewDetailsClick(Long entityId, String entityType) {
-        Toast.makeText(getContext(), "Navigating to " + entityType + " with ID: " + entityId, Toast.LENGTH_SHORT).show();
+        navigateToEntityDetails(entityId, entityType);
+    }
 
+    private void navigateToEntityDetails(Long entityId, String entityType) {
+        if (getContext() == null) {
+            return;
+        }
+
+        Intent intent;
+        switch (entityType.toUpperCase()) {
+            case "EVENT":
+                intent = new Intent(getContext(), EventDetailsActivity.class);
+                intent.putExtra("id", entityId);
+                startActivity(intent);
+                break;
+            case "PRODUCT":
+                intent = new Intent(getContext(), ProductDetailsActivity.class);
+                intent.putExtra("id", entityId);
+                startActivity(intent);
+                break;
+            case "SERVICE_RESERVATION":
+                Toast.makeText(getContext(), "Service reservation details not implemented.", Toast.LENGTH_SHORT).show();
+                break;
+            case "SERVICE":
+                Toast.makeText(getContext(), "Service details not implemented.", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(getContext(), "Unknown entity type: " + entityType, Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 }
