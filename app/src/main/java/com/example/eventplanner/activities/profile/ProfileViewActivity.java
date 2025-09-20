@@ -19,7 +19,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.example.eventplanner.activities.auth.SignUpActivity;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
+import com.example.eventplanner.fragments.others.ChangePasswordFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.enumeration.UserRole;
@@ -63,20 +65,8 @@ public class ProfileViewActivity extends AppCompatActivity {
     }
 
     public void closeForm(View view) {
-        String role = getUserRole();
-
-        if (role.equalsIgnoreCase(UserRole.ROLE_ORGANIZER.toString())) {
-            Intent intent = new Intent(ProfileViewActivity.this, OrganiserHomepageActivity.class);
-            startActivity(intent);
-        }
-        else if (role.equalsIgnoreCase(UserRole.ROLE_PROVIDER.toString())) {
-            Intent intent = new Intent(ProfileViewActivity.this, ProviderHomepageActivity.class);
-            startActivity(intent);
-        }
-        else {
-            Intent intent = new Intent(ProfileViewActivity.this, HomepageActivity.class);
-            startActivity(intent);
-        }
+        Intent intent = new Intent(ProfileViewActivity.this, HomepageActivity.class);
+        startActivity(intent);
     }
 
 
@@ -135,27 +125,70 @@ public class ProfileViewActivity extends AppCompatActivity {
 
 
     private void setUpFormDetails(GetUserDTO getUserDTO) {
+        String userRole = getUserRole();
 
-        TextView name = findViewById(R.id.name);
-        name.setText(getUserDTO.getName());
+        View fullProfileView = findViewById(R.id.full_profile_view);
+        View authenticatedProfileView = findViewById(R.id.authenticated_profile_view);
 
-        TextView surname = findViewById(R.id.surname);
-        surname.setText(getUserDTO.getSurname());
+        if (userRole.equals(UserRole.ROLE_AUTHENTICATED_USER.toString())) {
+            if (fullProfileView != null) fullProfileView.setVisibility(View.GONE);
+            if (authenticatedProfileView != null) authenticatedProfileView.setVisibility(View.VISIBLE);
 
-        TextView email = findViewById(R.id.email);
-        email.setText(getUserDTO.getEmail());
+            TextView emailAK = findViewById(R.id.emailAK);
+            if (emailAK != null) emailAK.setText(getUserDTO.getEmail());
 
-        TextView address = findViewById(R.id.address);
-        String fullAddress = getUserDTO.getLocation().getAddress() + ", " +
-                             getUserDTO.getLocation().getCity() + ", " + getUserDTO.getLocation().getCountry();
-        address.setText(fullAddress);
+            Button upgradeRoleBtn = findViewById(R.id.upgradeRoleBtn);
+            if (upgradeRoleBtn != null) {
+                upgradeRoleBtn.setOnClickListener(v -> {
+                    Intent intent = new Intent(ProfileViewActivity.this, SignUpActivity.class);
+                    intent.putExtra("IS_UPGRADE", true);
+                    intent.putExtra("USER_EMAIL", getUserDTO.getEmail());
+                    startActivity(intent);
+                });
+            }
 
-        TextView phone = findViewById(R.id.phone);
-        phone.setText(getUserDTO.getPhone());
+            Button changePasswordBtn = findViewById(R.id.changePasswordBtn);
+            if (changePasswordBtn != null) {
+                changePasswordBtn.setOnClickListener(v -> {
+                    ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
+                    changePasswordFragment.show(getSupportFragmentManager(), "change_password_fragment");
+                });
+            }
 
-        setMainImage(getUserDTO);
+            Button logOutBtn = findViewById(R.id.logOutBtn);
+            if (logOutBtn != null) {
+                logOutBtn.setOnClickListener(v -> logOut());
+            }
 
+
+        } else {
+            if (fullProfileView != null) fullProfileView.setVisibility(View.VISIBLE);
+            if (authenticatedProfileView != null) authenticatedProfileView.setVisibility(View.GONE);
+
+            TextView name = findViewById(R.id.name);
+            if (name != null) name.setText(getUserDTO.getName());
+
+            TextView surname = findViewById(R.id.surname);
+            if (surname != null) surname.setText(getUserDTO.getSurname());
+
+            TextView email = findViewById(R.id.email);
+            if (email != null) email.setText(getUserDTO.getEmail());
+
+            TextView address = findViewById(R.id.address);
+            if (address != null && getUserDTO.getLocation() != null) {
+                String fullAddress = getUserDTO.getLocation().getAddress() + ", " +
+                        getUserDTO.getLocation().getCity() + ", " + getUserDTO.getLocation().getCountry();
+                address.setText(fullAddress);
+            }
+
+            TextView phone = findViewById(R.id.phone);
+            if (phone != null) phone.setText(getUserDTO.getPhone());
+
+            ImageView mainImage = findViewById(R.id.mainImage);
+            setMainImage(getUserDTO);
+        }
     }
+
 
 
     private void setMainImage(GetUserDTO getUserDTO) {
@@ -215,6 +248,27 @@ public class ProfileViewActivity extends AppCompatActivity {
                 Toast.makeText(ProfileViewActivity.this, "Failed to deactivate account!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void logOut() {
+        new AlertDialog.Builder(this)
+                .setTitle("Log out?")
+                .setMessage("Are you sure you want to log out?")
+                .setPositiveButton("YES", (dialog, which) -> {
+
+                    SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.remove("token");
+                    editor.remove("userRole");
+                    editor.apply();
+
+                    Intent intent = new Intent(ProfileViewActivity.this, HomepageActivity.class);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton("NO", (dialog, which) -> dialog.dismiss())
+                .create()
+                .show();
     }
 
 }

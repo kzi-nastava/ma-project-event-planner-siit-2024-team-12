@@ -34,6 +34,7 @@ import com.example.eventplanner.activities.product.ProvidedProductsActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
+import com.example.eventplanner.fragments.event.InvitedEventsListFragment;
 import com.example.eventplanner.fragments.homepage.EventFilterFragment;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.TopEventsFragment;
@@ -106,6 +107,8 @@ public class HomepageActivity extends AppCompatActivity {
             setupProviderUI();
         } else if ("ROLE_ADMIN".equals(role)) {
             setupAdminUI();
+        } else if ("ROLE_AUTHENTICATED_USER".equals(role)) {
+            setupAuthenticatedUserUI();
         } else {
             setupGuestUI();
         }
@@ -159,6 +162,72 @@ public class HomepageActivity extends AppCompatActivity {
 
     }
 
+
+    private void setupAuthenticatedUserUI() {
+        navigationView.getMenu().clear();
+        navigationView.inflateMenu(R.menu.authenticated_user_menu);
+
+        RecyclerView chatRecyclerView = findViewById(R.id.chat_recycler_view);
+        if (chatRecyclerView != null) chatRecyclerView.setVisibility(View.VISIBLE);
+
+        Spinner userSpinner = findViewById(R.id.userSpinner);
+        if (userSpinner != null) userSpinner.setVisibility(View.VISIBLE);
+
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_view_profile) {
+                startActivity(new Intent(HomepageActivity.this, ProfileViewActivity.class));
+            } else if (id == R.id.nav_log_out) {
+                logOut();
+            } else if (id == R.id.nav_invited_events) {
+                findViewById(R.id.homepage_scroll_view).setVisibility(View.GONE);
+                findViewById(R.id.invited_events_container).setVisibility(View.VISIBLE);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.invited_events_container, new InvitedEventsListFragment())
+                        .addToBackStack(null)
+                        .commit();
+            } else if (id == R.id.nav_calendar_od) {
+                startActivity(new Intent(this, CalendarActivity.class));
+            } else if (id == R.id.nav_explore_events) {
+                startActivity(new Intent(this, ExplorePageActivity.class));
+            } else if (id == R.id.nav_home) {
+                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
+                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
+            }
+            drawerLayout.closeDrawers();
+            return true;
+        });
+
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            FragmentManager manager = getSupportFragmentManager();
+            if (manager.getBackStackEntryCount() == 0) {
+                findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
+                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
+            }
+        });
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.cards_fragment_container, new TopEventsFragment())
+                .commit();
+
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.events_list_fragment_container, new EventListFragment())
+                .commit();
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.cards_products_fragment_container, new TopSolutionsFragment())
+                .commit();
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.ps_list_fragment_container, new SolutionListFragment())
+                .commit();
+
+    }
+
     private void setupOrganizerUI() {
 
         navigationView.getMenu().clear();
@@ -168,7 +237,9 @@ public class HomepageActivity extends AppCompatActivity {
             int id = item.getItemId();
 
             if (id == R.id.nav_home) {
-                startActivity(new Intent(this, HomepageActivity.class));
+                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
+                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
             } else if (id == R.id.nav_fav_events) {
                 startActivity(new Intent(this, FavoriteEventsActivity.class));
             } else if (id == R.id.nav_services) {
@@ -204,6 +275,9 @@ public class HomepageActivity extends AppCompatActivity {
             int id = item.getItemId();
 
             if (id == R.id.nav_home) {
+                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
+                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
             } else if (id == R.id.nav_create_business) {
                 startActivity(new Intent(this, BusinessRegistrationActivity.class));
             } else if (id == R.id.nav_business_info) {
@@ -276,11 +350,16 @@ public class HomepageActivity extends AppCompatActivity {
                 .setTitle("Log out?")
                 .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("YES", (dialog, which) -> {
-                    // Clear shared prefs
-                    SharedPreferences sp = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-                    sp.edit().clear().apply();
 
-                    setupGuestUI();
+                    SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.remove("token");
+                    editor.remove("userRole");
+                    editor.apply();
+
+                    Intent intent = new Intent(HomepageActivity.this, HomepageActivity.class);
+                    startActivity(intent);
+                    finish();
                 })
                 .setNegativeButton("NO", (dialog, which) -> dialog.dismiss())
                 .create()

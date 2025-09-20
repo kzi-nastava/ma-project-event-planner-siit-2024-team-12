@@ -47,10 +47,6 @@ public interface UserService {
                                                    @Path("email") String email);
 
 
-    @GET("users/explore-events")
-    Call<ArrayList<FavEventDTO>> getOpenEvents(@Header("Authorization") String token);
-
-
     @GET("users/{email}/favorite-services")
     Call<ArrayList<FavSolutionDTO>> getFavoriteServices(@Header("Authorization") String token,
                                                         @Path("email") String email);

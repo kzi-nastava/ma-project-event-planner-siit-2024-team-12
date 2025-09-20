@@ -79,7 +79,7 @@ public class ExplorePageActivity extends AppCompatActivity {
 
         final List<FavEventDTO>[] openEvents = new List[]{new ArrayList<>()};
 
-        Call<ArrayList<FavEventDTO>> call = ClientUtils.userService.getOpenEvents(auth);
+        Call<ArrayList<FavEventDTO>> call = ClientUtils.eventService.getOpenEvents(auth);
 
         call.enqueue(new Callback<ArrayList<FavEventDTO>>() {
             @Override

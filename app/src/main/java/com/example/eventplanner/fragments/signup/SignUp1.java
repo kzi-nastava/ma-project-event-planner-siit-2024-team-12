@@ -18,30 +18,61 @@ import com.example.eventplanner.viewmodels.SignUpViewModel;
 
 public class SignUp1 extends Fragment {
 
+    private static final String ARG_IS_UPGRADE = "is_upgrade";
+    private static final String ARG_EMAIL = "email";
+
+    private boolean isUpgrade = false;
+    private String userEmail;
+
+    public static SignUp1 newInstance(boolean isUpgrade, String email) {
+        SignUp1 fragment = new SignUp1();
+        Bundle args = new Bundle();
+        args.putBoolean(ARG_IS_UPGRADE, isUpgrade);
+        args.putString(ARG_EMAIL, email);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sign_up1, container, false);
+
+        if (getArguments() != null) {
+            isUpgrade = getArguments().getBoolean(ARG_IS_UPGRADE, false);
+            userEmail = getArguments().getString(ARG_EMAIL);
+        }
 
         SignUpViewModel viewModel = new ViewModelProvider(requireActivity()).get(SignUpViewModel.class);
 
         Button nextButton = view.findViewById(R.id.next1);
+        EditText emailField = view.findViewById(R.id.email);
+        EditText passwordField = view.findViewById(R.id.password);
+        EditText confirmationField = view.findViewById(R.id.passwordConfirmation);
+
+        if (isUpgrade) {
+            emailField.setText(userEmail);
+            emailField.setEnabled(false);
+            viewModel.updateSignUpAttributes("email", userEmail);
+            viewModel.setUpgradeMode(true);
+        } else {
+            emailField.setEnabled(true);
+        }
+
         nextButton.setOnClickListener(v -> {
             if (getActivity() instanceof SignUpActivity) {
-                EditText emailField = view.findViewById(R.id.email);
-                EditText passwordField = view.findViewById(R.id.password);
-                EditText confirmationField = view.findViewById(R.id.passwordConfirmation);
 
-                if (!ValidationUtils.isFieldValid(emailField, "Email is required!")) return;
-                if (!ValidationUtils.isEmailValid(emailField)) return;
+                if (!isUpgrade) {
+                    if (!ValidationUtils.isFieldValid(emailField, "Email is required!")) return;
+                    if (!ValidationUtils.isEmailValid(emailField)) return;
+                }
+
                 if (!ValidationUtils.isFieldValid(passwordField, "Password is required!")) return;
                 if (!ValidationUtils.isFieldValid(confirmationField, "Confirmation is required!")) return;
                 if (!ValidationUtils.isMatchingPassword(passwordField, confirmationField)) return;
 
-                // if valid, save input data
-                viewModel.updateSignUpAttributes("email", emailField.getText().toString());
+                if (!isUpgrade) { viewModel.updateSignUpAttributes("email", emailField.getText().toString()); }
                 viewModel.updateSignUpAttributes("password", passwordField.getText().toString());
-
 
                 ((SignUpActivity) getActivity()).nextPage();
             }
