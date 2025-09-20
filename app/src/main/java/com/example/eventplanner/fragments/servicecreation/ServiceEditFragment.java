@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
 import com.example.eventplanner.enumeration.ReservationType;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.viewmodels.ServiceEditViewModel;
 import com.google.android.material.imageview.ShapeableImageView;
 
@@ -40,6 +41,8 @@ public class ServiceEditFragment extends Fragment {
     private Spinner visibilitySpinner;
     private Spinner availabilitySpinner;
     private EditText descriptionEditText;
+
+    private EditText specsEditText;
 
     public ServiceEditFragment() {
         // Obavezan prazan konstruktor za fragmente
@@ -78,6 +81,7 @@ public class ServiceEditFragment extends Fragment {
         visibilitySpinner = view.findViewById(R.id.spinnerVisibility);
         availabilitySpinner = view.findViewById(R.id.spinnerAvailability);
         descriptionEditText = view.findViewById(R.id.editTextDescription);
+        specsEditText = view.findViewById(R.id.editTextSpecs);
 
         AppCompatButton editButton = view.findViewById(R.id.saveServiceEdit);
         AppCompatButton deleteButton = view.findViewById(R.id.saveServiceDelete);
@@ -127,14 +131,15 @@ public class ServiceEditFragment extends Fragment {
         // Popunjavanje EditText polja
         serviceNameEditText.setText(service.getName());
         servicePriceEditText.setText(String.format(Locale.getDefault(), "%.2f", service.getPrice()));
-        serviceDiscountEditText.setText(String.format(Locale.getDefault(), "%.2f", service.getDiscount()));
+        serviceDiscountEditText.setText(String.format(Locale.getDefault(), "%.0f", service.getDiscount()));
         descriptionEditText.setText(service.getDescription());
+        specsEditText.setText(service.getSpecifics());
 
         // Popunjavanje ImageView (uz pomoć Glide biblioteke)
         if (service.getImageUrl() != null && !service.getImageUrl().isEmpty()) {
             Glide.with(this)
-                    .load(service.getImageUrl())
-                    .placeholder(R.drawable.service1) // slika za učitavanje
+                    .load(ClientUtils.BASE_IMAGE_URL + service.getImageUrl())
+                    .placeholder(R.drawable.shopping_cart) // slika za učitavanje
                     .into(serviceImage);
         }
 

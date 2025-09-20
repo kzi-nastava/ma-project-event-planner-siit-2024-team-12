@@ -41,7 +41,6 @@
             android:layout_margin="1dp"
             android:contentDescription="@string/service_image_description"
             android:scaleType="centerCrop"
-            android:src="@drawable/service1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.073"

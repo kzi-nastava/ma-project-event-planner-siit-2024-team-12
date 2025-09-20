@@ -85,9 +85,9 @@
     <string name="service_name_hint">Service name</string>
     <string name="service_category_label">Category:</string>
     <string name="category_hint">Category</string>
-    <string name="service_price_label">Price:</string>
+    <string name="service_price_label">Price ($):</string>
     <string name="price_hint">0.00</string>
-    <string name="service_discount_label">Discount:</string>
+    <string name="service_discount_label">Discount (%):</string>
     <string name="discount_hint">0.00</string>
     <string name="service_time_type_label">Reservation type:</string>
     <string name="fixed_time">Fixed time</string>

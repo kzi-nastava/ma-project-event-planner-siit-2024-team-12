@@ -6,11 +6,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.eventplanner.activities.eventtype.EventTypeService;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.solutionservice.CreateServiceDTO;
 import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
 import com.example.eventplanner.utils.ClientUtils;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,9 +25,13 @@ public class ServiceEditViewModel extends AndroidViewModel {
 
     private final MutableLiveData<GetServiceDTO> serviceData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isSaving = new MutableLiveData<>(false);
+    private final MutableLiveData<ArrayList<GetEventTypeDTO>> eventTypes = new MutableLiveData<>();
 
     public ServiceEditViewModel(@NonNull Application application) {
         super(application);
+    }
+    public LiveData<ArrayList<GetEventTypeDTO>> getEventTypes() {
+        return eventTypes;
     }
 
     public MutableLiveData<GetServiceDTO> getServiceData() {
@@ -60,6 +69,34 @@ public class ServiceEditViewModel extends AndroidViewModel {
             public void onFailure(Call<GetServiceDTO> call, Throwable t) {
                 Log.e("ServiceEditViewModel", "Network error while fetching service: " + t.getMessage());
                 Toast.makeText(getApplication(), "Greška na mreži pri učitavanju usluge.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void fetchEventTypes() {
+//        EventTypeService eventTypeService = RetrofitClient.getClient(ClientUtils.SERVICE_API_PATH).create(EventTypeService.class);
+//        Call<ArrayList<GetEventTypeDTO>> call = eventTypeService.getAllActive("Bearer " + ClientUtils.token);
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            Log.e("ServiceEditViewModel", "Authentication token is missing.");
+            return;
+        }
+
+        ClientUtils.eventTypeService.getAllActive(auth).enqueue(new Callback<ArrayList<GetEventTypeDTO>>() {
+            @Override
+            public void onResponse(Call<ArrayList<GetEventTypeDTO>> call, Response<ArrayList<GetEventTypeDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    eventTypes.setValue(response.body());
+                } else {
+                    // Logika za neuspešan poziv, npr. postavljanje prazne liste
+                    eventTypes.setValue(new ArrayList<>());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<GetEventTypeDTO>> call, Throwable t) {
+                // Logika za grešku u pozivu, npr. prikaz Toast poruke
+                eventTypes.setValue(new ArrayList<>());
             }
         });
     }
