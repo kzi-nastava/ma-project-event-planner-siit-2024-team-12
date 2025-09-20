@@ -13,6 +13,7 @@ import com.example.eventplanner.dto.location.CreateLocationDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 // used for setting event attributes across different fragments
 public class EventCreationViewModel extends AndroidViewModel {
@@ -87,5 +88,29 @@ public class EventCreationViewModel extends AndroidViewModel {
     public boolean isLocationSet() { return isLocationSet; }
 
     public boolean isAgendaSet() { return isAgendaSet; }
+
+    public void setInvitedEmails(Set<String> emails) {
+        CreateEventDTO current = dto.getValue();
+        if (current != null) {
+            current.setInvitedEmails(emails);
+            dto.setValue(current);
+        }
+    }
+
+    public void setInvitationContent(String content) {
+        CreateEventDTO current = dto.getValue();
+        if (current != null) {
+            current.setInvitationContent(content);
+            dto.setValue(current);
+        }
+    }
+
+    public Set<String> getInvitedEmails() {
+        return dto.getValue() != null ? dto.getValue().getInvitedEmails() : null;
+    }
+
+    public String getInvitationContent() {
+        return dto.getValue() != null ? dto.getValue().getInvitationContent() : null;
+    }
 
 }
