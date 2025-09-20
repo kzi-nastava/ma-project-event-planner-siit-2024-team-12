@@ -14,12 +14,12 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.dto.notification.GetNotificationDTO;
 import com.example.eventplanner.enumeration.NotificationType;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder> {
 
-    // Ugniježđeno sučelje (listener) unutar adaptera
     @FunctionalInterface
     public interface NotificationClickListener {
         void onNotificationClick(GetNotificationDTO notification);
@@ -27,11 +27,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private final Context context;
     private final List<GetNotificationDTO> notificationList;
-    private final NotificationClickListener clickListener; // Dodana varijabla za listener
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    private final NotificationClickListener clickListener;
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
 
-    // Konstruktor sada prima i listener
+
     public NotificationAdapter(Context context, List<GetNotificationDTO> notificationList, NotificationClickListener clickListener) {
         this.context = context;
         this.notificationList = notificationList;
@@ -59,18 +60,28 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public static class NotificationViewHolder extends RecyclerView.ViewHolder {
         private final TextView contentTextView;
         private final TextView dateTextView;
+
+        private final TextView timeTextView;
         private final ImageView iconImageView;
 
         public NotificationViewHolder(@NonNull View itemView) {
             super(itemView);
             contentTextView = itemView.findViewById(R.id.notification_content);
             dateTextView = itemView.findViewById(R.id.notification_date);
+            timeTextView = itemView.findViewById(R.id.notification_time);
             iconImageView = itemView.findViewById(R.id.notification_icon);
         }
 
         public void bind(GetNotificationDTO notification, NotificationClickListener clickListener) {
             contentTextView.setText(notification.getContent());
-            dateTextView.setText(FORMATTER.format(notification.getCreatedAt()));
+            LocalDateTime createdAt = notification.getCreatedAt();
+            if (createdAt != null) {
+                dateTextView.setText(DATE_FORMATTER.format(createdAt));
+                timeTextView.setText(TIME_FORMATTER.format(createdAt));
+            } else {
+                dateTextView.setText("");
+                timeTextView.setText("");
+            }
             iconImageView.setImageResource(getIconForType(notification.getType()));
 
             if (notification.getEntityId() != null && notification.getEntityType() != null) {
