@@ -3,6 +3,8 @@ package com.example.eventplanner.activities.service;
 import com.example.eventplanner.dto.solutionservice.CreateServiceDTO;
 import com.example.eventplanner.dto.solutionservice.CreatedServiceDTO;
 import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
+import com.example.eventplanner.dto.solutionservice.UpdateServiceDTO;
+import com.example.eventplanner.dto.solutionservice.UpdatedServiceDTO;
 
 import java.util.List;
 
@@ -12,6 +14,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -25,6 +28,12 @@ public interface ServiceSolutionService {
     Call<GetServiceDTO> getService(
             @Header("Authorization") String auth,
             @Path("id") Long serviceId
+    );
+    @PUT("services/{id}")
+    Call<UpdatedServiceDTO> updateService(
+            @Header("Authorization") String auth,
+            @Path("id") Long serviceId,
+            @Body UpdateServiceDTO service
     );
 
 }

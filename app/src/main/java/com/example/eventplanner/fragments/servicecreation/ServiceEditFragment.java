@@ -44,6 +44,8 @@ public class ServiceEditFragment extends Fragment {
     private EditText serviceNameEditText;
     private EditText servicePriceEditText;
     private EditText serviceDiscountEditText;
+    private EditText serviceResDeadlineEditText;
+    private EditText serviceCancDeadlineEditText;
     private EditText serviceCategoryEditText;
     private Spinner reservationTypeSpinner;
     private Spinner visibilitySpinner;
@@ -94,6 +96,8 @@ public class ServiceEditFragment extends Fragment {
         serviceNameEditText = view.findViewById(R.id.editTextServiceName);
         servicePriceEditText = view.findViewById(R.id.editTextServicePrice);
         serviceDiscountEditText = view.findViewById(R.id.editTextServiceDiscount);
+        serviceResDeadlineEditText = view.findViewById(R.id.editTextResDeadline);
+        serviceCancDeadlineEditText = view.findViewById(R.id.editTextCancelDeadline);
         serviceCategoryEditText = view.findViewById(R.id.editTextServiceCategory);
         eventTypeSpinner = view.findViewById(R.id.spinnerEventType);
         reservationTypeSpinner = view.findViewById(R.id.spinnerReservationType);
@@ -116,17 +120,7 @@ public class ServiceEditFragment extends Fragment {
         View closeFormButton = view.findViewById(R.id.imageView5);
 
         editButton.setOnClickListener(v -> {
-//            List<GetEventTypeDTO> selectedEventTypes = eventTypeSpinner.getSelectedItems(allEventTypes);
-//            if(viewModel.getServiceData().getValue() != null) {
-//                viewModel.getServiceData().getValue().setEventTypes(selectedEventTypes); // Promeni setEventType u svom DTO-u ako je potrebno
-//            }
             updateServiceDataFromUI();
-
-            // viewModel.editService();
-//            Toast.makeText(getContext(), R.string.service_edited, Toast.LENGTH_SHORT).show();
-//            if (getActivity() != null) {
-//                getActivity().getSupportFragmentManager().popBackStack();
-//            }
         });
 
         deleteButton.setOnClickListener(v -> {
@@ -184,8 +178,10 @@ public class ServiceEditFragment extends Fragment {
     }
     private void populateFields(GetServiceDTO service) {
         serviceNameEditText.setText(service.getName());
-        servicePriceEditText.setText(String.format(Locale.getDefault(), "%.2f", service.getPrice()));
+        servicePriceEditText.setText(String.format(Locale.getDefault(), "%.0f", service.getPrice()));
         serviceDiscountEditText.setText(String.format(Locale.getDefault(), "%.0f", service.getDiscount()));
+        serviceResDeadlineEditText.setText(String.valueOf(service.getReservationDeadline()));
+        serviceCancDeadlineEditText.setText(String.valueOf(service.getCancellationDeadline()));
         descriptionEditText.setText(service.getDescription());
         specsEditText.setText(service.getSpecifics());
 
@@ -213,7 +209,6 @@ public class ServiceEditFragment extends Fragment {
             }
 
         } else {
-            // Podrazumevano stanje (npr. fiksno vrijeme)
             fixedTimeRadioButton.setChecked(true);
             fixedTimeLayout.setVisibility(View.VISIBLE);
             flexibleTimeLayout.setVisibility(View.GONE);
@@ -304,23 +299,120 @@ public class ServiceEditFragment extends Fragment {
     }
 
     private void updateServiceDataFromUI() {
+        if (serviceNameEditText.getText().toString().trim().isEmpty() ||
+                servicePriceEditText.getText().toString().trim().isEmpty() ||
+                serviceResDeadlineEditText.getText().toString().trim().isEmpty() ||
+                serviceCancDeadlineEditText.getText().toString().trim().isEmpty() ||
+                descriptionEditText.getText().toString().trim().isEmpty() ||
+                specsEditText.getText().toString().trim().isEmpty() ||
+                serviceDiscountEditText.getText().toString().trim().isEmpty()
+        ) {
+            Toast.makeText(getContext(), "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (eventTypeSpinner.getSelectedItems(allEventTypes).isEmpty()) {
+            Toast.makeText(getContext(), "Please choose at least one event type.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         UpdateServiceDTO updateServiceDTO = new UpdateServiceDTO();
+
+        try {
+            double price = Double.parseDouble(servicePriceEditText.getText().toString());
+            double discount = 0;
+            if (!serviceDiscountEditText.getText().toString().isEmpty()) {
+                discount = Double.parseDouble(serviceDiscountEditText.getText().toString());
+            }
+            int resDeadline = Integer.parseInt(serviceResDeadlineEditText.getText().toString());
+            int cancDeadline = Integer.parseInt(serviceCancDeadlineEditText.getText().toString());
+
+            if (discount < 0 || discount > 99) {
+                Toast.makeText(getContext(), "Discount must be between 0 and 99.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (resDeadline <= cancDeadline) {
+                Toast.makeText(getContext(), "Reservation deadline must be greater than cancellation deadline.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            updateServiceDTO.setPrice(price);
+            updateServiceDTO.setDiscount(discount);
+            updateServiceDTO.setReservationDeadline(resDeadline);
+            updateServiceDTO.setCancellationDeadline(cancDeadline);
+
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "Please enter valid numbers for price, discount, and deadlines.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (fixedTimeRadioButton.isChecked()) {
+            if(fixedTimeHoursEditText.getText().toString().isEmpty() || fixedTimeMinutesEditText.getText().toString().isEmpty()){
+                Toast.makeText(getContext(), "Please fill in hours and minutes.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try{
+                long hours = 0;
+                long minutes = 0;
+                if (!fixedTimeHoursEditText.getText().toString().isEmpty()) {
+                    hours = Long.parseLong(fixedTimeHoursEditText.getText().toString());
+                }
+                if (!fixedTimeMinutesEditText.getText().toString().isEmpty()) {
+                    minutes = Long.parseLong(fixedTimeMinutesEditText.getText().toString());
+                }
+                long totalMinutes = hours * 60 + minutes;
+
+                if (totalMinutes <= 0) {
+                    Toast.makeText(getContext(), "Fixed time must be greater than 0.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                updateServiceDTO.setFixedTime(Duration.ofMinutes(totalMinutes));
+                updateServiceDTO.setMinTime(Duration.ofHours(0));
+                updateServiceDTO.setMaxTime(Duration.ofHours(0));
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), "Please enter valid numbers for fixed time.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+        } else if (flexibleTimeRadioButton.isChecked()) {
+            if(flexibleTimeFromEditText.getText().toString().isEmpty() || flexibleTimeToEditText.getText().toString().isEmpty()){
+                Toast.makeText(getContext(), "Please fill in minimum and maximum time.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                long minHours = 0;
+                long maxHours = 0;
+                if (!flexibleTimeFromEditText.getText().toString().isEmpty()) {
+                    minHours = Long.parseLong(flexibleTimeFromEditText.getText().toString());
+                }
+                if (!flexibleTimeToEditText.getText().toString().isEmpty()) {
+                    maxHours = Long.parseLong(flexibleTimeToEditText.getText().toString());
+                }
+
+                if (minHours <= 0 || maxHours <= 0) {
+                    Toast.makeText(getContext(), "Min and max time must be greater than 0.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (minHours >= maxHours) {
+                    Toast.makeText(getContext(), "Min time must be less than max time.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                updateServiceDTO.setMinTime(Duration.ofHours(minHours));
+                updateServiceDTO.setMaxTime(Duration.ofHours(maxHours));
+                updateServiceDTO.setFixedTime(Duration.ofMinutes(0));
+
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), "Please enter valid numbers for flexible time.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
 
         updateServiceDTO.setName(serviceNameEditText.getText().toString());
         updateServiceDTO.setDescription(descriptionEditText.getText().toString());
         updateServiceDTO.setSpecifics(specsEditText.getText().toString());
-
-        try {
-            if (!servicePriceEditText.getText().toString().isEmpty()) {
-                updateServiceDTO.setPrice(Double.parseDouble(servicePriceEditText.getText().toString()));
-            }
-            if (!serviceDiscountEditText.getText().toString().isEmpty()) {
-                updateServiceDTO.setDiscount(Double.parseDouble(serviceDiscountEditText.getText().toString()));
-            }
-        } catch (NumberFormatException e) {
-            Toast.makeText(getContext(), "Please enter a valid number for price and discount.", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         updateServiceDTO.setVisible(visibilitySpinner.getSelectedItemPosition() == 0);
         updateServiceDTO.setAvailable(availabilitySpinner.getSelectedItemPosition() == 0);
@@ -334,41 +426,24 @@ public class ServiceEditFragment extends Fragment {
         }
         updateServiceDTO.setEventTypeIds(eventTypeIds);
 
-        if (fixedTimeRadioButton.isChecked()) {
-            long hours = 0;
-            long minutes = 0;
-            if (!fixedTimeHoursEditText.getText().toString().isEmpty()) {
-                hours = Long.parseLong(fixedTimeHoursEditText.getText().toString());
-            }
-            if (!fixedTimeMinutesEditText.getText().toString().isEmpty()) {
-                minutes = Long.parseLong(fixedTimeMinutesEditText.getText().toString());
-            }
-            long totalMinutes = hours * 60 + minutes;
-
-            updateServiceDTO.setFixedTime(Duration.ofMinutes(totalMinutes));
-            updateServiceDTO.setMinTime(Duration.ofHours(0));
-            updateServiceDTO.setMaxTime(Duration.ofHours(0));
-        } else if (flexibleTimeRadioButton.isChecked()) {
-            long minHours = 0;
-            long maxHours = 0;
-            if (!flexibleTimeFromEditText.getText().toString().isEmpty()) {
-                minHours = Long.parseLong(flexibleTimeFromEditText.getText().toString());
-            }
-            if (!flexibleTimeToEditText.getText().toString().isEmpty()) {
-                maxHours = Long.parseLong(flexibleTimeToEditText.getText().toString());
-            }
-
-            updateServiceDTO.setMinTime(Duration.ofHours(minHours));
-            updateServiceDTO.setMaxTime(Duration.ofHours(maxHours));
-            updateServiceDTO.setFixedTime(Duration.ofMinutes(0));
-        }
-
         GetServiceDTO currentService = viewModel.getServiceData().getValue();
         if (currentService != null) {
             updateServiceDTO.setImageUrl(currentService.getImageUrl());
             updateServiceDTO.setCategory(currentService.getCategory());
         }
 
-        // viewModel.editService(updateServiceDTO);
+         viewModel.updateService(currentService.getId(), updateServiceDTO, () -> {
+                     Toast.makeText(getContext(), R.string.service_edited, Toast.LENGTH_SHORT).show();
+                     if (getActivity() != null) {
+                         getActivity().getSupportFragmentManager().popBackStack();
+                     }
+                 },
+                 () -> {
+                     Toast.makeText(getContext(), "Failed to update service.", Toast.LENGTH_SHORT).show();
+                     if (getActivity() != null) {
+                         getActivity().getSupportFragmentManager().popBackStack();
+                     }
+                 });
+
     }
 }

@@ -13,6 +13,8 @@ import com.example.eventplanner.activities.eventtype.EventTypeService;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.solutionservice.CreateServiceDTO;
 import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
+import com.example.eventplanner.dto.solutionservice.UpdateServiceDTO;
+import com.example.eventplanner.dto.solutionservice.UpdatedServiceDTO;
 import com.example.eventplanner.utils.ClientUtils;
 
 import java.util.ArrayList;
@@ -97,43 +99,39 @@ public class ServiceEditViewModel extends AndroidViewModel {
         });
     }
 
-    /**
-     * Ažurira postojeću uslugu na serveru.
-     * @param updatedServiceDto DTO sa ažuriranim podacima.
-     */
-//    public void updateService(CreateServiceDTO updatedServiceDto, Runnable onSuccess, Runnable onFailure) {
-//        isSaving.setValue(true);
-//        String auth = ClientUtils.getAuthorization(getApplication());
-//        if (auth.isEmpty()) {
-//            Log.e("ServiceEditViewModel", "Authentication token is missing.");
-//            isSaving.setValue(false);
-//            return;
-//        }
-//
-//        ClientUtils.serviceSolutionService.updateService(auth, updatedServiceDto).enqueue(new Callback<CreateServiceDTO>() {
-//            @Override
-//            public void onResponse(Call<CreateServiceDTO> call, Response<CreateServiceDTO> response) {
-//                isSaving.setValue(false);
-//                if (response.isSuccessful()) {
-//                    Log.d("ServiceEditViewModel", "Service updated successfully.");
-//                    Toast.makeText(getApplication(), "Usluga uspešno ažurirana.", Toast.LENGTH_SHORT).show();
-//                    if (onSuccess != null) onSuccess.run();
-//                } else {
-//                    Log.e("ServiceEditViewModel", "Failed to update service. Code: " + response.code());
-//                    Toast.makeText(getApplication(), "Greška pri ažuriranju usluge.", Toast.LENGTH_SHORT).show();
-//                    if (onFailure != null) onFailure.run();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<CreateServiceDTO> call, Throwable t) {
-//                isSaving.setValue(false);
-//                Log.e("ServiceEditViewModel", "Network error while updating service: " + t.getMessage());
-//                Toast.makeText(getApplication(), "Greška na mreži pri ažuriranju.", Toast.LENGTH_SHORT).show();
-//                if (onFailure != null) onFailure.run();
-//            }
-//        });
-//    }
+    public void updateService(Long serviceId, UpdateServiceDTO updateServiceDto, Runnable onSuccess, Runnable onFailure) {
+        isSaving.setValue(true);
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            Log.e("ServiceEditViewModel", "Authentication token is missing.");
+            isSaving.setValue(false);
+            return;
+        }
+
+        ClientUtils.serviceSolutionService.updateService(auth, serviceId, updateServiceDto).enqueue(new Callback<UpdatedServiceDTO>() {
+            @Override
+            public void onResponse(Call<UpdatedServiceDTO> call, Response<UpdatedServiceDTO> response) {
+                isSaving.setValue(false);
+                if (response.isSuccessful()) {
+                    Log.d("ServiceEditViewModel", "Service updated successfully.");
+                    Toast.makeText(getApplication(), "Usluga uspešno ažurirana.", Toast.LENGTH_SHORT).show();
+                    if (onSuccess != null) onSuccess.run();
+                } else {
+                    Log.e("ServiceEditViewModel", "Failed to update service. Code: " + response.code());
+                    Toast.makeText(getApplication(), "Greška pri ažuriranju usluge.", Toast.LENGTH_SHORT).show();
+                    if (onFailure != null) onFailure.run();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdatedServiceDTO> call, Throwable t) {
+                isSaving.setValue(false);
+                Log.e("ServiceEditViewModel", "Network error while updating service: " + t.getMessage());
+                Toast.makeText(getApplication(), "Greška na mreži pri ažuriranju.", Toast.LENGTH_SHORT).show();
+                if (onFailure != null) onFailure.run();
+            }
+        });
+    }
 //
 //    /**
 //     * Briše uslugu sa servera.
