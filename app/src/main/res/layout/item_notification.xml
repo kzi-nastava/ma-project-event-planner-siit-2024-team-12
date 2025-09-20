@@ -9,24 +9,35 @@
     android:layout_marginBottom="12dp"
     android:background="@drawable/border_rounded_corners"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:elevation="4dp">
 
     <ImageView
         android:id="@+id/notification_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:src="@drawable/ic_notification_generic"
         android:contentDescription="@string/notification_icon" />
 
+    <View
+        android:id="@+id/divider_line"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_toEndOf="@id/notification_icon"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/dark_gray"
+        android:layout_alignTop="@id/notification_content_container"
+        android:layout_alignBottom="@id/notification_content_container"/>
+
     <LinearLayout
         android:id="@+id/notification_content_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/notification_icon"
+        android:layout_toEndOf="@id/divider_line"
         android:layout_centerVertical="true"
-        android:layout_marginStart="16dp"
         android:layout_toStartOf="@id/notification_info_container"
         android:orientation="vertical">
 
