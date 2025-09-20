@@ -1,36 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/notifications_title"
         android:layout_width="match_parent"
-        android:layout_height="110dp"
-        android:paddingBottom="16dp">
+        android:layout_height="wrap_content"
+        android:text="@string/your_notifications"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="16dp" />
 
-        <TextView
-            android:id="@+id/notifications_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:drawableStart="@drawable/ic_notifications"
-            android:drawablePadding="8dp"
-            android:text="@string/your_notifications"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
 
         <ImageButton
-            android:id="@+id/mute_button"
+            android:id="@+id/mute_toggle_button"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/mute_notifications"
-            android:src="@drawable/ic_mute_notifications" />
+            android:src="@drawable/ic_notifications" />
 
-    </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:id="@+id/mute_status_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mute_notifications"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/mute_end_date_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textStyle="italic"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mute_options_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/mute_options_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:text="@string/mute_for"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/mute_15min_button"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/mute_button"
+                android:text="15 min" />
+
+            <Button
+                android:id="@+id/mute_1h_button"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/mute_button"
+                android:text="1 h" />
+
+            <Button
+                android:id="@+id/mute_4h_button"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/mute_button"
+                android:text="4 h" />
+
+            <Button
+                android:id="@+id/mute_indefinitely_button"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/mute_button"
+                android:text="∞" />
+
+        </LinearLayout>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notifications_recycler_view"
@@ -45,7 +140,7 @@
         android:gravity="center"
         android:padding="8dp">
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <ImageButton
             android:id="@+id/prevPageButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -53,7 +148,7 @@
             android:padding="8dp"
             android:contentDescription="@string/previous"
             android:src="@drawable/ic_chevron_left"
-            android:tint="@color/black"/>
+            app:tint="@color/black"/>
 
         <Space
             android:layout_width="16dp"
@@ -72,7 +167,7 @@
             android:layout_width="16dp"
             android:layout_height="wrap_content"/>
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <ImageButton
             android:id="@+id/nextPageButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -80,7 +175,7 @@
             android:padding="8dp"
             android:contentDescription="@string/next"
             android:src="@drawable/ic_chevron_right"
-            android:tint="@color/black"/>
+            app:tint="@color/black"/>
     </LinearLayout>
 
 </LinearLayout>
