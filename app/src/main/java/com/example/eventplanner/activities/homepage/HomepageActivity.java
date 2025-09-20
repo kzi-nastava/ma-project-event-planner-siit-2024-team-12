@@ -41,6 +41,7 @@ import com.example.eventplanner.fragments.homepage.TopEventsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
 import com.example.eventplanner.fragments.homepage.TopSolutionsFragment;
 import com.example.eventplanner.fragments.homepage.SolutionListFragment;
+import com.example.eventplanner.fragments.notification.NotificationFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
 import com.google.android.material.navigation.NavigationView;
 
@@ -191,6 +192,15 @@ public class HomepageActivity extends AppCompatActivity {
                 startActivity(new Intent(this, CalendarActivity.class));
             } else if (id == R.id.nav_explore_events) {
                 startActivity(new Intent(this, ExplorePageActivity.class));
+            } else if (id == R.id.nav_notifications) {
+                findViewById(R.id.homepage_scroll_view).setVisibility(View.GONE);
+                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
+                findViewById(R.id.notifications_container).setVisibility(View.VISIBLE);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.notifications_container, new NotificationFragment())
+                        .addToBackStack(null)
+                        .commit();
             } else if (id == R.id.nav_home) {
                 getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 findViewById(R.id.homepage_scroll_view).setVisibility(View.VISIBLE);
@@ -258,6 +268,15 @@ public class HomepageActivity extends AppCompatActivity {
                 startActivity(new Intent(this, FavoriteServicesActivity.class));
             } else if (id == R.id.nav_fav_products) {
                 startActivity(new Intent(this, FavoriteProductsActivity.class));
+            } else if (id == R.id.nav_notifications) {
+                findViewById(R.id.homepage_scroll_view).setVisibility(View.GONE);
+                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
+                findViewById(R.id.notifications_container).setVisibility(View.VISIBLE);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.notifications_container, new NotificationFragment())
+                        .addToBackStack(null)
+                        .commit();
             } else if (id == R.id.nav_log_out) {
                 logOut();
             }
@@ -304,6 +323,15 @@ public class HomepageActivity extends AppCompatActivity {
                 startActivity(new Intent(this, CategoriesTableActivity.class));
             } else if (id == R.id.nav_event_types) {
                 startActivity(new Intent(this, EventTypeTableActivity.class));
+            } else if (id == R.id.nav_notifications) {
+                findViewById(R.id.homepage_scroll_view).setVisibility(View.GONE);
+                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
+                findViewById(R.id.notifications_container).setVisibility(View.VISIBLE);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.notifications_container, new NotificationFragment())
+                        .addToBackStack(null)
+                        .commit();
             } else if (id == R.id.nav_log_out) {
                 logOut();
             }
@@ -334,6 +362,15 @@ public class HomepageActivity extends AppCompatActivity {
                 startActivity(new Intent(this, AttendanceChart.class));
             } else if (id == R.id.nav_ratings_chart) {
                 startActivity(new Intent(this, RatingsChart.class));
+            } else if (id == R.id.nav_notifications) {
+                findViewById(R.id.homepage_scroll_view).setVisibility(View.GONE);
+                findViewById(R.id.invited_events_container).setVisibility(View.GONE);
+                findViewById(R.id.notifications_container).setVisibility(View.VISIBLE);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.notifications_container, new NotificationFragment())
+                        .addToBackStack(null)
+                        .commit();
             } else if (id == R.id.nav_log_out) {
                 logOut();
             }

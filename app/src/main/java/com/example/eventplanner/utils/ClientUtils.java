@@ -18,12 +18,15 @@ import com.example.eventplanner.activities.profile.QuickRegisterService;
 import com.example.eventplanner.activities.profile.UserService;
 import com.example.eventplanner.activities.solutioncategory.SolutionCategoryService;
 import com.example.eventplanner.adapters.datetime.LocalDateAdapter;
+import com.example.eventplanner.adapters.datetime.LocalDateTimeAdapter;
 import com.example.eventplanner.adapters.datetime.LocalTimeAdapter;
 import com.example.eventplanner.fragments.gallery.GalleryService;
+import com.example.eventplanner.fragments.notification.NotificationService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import retrofit2.Retrofit;
@@ -33,10 +36,11 @@ public class ClientUtils {
 
     public static final String SERVICE_API_PATH = "http://" + BuildConfig.IP_ADDR + ":8080/api/";
 
-    // add adapters for proper LocalDate and LocalTime parsing
+    // add adapters for proper LocalDate, LocalTime and LocalDateTime parsing
     static Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
             .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
 
     public static Retrofit retrofit = new Retrofit.Builder()
@@ -82,5 +86,7 @@ public class ClientUtils {
     public static HomepageService homepageService = retrofit.create(HomepageService.class);
 
     public static QuickRegisterService quickRegisterService = retrofit.create(QuickRegisterService.class);
+
+    public static NotificationService notificationService = retrofit.create(NotificationService.class);
 
 }
