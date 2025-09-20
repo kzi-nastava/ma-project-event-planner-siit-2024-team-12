@@ -20,6 +20,7 @@ import com.example.eventplanner.activities.solutioncategory.SolutionCategoryServ
 import com.example.eventplanner.adapters.datetime.LocalDateAdapter;
 import com.example.eventplanner.adapters.datetime.LocalDateTimeAdapter;
 import com.example.eventplanner.adapters.datetime.LocalTimeAdapter;
+import com.example.eventplanner.fragments.comment.CommentService;
 import com.example.eventplanner.fragments.gallery.GalleryService;
 import com.example.eventplanner.fragments.notification.NotificationService;
 import com.google.gson.Gson;
@@ -88,5 +89,7 @@ public class ClientUtils {
     public static QuickRegisterService quickRegisterService = retrofit.create(QuickRegisterService.class);
 
     public static NotificationService notificationService = retrofit.create(NotificationService.class);
+
+    public static CommentService commentService = retrofit.create(CommentService.class);
 
 }
