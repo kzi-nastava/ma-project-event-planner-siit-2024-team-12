@@ -1,18 +1,25 @@
 package com.example.eventplanner.fragments.servicecreation;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
@@ -26,6 +33,7 @@ import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
 import com.example.eventplanner.dto.solutionservice.UpdateServiceDTO;
 import com.example.eventplanner.enumeration.ReservationType;
 import com.example.eventplanner.utils.ClientUtils;
+import com.example.eventplanner.utils.ImageHelper;
 import com.example.eventplanner.utils.MultiSelectSpinner;
 import com.example.eventplanner.viewmodels.ServiceEditViewModel;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -64,6 +72,8 @@ public class ServiceEditFragment extends Fragment {
     private EditText fixedTimeMinutesEditText;
     private EditText flexibleTimeFromEditText;
     private EditText flexibleTimeToEditText;
+    private ImageButton changeImageButton;
+    private Uri newImageUri;
 
     public ServiceEditFragment() {
         // Obavezan prazan konstruktor za fragmente
@@ -115,12 +125,18 @@ public class ServiceEditFragment extends Fragment {
         flexibleTimeFromEditText = view.findViewById(R.id.editTextFlexibleFrom);
         flexibleTimeToEditText = view.findViewById(R.id.editTextFlexibleTo);
 
+        changeImageButton = view.findViewById(R.id.changeImageButton);
+
         AppCompatButton editButton = view.findViewById(R.id.saveServiceEdit);
         AppCompatButton deleteButton = view.findViewById(R.id.saveServiceDelete);
         View closeFormButton = view.findViewById(R.id.imageView5);
 
         editButton.setOnClickListener(v -> {
             updateServiceDataFromUI();
+        });
+        changeImageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            pickImageLauncher.launch(intent);
         });
 
         deleteButton.setOnClickListener(v -> {
@@ -183,6 +199,17 @@ public class ServiceEditFragment extends Fragment {
 
         viewModel.fetchEventTypes();
     }
+
+    private final ActivityResultLauncher<Intent> pickImageLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Uri selectedImageUri = result.getData().getData();
+                    if (viewModel != null) {
+                        viewModel.setNewImageUri(selectedImageUri);
+                    }
+                    serviceImage.setImageURI(selectedImageUri);
+                }
+            });
     private void populateFields(GetServiceDTO service) {
         serviceNameEditText.setText(service.getName());
         servicePriceEditText.setText(String.format(Locale.getDefault(), "%.0f", service.getPrice()));
@@ -440,17 +467,53 @@ public class ServiceEditFragment extends Fragment {
         }
 
          viewModel.updateService(currentService.getId(), updateServiceDTO, () -> {
-                     Toast.makeText(getContext(), R.string.service_edited, Toast.LENGTH_SHORT).show();
-                     if (getActivity() != null) {
-                         getActivity().getSupportFragmentManager().popBackStack();
+//                     Toast.makeText(getContext(), R.string.service_edited, Toast.LENGTH_SHORT).show();
+                     if(viewModel.getNewImageUri()!=null &&  currentService.getImageUrl() != null && !currentService.getImageUrl().trim().isEmpty()){
+                         viewModel.deleteImage(currentService.getId(), currentService.getImageUrl(), () -> {
+
+                                     ImageHelper.uploadMultipleImages(getContext(), List.of(viewModel.getNewImageUri()), "service",
+                                             currentService.getId(), "true",
+                                             () -> {
+                                                 Toast.makeText(getContext(), R.string.service_edited, Toast.LENGTH_SHORT).show();
+                                             },
+                                             () -> {
+                                                 Toast.makeText(getContext(), "Failed to update service image.", Toast.LENGTH_SHORT).show();
+                                             });
+//                        Toast.makeText(getContext(), "Service image edited successfully!", Toast.LENGTH_SHORT).show();
+//                        if (getActivity() != null) {
+//                            getActivity().getSupportFragmentManager().popBackStack();
+//                        }
+                                 },
+                                 () -> {
+                                     Toast.makeText(getContext(), "Failed to update service image.", Toast.LENGTH_SHORT).show();
+//                        if (getActivity() != null) {
+//                            getActivity().getSupportFragmentManager().popBackStack();
+//                        }
+                                 });
+                     }else if(viewModel.getNewImageUri()!=null && (currentService.getImageUrl() == null ||  currentService.getImageUrl().trim().isEmpty())){
+                         ImageHelper.uploadMultipleImages(getContext(), List.of(viewModel.getNewImageUri()), "service",
+                                 currentService.getId(), "true",
+                                 () -> {
+                                     Toast.makeText(getContext(), R.string.service_edited, Toast.LENGTH_SHORT).show();
+                                 },
+                                 () -> {
+                                     Toast.makeText(getContext(), "Failed to update service image.", Toast.LENGTH_SHORT).show();
+                                 });
+
+                     }else{
+                         Toast.makeText(getContext(), R.string.service_edited, Toast.LENGTH_SHORT).show();
                      }
+//                     if (getActivity() != null) {
+//                         getActivity().getSupportFragmentManager().popBackStack();
+//                     }
                  },
                  () -> {
                      Toast.makeText(getContext(), "Failed to update service.", Toast.LENGTH_SHORT).show();
-                     if (getActivity() != null) {
-                         getActivity().getSupportFragmentManager().popBackStack();
-                     }
+//                     if (getActivity() != null) {
+//                         getActivity().getSupportFragmentManager().popBackStack();
+//                     }
                  });
+
 
     }
 }

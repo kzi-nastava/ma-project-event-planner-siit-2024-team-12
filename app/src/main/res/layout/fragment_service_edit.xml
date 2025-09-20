@@ -48,6 +48,18 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.095"
             app:shapeAppearanceOverlay="@style/roundedImageView" />
+        <ImageButton
+            android:id="@+id/changeImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add_image"
+            android:contentDescription="@string/change_image_description"
+            app:layout_constraintBottom_toBottomOf="@id/shapeableImageView"
+            app:layout_constraintEnd_toEndOf="@id/shapeableImageView"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@id/shapeableImageView"
+            app:layout_constraintTop_toTopOf="@id/shapeableImageView"
+            app:layout_constraintVertical_bias="1.0" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/saveServiceDelete"

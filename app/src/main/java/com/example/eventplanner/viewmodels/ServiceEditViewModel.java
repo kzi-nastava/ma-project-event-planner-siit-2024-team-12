@@ -1,6 +1,7 @@
 package com.example.eventplanner.viewmodels;
 
 import android.app.Application;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ public class ServiceEditViewModel extends AndroidViewModel {
     private final MutableLiveData<GetServiceDTO> serviceData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isSaving = new MutableLiveData<>(false);
     private final MutableLiveData<ArrayList<GetEventTypeDTO>> eventTypes = new MutableLiveData<>();
+    private Uri newImageUri;
 
     public ServiceEditViewModel(@NonNull Application application) {
         super(application);
@@ -39,6 +41,13 @@ public class ServiceEditViewModel extends AndroidViewModel {
 
     public MutableLiveData<GetServiceDTO> getServiceData() {
         return serviceData;
+    }
+    public void setNewImageUri(Uri uri) {
+        this.newImageUri = uri;
+    }
+
+    public Uri getNewImageUri() {
+        return newImageUri;
     }
 
     public MutableLiveData<Boolean> getIsSaving() {
@@ -157,6 +166,38 @@ public class ServiceEditViewModel extends AndroidViewModel {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 isSaving.setValue(false);
                 Log.e("ServiceEditViewModel", "Network error while deleting service: " + t.getMessage());
+                if (onFailure != null) onFailure.run();
+            }
+        });
+    }
+    public void deleteImage(Long entityId, String imageUrl, Runnable onSuccess, Runnable onFailure) {
+        String auth = ClientUtils.getAuthorization(getApplication()); // Ovde se dobija token
+        if (auth.isEmpty()) {
+            Log.e("ViewModel", "Authentication token is missing.");
+            if (onFailure != null) onFailure.run();
+            return;
+        }
+
+        ClientUtils.galleryService.deleteImage(auth, "service", entityId, imageUrl).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Log.d("ViewModel", "Image deleted successfully.");
+                    if (onSuccess != null) onSuccess.run();
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "No error body";
+                        Log.e("ViewModel", "Failed to delete image. Code: " + response.code() + ", Error: " + errorBody);
+                    } catch (Exception e) {
+                        Log.e("ViewModel", "Failed to delete image, unable to parse error body.", e);
+                    }
+                    if (onFailure != null) onFailure.run();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("ViewModel", "Network error while deleting image: " + t.getMessage());
                 if (onFailure != null) onFailure.run();
             }
         });
