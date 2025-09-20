@@ -22,12 +22,12 @@ public class PageResponse<T> {
 
     public void setTotalElements(int totalElements) { this.totalElements = totalElements; }
 
-    private int getSize() { return size; }
+    public int getSize() { return size; }
 
-    private void setSize(int size) { this.size = size; }
+    public void setSize(int size) { this.size = size; }
 
-    private int getNumber() { return number; }
+    public int getNumber() { return number; }
 
-    private void setNumber(int number) { this.number = number; }
+    public void setNumber(int number) { this.number = number; }
 }
 

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,21 +33,35 @@ public class ManageCommentsFragment extends Fragment implements ManageCommentsAd
     private ManageCommentsAdapter adapter;
     private List<GetCommentDTO> pendingComments = new ArrayList<>();
 
+    private ImageButton prevPageButton;
+    private ImageButton nextPageButton;
+    private TextView pageNumber;
+
+    private int currentPage = 0;
+    private int totalPages = 0;
+    private int pageSize = 5;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_manage_comments, container, false);
-        rvPendingComments = view.findViewById(R.id.rvPendingComments);
-        return view;
+        return inflater.inflate(R.layout.fragment_manage_comments, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        rvPendingComments = view.findViewById(R.id.rvPendingComments);
+        prevPageButton = view.findViewById(R.id.prevPageButton);
+        nextPageButton = view.findViewById(R.id.nextPageButton);
+        pageNumber = view.findViewById(R.id.pageNumber);
+
         adapter = new ManageCommentsAdapter(pendingComments, this);
         rvPendingComments.setLayoutManager(new LinearLayoutManager(getContext()));
         rvPendingComments.setAdapter(adapter);
+
+        prevPageButton.setOnClickListener(v -> navigateToPreviousPage());
+        nextPageButton.setOnClickListener(v -> navigateToNextPage());
 
         fetchPendingComments();
     }
@@ -53,13 +69,18 @@ public class ManageCommentsFragment extends Fragment implements ManageCommentsAd
     private void fetchPendingComments() {
         String authHeader = ClientUtils.getAuthorization(getContext());
 
-        ClientUtils.commentService.getPendingComments(authHeader, 0, 20).enqueue(new Callback<PageResponse<GetCommentDTO>>() {
+        ClientUtils.commentService.getPendingComments(authHeader, currentPage, 4).enqueue(new Callback<PageResponse<GetCommentDTO>>() {
             @Override
             public void onResponse(Call<PageResponse<GetCommentDTO>> call, Response<PageResponse<GetCommentDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    PageResponse<GetCommentDTO> pageResponse = response.body();
                     pendingComments.clear();
                     pendingComments.addAll(response.body().getContent());
                     adapter.setCommentList(pendingComments);
+
+                    currentPage = pageResponse.getNumber();
+                    totalPages = pageResponse.getTotalPages();
+                    updatePaginationUI();
                 } else {
                     Toast.makeText(getContext(), "Failed to fetch comments", Toast.LENGTH_SHORT).show();
                 }
@@ -70,6 +91,30 @@ public class ManageCommentsFragment extends Fragment implements ManageCommentsAd
                 Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void updatePaginationUI() {
+        pageNumber.setText(String.format("%d/%d", currentPage + 1, totalPages));
+
+        prevPageButton.setEnabled(currentPage > 0);
+        nextPageButton.setEnabled(currentPage < totalPages - 1);
+
+        prevPageButton.setColorFilter(currentPage > 0 ? getResources().getColor(R.color.black) : getResources().getColor(R.color.dark_gray));
+        nextPageButton.setColorFilter(currentPage < totalPages - 1 ? getResources().getColor(R.color.black) : getResources().getColor(R.color.dark_gray));
+    }
+
+    private void navigateToNextPage() {
+        if (currentPage < totalPages - 1) {
+            currentPage++;
+            fetchPendingComments();
+        }
+    }
+
+    private void navigateToPreviousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            fetchPendingComments();
+        }
     }
 
     @Override
