@@ -1,5 +1,6 @@
 package com.example.eventplanner.fragments.notification;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.event.EventDetailsActivity;
+import com.example.eventplanner.activities.product.ProductDetailsActivity;
 import com.example.eventplanner.adapters.notification.NotificationAdapter;
 import com.example.eventplanner.dto.notification.GetNotificationDTO;
 import com.example.eventplanner.utils.ClientUtils;
@@ -50,7 +53,30 @@ public class NotificationFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.notifications_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new NotificationAdapter(getContext(), currentNotifications);
+        adapter = new NotificationAdapter(getContext(), currentNotifications, notification -> {
+            Intent intent;
+            switch (notification.getEntityType()) {
+                case "event":
+                    intent = new Intent(getContext(), EventDetailsActivity.class);
+                    intent.putExtra("id", notification.getEntityId());
+                    startActivity(intent);
+                    break;
+                case "product":
+                    intent = new Intent(getContext(), ProductDetailsActivity.class);
+                    intent.putExtra("id", notification.getEntityId());
+                    startActivity(intent);
+                    break;
+                case "SERVICE_RESERVATION":
+                    Toast.makeText(getContext(), "Service reservation details not implemented.", Toast.LENGTH_SHORT).show();
+                    break;
+                case "SERVICE":
+                    Toast.makeText(getContext(), "Service details not implemented.", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Toast.makeText(getContext(), "Unknown notification type.", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         prevPageButton = view.findViewById(R.id.prevPageButton);
