@@ -35,6 +35,7 @@ import com.example.eventplanner.activities.product.ProvidedProductsActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
+import com.example.eventplanner.fragments.comment.ManageCommentsFragment;
 import com.example.eventplanner.fragments.event.InvitedEventsListFragment;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.TopEventsFragment;
@@ -301,7 +302,10 @@ public class HomepageActivity extends AppCompatActivity {
                 startActivity(new Intent(this, RatingsChart.class));
             } else if (id == R.id.nav_notifications) {
                 navigateToFragment(R.id.notifications_container, new NotificationFragment());
-            } else if (id == R.id.nav_log_out) {
+            } else if (id == R.id.nav_manage_comments) {
+                navigateToFragment(R.id.notifications_container, new ManageCommentsFragment());
+            }
+            else if (id == R.id.nav_log_out) {
                 logOut();
             }
             drawerLayout.closeDrawers();

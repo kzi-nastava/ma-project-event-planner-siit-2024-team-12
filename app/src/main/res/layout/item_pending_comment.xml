@@ -14,7 +14,7 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/tvUserEmail"
+            android:id="@+id/userEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
@@ -23,7 +23,7 @@
             android:text="User email" />
 
         <TextView
-            android:id="@+id/tvTimestamp"
+            android:id="@+id/timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -32,10 +32,10 @@
             android:text="DD.MM.YYYY HH:mm" />
 
         <TextView
-            android:id="@+id/tvContent"
+            android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvUserEmail"
+            android:layout_below="@id/userEmail"
             android:layout_marginTop="8dp"
             android:textSize="16sp"
             android:textColor="@android:color/black"
@@ -45,14 +45,14 @@
             android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvContent"
+            android:layout_below="@id/content"
             android:layout_marginTop="8dp"
             android:textSize="14sp"
             android:textColor="@android:color/darker_gray"
             android:text="Status: PENDING" />
 
         <TextView
-            android:id="@+id/tvViewDetails"
+            android:id="@+id/viewDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvStatus"
@@ -67,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/tvContent"
+            android:layout_below="@id/content"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="8dp">
 
@@ -76,6 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Approve"
+                android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:background="@drawable/rounded_button"
                 android:layout_marginEnd="8dp"/>
@@ -85,6 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
+                android:textAllCaps="false"
                 android:background="@drawable/rounded_button"
                 android:text="Delete"/>
 

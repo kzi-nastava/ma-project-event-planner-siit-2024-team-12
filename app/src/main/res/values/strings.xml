@@ -372,5 +372,7 @@
     <string name="mute_for">Mute for:</string>
     <string name="unmute_notifications">Unmute Notifications</string>
     <string name="unmute_indefinitely">Muted until: Until you turn it back on</string>
+    <string name="manage_comments">Manage comments</string>
+    <string name="manage_reports">Manage reports</string>
 
 </resources>
