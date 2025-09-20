@@ -1,5 +1,6 @@
 package com.example.eventplanner.fragments.comment;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -72,7 +73,7 @@ public class ManageCommentsFragment extends Fragment implements ManageCommentsAd
     private void fetchPendingComments() {
         String authHeader = ClientUtils.getAuthorization(getContext());
 
-        ClientUtils.commentService.getPendingComments(authHeader, currentPage, 4).enqueue(new Callback<PageResponse<GetCommentDTO>>() {
+        ClientUtils.commentService.getPendingComments(authHeader, currentPage, 5).enqueue(new Callback<PageResponse<GetCommentDTO>>() {
             @Override
             public void onResponse(Call<PageResponse<GetCommentDTO>> call, Response<PageResponse<GetCommentDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -120,18 +121,66 @@ public class ManageCommentsFragment extends Fragment implements ManageCommentsAd
         }
     }
 
-    @Override
-    public void onApproveClick(Long commentId) {
+    private void showConfirmationDialog(Long commentId, String action) {
+        if (getContext() == null) return;
+
+        String title;
+        String message;
+
+        if (action.equals("approve")) {
+            title = "Confirm approval";
+            message = "Are you sure you want to approve this comment? Once approved, the comment will become public and visible to all users.";
+        } else { // "delete"
+            title = "Confirm deletion";
+            message = "Are you sure you want to delete this comment? This action is permanent and the comment will be removed.";
+        }
+
+        new AlertDialog.Builder(getContext())
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Confirm", (dialog, which) -> {
+                    if (action.equals("approve")) {
+                        performApproveAction(commentId);
+                    } else {
+                        performDeleteAction(commentId);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void performApproveAction(Long commentId) {
         String authHeader = ClientUtils.getAuthorization(getContext());
 
         ClientUtils.commentService.approveComment(authHeader, commentId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Comment approved successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Comment successfully approved!", Toast.LENGTH_SHORT).show();
                     fetchPendingComments();
                 } else {
-                    Toast.makeText(getContext(), "Failed to approve comment", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Failed to approve comment.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void performDeleteAction(Long commentId) {
+        String authHeader = ClientUtils.getAuthorization(getContext());
+
+        ClientUtils.commentService.deleteComment(authHeader, commentId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "Comment successfully deleted!", Toast.LENGTH_SHORT).show();
+                    fetchPendingComments();
+                } else {
+                    Toast.makeText(getContext(), "Failed to delete comment.", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -143,25 +192,13 @@ public class ManageCommentsFragment extends Fragment implements ManageCommentsAd
     }
 
     @Override
+    public void onApproveClick(Long commentId) {
+        showConfirmationDialog(commentId, "approve");
+    }
+
+    @Override
     public void onDeleteClick(Long commentId) {
-        String authHeader = ClientUtils.getAuthorization(getContext());
-
-        ClientUtils.commentService.deleteComment(authHeader, commentId).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Comment deleted successfully", Toast.LENGTH_SHORT).show();
-                    fetchPendingComments();
-                } else {
-                    Toast.makeText(getContext(), "Failed to delete comment", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        showConfirmationDialog(commentId, "delete");
     }
 
     @Override
