@@ -15,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Header;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.GET;
@@ -95,5 +96,8 @@ public interface UserService {
 
     @GET("users/{email}/profile")
     Call<GetUserDTO> getUserProfile(@Header("Authorization") String authorization, @Path("email") String email);
+
+    @PATCH("users/suspend/{userId}")
+    Call<ResponseBody> suspendUser(@Header("Authorization") String authorization, @Path("userId") Long userId);
 
 }

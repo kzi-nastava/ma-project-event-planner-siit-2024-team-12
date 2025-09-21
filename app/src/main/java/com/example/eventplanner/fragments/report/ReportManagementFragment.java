@@ -4,6 +4,7 @@ package com.example.eventplanner.fragments.report;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import com.example.eventplanner.adapters.report.ReportsAdapter;
 import com.example.eventplanner.dto.PageResponse;
 import com.example.eventplanner.dto.report.GetReportDTO;
 import com.example.eventplanner.utils.ClientUtils;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +100,7 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Report successfully deleted.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Report successfully deleted!", Toast.LENGTH_SHORT).show();
                     fetchReports();
                 } else {
                     Toast.makeText(getContext(), "Failed to delete report.", Toast.LENGTH_SHORT).show();
@@ -113,6 +116,44 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
 
     @Override
     public void onSuspendClick(Long userId) {
-        Toast.makeText(getContext(), "Suspend user with ID: " + userId, Toast.LENGTH_SHORT).show();
+        new AlertDialog.Builder(getContext())
+                .setTitle("Confirm Suspension")
+                .setMessage("Are you sure you want to suspend this user? \nThe user will be suspended for 3 days. This action cannot be undone.")
+                .setPositiveButton("Suspend", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        suspendUser(userId);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void suspendUser(Long userId) {
+        String authHeader = ClientUtils.getAuthorization(getContext());
+        ClientUtils.userService.suspendUser(authHeader, userId).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "User successfully suspended for 3 days!", Toast.LENGTH_SHORT).show();
+                    fetchReports();
+                } else {
+                    try {
+                        String errorMessage = response.errorBody() != null ? response.errorBody().string() : "Unknown error.";
+                        Log.e("SuspendUser", "Error: " + errorMessage);
+                        Toast.makeText(getContext(), "Failed to suspend user: " + errorMessage, Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Failed to suspend user.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("SuspendUser", "Network error: " + t.getMessage());
+                Toast.makeText(getContext(), "Network error.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
