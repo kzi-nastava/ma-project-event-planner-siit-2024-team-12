@@ -18,6 +18,13 @@ public class CategoriesListFragment extends Fragment {
 
     private CategoryViewModel viewModel;
     private CategoryAdapter adapter;
+    private String categoryType;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        categoryType = getArguments() != null ? getArguments().getString("category_type") : "active";
+    }
 
     @Nullable
     @Override
@@ -31,16 +38,21 @@ public class CategoriesListFragment extends Fragment {
         adapter = new CategoryAdapter();
         recyclerView.setAdapter(adapter);
 
-        String categoryType = getArguments() != null ? getArguments().getString("category_type") : "active";
 
         if ("active".equals(categoryType)) {
             viewModel.getActiveCategories().observe(getViewLifecycleOwner(), adapter::setCategories);
-            viewModel.fetchActiveCategories();
         } else if ("recommended".equals(categoryType)) {
             viewModel.getRecommendedCategories().observe(getViewLifecycleOwner(), adapter::setCategories);
-            viewModel.fetchRecommendedCategories();
+//            viewModel.fetchRecommendedCategories();
         }
 
         return view;
+    }
+    public void refreshData() {
+        if ("active".equals(categoryType)) {
+            viewModel.fetchActiveCategories();
+        } else if ("recommended".equals(categoryType)) {
+            viewModel.fetchRecommendedCategories();
+        }
     }
 }

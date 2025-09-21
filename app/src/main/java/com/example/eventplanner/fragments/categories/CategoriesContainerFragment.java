@@ -33,6 +33,23 @@ public class CategoriesContainerFragment extends Fragment {
             }
         }).attach();
 
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                Fragment fragment = getChildFragmentManager().findFragmentByTag("f" + position);
+                if (fragment instanceof CategoriesListFragment) {
+                    ((CategoriesListFragment) fragment).refreshData();
+                }
+            }
+        });
+
+        viewPager.post(() -> {
+            Fragment initialFragment = getChildFragmentManager().findFragmentByTag("f0");
+            if (initialFragment instanceof CategoriesListFragment) {
+                ((CategoriesListFragment) initialFragment).refreshData();
+            }
+        });
         return view;
     }
 }

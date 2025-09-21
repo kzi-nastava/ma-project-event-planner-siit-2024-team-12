@@ -36,6 +36,8 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/ic_add_circle"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Kreiraj novu kategoriju"
                 app:layout_constraintEnd_toEndOf="parent"
