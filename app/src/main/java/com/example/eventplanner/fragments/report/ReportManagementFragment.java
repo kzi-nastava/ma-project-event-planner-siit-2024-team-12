@@ -177,13 +177,20 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
                     Toast.makeText(getContext(), "User successfully suspended for 3 days!", Toast.LENGTH_SHORT).show();
                     fetchReports(currentPage);
                 } else {
-                    try {
-                        String errorMessage = response.errorBody() != null ? response.errorBody().string() : "Unknown error.";
-                        Log.e("SuspendUser", "Error: " + errorMessage);
-                        Toast.makeText(getContext(), "Failed to suspend user: " + errorMessage, Toast.LENGTH_LONG).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(getContext(), "Failed to suspend user.", Toast.LENGTH_SHORT).show();
+                    int statusCode = response.code();
+                    if (statusCode == 409) { // HTTP Conflict
+                        Toast.makeText(getContext(), "User is already suspended.", Toast.LENGTH_SHORT).show();
+                    } else if (statusCode == 404) { // HTTP Not Found
+                        Toast.makeText(getContext(), "User not found.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            String errorMessage = response.errorBody() != null ? response.errorBody().string() : "Unknown error.";
+                            Log.e("SuspendUser", "Error " + statusCode + ": " + errorMessage);
+                            Toast.makeText(getContext(), "Failed to suspend user.", Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getContext(), "Failed to suspend user.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }
