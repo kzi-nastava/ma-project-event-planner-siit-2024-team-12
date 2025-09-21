@@ -20,6 +20,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.report.ReportsAdapter;
 import com.example.eventplanner.dto.PageResponse;
 import com.example.eventplanner.dto.report.GetReportDTO;
+import com.example.eventplanner.fragments.profile.ViewUserProfileFragment;
 import com.example.eventplanner.utils.ClientUtils;
 
 import java.io.IOException;
@@ -193,5 +194,16 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
                 Toast.makeText(getContext(), "Network error.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onUserClick(String userEmail) {
+        if (getParentFragmentManager() != null) {
+            ViewUserProfileFragment userProfileFragment = ViewUserProfileFragment.newInstance(userEmail);
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.notifications_container, userProfileFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }
