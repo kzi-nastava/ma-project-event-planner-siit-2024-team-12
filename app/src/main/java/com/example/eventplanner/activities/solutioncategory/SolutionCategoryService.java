@@ -11,4 +11,6 @@ import retrofit2.http.Header;
 public interface SolutionCategoryService {
     @GET("categories/accepted")
     Call<List<GetSolutionCategoryDTO>> getAllAccepted(@Header("Authorization") String token);
+    @GET("categories/recommended")
+    Call<List<GetSolutionCategoryDTO>> getAllRecommended(@Header("Authorization") String token);
 }
