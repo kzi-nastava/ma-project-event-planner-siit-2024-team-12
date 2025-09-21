@@ -44,17 +44,13 @@ public class CategoriesListFragment extends Fragment implements CategoryAdapter.
             viewModel.getActiveCategories().observe(getViewLifecycleOwner(), adapter::setCategories);
         } else if ("recommended".equals(categoryType)) {
             viewModel.getRecommendedCategories().observe(getViewLifecycleOwner(), adapter::setCategories);
-//            viewModel.fetchRecommendedCategories();
         }
 
         return view;
     }
     @Override
     public void onCategoryClick(GetCategoryDTO category, boolean isActive) {
-        // Kreiraj i prikaži novi DialogFragment
         CategoryDetailsFragment detailsFragment = CategoryDetailsFragment.newInstance(category, isActive);
-
-        // show() metoda prikaže fragment kao dijalog
         detailsFragment.show(getParentFragmentManager(), "category_details_dialog");
     }
     public void refreshData() {

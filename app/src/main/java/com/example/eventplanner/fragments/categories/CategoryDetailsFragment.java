@@ -1,6 +1,7 @@
 package com.example.eventplanner.fragments.categories;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,13 +58,13 @@ public class CategoryDetailsFragment extends DialogFragment {
         }
 
         if (isActive) {
-            actionButton.setText("Sačuvaj izmene");
+            actionButton.setText("Save");
             // Implementiraj logiku za dugme za izmenu
             actionButton.setOnClickListener(v -> {
                 // Pozovi metodu za izmenu kategorije
             });
         } else {
-            actionButton.setText("Odobri kategoriju");
+            actionButton.setText("Approve");
             // Implementiraj logiku za dugme za odobravanje
             actionButton.setOnClickListener(v -> {
                 // Pozovi metodu za odobravanje kategorije
@@ -75,5 +76,18 @@ public class CategoryDetailsFragment extends DialogFragment {
         });
 
         return view;
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null) {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int screenWidth = displayMetrics.widthPixels;
+
+            int dialogWidth = (int) (screenWidth * 0.8);
+
+            getDialog().getWindow().setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
     }
 }
