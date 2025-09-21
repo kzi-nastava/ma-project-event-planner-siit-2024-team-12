@@ -23,6 +23,7 @@ import com.example.eventplanner.adapters.datetime.LocalTimeAdapter;
 import com.example.eventplanner.fragments.comment.CommentService;
 import com.example.eventplanner.fragments.gallery.GalleryService;
 import com.example.eventplanner.fragments.notification.NotificationService;
+import com.example.eventplanner.fragments.report.ReportService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -91,5 +92,7 @@ public class ClientUtils {
     public static NotificationService notificationService = retrofit.create(NotificationService.class);
 
     public static CommentService commentService = retrofit.create(CommentService.class);
+
+    public static ReportService reportService = retrofit.create(ReportService.class);
 
 }

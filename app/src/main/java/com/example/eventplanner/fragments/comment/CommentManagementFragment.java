@@ -22,6 +22,7 @@ import com.example.eventplanner.activities.product.ProductDetailsActivity;
 import com.example.eventplanner.adapters.comment.ManageCommentsAdapter;
 import com.example.eventplanner.dto.PageResponse;
 import com.example.eventplanner.dto.comment.GetCommentDTO;
+import com.example.eventplanner.fragments.profile.ViewUserProfileFragment;
 import com.example.eventplanner.utils.ClientUtils;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ManageCommentsFragment extends Fragment implements ManageCommentsAdapter.OnActionListener {
+public class CommentManagementFragment extends Fragment implements ManageCommentsAdapter.OnActionListener {
 
     private RecyclerView rvPendingComments;
     private ManageCommentsAdapter adapter;
@@ -203,7 +204,14 @@ public class ManageCommentsFragment extends Fragment implements ManageCommentsAd
 
     @Override
     public void onUserClick(String userEmail) {
-        Toast.makeText(getContext(), "Navigation to user profile: " + userEmail, Toast.LENGTH_SHORT).show();
+        if (getParentFragmentManager() != null) {
+            ViewUserProfileFragment userProfileFragment = ViewUserProfileFragment.newInstance(userEmail);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.notifications_container, userProfileFragment)
+                  .addToBackStack(null)
+                    .commit();
+        }
     }
 
     @Override

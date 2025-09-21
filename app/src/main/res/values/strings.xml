@@ -374,5 +374,10 @@
     <string name="unmute_indefinitely">Muted until: Until you turn it back on</string>
     <string name="manage_comments">Manage comments</string>
     <string name="manage_reports">Manage reports</string>
+    <string name="block_user">Block</string>
+    <string name="report_user">Report</string>
+    <string name="suspended_title">Your account is currently suspended.</string>
+    <string name="remaining_time">Time remaining until reactivation:</string>
+    <string name="contact_support">Please contact support if you believe this is a mistake.</string>
 
 </resources>
