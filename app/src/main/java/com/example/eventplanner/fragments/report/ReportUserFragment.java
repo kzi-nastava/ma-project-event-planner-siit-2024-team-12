@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +30,8 @@ public class ReportUserFragment extends DialogFragment {
     private EditText etReason;
     private Button btnCancel;
     private Button btnReport;
+
+    private ImageView closeDialog;
 
     public static ReportUserFragment newInstance(Long reportedUserId) {
         ReportUserFragment fragment = new ReportUserFragment();
@@ -59,8 +62,10 @@ public class ReportUserFragment extends DialogFragment {
         etReason = view.findViewById(R.id.etReason);
         btnCancel = view.findViewById(R.id.btnCancel);
         btnReport = view.findViewById(R.id.btnReport);
+        closeDialog = view.findViewById(R.id.close_dialog);
 
         btnCancel.setOnClickListener(v -> dismiss());
+        closeDialog.setOnClickListener(v -> dismiss());
 
         btnReport.setOnClickListener(v -> {
             String reason = etReason.getText().toString().trim();

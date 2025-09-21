@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.user.GetUserDTO;
+import com.example.eventplanner.fragments.report.ReportUserFragment;
 import com.example.eventplanner.utils.ClientUtils;
 
 import retrofit2.Call;
@@ -27,6 +28,7 @@ public class ViewUserProfileFragment extends Fragment {
 
     private static final String ARG_USER_EMAIL = "user_email";
     private String userEmail;
+    private Long reportedUserId;
 
     private TextView name, surname, email, phone, address;
     private ImageView mainImage, closeButton;
@@ -84,6 +86,7 @@ public class ViewUserProfileFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     GetUserDTO user = response.body();
                     setUpFormDetails(user);
+                    reportedUserId = user.getId();
                 } else {
                     Toast.makeText(getContext(), "Failed to fetch user data", Toast.LENGTH_SHORT).show();
                     closeForm();
@@ -128,7 +131,12 @@ public class ViewUserProfileFragment extends Fragment {
     }
 
     private void reportUser() {
-        Toast.makeText(getContext(), "Report User action for email: " + userEmail, Toast.LENGTH_SHORT).show();
+        if (reportedUserId != null) {
+            ReportUserFragment reportDialog = ReportUserFragment.newInstance(reportedUserId);
+            reportDialog.show(getParentFragmentManager(), "ReportUserFragment");
+        } else {
+            Toast.makeText(getContext(), "User data not loaded yet. Please wait.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void blockUser() {
