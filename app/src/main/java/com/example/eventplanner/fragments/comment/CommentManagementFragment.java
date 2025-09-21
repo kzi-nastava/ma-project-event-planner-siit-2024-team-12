@@ -32,7 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ManageCommentsFragment extends Fragment implements ManageCommentsAdapter.OnActionListener {
+public class CommentManagementFragment extends Fragment implements ManageCommentsAdapter.OnActionListener {
 
     private RecyclerView rvPendingComments;
     private ManageCommentsAdapter adapter;

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.report.ReportsAdapter;
+import com.example.eventplanner.dto.PageResponse;
 import com.example.eventplanner.dto.report.GetReportDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import java.util.ArrayList;
@@ -54,18 +55,18 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
             return;
         }
 
-        ClientUtils.reportService.getAllReports(authHeader, 0, 50).enqueue(new Callback<GetReportDTO>() {
+        ClientUtils.reportService.getAllReports(authHeader, 0, 50).enqueue(new Callback<PageResponse<GetReportDTO>>() {
             @Override
-            public void onResponse(Call<GetReportDTO> call, Response<GetReportDTO> response) {
+            public void onResponse(Call<PageResponse<GetReportDTO>> call, Response<PageResponse<GetReportDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    reportsAdapter.setReports((List<GetReportDTO>) response.body());
+                    reportsAdapter.setReports(response.body().getContent());
                 } else {
                     Toast.makeText(getContext(), "Failed to fetch reports.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<GetReportDTO> call, Throwable t) {
+            public void onFailure(Call<PageResponse<GetReportDTO>> call, Throwable t) {
                 Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

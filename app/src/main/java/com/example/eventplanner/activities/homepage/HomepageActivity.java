@@ -35,13 +35,14 @@ import com.example.eventplanner.activities.product.ProvidedProductsActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
-import com.example.eventplanner.fragments.comment.ManageCommentsFragment;
+import com.example.eventplanner.fragments.comment.CommentManagementFragment;
 import com.example.eventplanner.fragments.event.InvitedEventsListFragment;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.TopEventsFragment;
 import com.example.eventplanner.fragments.homepage.TopSolutionsFragment;
 import com.example.eventplanner.fragments.homepage.SolutionListFragment;
 import com.example.eventplanner.fragments.notification.NotificationFragment;
+import com.example.eventplanner.fragments.report.ReportManagementFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
 import com.google.android.material.navigation.NavigationView;
 
@@ -303,7 +304,10 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_notifications) {
                 navigateToFragment(R.id.notifications_container, new NotificationFragment());
             } else if (id == R.id.nav_manage_comments) {
-                navigateToFragment(R.id.notifications_container, new ManageCommentsFragment());
+                navigateToFragment(R.id.notifications_container, new CommentManagementFragment());
+            }
+            else if (id == R.id.nav_manage_reports) {
+                navigateToFragment(R.id.notifications_container, new ReportManagementFragment());
             }
             else if (id == R.id.nav_log_out) {
                 logOut();
