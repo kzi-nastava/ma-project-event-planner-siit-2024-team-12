@@ -8,6 +8,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
+import com.example.eventplanner.dto.solutioncategory.UpdateCategoryDTO;
+import com.example.eventplanner.dto.solutioncategory.UpdatedCategoryDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +86,60 @@ public class CategoryViewModel extends AndroidViewModel {
             public void onFailure(Call<List<GetCategoryDTO>> call, Throwable t) {
                 recommendedCategories.setValue(new ArrayList<>());
                 Log.e("API_CALL", "Network error while fetching recommended categories: " + t.getMessage());
+            }
+        });
+    }
+    public void updateCategory(Long id, UpdateCategoryDTO updateCategoryDTO) {
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            Toast.makeText(getApplication(), "User not authenticated.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Call<UpdatedCategoryDTO> call = ClientUtils.solutionCategoryService.updateCategory(auth, id, updateCategoryDTO);
+        call.enqueue(new Callback<UpdatedCategoryDTO>() {
+            @Override
+            public void onResponse(Call<UpdatedCategoryDTO> call, Response<UpdatedCategoryDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Handle success (e.g., show a toast, refresh data)
+                    Toast.makeText(getApplication(), "Category updated successfully.", Toast.LENGTH_SHORT).show();
+                    // You might want to refresh the list of active categories here
+                    fetchActiveCategories();
+                } else {
+                    Toast.makeText(getApplication(), "Failed to update category: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdatedCategoryDTO> call, Throwable t) {
+                Toast.makeText(getApplication(), "Network error while updating category.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    public void deleteCategory(Long id) {
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            Toast.makeText(getApplication(), "User not authenticated.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Call<Void> call = ClientUtils.solutionCategoryService.deleteCategory(auth, id);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getApplication(), "Category deleted successfully.", Toast.LENGTH_SHORT).show();
+                    fetchActiveCategories();
+                } else if (response.code() == 409) {
+                    Toast.makeText(getApplication(), "Category cannot be deleted as it is associated with existing services/products.", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplication(), "Failed to delete category: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(getApplication(), "Network error while deleting category.", Toast.LENGTH_SHORT).show();
             }
         });
     }
