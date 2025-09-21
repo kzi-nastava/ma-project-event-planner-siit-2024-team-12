@@ -5,6 +5,7 @@ import com.example.eventplanner.dto.report.CreateReportDTO;
 import com.example.eventplanner.dto.report.CreatedReportDTO;
 import com.example.eventplanner.dto.report.GetReportDTO;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -20,12 +21,12 @@ public interface ReportService {
     Call<CreatedReportDTO> createReport(@Header("Authorization") String authorization,
                                         @Body CreateReportDTO createReportDTO);
 
-    @GET("/api/reports")
+    @GET("reports")
     Call<PageResponse<GetReportDTO>> getAllReports(@Header("Authorization") String authorization,
                                                    @Query("page") int page,
                                                    @Query("size") int size);
 
-    @DELETE("/api/reports/{reportId}")
-    Call<Void> deleteReport(@Header("Authorization") String authorization, @Path("reportId") Long reportId);
+    @DELETE("reports/reports/{reportId}")
+    Call<ResponseBody> deleteReport(@Header("Authorization") String authorization, @Path("reportId") Long reportId);
 
 }

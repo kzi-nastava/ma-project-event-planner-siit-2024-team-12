@@ -1,6 +1,8 @@
 package com.example.eventplanner.fragments.report;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,8 @@ import com.example.eventplanner.dto.report.GetReportDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -74,12 +78,26 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
 
     @Override
     public void onDeleteClick(Long reportId) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Confirm Deletion")
+                .setMessage("Are you sure you want to permanently delete this report? \nThis action cannot be undone.")
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteReport(reportId);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void deleteReport(Long reportId) {
         String authHeader = ClientUtils.getAuthorization(getContext());
-        ClientUtils.reportService.deleteReport(authHeader, reportId).enqueue(new Callback<Void>() {
+        ClientUtils.reportService.deleteReport(authHeader, reportId).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Report deleted.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Report successfully deleted.", Toast.LENGTH_SHORT).show();
                     fetchReports();
                 } else {
                     Toast.makeText(getContext(), "Failed to delete report.", Toast.LENGTH_SHORT).show();
@@ -87,7 +105,7 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Toast.makeText(getContext(), "Network error.", Toast.LENGTH_SHORT).show();
             }
         });
