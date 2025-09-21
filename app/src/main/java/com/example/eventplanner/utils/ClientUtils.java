@@ -16,7 +16,9 @@ import com.example.eventplanner.activities.homepage.HomepageService;
 import com.example.eventplanner.activities.product.ProductService;
 import com.example.eventplanner.activities.profile.QuickRegisterService;
 import com.example.eventplanner.activities.profile.UserService;
+import com.example.eventplanner.activities.service.ServiceSolutionService;
 import com.example.eventplanner.activities.solutioncategory.SolutionCategoryService;
+import com.example.eventplanner.adapters.datetime.DurationAdapter;
 import com.example.eventplanner.adapters.datetime.LocalDateAdapter;
 import com.example.eventplanner.adapters.datetime.LocalDateTimeAdapter;
 import com.example.eventplanner.adapters.datetime.LocalTimeAdapter;
@@ -27,6 +29,7 @@ import com.example.eventplanner.fragments.report.ReportService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -37,11 +40,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ClientUtils {
 
     public static final String SERVICE_API_PATH = "http://" + BuildConfig.IP_ADDR + ":8080/api/";
-
-    // add adapters for proper LocalDate, LocalTime and LocalDateTime parsing
+    public static final String BASE_IMAGE_URL = "http://" + BuildConfig.IP_ADDR + ":8080";
+    // add adapters for proper LocalDate and LocalTime parsing
     static Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
             .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationAdapter())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
 
@@ -94,5 +98,7 @@ public class ClientUtils {
     public static CommentService commentService = retrofit.create(CommentService.class);
 
     public static ReportService reportService = retrofit.create(ReportService.class);
+
+    public static ServiceSolutionService serviceSolutionService = retrofit.create(ServiceSolutionService.class);
 
 }
