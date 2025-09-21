@@ -3,6 +3,7 @@ package com.example.eventplanner.activities.profile;
 import com.example.eventplanner.dto.event.AcceptedEventDTO;
 import com.example.eventplanner.dto.event.FavEventDTO;
 import com.example.eventplanner.dto.solution.FavSolutionDTO;
+import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.dto.user.UpdateUserDTO;
 
 import com.example.eventplanner.dto.user.UpdatedUserDTO;
@@ -91,5 +92,8 @@ public interface UserService {
     Call<Void> removeFavoriteProduct(@Header("Authorization") String token,
                                      @Path("email") String email,
                                      @Query("productId") Long productId);
+
+    @GET("users/{email}/profile")
+    Call<GetUserDTO> getUserProfile(@Header("Authorization") String authorization, @Path("email") String email);
 
 }

@@ -374,5 +374,7 @@
     <string name="unmute_indefinitely">Muted until: Until you turn it back on</string>
     <string name="manage_comments">Manage comments</string>
     <string name="manage_reports">Manage reports</string>
+    <string name="block_user">Block</string>
+    <string name="report_user">Report</string>
 
 </resources>
