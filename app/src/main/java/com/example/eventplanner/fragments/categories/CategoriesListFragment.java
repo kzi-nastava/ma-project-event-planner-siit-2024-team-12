@@ -53,11 +53,4 @@ public class CategoriesListFragment extends Fragment implements CategoryAdapter.
         CategoryDetailsFragment detailsFragment = CategoryDetailsFragment.newInstance(category, isActive);
         detailsFragment.show(getParentFragmentManager(), "category_details_dialog");
     }
-    public void refreshData() {
-        if ("active".equals(categoryType)) {
-            viewModel.fetchActiveCategories();
-        } else if ("recommended".equals(categoryType)) {
-            viewModel.fetchRecommendedCategories();
-        }
-    }
 }
