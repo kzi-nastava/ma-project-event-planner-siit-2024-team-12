@@ -1,6 +1,5 @@
 package com.example.eventplanner.fragments.report;
 
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -8,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,16 +36,39 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
     private RecyclerView reportsRecyclerView;
     private ReportsAdapter reportsAdapter;
     private List<GetReportDTO> reports = new ArrayList<>();
+    private TextView pageNumberTextView;
+    private ImageButton prevPageButton, nextPageButton;
+    private int currentPage = 0;
+    private int totalPages = 0;
+    private static final int PAGE_SIZE = 5;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_report_management, container, false);
-        reportsRecyclerView = view.findViewById(R.id.reports_recycler_view);
-        reportsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        reportsRecyclerView = view.findViewById(R.id.reports_recycler_view);
+        pageNumberTextView = view.findViewById(R.id.pageNumber);
+        prevPageButton = view.findViewById(R.id.prevPageButton);
+        nextPageButton = view.findViewById(R.id.nextPageButton);
+
+        reportsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         reportsAdapter = new ReportsAdapter(reports, this);
         reportsRecyclerView.setAdapter(reportsAdapter);
+
+        prevPageButton.setOnClickListener(v -> {
+            if (currentPage > 0) {
+                currentPage--;
+                fetchReports(currentPage);
+            }
+        });
+
+        nextPageButton.setOnClickListener(v -> {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                fetchReports(currentPage);
+            }
+        });
 
         return view;
     }
@@ -52,21 +76,25 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fetchReports();
+        fetchReports(currentPage);
     }
 
-    private void fetchReports() {
+    private void fetchReports(int page) {
         String authHeader = ClientUtils.getAuthorization(getContext());
         if (authHeader == null) {
             Toast.makeText(getContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        ClientUtils.reportService.getAllReports(authHeader, 0, 50).enqueue(new Callback<PageResponse<GetReportDTO>>() {
+        ClientUtils.reportService.getAllReports(authHeader, page, PAGE_SIZE).enqueue(new Callback<PageResponse<GetReportDTO>>() {
             @Override
             public void onResponse(Call<PageResponse<GetReportDTO>> call, Response<PageResponse<GetReportDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    reportsAdapter.setReports(response.body().getContent());
+                    PageResponse<GetReportDTO> pageResponse = response.body();
+                    reportsAdapter.setReports(pageResponse.getContent());
+                    currentPage = pageResponse.getNumber();
+                    totalPages = pageResponse.getTotalPages();
+                    updatePaginationUI();
                 } else {
                     Toast.makeText(getContext(), "Failed to fetch reports.", Toast.LENGTH_SHORT).show();
                 }
@@ -77,6 +105,16 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
                 Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void updatePaginationUI() {
+        pageNumberTextView.setText(String.format("%d/%d", currentPage + 1, totalPages));
+
+        prevPageButton.setEnabled(currentPage > 0);
+        nextPageButton.setEnabled(currentPage < totalPages - 1);
+
+        prevPageButton.setColorFilter(currentPage > 0 ? getResources().getColor(R.color.black) : getResources().getColor(R.color.dark_gray));
+        nextPageButton.setColorFilter(currentPage < totalPages - 1 ? getResources().getColor(R.color.black) : getResources().getColor(R.color.dark_gray));
     }
 
     @Override
@@ -101,7 +139,7 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(), "Report successfully deleted!", Toast.LENGTH_SHORT).show();
-                    fetchReports();
+                    fetchReports(currentPage);
                 } else {
                     Toast.makeText(getContext(), "Failed to delete report.", Toast.LENGTH_SHORT).show();
                 }
@@ -136,7 +174,7 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(), "User successfully suspended for 3 days!", Toast.LENGTH_SHORT).show();
-                    fetchReports();
+                    fetchReports(currentPage);
                 } else {
                     try {
                         String errorMessage = response.errorBody() != null ? response.errorBody().string() : "Unknown error.";
