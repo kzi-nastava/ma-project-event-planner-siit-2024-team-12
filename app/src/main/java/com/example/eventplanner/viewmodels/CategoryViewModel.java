@@ -14,6 +14,9 @@ import com.example.eventplanner.enumeration.Status;
 import com.example.eventplanner.utils.ClientUtils;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -167,6 +170,35 @@ public class CategoryViewModel extends AndroidViewModel {
             @Override
             public void onFailure(Call<UpdatedCategoryDTO> call, Throwable t) {
                 Toast.makeText(getApplication(), "Network error while approving category.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    public void disapproveCategory(Long id, String changeCategoryName) {
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            Toast.makeText(getApplication(), "User not authenticated.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        RequestBody emptyBody = RequestBody.create(MediaType.parse("application/json"), "");
+
+        Call<UpdatedCategoryDTO> call = ClientUtils.solutionCategoryService.disapproveCategory(auth, id, changeCategoryName, emptyBody);
+        call.enqueue(new Callback<UpdatedCategoryDTO>() {
+            @Override
+            public void onResponse(Call<UpdatedCategoryDTO> call, Response<UpdatedCategoryDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(getApplication(), "Category disapproved and moved to " + changeCategoryName, Toast.LENGTH_LONG).show();
+                    fetchRecommendedCategories();
+                } else if (response.code() == 404) {
+                    Toast.makeText(getApplication(), "Category not found.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplication(), "Failed to disapprove category: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdatedCategoryDTO> call, Throwable t) {
+                Toast.makeText(getApplication(), "Network error while disapproving category.", Toast.LENGTH_SHORT).show();
             }
         });
     }

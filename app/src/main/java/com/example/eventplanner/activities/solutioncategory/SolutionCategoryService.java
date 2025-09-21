@@ -7,6 +7,7 @@ import com.example.eventplanner.dto.solutioncategory.UpdatedCategoryDTO;
 
 import java.util.List;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -14,6 +15,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface SolutionCategoryService {
     @GET("categories/accepted")
@@ -38,5 +40,12 @@ public interface SolutionCategoryService {
             @Header("Authorization") String token,
             @Path("id") Long id,
             @Body UpdateCategoryDTO category
+    );
+    @PUT("categories/disapprove/{id}")
+    Call<UpdatedCategoryDTO> disapproveCategory(
+            @Header("Authorization") String token,
+            @Path("id") Long id,
+            @Query("changeCategoryName") String changeCategoryName,
+            @Body RequestBody emptyBody
     );
 }

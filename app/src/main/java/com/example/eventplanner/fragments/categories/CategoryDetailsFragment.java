@@ -1,5 +1,7 @@
 package com.example.eventplanner.fragments.categories;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import com.example.eventplanner.enumeration.Status;
 import com.example.eventplanner.viewmodels.CategoryViewModel;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class CategoryDetailsFragment extends DialogFragment {
 
@@ -110,7 +113,39 @@ public class CategoryDetailsFragment extends DialogFragment {
                 }
             });
             deleteButton.setOnClickListener(v -> {
-                // Implementiraj logiku za brisanje kategorije
+                List<GetCategoryDTO> activeCategoryList = viewModel.getActiveCategories().getValue();
+
+                if (activeCategoryList == null || activeCategoryList.isEmpty()) {
+                    Toast.makeText(getContext(), "No active categories to reassign.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String[] categoryNames = new String[activeCategoryList.size()];
+                for (int i = 0; i < activeCategoryList.size(); i++) {
+                    categoryNames[i] = activeCategoryList.get(i).getName();
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Reassign to Active Category");
+                builder.setItems(categoryNames, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String selectedCategoryName = categoryNames[which];
+
+                        viewModel.disapproveCategory(Long.valueOf(category.getId()), selectedCategoryName);
+
+                        dialog.dismiss();
+                        dismiss();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.create().show();
             });
 
         }
