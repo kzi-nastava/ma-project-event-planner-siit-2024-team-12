@@ -78,7 +78,7 @@
             android:id="@+id/show_dates_button"
             android:layout_width="30dp"
             android:layout_height="25dp"
-            android:background="@drawable/form_button_round"
+            android:background="@drawable/ic_expand_arrow"
             android:text="..."
             android:textColor="@android:color/white"
             android:textSize="12sp"

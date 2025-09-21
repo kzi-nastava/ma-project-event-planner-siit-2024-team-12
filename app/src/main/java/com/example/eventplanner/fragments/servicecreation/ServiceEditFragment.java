@@ -73,6 +73,7 @@ public class ServiceEditFragment extends Fragment {
     private EditText flexibleTimeFromEditText;
     private EditText flexibleTimeToEditText;
     private ImageButton changeImageButton;
+    private ImageButton deleteImageButton;
     private Uri newImageUri;
 
     public ServiceEditFragment() {
@@ -126,6 +127,7 @@ public class ServiceEditFragment extends Fragment {
         flexibleTimeToEditText = view.findViewById(R.id.editTextFlexibleTo);
 
         changeImageButton = view.findViewById(R.id.changeImageButton);
+        deleteImageButton = view.findViewById(R.id.deleteImageButton);
 
         AppCompatButton editButton = view.findViewById(R.id.saveServiceEdit);
         AppCompatButton deleteButton = view.findViewById(R.id.saveServiceDelete);
@@ -137,6 +139,29 @@ public class ServiceEditFragment extends Fragment {
         changeImageButton.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             pickImageLauncher.launch(intent);
+        });
+
+        deleteImageButton.setOnClickListener(v -> {
+            GetServiceDTO service = viewModel.getServiceData().getValue();
+            if(service == null || service.getId() == null || service.getImageUrl() == null || service.getImageUrl().trim().isEmpty()){
+                Toast.makeText(getContext(), "Cannot delete image.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Long serviceId = service.getId();
+            String imgUrl = service.getImageUrl();
+
+            viewModel.deleteImage(serviceId, imgUrl, ()->{
+                serviceImage.setImageResource(R.drawable.shopping_cart);
+                GetServiceDTO currentService = viewModel.getServiceData().getValue();
+                if (currentService != null) {
+                    currentService.setImageUrl("");
+                    viewModel.getServiceData().setValue(currentService);
+                }
+                Toast.makeText(getContext(), "Image deleted successfully!", Toast.LENGTH_SHORT).show();
+            }, ()->{
+                Toast.makeText(getContext(), "Failed to delete image.", Toast.LENGTH_SHORT).show();
+            });
         });
 
         deleteButton.setOnClickListener(v -> {
@@ -479,16 +504,9 @@ public class ServiceEditFragment extends Fragment {
                                              () -> {
                                                  Toast.makeText(getContext(), "Failed to update service image.", Toast.LENGTH_SHORT).show();
                                              });
-//                        Toast.makeText(getContext(), "Service image edited successfully!", Toast.LENGTH_SHORT).show();
-//                        if (getActivity() != null) {
-//                            getActivity().getSupportFragmentManager().popBackStack();
-//                        }
                                  },
                                  () -> {
                                      Toast.makeText(getContext(), "Failed to update service image.", Toast.LENGTH_SHORT).show();
-//                        if (getActivity() != null) {
-//                            getActivity().getSupportFragmentManager().popBackStack();
-//                        }
                                  });
                      }else if(viewModel.getNewImageUri()!=null && (currentService.getImageUrl() == null ||  currentService.getImageUrl().trim().isEmpty())){
                          ImageHelper.uploadMultipleImages(getContext(), List.of(viewModel.getNewImageUri()), "service",
@@ -503,15 +521,9 @@ public class ServiceEditFragment extends Fragment {
                      }else{
                          Toast.makeText(getContext(), R.string.service_edited, Toast.LENGTH_SHORT).show();
                      }
-//                     if (getActivity() != null) {
-//                         getActivity().getSupportFragmentManager().popBackStack();
-//                     }
                  },
                  () -> {
                      Toast.makeText(getContext(), "Failed to update service.", Toast.LENGTH_SHORT).show();
-//                     if (getActivity() != null) {
-//                         getActivity().getSupportFragmentManager().popBackStack();
-//                     }
                  });
 
 

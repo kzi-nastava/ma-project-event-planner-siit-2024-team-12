@@ -78,6 +78,7 @@
     <string name="working_hours">Working hours</string>
     <string name="select_time">Select time</string>
     <string name="change_image_description">Change image</string>
+    <string name="delete_image_description">Delete image</string>
 
     <!-- Edit service form -->
 
@@ -86,9 +87,9 @@
     <string name="service_name_hint">Service name</string>
     <string name="service_category_label">Category:</string>
     <string name="category_hint">Category</string>
-    <string name="service_price_label">Price ($):</string>
+    <string name="service_price_label">Price($):</string>
     <string name="price_hint">0</string>
-    <string name="service_discount_label">Sale (%):</string>
+    <string name="service_discount_label">Sale(%):</string>
     <string name="discount_hint">0</string>
     <string name="service_time_type_label">Reservation type:</string>
     <string name="fixed_time">Fixed time</string>
