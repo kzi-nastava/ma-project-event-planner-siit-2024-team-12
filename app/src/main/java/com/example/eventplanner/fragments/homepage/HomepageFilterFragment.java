@@ -1,24 +1,39 @@
 package com.example.eventplanner.fragments.homepage;
 
+import android.content.Context; // Add this import
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.AlertDialog;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.homepage.HomepageService;
+import com.example.eventplanner.utils.ClientUtils;
+import com.example.eventplanner.viewmodels.EventFilterViewModel;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class HomepageFilterFragment extends Fragment {
+
+    private ChipGroup chipGroup;
+    private List<String> availableCategories = new ArrayList<>();
+    private HomepageService service;
 
     public HomepageFilterFragment() {
         // Required empty public constructor
@@ -31,91 +46,75 @@ public class HomepageFilterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_homepage_filter, container, false);
     }
+
+    private EventFilterViewModel filterViewModel;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Spinner za kategorije (ako ga koristiš, ovde se može sakriti ili prikazivati)
-        Spinner categorySpinner = view.findViewById(R.id.categorySpinner);
-        categorySpinner.setVisibility(View.GONE); // Početno sakrivanje
+        chipGroup = view.findViewById(R.id.chipGroup);
 
-        // ChipGroup za izabrane filtere
-        ChipGroup chipGroup = view.findViewById(R.id.chipGroup);
+        filterViewModel = new ViewModelProvider(requireActivity()).get(EventFilterViewModel.class);
+        filterViewModel.getAppliedFilters().observe(getViewLifecycleOwner(), payload -> {
 
-        // Filter dugme - toggle spinner za kategorije
-        TextView filterButton = view.findViewById(R.id.filterButton);
-        filterButton.setOnClickListener(v -> {
-            // Pozivanje dijaloga za višestruki izbor
-            showCategoryDialog(chipGroup);
+            updateChips(payload);
         });
 
-        // Dugme za resetovanje filtera
-        Button resetFiltersButton = view.findViewById(R.id.resetFiltersButton);
-        resetFiltersButton.setOnClickListener(v -> {
-            chipGroup.clearCheck(); // Čisti selektovane filtere
-            Toast.makeText(getContext(), "Filters reset", Toast.LENGTH_SHORT).show();
+        Button openFilterBtn = view.findViewById(R.id.filterButton);
+        openFilterBtn.setOnClickListener(v -> {
+            EventFilterFragment dialog = new EventFilterFragment();
+            dialog.show(getParentFragmentManager(), "FilterDialog");
+        });
+
+
+    }
+
+
+    private void updateChips(EventFilterViewModel.FilterPayload p) {
+        chipGroup.removeAllViews();
+
+        for (String c : p.cities) addFilterChip("City: " + c, () -> {
+            filterViewModel.removeCity(c);
+            filterViewModel.applyNow();
+        });
+        for (String t : p.eventTypes) addFilterChip("Type: " + t, () -> {
+            filterViewModel.removeEventType(t);
+            filterViewModel.applyNow();
+        });
+        if (p.rating != null) addFilterChip("Rating: " + p.rating, () -> {
+            filterViewModel.setSelectedRating(null);
+            filterViewModel.applyNow();
+        });
+        if (p.sortBy != null && !p.sortBy.isEmpty()) addFilterChip("Sort: " + p.sortBy, () -> {
+            filterViewModel.setSelectedSortOptions(null);
+            filterViewModel.applyNow();
+        });
+        if (p.sortDir != null && !p.sortDir.isEmpty()) addFilterChip("Dir: " + p.sortDir, () -> {
+            filterViewModel.setSortDir(null);
+            filterViewModel.applyNow();
+        });
+        if (p.startDate != null && !p.startDate.isEmpty()) addFilterChip("From: " + p.startDate, () -> {
+            filterViewModel.setMinDate("");
+            filterViewModel.applyNow();
+        });
+        if (p.endDate != null && !p.endDate.isEmpty()) addFilterChip("To: " + p.endDate, () -> {
+            filterViewModel.setMaxDate("");
+            filterViewModel.applyNow();
         });
     }
 
-    private void showCategoryDialog(ChipGroup chipGroup) {
-        final String[] categories = {"Category 1", "Category 2", "Category 3", "Category 4"};
-        boolean[] checkedItems = new boolean[categories.length]; // Initial state: nothing selected
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.CustomDialogStyle); // Using custom style
-        builder.setTitle("Select Categories")
-                .setMultiChoiceItems(categories, checkedItems, (dialog, which, isChecked) -> {
-                    // Track the changes
-                    checkedItems[which] = isChecked;
-                })
-                .setPositiveButton("OK", (dialog, which) -> {
-                    // Update the chips with selected categories
-                    updateFilters(checkedItems, categories, chipGroup);
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
-                .setCancelable(true);
-
-        // Create the dialog and show it
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        // Adjust dialog width and height
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-        layoutParams.copyFrom(dialog.getWindow().getAttributes());
-        layoutParams.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.6); // 60% of screen width
-        //layoutParams.height = (int) (getResources().getDisplayMetrics().heightPixels * 0.4); // 40% of screen height
-        dialog.getWindow().setAttributes(layoutParams);
-
-        // Style the dialog buttons
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.black));
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.black));
-
-        ListView listView = dialog.getListView();
-        listView.setDivider(null); // Remove dividers between items
-    }
-
-
-    // Funkcija za dinamičko dodavanje filtera prema izabranim kategorijama
-    private void updateFilters(boolean[] checkedItems, String[] categories, ChipGroup chipGroup) {
-        chipGroup.removeAllViews(); // Briše postojeće filtere
-
-        // Dodavanje filtera za svaku izabranu kategoriju
-        for (int i = 0; i < categories.length; i++) {
-            if (checkedItems[i]) {
-                addFilterChip(categories[i], chipGroup);
-            }
-        }
-    }
-
-    // Funkcija za dodavanje novog filter chip-a.java
-    private void addFilterChip(String filterText, ChipGroup chipGroup) {
+    private void addFilterChip(String text, Runnable onRemove) {
         Chip chip = new Chip(getContext());
-        chip.setText(filterText);
+        chip.setText(text);
         chip.setCloseIconVisible(true);
-        chip.setOnCloseIconClickListener(v -> chipGroup.removeView(chip)); // Omogućava uklanjanje chip-a.java
+        chip.setOnCloseIconClickListener(v -> {
+            chipGroup.removeView(chip);
+            onRemove.run();
+        });
         chipGroup.addView(chip);
     }
+
 }

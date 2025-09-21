@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/listTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:gravity="start"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="4dp"
+        android:letterSpacing="0.05"/>
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/search_bar_background"
+        android:queryHint="Search events or solutions"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:iconifiedByDefault="false"
+        android:padding="8dp"/>
+
+    <RadioGroup
+        android:id="@+id/solutionTypeRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="start"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone">
+
+        <RadioButton
+            android:id="@+id/radioAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/all"
+            android:checked="true"
+            android:buttonTint="@color/radio_button_color"/>
+        <RadioButton
+            android:id="@+id/radioProducts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/products"
+            android:buttonTint="@color/radio_button_color"/>
+        <RadioButton
+            android:id="@+id/radioServices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/services"
+            android:buttonTint="@color/radio_button_color"/>
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/filterButtonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="start"
+        android:layout_marginBottom="8dp">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/filterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="@string/filters"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/white"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_filter"
+            app:iconGravity="textStart"
+            app:iconPadding="12dp"
+            app:iconTint="@color/black"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/resetFiltersButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:textAllCaps="false"
+            android:text="@string/reset_filters"
+            android:textColor="@color/black"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_delete"
+            app:iconGravity="textStart"
+            app:iconPadding="12dp"
+            app:iconTint="@color/black"
+            android:backgroundTint="@android:color/white"/>
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/onlyFromMyCityButton"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="@string/only_from_my_city"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        app:cornerRadius="20dp"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/black"
+        android:backgroundTint="@android:color/white"
+        app:icon="@drawable/ic_location"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="@color/black"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="8dp"/>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="start"
+        android:singleLine="false"
+        android:scrollbars="horizontal"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="8dp">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/prevPageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:contentDescription="@string/previous"
+            android:src="@drawable/ic_chevron_left"
+            android:tint="@color/black"/>
+
+        <Space
+            android:layout_width="16dp"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:id="@+id/paginationIndicators"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+        <Space
+            android:layout_width="16dp"
+            android:layout_height="wrap_content"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/nextPageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:contentDescription="@string/next"
+            android:src="@drawable/ic_chevron_right"
+            android:tint="@color/black"/>
+    </LinearLayout>
+</LinearLayout>

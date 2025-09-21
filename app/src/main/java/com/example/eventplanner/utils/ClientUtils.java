@@ -12,19 +12,26 @@ import com.example.eventplanner.activities.business.BusinessService;
 import com.example.eventplanner.activities.charts.ChartService;
 import com.example.eventplanner.activities.event.EventService;
 import com.example.eventplanner.activities.eventtype.EventTypeService;
+import com.example.eventplanner.activities.homepage.HomepageService;
 import com.example.eventplanner.activities.product.ProductService;
+import com.example.eventplanner.activities.profile.QuickRegisterService;
 import com.example.eventplanner.activities.profile.UserService;
 import com.example.eventplanner.activities.service.ServiceSolutionService;
 import com.example.eventplanner.activities.solutioncategory.SolutionCategoryService;
 import com.example.eventplanner.adapters.datetime.DurationAdapter;
 import com.example.eventplanner.adapters.datetime.LocalDateAdapter;
+import com.example.eventplanner.adapters.datetime.LocalDateTimeAdapter;
 import com.example.eventplanner.adapters.datetime.LocalTimeAdapter;
+import com.example.eventplanner.fragments.comment.CommentService;
 import com.example.eventplanner.fragments.gallery.GalleryService;
+import com.example.eventplanner.fragments.notification.NotificationService;
+import com.example.eventplanner.fragments.report.ReportService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import retrofit2.Retrofit;
@@ -39,6 +46,7 @@ public class ClientUtils {
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
             .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
             .registerTypeAdapter(Duration.class, new DurationAdapter())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
 
     public static Retrofit retrofit = new Retrofit.Builder()
@@ -81,6 +89,15 @@ public class ClientUtils {
     public static ProductService productService = retrofit.create(ProductService.class);
 
     public static GalleryService galleryService = retrofit.create(GalleryService.class);
+    public static HomepageService homepageService = retrofit.create(HomepageService.class);
+
+    public static QuickRegisterService quickRegisterService = retrofit.create(QuickRegisterService.class);
+
+    public static NotificationService notificationService = retrofit.create(NotificationService.class);
+
+    public static CommentService commentService = retrofit.create(CommentService.class);
+
+    public static ReportService reportService = retrofit.create(ReportService.class);
 
     public static ServiceSolutionService serviceSolutionService = retrofit.create(ServiceSolutionService.class);
 

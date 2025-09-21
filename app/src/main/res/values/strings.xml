@@ -112,7 +112,7 @@
     <!-- Unregistered user homepage -->
     <string name="open_drawer">Open Navigation Drawer</string>
     <string name="close_drawer">Close Navigation Drawer</string>
-    <string name="events">MOST POPULAR EVENTS IN YOUR CITY</string>
+    <string name="events">MOST POPULAR EVENTS</string>
     <string name="event_1">Event 1</string>
     <string name="event_2">Event 2</string>
     <string name="event_3">Event 3</string>
@@ -180,7 +180,7 @@
 
 
     <!-- Products and services -->
-    <string name="products_services">MOST POPULAR PRODUCTS/SERVICES IN YOUR CITY</string>
+    <string name="products_services">MOST POPULAR PRODUCTS&amp;SERVICES</string>
     <string name="product_1">Product 1</string>
     <string name="product_2">Product 2</string>
     <string name="product_3">Product 3</string>
@@ -276,7 +276,7 @@
     <string name="event_types_overview">Event types overview</string>
 
     <string name="create">Create</string>
-    <string name="max_guests">Max number of guests :</string>
+    <string name="max_guests">Maximum number of guests :</string>
     <string name="date">Date [ yyyy-mm-dd ] :</string>
     <string name="location">Location</string>
 
@@ -396,5 +396,40 @@
     <string name="address_format">Address [street, city, country] :</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <!-- Filters -->
+    <string name="start_date">Start date</string>
+    <string name="end_date">End date</string>
+    <string name="rating">Rating</string>
+    <string name="apply">Apply</string>
+    <string name="all_events">ALL EVENTS</string>
+    <string name="only_from_my_city">Only from my city</string>
+    <string name="all">All</string>
+    <string name="all_products_services">ALL PRODUCTS &amp; SERVICES</string>
+    <string name="max_discount">Max discount</string>
+    <string name="min_discount">Min discount</string>
+    <string name="sort_by">Sort by</string>
+    <string name="sort_direction">Sort direction</string>
+    <string name="invitation_text">We’re thrilled to welcome you to an unforgettable experience! Come and make memories, meet new people, and celebrate together!</string>
+    <string name="invited_events_title">INVITED EVENTS</string>
+    <string name="invited_events">Invited events</string>
+    <string name="your_notifications">Your Notifications</string>
+    <string name="mute_notifications">Mute Notifications</string>
+    <string name="notification_message">Notification content\n</string>
+    <string name="timestamp">Timestamp</string>
+    <string name="notification_icon">Notification icon</string>
+    <string name="notifications_muted_until">Muted until: %1$s</string>
+    <string name="mute_notifications_status">Mute Notifications</string>
+    <string name="mute_for">Mute for:</string>
+    <string name="unmute_notifications">Unmute Notifications</string>
+    <string name="unmute_indefinitely">Muted until: Until you turn it back on</string>
+    <string name="manage_comments">Manage comments</string>
+    <string name="manage_reports">Manage reports</string>
+    <string name="block_user">Block</string>
+    <string name="report_user">Report</string>
+    <string name="suspended_title">Your account is currently suspended.</string>
+    <string name="remaining_time">Time remaining until reactivation:</string>
+    <string name="contact_support">Please contact support if you believe this is a mistake.</string>
 
 </resources>

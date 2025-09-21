@@ -2,8 +2,10 @@ package com.example.eventplanner.activities.event;
 
 import com.example.eventplanner.dto.event.CreateEventDTO;
 import com.example.eventplanner.dto.event.EventDetailsDTO;
+import com.example.eventplanner.dto.event.FavEventDTO;
 import com.example.eventplanner.dto.event.UpdatedEventDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -37,5 +39,8 @@ public interface EventService {
     @GET("events/{eventId}/accepted-guests")
     Call<List<String>> getAcceptedGuests(@Header("Authorization") String token,
                                          @Path("eventId") Long eventId);
+
+    @GET("events/explore-events")
+    Call<ArrayList<FavEventDTO>> getOpenEvents(@Header("Authorization") String token);
 }
 

@@ -33,11 +33,10 @@ import com.example.eventplanner.activities.business.BusinessRegistrationActivity
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
 import com.example.eventplanner.adapters.ChatAdapter;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
-import com.example.eventplanner.fragments.homepage.HomepageCardsFragment;
+import com.example.eventplanner.fragments.homepage.TopEventsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
-import com.example.eventplanner.fragments.homepage.HomepageProductsServicesFragment;
-import com.example.eventplanner.fragments.homepage.PSListFragment;
-import com.example.eventplanner.fragments.product.ProductCreationFragment;
+import com.example.eventplanner.fragments.homepage.TopSolutionsFragment;
+import com.example.eventplanner.fragments.homepage.SolutionListFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
 import com.google.android.material.navigation.NavigationView;
 
@@ -231,7 +230,7 @@ public class ProviderHomepageActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (savedInstanceState == null) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.cards_fragment_container, new HomepageCardsFragment())
+                    .replace(R.id.cards_fragment_container, new TopEventsFragment())
                     .commit();
 
             fragmentManager.beginTransaction()
@@ -243,7 +242,7 @@ public class ProviderHomepageActivity extends AppCompatActivity {
                     .commit();
 
             fragmentManager.beginTransaction()
-                    .replace(R.id.cards_products_fragment_container, new HomepageProductsServicesFragment())
+                    .replace(R.id.cards_products_fragment_container, new TopSolutionsFragment())
                     .commit();
 
             fragmentManager.beginTransaction()
@@ -251,7 +250,7 @@ public class ProviderHomepageActivity extends AppCompatActivity {
                     .commit();
 
             fragmentManager.beginTransaction()
-                    .replace(R.id.ps_list_fragment_container, new PSListFragment())
+                    .replace(R.id.ps_list_fragment_container, new SolutionListFragment())
                     .commit();
         }
 

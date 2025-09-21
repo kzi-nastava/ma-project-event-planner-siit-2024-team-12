@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/notification_item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/border_rounded_corners"
+    android:clickable="true"
+    android:focusable="true"
+    android:elevation="4dp">
+
+    <ImageView
+        android:id="@+id/notification_icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_notification_generic"
+        android:contentDescription="@string/notification_icon" />
+
+    <View
+        android:id="@+id/divider_line"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_toEndOf="@id/notification_icon"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/dark_gray"
+        android:layout_alignTop="@id/notification_content_container"
+        android:layout_alignBottom="@id/notification_content_container"/>
+
+    <LinearLayout
+        android:id="@+id/notification_content_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/divider_line"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/notification_info_container"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/notification_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/notification_message"
+            android:textSize="16sp"
+            android:textColor="@android:color/black" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/notification_info_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:gravity="end|center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:id="@+id/notification_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/dark_gray" />
+
+            <TextView
+                android:id="@+id/notification_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/dark_gray" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_chevron_right"
+            android:contentDescription="@drawable/ic_chevron_right"
+            app:tint="@color/dark_gray" />
+
+    </LinearLayout>
+</RelativeLayout>

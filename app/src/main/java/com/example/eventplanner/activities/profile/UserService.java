@@ -3,6 +3,7 @@ package com.example.eventplanner.activities.profile;
 import com.example.eventplanner.dto.event.AcceptedEventDTO;
 import com.example.eventplanner.dto.event.FavEventDTO;
 import com.example.eventplanner.dto.solution.FavSolutionDTO;
+import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.dto.user.UpdateUserDTO;
 
 import com.example.eventplanner.dto.user.UpdatedUserDTO;
@@ -14,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Header;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.GET;
@@ -45,10 +47,6 @@ public interface UserService {
     @GET("users/{email}/favorite-events")
     Call<ArrayList<FavEventDTO>> getFavoriteEvents(@Header("Authorization") String token,
                                                    @Path("email") String email);
-
-
-    @GET("users/explore-events")
-    Call<ArrayList<FavEventDTO>> getOpenEvents(@Header("Authorization") String token);
 
 
     @GET("users/{email}/favorite-services")
@@ -95,5 +93,11 @@ public interface UserService {
     Call<Void> removeFavoriteProduct(@Header("Authorization") String token,
                                      @Path("email") String email,
                                      @Query("productId") Long productId);
+
+    @GET("users/{email}/profile")
+    Call<GetUserDTO> getUserProfile(@Header("Authorization") String authorization, @Path("email") String email);
+
+    @PATCH("users/suspend/{userId}")
+    Call<ResponseBody> suspendUser(@Header("Authorization") String authorization, @Path("userId") Long userId);
 
 }

@@ -17,17 +17,23 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.eventplanner.activities.homepage.HomepageActivity;
+import com.example.eventplanner.fragments.profile.SuspendedUserFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.utils.ValidationUtils;
-import com.example.eventplanner.activities.homepage.AdminHomepageActivity;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
-import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.dto.auth.LogInRequest;
 import com.example.eventplanner.dto.auth.UserTokenState;
 import com.example.eventplanner.fragments.others.ResetPasswordFragment;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Map;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -97,56 +103,73 @@ public class LoginActivity extends AppCompatActivity {
     private void logIn() {
         LogInRequest request = getLogInRequest();
 
-        Call<UserTokenState> call = ClientUtils.authService.logIn(request);
+        Call<ResponseBody> call = ClientUtils.authService.logIn(request);
 
-        call.enqueue(new Callback<UserTokenState>() {
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<UserTokenState> call, Response<UserTokenState> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    UserTokenState userToken = response.body();
-                    String token = userToken.getAccessToken();
-                    DecodedJWT decodedJWT = JWT.decode(token);
-                    String userRole = decodedJWT.getClaim("role").asString();
-                    // email is stored under the "sub" key in jwt
-                    String email = decodedJWT.getClaim("sub").asString();
+                    try {
+                        String json = response.body().string();
+                        Gson gson = new Gson();
+                        UserTokenState userToken = gson.fromJson(json, UserTokenState.class);
+                        String token = userToken.getAccessToken();
+                        DecodedJWT decodedJWT = JWT.decode(token);
+                        String userRole = decodedJWT.getClaim("role").asString();
+                        String email = decodedJWT.getClaim("sub").asString();
 
-                    SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("token", token);
-                    editor.putString("userRole", userRole);
-                    editor.putString("email", email);
-                    editor.apply();
+                        SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("token", token);
+                        editor.putString("userRole", userRole);
+                        editor.putString("email", email);
+                        editor.apply();
 
+                        Intent intent = new Intent(LoginActivity.this, HomepageActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } catch (IOException e) {
+                        Toast.makeText(LoginActivity.this, "Error parsing response.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    if (response.code() == 403) {
+                        try {
+                            String json = response.errorBody().string();
+                            Gson gson = new Gson();
+                            Type type = new TypeToken<Map<String, Object>>(){}.getType();
+                            Map<String, Object> suspensionData = gson.fromJson(json, type);
 
-                    if (userRole.equalsIgnoreCase(UserRole.ROLE_ORGANIZER.toString())) {
-                        Intent intent = new Intent(LoginActivity.this, OrganiserHomepageActivity.class);
-                        startActivity(intent);
+                            double daysDouble = (double) suspensionData.get("days");
+                            double hoursDouble = (double) suspensionData.get("hours");
+                            double minutesDouble = (double) suspensionData.get("minutes");
+
+                            SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putBoolean("isSuspended", true);
+                            editor.putString("suspensionDays", String.format("%.0f", daysDouble));
+                            editor.putString("suspensionHours", String.format("%.0f", hoursDouble));
+                            editor.putString("suspensionMinutes", String.format("%.0f", minutesDouble));
+                            editor.apply();
+
+                            Intent intent = new Intent(LoginActivity.this, HomepageActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } catch (IOException e) {
+                            Toast.makeText(LoginActivity.this, "Error processing suspension data.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else if (response.code() == 401) {
+                        Toast.makeText(LoginActivity.this, "Wrong password!", Toast.LENGTH_SHORT).show();
+                    } else if (response.code() == 404) {
+                        Toast.makeText(LoginActivity.this, "Inactive account!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Error!", Toast.LENGTH_SHORT).show();
                     }
-                    else if (userRole.equalsIgnoreCase(UserRole.ROLE_PROVIDER.toString())) {
-                        Intent intent = new Intent(LoginActivity.this, ProviderHomepageActivity.class);
-                        startActivity(intent);
-                    }
-                    else if (userRole.equalsIgnoreCase(UserRole.ROLE_ADMIN.toString())) {
-                        Intent intent = new Intent(LoginActivity.this, AdminHomepageActivity.class);
-                        startActivity(intent);
-                    }
-                }
-                else if (response.code() == 401) {
-                    Toast.makeText(LoginActivity.this, "Wrong password!", Toast.LENGTH_SHORT).show();
-                }
-                else if (response.code() == 404) {
-                    Toast.makeText(LoginActivity.this, "Inactive account!", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(LoginActivity.this, "Error!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<UserTokenState> call, Throwable t) {
-                Log.e("LoginActivity", "API call failed: " + t.getMessage());
-
-                Toast.makeText(LoginActivity.this, "Nope", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 

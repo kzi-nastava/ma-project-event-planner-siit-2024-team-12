@@ -49,6 +49,16 @@
             android:title="@string/ratings_chart"/>
     </group>
 
+    <group android:id="@+id/management">
+        <item
+            android:id="@+id/nav_manage_comments"
+            android:title="@string/manage_comments" />
+
+        <item
+            android:id="@+id/nav_manage_reports"
+            android:title="@string/manage_reports"/>
+    </group>
+
 
 
     <item

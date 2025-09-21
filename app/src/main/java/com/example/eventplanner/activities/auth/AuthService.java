@@ -31,7 +31,7 @@ public interface AuthService {
     Call<ResponseBody> verifyUserAccount(@Query("email") String email);
 
     @POST("auth/login")
-    Call<UserTokenState> logIn(@Body LogInRequest request);
+    Call<ResponseBody> logIn(@Body LogInRequest request);
 
     @GET("auth/current-user")
     Call<GetUserDTO> getCurrentUser(@Header("Authorization") String token);
