@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.UpdateCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.UpdatedCategoryDTO;
+import com.example.eventplanner.enumeration.Status;
 import com.example.eventplanner.utils.ClientUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -140,6 +141,32 @@ public class CategoryViewModel extends AndroidViewModel {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Toast.makeText(getApplication(), "Network error while deleting category.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    public void approveCategory(Long id, UpdateCategoryDTO updateDto) {
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            Toast.makeText(getApplication(), "User not authenticated.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        updateDto.setStatus(Status.ACCEPTED);
+
+        Call<UpdatedCategoryDTO> call = ClientUtils.solutionCategoryService.approveCategory(auth, id, updateDto);
+        call.enqueue(new Callback<UpdatedCategoryDTO>() {
+            @Override
+            public void onResponse(Call<UpdatedCategoryDTO> call, Response<UpdatedCategoryDTO> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getApplication(), "Category approved successfully.", Toast.LENGTH_SHORT).show();
+                    fetchRecommendedCategories();
+                } else {
+                    Toast.makeText(getApplication(), "Failed to approve category: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdatedCategoryDTO> call, Throwable t) {
+                Toast.makeText(getApplication(), "Network error while approving category.", Toast.LENGTH_SHORT).show();
             }
         });
     }

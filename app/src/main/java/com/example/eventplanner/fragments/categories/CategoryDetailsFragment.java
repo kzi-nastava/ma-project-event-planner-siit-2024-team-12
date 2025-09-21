@@ -87,7 +87,6 @@ public class CategoryDetailsFragment extends DialogFragment {
                 }
             });
             deleteButton.setOnClickListener(v -> {
-                // Implementiraj logiku za brisanje kategorije
                 if (category != null && category.getId() != null) {
                     viewModel.deleteCategory(Long.valueOf(category.getId()));
                     dismiss();
@@ -96,9 +95,19 @@ public class CategoryDetailsFragment extends DialogFragment {
 
         } else {
             actionButton.setText("Approve");
-            // Implementiraj logiku za dugme za odobravanje
             actionButton.setOnClickListener(v -> {
-                // Pozovi metodu za odobravanje kategorije
+                if(nameEditText.getText().toString().isEmpty() || descriptionEditText.getText().toString().isEmpty()){
+                    Toast.makeText(getContext(), "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String updatedName = nameEditText.getText().toString();
+                String updatedDescription = descriptionEditText.getText().toString();
+                UpdateCategoryDTO updateDto = new UpdateCategoryDTO(updatedName, updatedDescription, Status.ACCEPTED);
+
+                if (category != null && category.getId() != null) {
+                    viewModel.approveCategory(Long.valueOf(category.getId()), updateDto);
+                    dismiss();
+                }
             });
             deleteButton.setOnClickListener(v -> {
                 // Implementiraj logiku za brisanje kategorije

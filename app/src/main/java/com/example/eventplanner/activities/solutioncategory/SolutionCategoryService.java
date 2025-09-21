@@ -24,13 +24,19 @@ public interface SolutionCategoryService {
     Call<List<GetCategoryDTO>> getAccepted(@Header("Authorization") String token);
     @PUT("categories/{id}")
     Call<UpdatedCategoryDTO> updateCategory(
-            @Header("Authorization") String authHeader,
+            @Header("Authorization") String token,
             @Path("id") Long id,
             @Body UpdateCategoryDTO updateCategoryDTO
     );
     @DELETE("categories/{id}")
     Call<Void> deleteCategory(
-            @Header("Authorization") String authHeader,
+            @Header("Authorization") String token,
             @Path("id") Long id
+    );
+    @PUT("categories/approve/{id}")
+    Call<UpdatedCategoryDTO> approveCategory(
+            @Header("Authorization") String token,
+            @Path("id") Long id,
+            @Body UpdateCategoryDTO category
     );
 }
