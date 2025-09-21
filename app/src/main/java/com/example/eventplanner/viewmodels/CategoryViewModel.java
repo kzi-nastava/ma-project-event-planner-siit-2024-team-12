@@ -6,7 +6,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
+
+import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,18 +17,18 @@ import retrofit2.Response;
 
 public class CategoryViewModel extends AndroidViewModel {
 
-    private final MutableLiveData<List<GetSolutionCategoryDTO>> activeCategories = new MutableLiveData<>();
-    private final MutableLiveData<List<GetSolutionCategoryDTO>> recommendedCategories = new MutableLiveData<>();
+    private final MutableLiveData<List<GetCategoryDTO>> activeCategories = new MutableLiveData<>();
+    private final MutableLiveData<List<GetCategoryDTO>> recommendedCategories = new MutableLiveData<>();
 
     public CategoryViewModel(@NonNull Application application) {
         super(application);
     }
 
-    public MutableLiveData<List<GetSolutionCategoryDTO>> getActiveCategories() {
+    public MutableLiveData<List<GetCategoryDTO>> getActiveCategories() {
         return activeCategories;
     }
 
-    public MutableLiveData<List<GetSolutionCategoryDTO>> getRecommendedCategories() {
+    public MutableLiveData<List<GetCategoryDTO>> getRecommendedCategories() {
         return recommendedCategories;
     }
 
@@ -39,10 +40,10 @@ public class CategoryViewModel extends AndroidViewModel {
             return;
         }
 
-        Call<List<GetSolutionCategoryDTO>> call = ClientUtils.solutionCategoryService.getAllAccepted(auth);
-        call.enqueue(new Callback<List<GetSolutionCategoryDTO>>() {
+        Call<List<GetCategoryDTO>> call = ClientUtils.solutionCategoryService.getAccepted(auth);
+        call.enqueue(new Callback<List<GetCategoryDTO>>() {
             @Override
-            public void onResponse(Call<List<GetSolutionCategoryDTO>> call, Response<List<GetSolutionCategoryDTO>> response) {
+            public void onResponse(Call<List<GetCategoryDTO>> call, Response<List<GetCategoryDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     activeCategories.setValue(response.body());
                 } else {
@@ -52,7 +53,7 @@ public class CategoryViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onFailure(Call<List<GetSolutionCategoryDTO>> call, Throwable t) {
+            public void onFailure(Call<List<GetCategoryDTO>> call, Throwable t) {
                 activeCategories.setValue(new ArrayList<>());
                 Log.e("API_CALL", "Network error while fetching active categories: " + t.getMessage());
             }
@@ -67,10 +68,10 @@ public class CategoryViewModel extends AndroidViewModel {
             return;
         }
 
-        Call<List<GetSolutionCategoryDTO>> call = ClientUtils.solutionCategoryService.getAllRecommended(auth);
-        call.enqueue(new Callback<List<GetSolutionCategoryDTO>>() {
+        Call<List<GetCategoryDTO>> call = ClientUtils.solutionCategoryService.getAllRecommended(auth);
+        call.enqueue(new Callback<List<GetCategoryDTO>>() {
             @Override
-            public void onResponse(Call<List<GetSolutionCategoryDTO>> call, Response<List<GetSolutionCategoryDTO>> response) {
+            public void onResponse(Call<List<GetCategoryDTO>> call, Response<List<GetCategoryDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     recommendedCategories.setValue(response.body());
                 } else {
@@ -80,7 +81,7 @@ public class CategoryViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onFailure(Call<List<GetSolutionCategoryDTO>> call, Throwable t) {
+            public void onFailure(Call<List<GetCategoryDTO>> call, Throwable t) {
                 recommendedCategories.setValue(new ArrayList<>());
                 Log.e("API_CALL", "Network error while fetching recommended categories: " + t.getMessage());
             }

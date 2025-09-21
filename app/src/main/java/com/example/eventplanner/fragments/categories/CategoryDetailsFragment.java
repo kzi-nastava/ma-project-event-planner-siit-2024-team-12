@@ -11,7 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import com.example.eventplanner.R;
-import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
+import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
+
 import java.io.Serializable;
 
 public class CategoryDetailsFragment extends DialogFragment {
@@ -19,10 +20,10 @@ public class CategoryDetailsFragment extends DialogFragment {
     private static final String ARG_CATEGORY = "category";
     private static final String ARG_IS_ACTIVE = "is_active";
 
-    private GetSolutionCategoryDTO category;
+    private GetCategoryDTO category;
     private boolean isActive;
 
-    public static CategoryDetailsFragment newInstance(GetSolutionCategoryDTO category, boolean isActive) {
+    public static CategoryDetailsFragment newInstance(GetCategoryDTO category, boolean isActive) {
         CategoryDetailsFragment fragment = new CategoryDetailsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_CATEGORY, (Serializable) category);
@@ -35,7 +36,7 @@ public class CategoryDetailsFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            category = (GetSolutionCategoryDTO) getArguments().getSerializable(ARG_CATEGORY);
+            category = (GetCategoryDTO) getArguments().getSerializable(ARG_CATEGORY);
             isActive = getArguments().getBoolean(ARG_IS_ACTIVE);
         }
     }

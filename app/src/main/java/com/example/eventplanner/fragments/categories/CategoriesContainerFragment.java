@@ -27,9 +27,9 @@ public class CategoriesContainerFragment extends Fragment {
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             if (position == 0) {
-                tab.setText("Aktivne");
+                tab.setText("Active");
             } else {
-                tab.setText("Preporučene");
+                tab.setText("Recommended");
             }
         }).attach();
 

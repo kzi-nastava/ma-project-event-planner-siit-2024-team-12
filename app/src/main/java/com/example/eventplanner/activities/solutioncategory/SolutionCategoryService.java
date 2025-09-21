@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities.solutioncategory;
 
+import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
 
 import java.util.List;
@@ -12,5 +13,7 @@ public interface SolutionCategoryService {
     @GET("categories/accepted")
     Call<List<GetSolutionCategoryDTO>> getAllAccepted(@Header("Authorization") String token);
     @GET("categories/recommended")
-    Call<List<GetSolutionCategoryDTO>> getAllRecommended(@Header("Authorization") String token);
+    Call<List<GetCategoryDTO>> getAllRecommended(@Header("Authorization") String token);
+    @GET("categories/accepted")
+    Call<List<GetCategoryDTO>> getAccepted(@Header("Authorization") String token);
 }

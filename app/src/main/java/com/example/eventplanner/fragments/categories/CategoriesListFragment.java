@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.categories.CategoryAdapter;
-import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
+import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
 import com.example.eventplanner.viewmodels.CategoryViewModel;
 
 public class CategoriesListFragment extends Fragment implements CategoryAdapter.OnCategoryClickListener{
@@ -50,7 +50,7 @@ public class CategoriesListFragment extends Fragment implements CategoryAdapter.
         return view;
     }
     @Override
-    public void onCategoryClick(GetSolutionCategoryDTO category, boolean isActive) {
+    public void onCategoryClick(GetCategoryDTO category, boolean isActive) {
         // Kreiraj i prikaži novi DialogFragment
         CategoryDetailsFragment detailsFragment = CategoryDetailsFragment.newInstance(category, isActive);
 

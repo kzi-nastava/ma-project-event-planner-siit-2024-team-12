@@ -7,18 +7,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
-import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
+import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
     public interface OnCategoryClickListener {
-        void onCategoryClick(GetSolutionCategoryDTO category, boolean isActive);
+        void onCategoryClick(GetCategoryDTO category, boolean isActive);
     }
 
-    private List<GetSolutionCategoryDTO> categories = new ArrayList<>();
+    private List<GetCategoryDTO> categories = new ArrayList<>();
 
-    public void setCategories(List<GetSolutionCategoryDTO> categories) {
+    public void setCategories(List<GetCategoryDTO> categories) {
         this.categories = categories;
         notifyDataSetChanged();
     }
@@ -39,7 +40,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
-        GetSolutionCategoryDTO category = categories.get(position);
+        GetCategoryDTO category = categories.get(position);
         holder.bind(category);
 
         holder.itemView.setOnClickListener(v -> {
@@ -64,7 +65,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             descriptionTextView = itemView.findViewById(R.id.textViewCategoryDescription);
         }
 
-        void bind(GetSolutionCategoryDTO category) {
+        void bind(GetCategoryDTO category) {
             nameTextView.setText(category.getName());
             descriptionTextView.setText(category.getDescription());
         }
