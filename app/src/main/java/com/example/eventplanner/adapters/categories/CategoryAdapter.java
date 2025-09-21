@@ -12,12 +12,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
+    public interface OnCategoryClickListener {
+        void onCategoryClick(GetSolutionCategoryDTO category, boolean isActive);
+    }
 
     private List<GetSolutionCategoryDTO> categories = new ArrayList<>();
 
     public void setCategories(List<GetSolutionCategoryDTO> categories) {
         this.categories = categories;
         notifyDataSetChanged();
+    }
+    private OnCategoryClickListener listener;
+    private boolean isActiveList;
+
+    public CategoryAdapter(boolean isActiveList, OnCategoryClickListener listener) {
+        this.isActiveList = isActiveList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -31,6 +41,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         GetSolutionCategoryDTO category = categories.get(position);
         holder.bind(category);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onCategoryClick(category, isActiveList);
+            }
+        });
     }
 
     @Override

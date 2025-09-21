@@ -12,9 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.categories.CategoryAdapter;
+import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
 import com.example.eventplanner.viewmodels.CategoryViewModel;
 
-public class CategoriesListFragment extends Fragment {
+public class CategoriesListFragment extends Fragment implements CategoryAdapter.OnCategoryClickListener{
 
     private CategoryViewModel viewModel;
     private CategoryAdapter adapter;
@@ -35,7 +36,7 @@ public class CategoriesListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         viewModel = new ViewModelProvider(requireActivity()).get(CategoryViewModel.class);
-        adapter = new CategoryAdapter();
+        adapter = new CategoryAdapter("active".equals(categoryType), this);
         recyclerView.setAdapter(adapter);
 
 
@@ -47,6 +48,14 @@ public class CategoriesListFragment extends Fragment {
         }
 
         return view;
+    }
+    @Override
+    public void onCategoryClick(GetSolutionCategoryDTO category, boolean isActive) {
+        // Kreiraj i prikaži novi DialogFragment
+        CategoryDetailsFragment detailsFragment = CategoryDetailsFragment.newInstance(category, isActive);
+
+        // show() metoda prikaže fragment kao dijalog
+        detailsFragment.show(getParentFragmentManager(), "category_details_dialog");
     }
     public void refreshData() {
         if ("active".equals(categoryType)) {
