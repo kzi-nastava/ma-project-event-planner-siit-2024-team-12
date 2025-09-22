@@ -17,9 +17,14 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.user.GetUserDTO;
+import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.fragments.report.ReportUserFragment;
 import com.example.eventplanner.utils.ClientUtils;
 
+import java.util.Objects;
+import java.util.Set;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,6 +34,11 @@ public class ViewUserProfileFragment extends Fragment {
     private static final String ARG_USER_EMAIL = "user_email";
     private String userEmail;
     private Long reportedUserId;
+    private GetUserDTO viewedUser;
+    private Long currentUserId;
+    private UserRole currentUserRole;
+
+    private Set<Long> currentUserBlockedUsersIds;
 
     private TextView name, surname, email, phone, address;
     private ImageView mainImage, closeButton;
@@ -63,6 +73,7 @@ public class ViewUserProfileFragment extends Fragment {
         closeButton = view.findViewById(R.id.close_form);
         btnReportUser = view.findViewById(R.id.btnReportUser);
         btnBlockUser = view.findViewById(R.id.btnBlockUser);
+        btnBlockUser.setVisibility(View.GONE);
 
         return view;
     }
@@ -70,23 +81,29 @@ public class ViewUserProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fetchUserProfile();
+        fetchUserProfileAndCurrentUser();
 
         closeButton.setOnClickListener(v -> closeForm());
         btnReportUser.setOnClickListener(v -> reportUser());
-        btnBlockUser.setOnClickListener(v -> blockUser());
+        btnBlockUser.setOnClickListener(v -> {
+            if (btnBlockUser.getText().toString().equalsIgnoreCase(getString(R.string.unblock_user))) {
+                unblockUser();
+            } else {
+                blockUser();
+            }
+        });
     }
-
-    private void fetchUserProfile() {
+    private void fetchUserProfileAndCurrentUser() {
         String authorization = ClientUtils.getAuthorization(getContext());
-
         ClientUtils.userService.getUserProfile(authorization, userEmail).enqueue(new Callback<GetUserDTO>() {
             @Override
             public void onResponse(Call<GetUserDTO> call, Response<GetUserDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    GetUserDTO user = response.body();
-                    setUpFormDetails(user);
-                    reportedUserId = user.getId();
+                    viewedUser = response.body();
+                    setUpFormDetails(viewedUser);
+                    reportedUserId = viewedUser.getId();
+
+                    fetchCurrentUserProfile(authorization);
                 } else {
                     Toast.makeText(getContext(), "Failed to fetch user data", Toast.LENGTH_SHORT).show();
                     closeForm();
@@ -100,6 +117,55 @@ public class ViewUserProfileFragment extends Fragment {
             }
         });
     }
+
+    private void fetchCurrentUserProfile(String authorization) {
+        ClientUtils.authService.getCurrentUser(authorization).enqueue(new Callback<GetUserDTO>() {
+            @Override
+            public void onResponse(Call<GetUserDTO> call, Response<GetUserDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetUserDTO currentUser = response.body();
+                    currentUserId = currentUser.getId();
+                    currentUserRole = UserRole.valueOf(currentUser.getRole());
+                    currentUserBlockedUsersIds = currentUser.getBlockedUsersIds();
+
+                    updateBlockButtonState();
+                } else {
+                    Toast.makeText(getContext(), "Failed to fetch current user data.", Toast.LENGTH_SHORT).show();
+                    btnBlockUser.setVisibility(View.GONE);
+                }
+            }
+            @Override
+            public void onFailure(Call<GetUserDTO> call, Throwable t) {
+                Toast.makeText(getContext(), "Network error while fetching current user.", Toast.LENGTH_SHORT).show();
+                btnBlockUser.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void updateBlockButtonState() {
+        if (viewedUser == null || currentUserRole == null || currentUserId == null || currentUserBlockedUsersIds == null) {
+            btnBlockUser.setVisibility(View.GONE);
+            return;
+        }
+
+        boolean canBlock = canBlockUser(currentUserRole.toString(), viewedUser.getRole());
+
+        if (Objects.equals(currentUserId, viewedUser.getId())) {
+            canBlock = false;
+        }
+
+        if (canBlock) {
+            btnBlockUser.setVisibility(View.VISIBLE);
+            if (currentUserBlockedUsersIds.contains(viewedUser.getId())) {
+                btnBlockUser.setText(R.string.unblock_user);
+            } else {
+                btnBlockUser.setText(R.string.block_user);
+            }
+        } else {
+            btnBlockUser.setVisibility(View.GONE);
+        }
+    }
+
 
     private void setUpFormDetails(GetUserDTO user) {
         name.setText(user.getName());
@@ -140,6 +206,67 @@ public class ViewUserProfileFragment extends Fragment {
     }
 
     private void blockUser() {
-        Toast.makeText(getContext(), "Block User action for email: " + userEmail, Toast.LENGTH_SHORT).show();
+        String authorization = ClientUtils.getAuthorization(getContext());
+        if (authorization == null || viewedUser == null) return;
+
+        ClientUtils.userService.blockUser(authorization, viewedUser.getId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "User successfully blocked!", Toast.LENGTH_SHORT).show();
+                    fetchUserProfileAndCurrentUser();
+                } else {
+                    Toast.makeText(getContext(), "Failed to block user.", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getContext(), "Network error.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void unblockUser() {
+        String authorization = ClientUtils.getAuthorization(getContext());
+        if (authorization == null || viewedUser == null) return;
+
+        ClientUtils.userService.unblockUser(authorization, viewedUser.getId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "User successfully unblocked!", Toast.LENGTH_SHORT).show();
+                    fetchUserProfileAndCurrentUser();
+                } else {
+                    Toast.makeText(getContext(), "Failed to unblock user.", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getContext(), "Network error.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private boolean canBlockUser(String blockerRole, String blockedRole) {
+        if (blockerRole == null || blockedRole == null) {
+            return false;
+        }
+
+        UserRole blockerRoleEnum = UserRole.valueOf(blockerRole);
+        UserRole blockedRoleEnum = UserRole.valueOf(blockedRole);
+
+        if (blockerRoleEnum == UserRole.ROLE_ORGANIZER && blockedRoleEnum == UserRole.ROLE_PROVIDER) {
+            return true;
+        }
+        if (blockerRoleEnum == UserRole.ROLE_PROVIDER && blockedRoleEnum == UserRole.ROLE_ORGANIZER) {
+            return true;
+        }
+        if (blockerRoleEnum == UserRole.ROLE_AUTHENTICATED_USER && blockedRoleEnum == UserRole.ROLE_ORGANIZER) {
+            return true;
+        }
+        if (blockerRoleEnum == UserRole.ROLE_ORGANIZER && blockedRoleEnum == UserRole.ROLE_AUTHENTICATED_USER) {
+            return true;
+        }
+        return false;
     }
 }
