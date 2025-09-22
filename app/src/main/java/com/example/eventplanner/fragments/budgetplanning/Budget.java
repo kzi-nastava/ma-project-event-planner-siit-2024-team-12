@@ -21,15 +21,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.budget.BudgetItemAdapter;
+import com.example.eventplanner.dto.budget.GetBudgetItemDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.viewmodels.BudgetPlanningViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Budget extends Fragment {
+public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetItemDialogListener{
 
     private static final String ARG_TYPE = "type";
     private static final String ARG_EVENT_ID = "eventId";
@@ -48,6 +50,10 @@ public class Budget extends Fragment {
 
     public Budget() {
         // Obavezni prazan konstruktor
+    }
+    @Override
+    public void onBudgetItemAdded(GetBudgetItemDTO newItem) {
+        budgetItemAdapter.addItem(newItem);
     }
 
     public static Budget newInstance(String type, @Nullable Long eventId) {
@@ -87,7 +93,7 @@ public class Budget extends Fragment {
         addItemFab = view.findViewById(R.id.fab_add_item);
 
         // Postavi RecyclerView
-        budgetItemAdapter = new BudgetItemAdapter(Collections.emptyList());
+        budgetItemAdapter = new BudgetItemAdapter(new ArrayList<>());
         budgetItemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         budgetItemsRecyclerView.setAdapter(budgetItemAdapter);
 
@@ -100,7 +106,9 @@ public class Budget extends Fragment {
     private void setupListeners() {
         // Postavi onClickListener za FAB
         addItemFab.setOnClickListener(v -> {
-            // ... (logika za dodavanje stavke)
+            BudgetItemDialogFragment dialogFragment = new BudgetItemDialogFragment();
+            dialogFragment.setBudgetItemDialogListener(this);
+            dialogFragment.show(getParentFragmentManager(), "BudgetItemDialog");
         });
 
         // Ažuriraj listener za dugme za predložene kategorije

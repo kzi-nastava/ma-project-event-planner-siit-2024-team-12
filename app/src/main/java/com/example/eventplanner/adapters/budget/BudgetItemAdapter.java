@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.viewholders.BudgetItemViewHolder;
 import com.example.eventplanner.dto.budget.GetBudgetItemDTO;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class BudgetItemAdapter extends RecyclerView.Adapter<BudgetItemViewHolder> {
@@ -39,5 +41,18 @@ public class BudgetItemAdapter extends RecyclerView.Adapter<BudgetItemViewHolder
     public void setItems(List<GetBudgetItemDTO> newItems) {
         this.budgetItems = newItems;
         notifyDataSetChanged();
+    }
+    // Nova metoda za dodavanje stavke
+    public void addItem(GetBudgetItemDTO newItem) {
+        if (budgetItems == null) {
+            budgetItems = new ArrayList<>();
+        }
+        budgetItems.add(newItem);
+        notifyItemInserted(budgetItems.size() - 1);
+    }
+
+    // Getter za listu, potreban za slanje na backend
+    public List<GetBudgetItemDTO> getItems() {
+        return budgetItems;
     }
 }
