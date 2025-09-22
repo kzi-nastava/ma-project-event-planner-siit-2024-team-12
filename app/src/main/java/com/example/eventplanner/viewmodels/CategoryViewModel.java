@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.eventplanner.dto.solutioncategory.CreateCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.CreatedCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
+import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.UpdateCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.UpdatedCategoryDTO;
 import com.example.eventplanner.enumeration.Status;
@@ -29,6 +30,13 @@ public class CategoryViewModel extends AndroidViewModel {
     private final MutableLiveData<List<GetCategoryDTO>> activeCategories = new MutableLiveData<>();
     private final MutableLiveData<List<GetCategoryDTO>> recommendedCategories = new MutableLiveData<>();
     private final MutableLiveData<String> _creationStatus = new MutableLiveData<>();
+    private final MutableLiveData<GetSolutionCategoryDTO> newlyCreatedCategory = new MutableLiveData<>();
+    public LiveData<GetSolutionCategoryDTO> getNewlyCreatedCategory() {
+        return newlyCreatedCategory;
+    }
+    public void setNewlyCreatedCategory(GetSolutionCategoryDTO category) {
+        newlyCreatedCategory.setValue(category);
+    }
     public LiveData<String> getCreationStatus() {
         return _creationStatus;
     }
@@ -45,7 +53,7 @@ public class CategoryViewModel extends AndroidViewModel {
         return recommendedCategories;
     }
 
-    public void createCategory(String name, String description) {
+    public void createCategory(String name, String description, String type) {
         if (name.isEmpty() || description.isEmpty()) {
             _creationStatus.setValue("Please fill in all fields.");
             return;
@@ -56,12 +64,31 @@ public class CategoryViewModel extends AndroidViewModel {
             return;
         }
 
-        CreateCategoryDTO category = new CreateCategoryDTO(name, description, Status.ACCEPTED);
+        CreateCategoryDTO category = new CreateCategoryDTO();
+        category.setDescription(description);
+        category.setName(name);
+
+        String successMessage;
+        if (type.toUpperCase().equals("CREATE")) {
+            category.setStatus(Status.ACCEPTED);
+            successMessage = "Successfully created category!";
+        } else {
+            category.setStatus(Status.PENDING);
+            successMessage = "Successfully suggested category!";
+        }
+
         ClientUtils.solutionCategoryService.createCategory(auth, category).enqueue(new Callback<CreatedCategoryDTO>() {
             @Override
             public void onResponse(Call<CreatedCategoryDTO> call, Response<CreatedCategoryDTO> response) {
-                if (response.isSuccessful()) {
-                    _creationStatus.setValue("Successfully created category!");
+                if (response.isSuccessful() && response.body()!=null) {
+                    GetSolutionCategoryDTO newCategory = new GetSolutionCategoryDTO(
+                            response.body().getId().toString(),
+                            response.body().getName(),
+                            response.body().getDescription(),
+                            "PENDING"
+                    );
+                    setNewlyCreatedCategory(newCategory);
+                    _creationStatus.setValue(successMessage);
                 } else {
                     _creationStatus.setValue("Error creating category: " + response.message());
                 }

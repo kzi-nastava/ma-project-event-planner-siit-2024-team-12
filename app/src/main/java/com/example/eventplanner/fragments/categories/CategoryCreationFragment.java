@@ -56,7 +56,6 @@ public class CategoryCreationFragment extends DialogFragment {
 
         nameEditText = view.findViewById(R.id.editTextCategoryName);
         descriptionEditText = view.findViewById(R.id.editTextCategoryDesc);
-        Button backButton = view.findViewById(R.id.backCategoryCreate);
         Button submitButton = view.findViewById(R.id.newCategorySubmit);
         TextView titleTextView = view.findViewById(R.id.textViewCat);
 
@@ -76,10 +75,9 @@ public class CategoryCreationFragment extends DialogFragment {
                 Toast.makeText(getContext(), "Please fill in all fields.", Toast.LENGTH_SHORT).show();
             } else {
                 if (TYPE_SUGGEST.equals(creationType)) {
-                    // Pozovi ViewModel metodu za preporuku
-//                    viewModel.suggestCategory(categoryName, categoryDescription);
+                    viewModel.createCategory(categoryName, categoryDescription, "SUGGEST");
                 } else {
-                    viewModel.createCategory(categoryName, categoryDescription);
+                    viewModel.createCategory(categoryName, categoryDescription, "CREATE");
                 }
             }
         });

@@ -105,6 +105,16 @@ public class ServiceCreationViewModel extends AndroidViewModel {
     public MutableLiveData<List<GetSolutionCategoryDTO>> getServiceCategories() {
         return serviceCategories;
     }
+    public void addSuggestedCategory(GetSolutionCategoryDTO category) {
+        List<GetSolutionCategoryDTO> currentList = serviceCategories.getValue();
+        if (currentList == null) {
+            currentList = new ArrayList<>();
+        }
+
+        currentList.add(category);
+
+        serviceCategories.setValue(currentList);
+    }
 
     public ServiceCreationViewModel(@NonNull Application application) {
         super(application);
