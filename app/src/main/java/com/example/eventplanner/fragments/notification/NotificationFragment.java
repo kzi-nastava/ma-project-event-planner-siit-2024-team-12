@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +25,7 @@ import com.example.eventplanner.activities.event.EventDetailsActivity;
 import com.example.eventplanner.activities.product.ProductDetailsActivity;
 import com.example.eventplanner.adapters.notification.NotificationAdapter;
 import com.example.eventplanner.dto.notification.GetNotificationDTO;
+import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
 import com.example.eventplanner.utils.ClientUtils;
 
 import java.time.LocalDateTime;
@@ -70,13 +73,13 @@ public class NotificationFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new NotificationAdapter(getContext(), currentNotifications, notification -> {
             Intent intent;
-            switch (notification.getEntityType()) {
-                case "event":
+            switch (notification.getEntityType().toUpperCase()) {
+                case "EVENT":
                     intent = new Intent(getContext(), EventDetailsActivity.class);
                     intent.putExtra("id", notification.getEntityId());
                     startActivity(intent);
                     break;
-                case "product":
+                case "PRODUCT":
                     intent = new Intent(getContext(), ProductDetailsActivity.class);
                     intent.putExtra("id", notification.getEntityId());
                     startActivity(intent);
@@ -85,7 +88,21 @@ public class NotificationFragment extends Fragment {
                     Toast.makeText(getContext(), "Service reservation details not implemented.", Toast.LENGTH_SHORT).show();
                     break;
                 case "SERVICE":
-                    Toast.makeText(getContext(), "Service details not implemented.", Toast.LENGTH_SHORT).show();
+                    if (getContext() instanceof AppCompatActivity) {
+                        AppCompatActivity activity = (AppCompatActivity) getContext();
+
+                        FrameLayout suspendedContainer = activity.findViewById(R.id.main_fragment_container);
+                        if (suspendedContainer != null) {
+                            suspendedContainer.setVisibility(View.VISIBLE);
+                        }
+
+                        ServiceDetailsFragment fragment = ServiceDetailsFragment.newInstance(notification.getEntityId());
+                        activity.getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_fragment_container, fragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
                     break;
                 default:
                     Toast.makeText(getContext(), "Unknown notification type.", Toast.LENGTH_SHORT).show();
