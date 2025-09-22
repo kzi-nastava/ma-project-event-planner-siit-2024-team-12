@@ -2,6 +2,9 @@ package com.example.eventplanner.dto.user;
 
 import com.example.eventplanner.dto.LocationDTO;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class GetUserDTO {
     private Long id;
     private String email;
@@ -11,6 +14,7 @@ public class GetUserDTO {
     private String phone;
     private String role;
     private String imageUrl;
+    private Set<Long> blockedUsersIds = new HashSet<>();
 
 
     public GetUserDTO() {
@@ -74,6 +78,9 @@ public class GetUserDTO {
     }
 
     public String getImageUrl() {return imageUrl;}
+
     public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
+    public Set<Long> getBlockedUsersIds() { return blockedUsersIds; }
+    public void setBlockedUsersIds(Set<Long> blockedUsersIds) { this.blockedUsersIds = blockedUsersIds; }
 }
 
