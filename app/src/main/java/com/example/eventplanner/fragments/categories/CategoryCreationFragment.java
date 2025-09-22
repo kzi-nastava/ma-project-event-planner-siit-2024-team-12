@@ -15,21 +15,18 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.eventplanner.R;
+import com.example.eventplanner.viewmodels.CategoryViewModel;
 
 public class CategoryCreationFragment extends DialogFragment {
-
-    public interface OnCategoryCreationListener {
-        void onCategoryCreated();
-        void onCategorySuggested();
-        void onCategoryCreationCanceled();
-    }
 
     private static final String ARG_CREATION_TYPE = "creation_type";
     private static final String TYPE_CREATE = "CREATE";
     private static final String TYPE_SUGGEST = "SUGGEST";
+    private CategoryViewModel viewModel;
 
-    private OnCategoryCreationListener listener;
     private String creationType;
 
     private EditText nameEditText;
@@ -44,26 +41,12 @@ public class CategoryCreationFragment extends DialogFragment {
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (getParentFragment() instanceof OnCategoryCreationListener) {
-            listener = (OnCategoryCreationListener) getParentFragment();
-        } else {
-            if (context instanceof OnCategoryCreationListener) {
-                listener = (OnCategoryCreationListener) context;
-            } else {
-                throw new RuntimeException(context.toString()
-                        + " mora da implementira OnCategoryCreationListener");
-            }
-        }
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             creationType = getArguments().getString(ARG_CREATION_TYPE);
         }
+        viewModel = new ViewModelProvider(requireActivity()).get(CategoryViewModel.class);
     }
 
     @Nullable
@@ -85,39 +68,25 @@ public class CategoryCreationFragment extends DialogFragment {
             submitButton.setText("Create");
         }
 
-        backButton.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onCategoryCreationCanceled();
-            }
-            dismiss();
-        });
-
         submitButton.setOnClickListener(v -> {
-            String categoryName = nameEditText.getText().toString();
-            String categoryDescription = descriptionEditText.getText().toString();
+            String categoryName = nameEditText.getText().toString().trim();
+            String categoryDescription = descriptionEditText.getText().toString().trim();
 
             if (categoryName.isEmpty() || categoryDescription.isEmpty()) {
                 Toast.makeText(getContext(), "Please fill in all fields.", Toast.LENGTH_SHORT).show();
             } else {
-                if (listener != null) {
-                    if (TYPE_SUGGEST.equals(creationType)) {
-                        listener.onCategorySuggested();
-                    } else {
-                        listener.onCategoryCreated();
-                    }
+                if (TYPE_SUGGEST.equals(creationType)) {
+                    // Pozovi ViewModel metodu za preporuku
+//                    viewModel.suggestCategory(categoryName, categoryDescription);
+                } else {
+                    viewModel.createCategory(categoryName, categoryDescription);
                 }
-                dismiss();
             }
         });
 
         return view;
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener = null;
-    }
     @Override
     public void onStart() {
         super.onStart();

@@ -1,5 +1,7 @@
 package com.example.eventplanner.activities.solutioncategory;
 
+import com.example.eventplanner.dto.solutioncategory.CreateCategoryDTO;
+import com.example.eventplanner.dto.solutioncategory.CreatedCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.UpdateCategoryDTO;
@@ -13,6 +15,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -48,4 +51,9 @@ public interface SolutionCategoryService {
             @Query("changeCategoryName") String changeCategoryName,
             @Body RequestBody emptyBody
     );
+    @POST("categories")
+    Call<CreatedCategoryDTO> createCategory(
+            @Header("Authorization") String token,
+            @Body CreateCategoryDTO category);
+
 }

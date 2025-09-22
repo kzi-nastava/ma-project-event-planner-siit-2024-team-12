@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
@@ -18,8 +19,9 @@ import com.example.eventplanner.viewmodels.CategoryViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public class CategoriesContainerFragment extends Fragment implements CategoryCreationFragment.OnCategoryCreationListener {
+public class CategoriesContainerFragment extends Fragment {
     private CategoryViewModel viewModel;
+    private DialogFragment categoryCreationDialog;
 
 
     @Nullable
@@ -42,6 +44,18 @@ public class CategoriesContainerFragment extends Fragment implements CategoryCre
             }
         }).attach();
 
+        viewModel.getCreationStatus().observe(getViewLifecycleOwner(), status -> {
+            Toast.makeText(getContext(), status, Toast.LENGTH_SHORT).show();
+            if (status.contains("Successfully")) {
+                if (categoryCreationDialog != null) {
+                    categoryCreationDialog.dismiss();
+                    categoryCreationDialog = null;
+                }
+                viewModel.fetchActiveCategories();
+                viewModel.fetchRecommendedCategories();
+            }
+        });
+
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -57,34 +71,11 @@ public class CategoriesContainerFragment extends Fragment implements CategoryCre
         viewModel.fetchActiveCategories();
 
         createCategoryButton.setOnClickListener(v -> {
-            // Kreiraj instancu novog fragmenta, ali sad je to DialogFragment
-            CategoryCreationFragment newFragment = CategoryCreationFragment.newInstance("CREATE");
-
-            // Prikazi dijalog
-            newFragment.show(getChildFragmentManager(), "category_creation_dialog");
+            categoryCreationDialog = CategoryCreationFragment.newInstance("CREATE");
+            categoryCreationDialog.show(getChildFragmentManager(), "category_creation_dialog");
         });
 
 
         return view;
-    }
-    @Override
-    public void onCategoryCreated() {
-        // Logika za kada je kategorija uspešno kreirana
-        Toast.makeText(getContext(), "Kategorija kreirana!", Toast.LENGTH_SHORT).show();
-        // Po potrebi, osveži podatke
-        viewModel.fetchActiveCategories();
-    }
-
-    @Override
-    public void onCategorySuggested() {
-        // Logika za kada je kategorija uspešno predložena
-        Toast.makeText(getContext(), "Kategorija predložena!", Toast.LENGTH_SHORT).show();
-        viewModel.fetchRecommendedCategories();
-    }
-
-    @Override
-    public void onCategoryCreationCanceled() {
-        // Logika za kada je korisnik odustao
-        Toast.makeText(getContext(), "Kreiranje otkazano.", Toast.LENGTH_SHORT).show();
     }
 }

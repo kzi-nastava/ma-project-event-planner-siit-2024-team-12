@@ -5,8 +5,11 @@ import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.eventplanner.dto.solutioncategory.CreateCategoryDTO;
+import com.example.eventplanner.dto.solutioncategory.CreatedCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.UpdateCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.UpdatedCategoryDTO;
@@ -25,6 +28,10 @@ public class CategoryViewModel extends AndroidViewModel {
 
     private final MutableLiveData<List<GetCategoryDTO>> activeCategories = new MutableLiveData<>();
     private final MutableLiveData<List<GetCategoryDTO>> recommendedCategories = new MutableLiveData<>();
+    private final MutableLiveData<String> _creationStatus = new MutableLiveData<>();
+    public LiveData<String> getCreationStatus() {
+        return _creationStatus;
+    }
 
     public CategoryViewModel(@NonNull Application application) {
         super(application);
@@ -38,6 +45,34 @@ public class CategoryViewModel extends AndroidViewModel {
         return recommendedCategories;
     }
 
+    public void createCategory(String name, String description) {
+        if (name.isEmpty() || description.isEmpty()) {
+            _creationStatus.setValue("Please fill in all fields.");
+            return;
+        }
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            _creationStatus.setValue("User not authenticated.");
+            return;
+        }
+
+        CreateCategoryDTO category = new CreateCategoryDTO(name, description, Status.ACCEPTED);
+        ClientUtils.solutionCategoryService.createCategory(auth, category).enqueue(new Callback<CreatedCategoryDTO>() {
+            @Override
+            public void onResponse(Call<CreatedCategoryDTO> call, Response<CreatedCategoryDTO> response) {
+                if (response.isSuccessful()) {
+                    _creationStatus.setValue("Successfully created category!");
+                } else {
+                    _creationStatus.setValue("Error creating category: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreatedCategoryDTO> call, Throwable t) {
+                _creationStatus.setValue("Network error: " + t.getMessage());
+            }
+        });
+    }
     public void fetchActiveCategories() {
         String auth = ClientUtils.getAuthorization(getApplication());
         if (auth.isEmpty()) {
@@ -105,9 +140,7 @@ public class CategoryViewModel extends AndroidViewModel {
             @Override
             public void onResponse(Call<UpdatedCategoryDTO> call, Response<UpdatedCategoryDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Handle success (e.g., show a toast, refresh data)
                     Toast.makeText(getApplication(), "Category updated successfully.", Toast.LENGTH_SHORT).show();
-                    // You might want to refresh the list of active categories here
                     fetchActiveCategories();
                 } else {
                     Toast.makeText(getApplication(), "Failed to update category: " + response.code(), Toast.LENGTH_SHORT).show();
