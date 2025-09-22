@@ -23,6 +23,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.budget.BudgetItemAdapter;
 import com.example.eventplanner.dto.budget.GetBudgetItemDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
+import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
 import com.example.eventplanner.viewmodels.BudgetPlanningViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -52,9 +53,27 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
         // Obavezni prazan konstruktor
     }
     @Override
-    public void onBudgetItemAdded(GetBudgetItemDTO newItem) {
-        budgetItemAdapter.addItem(newItem);
+    public void onBudgetItemAdded(GetBudgetItemDTO newItem, GetCategoryDTO selectedCategory) {
+        // 1. Provera da li kategorija već postoji
+        boolean categoryExists = false;
+        for (GetBudgetItemDTO item : budgetItemAdapter.getItems()) {
+            if (item.getCategory() != null && item.getCategory().getId().equals(selectedCategory.getId())) {
+                categoryExists = true;
+                break;
+            }
+        }
+
+        if (categoryExists) {
+            Toast.makeText(getContext(), "Stavka s odabranom kategorijom već postoji.", Toast.LENGTH_SHORT).show();
+        } else {
+            // 2. Ako kategorija ne postoji, dodajemo novi item
+            budgetItemAdapter.addItem(newItem);
+        }
     }
+//    @Override
+//    public void onBudgetItemAdded(GetBudgetItemDTO newItem) {
+//        budgetItemAdapter.addItem(newItem);
+//    }
 
     public static Budget newInstance(String type, @Nullable Long eventId) {
         Budget fragment = new Budget();

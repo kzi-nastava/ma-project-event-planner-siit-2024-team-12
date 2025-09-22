@@ -35,7 +35,7 @@ public class BudgetItemDialogFragment extends DialogFragment {
 
     // Za komunikaciju sa glavnim fragmentom
     public interface BudgetItemDialogListener {
-        void onBudgetItemAdded(GetBudgetItemDTO newItem);
+        void onBudgetItemAdded(GetBudgetItemDTO newItem, GetCategoryDTO selectedCategory);
     }
 
     private BudgetItemDialogListener listener;
@@ -110,7 +110,7 @@ public class BudgetItemDialogFragment extends DialogFragment {
 
                     // Proslijedi novu stavku glavnom fragmentu
                     if (listener != null) {
-                        listener.onBudgetItemAdded(newBudgetItem);
+                        listener.onBudgetItemAdded(newBudgetItem, selectedCategory);
                     }
                     dismiss();
                 } catch (NumberFormatException e) {
