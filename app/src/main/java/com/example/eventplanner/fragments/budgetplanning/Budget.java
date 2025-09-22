@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.budget.BudgetItemAdapter;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.viewmodels.BudgetPlanningViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -43,6 +44,7 @@ public class Budget extends Fragment {
     private TextView titleTextView;
     private RecyclerView budgetItemsRecyclerView;
     private FloatingActionButton addItemFab;
+    private BudgetItemAdapter budgetItemAdapter;
 
     public Budget() {
         // Obavezni prazan konstruktor
@@ -85,7 +87,9 @@ public class Budget extends Fragment {
         addItemFab = view.findViewById(R.id.fab_add_item);
 
         // Postavi RecyclerView
+        budgetItemAdapter = new BudgetItemAdapter(Collections.emptyList());
         budgetItemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        budgetItemsRecyclerView.setAdapter(budgetItemAdapter);
 
         setupViewsByType();
         setupObservers();
@@ -184,9 +188,8 @@ public class Budget extends Fragment {
                     eventTypeSpinner.setEnabled(false); // Onemogući promjenu tipa eventa
                 }
 
-                // Ovde ćeš popuniti RecyclerView sa stavkama budžeta
-                // Za sada, samo popuniš dummy podacima ili praznom listom
-                // budgetItemsRecyclerView.setAdapter(new BudgetItemsAdapter(budgetDetails.getBudgetItems()));
+                // **Ažuriraj RecyclerView s novim podacima**
+                budgetItemAdapter.setItems(budgetDetails.getBudgetItems());
             }
         });
 
