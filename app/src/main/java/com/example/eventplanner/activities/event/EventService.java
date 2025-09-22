@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities.event;
 
+import com.example.eventplanner.dto.budget.UpdateBudgetForEventDTO;
 import com.example.eventplanner.dto.event.CreateEventDTO;
 import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.dto.event.FavEventDTO;
@@ -42,5 +43,9 @@ public interface EventService {
 
     @GET("events/explore-events")
     Call<ArrayList<FavEventDTO>> getOpenEvents(@Header("Authorization") String token);
+    @GET("events/{eventId}/budget")
+    Call<UpdateBudgetForEventDTO> getBudgetDetailsByEventId(
+            @Header("Authorization") String token,
+            @Path("eventId") Long eventId);
 }
 

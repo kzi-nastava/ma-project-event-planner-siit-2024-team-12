@@ -4,18 +4,27 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
+import com.example.eventplanner.viewmodels.BudgetPlanningViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Budget extends Fragment {
 
@@ -25,8 +34,9 @@ public class Budget extends Fragment {
     private String type;
     private Long eventId;
 
+    private BudgetPlanningViewModel viewModel;
     private Spinner eventTypeSpinner;
-    private ImageButton showSuggestedCategoriesButton;
+    private Button showSuggestedCategoriesButton;
     private Button actionButton;
     private TextView titleTextView;
     private RecyclerView budgetItemsRecyclerView;
@@ -36,13 +46,6 @@ public class Budget extends Fragment {
         // Obavezni prazan konstruktor
     }
 
-    /**
-     * Factory metoda za kreiranje instance fragmenta.
-     *
-     * @param type    "CREATE" ili "UPDATE"
-     * @param eventId ID eventa (opciono, samo za UPDATE)
-     * @return Nova instanca fragmenta BudgetPlanning.
-     */
     public static Budget newInstance(String type, @Nullable Long eventId) {
         Budget fragment = new Budget();
         Bundle args = new Bundle();
@@ -63,6 +66,7 @@ public class Budget extends Fragment {
                 eventId = getArguments().getLong(ARG_EVENT_ID);
             }
         }
+        viewModel = new ViewModelProvider(this).get(BudgetPlanningViewModel.class);
     }
 
     @Nullable
@@ -80,19 +84,18 @@ public class Budget extends Fragment {
 
         // Postavi RecyclerView
         budgetItemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        // Adapter ćeš kasnije kreirati i postaviti ovdje
 
         setupViewsByType();
+        setupObservers();
 
         // Postavi onClickListener za FAB
         addItemFab.setOnClickListener(v -> {
-            // Ovde ćeš pokrenuti dijalog ili fragment za dodavanje nove stavke budžeta
-            // Na primer, pozvati metodu showAddItemDialog()
+            // Ovde ćeš pokrenuti dijalog za dodavanje nove stavke
         });
 
         // Ovde dodaj listener za dugme za predložene kategorije
         showSuggestedCategoriesButton.setOnClickListener(v -> {
-            // Ovde ćeš pokrenuti AlertDialog sa listom predloženih kategorija
+            // Ovde ćeš pokrenuti AlertDialog
         });
 
         return view;
@@ -100,16 +103,64 @@ public class Budget extends Fragment {
 
     private void setupViewsByType() {
         if ("CREATE".equalsIgnoreCase(type)) {
-            // Režim kreiranja
             titleTextView.setText("Planiranje budžeta");
             actionButton.setText("Kreiraj događaj");
             budgetItemsRecyclerView.setVisibility(View.VISIBLE);
-
+            // Pozivamo metodu za dohvat svih aktivnih tipova eventa
+            viewModel.fetchActiveEventTypes();
         } else if ("UPDATE".equalsIgnoreCase(type)) {
-            // Režim ažuriranja
             titleTextView.setText("Ažuriranje budžeta");
             actionButton.setText("Ažuriraj");
             budgetItemsRecyclerView.setVisibility(View.VISIBLE);
+
+            // Pozivamo metodu za dohvat budžeta
+            if (eventId != null) {
+                viewModel.fetchBudgetDetails(eventId);
+            }
         }
+    }
+
+    private void setupObservers() {
+        // Posmatraj promjene u budžetu
+        viewModel.getBudgetDetails().observe(getViewLifecycleOwner(), budgetDetails -> {
+            if (budgetDetails != null) {
+                // Ažuriraj spinner
+                if (budgetDetails.getEventType() != null) {
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                            android.R.layout.simple_spinner_item,
+                            Collections.singletonList(budgetDetails.getEventType().getName()));
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    eventTypeSpinner.setAdapter(adapter);
+                    eventTypeSpinner.setEnabled(false); // Onemogući promjenu tipa eventa
+                }
+
+                // Ovde ćeš popuniti RecyclerView sa stavkama budžeta
+                // Za sada, samo popuniš dummy podacima ili praznom listom
+                // budgetItemsRecyclerView.setAdapter(new BudgetItemsAdapter(budgetDetails.getBudgetItems()));
+            }
+        });
+
+        // Posmatraj aktivne tipove eventa (režim kreiranja)
+        viewModel.getActiveEventTypes().observe(getViewLifecycleOwner(), eventTypes -> {
+            if (eventTypes != null && !eventTypes.isEmpty()) {
+                List<String> eventTypeNames = eventTypes.stream()
+                        .map(GetEventTypeDTO::getName)
+                        .collect(Collectors.toList());
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                        android.R.layout.simple_spinner_item,
+                        eventTypeNames);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                eventTypeSpinner.setAdapter(adapter);
+                eventTypeSpinner.setEnabled(true);
+            }
+        });
+
+        // Posmatraj greške
+        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
