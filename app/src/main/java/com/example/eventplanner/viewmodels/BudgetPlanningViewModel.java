@@ -22,6 +22,18 @@ public class BudgetPlanningViewModel extends AndroidViewModel {
     private final MutableLiveData<UpdateBudgetForEventDTO> budgetDetails = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<List<GetEventTypeDTO>> activeEventTypes = new MutableLiveData<>();
+    private final MutableLiveData<GetEventTypeDTO> currentEventType = new MutableLiveData<>();
+    // Novi LiveData za predložene kategorije
+    private final MutableLiveData<List<String>> suggestedCategories = new MutableLiveData<>();
+
+    // Getter za novi LiveData
+    public LiveData<List<String>> getSuggestedCategories() {
+        return suggestedCategories;
+    }
+
+    public LiveData<GetEventTypeDTO> getCurrentEventType() {
+        return currentEventType;
+    }
 
     public BudgetPlanningViewModel(@NonNull Application application) {
         super(application);
@@ -50,6 +62,7 @@ public class BudgetPlanningViewModel extends AndroidViewModel {
             public void onResponse(Call<UpdateBudgetForEventDTO> call, Response<UpdateBudgetForEventDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     budgetDetails.setValue(response.body());
+                    currentEventType.setValue(response.body().getEventType());
                 } else {
                     errorMessage.setValue("Error fetching budget details: " + response.code());
                 }
@@ -80,6 +93,29 @@ public class BudgetPlanningViewModel extends AndroidViewModel {
 
             @Override
             public void onFailure(Call<ArrayList<GetEventTypeDTO>> call, Throwable t) {
+                errorMessage.setValue("Network error: " + t.getMessage());
+            }
+        });
+    }
+    public void fetchSuggestedCategoriesForEventType(String eventTypeName) {
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            errorMessage.setValue("User not authenticated.");
+            return;
+        }
+
+        ClientUtils.eventTypeService.getSuggestedCategories(auth, eventTypeName).enqueue(new Callback<ArrayList<String>>() {
+            @Override
+            public void onResponse(Call<ArrayList<String>> call, Response<ArrayList<String>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    suggestedCategories.setValue(response.body());
+                } else {
+                    errorMessage.setValue("Error fetching suggested categories: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<String>> call, Throwable t) {
                 errorMessage.setValue("Network error: " + t.getMessage());
             }
         });

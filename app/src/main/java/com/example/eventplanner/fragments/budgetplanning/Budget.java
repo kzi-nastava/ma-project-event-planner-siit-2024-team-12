@@ -1,9 +1,11 @@
 package com.example.eventplanner.fragments.budgetplanning;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -87,18 +89,66 @@ public class Budget extends Fragment {
 
         setupViewsByType();
         setupObservers();
-
-        // Postavi onClickListener za FAB
-        addItemFab.setOnClickListener(v -> {
-            // Ovde ćeš pokrenuti dijalog za dodavanje nove stavke
-        });
-
-        // Ovde dodaj listener za dugme za predložene kategorije
-        showSuggestedCategoriesButton.setOnClickListener(v -> {
-            // Ovde ćeš pokrenuti AlertDialog
-        });
+        setupListeners();
 
         return view;
+    }
+    private void setupListeners() {
+        // Postavi onClickListener za FAB
+        addItemFab.setOnClickListener(v -> {
+            // ... (logika za dodavanje stavke)
+        });
+
+        // Ažuriraj listener za dugme za predložene kategorije
+        showSuggestedCategoriesButton.setOnClickListener(v -> {
+            if ("UPDATE".equalsIgnoreCase(type)) {
+                viewModel.getBudgetDetails().observe(getViewLifecycleOwner(), budgetDetails -> {
+                    if (budgetDetails != null && budgetDetails.getEventType() != null && budgetDetails.getEventType().getSuggestedCategoryNames() != null) {
+                        showSuggestedCategoriesDialog(budgetDetails.getEventType().getSuggestedCategoryNames());
+                    }
+                });
+            } else if ("CREATE".equalsIgnoreCase(type)) {
+                // Posmatraj predložene kategorije i prikaži dijalog kada podaci stignu
+                viewModel.getSuggestedCategories().observe(getViewLifecycleOwner(), suggestedCategories -> {
+                    if (suggestedCategories != null) {
+                        showSuggestedCategoriesDialog(suggestedCategories);
+                    }
+                });
+            }
+        });
+
+        // Listener za promjenu odabira u Spinneru
+        eventTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if ("CREATE".equalsIgnoreCase(type)) {
+                    String selectedEventType = (String) parent.getItemAtPosition(position);
+                    // Dohvati predložene kategorije za odabrani tip eventa
+                    viewModel.fetchSuggestedCategoriesForEventType(selectedEventType);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Ne radimo ništa
+            }
+        });
+    }
+    // Dodaj novu metodu za prikaz dijaloga
+    private void showSuggestedCategoriesDialog(List<String> suggestedCategories) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Predložene kategorije")
+                .setItems(suggestedCategories.toArray(new String[0]), (dialog, which) -> {
+                    // Možeš dodati logiku za odabir kategorije ovde, ako je potrebno
+                })
+                .setPositiveButton("OK", (dialog, id) -> dialog.dismiss());
+
+        // Ako nema predloženih kategorija, prikaži poruku
+        if (suggestedCategories.isEmpty()) {
+            builder.setMessage("Nema predloženih kategorija za ovaj tip događaja.");
+        }
+
+        builder.create().show();
     }
 
     private void setupViewsByType() {
