@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.eventplanner.dto.budget.UpdateBudgetForEventDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
+import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
 import com.example.eventplanner.utils.ClientUtils;
 
 import java.util.ArrayList;
@@ -25,10 +26,15 @@ public class BudgetPlanningViewModel extends AndroidViewModel {
     private final MutableLiveData<GetEventTypeDTO> currentEventType = new MutableLiveData<>();
     // Novi LiveData za predložene kategorije
     private final MutableLiveData<List<String>> suggestedCategories = new MutableLiveData<>();
+    private final MutableLiveData<List<GetCategoryDTO>> activeCategories = new MutableLiveData<>();
+
 
     // Getter za novi LiveData
     public LiveData<List<String>> getSuggestedCategories() {
         return suggestedCategories;
+    }
+    public LiveData<List<GetCategoryDTO>> getActiveCategories() {
+        return activeCategories;
     }
 
     public LiveData<GetEventTypeDTO> getCurrentEventType() {
@@ -120,5 +126,29 @@ public class BudgetPlanningViewModel extends AndroidViewModel {
             }
         });
     }
+    public void fetchAllActiveCategories() {
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            errorMessage.setValue("User not authenticated.");
+            return;
+        }
+
+        ClientUtils.solutionCategoryService.getAccepted(auth).enqueue(new Callback<List<GetCategoryDTO>>() {
+            @Override
+            public void onResponse(Call<List<GetCategoryDTO>> call, Response<List<GetCategoryDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    activeCategories.setValue(response.body());
+                } else {
+                    errorMessage.setValue("Error fetching active categories: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GetCategoryDTO>> call, Throwable t) {
+                errorMessage.setValue("Network error: " + t.getMessage());
+            }
+        });
+    }
+
 
 }

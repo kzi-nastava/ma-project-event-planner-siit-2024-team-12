@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -16,7 +17,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.budget.GetBudgetItemDTO;
+import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
 import com.example.eventplanner.viewmodels.BudgetPlanningViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BudgetItemDialogFragment extends DialogFragment {
 
@@ -25,6 +31,7 @@ public class BudgetItemDialogFragment extends DialogFragment {
     private Spinner categorySpinner;
     private Button saveButton;
     private Button cancelButton;
+    private List<GetCategoryDTO> allCategories;
 
     // Za komunikaciju sa glavnim fragmentom
     public interface BudgetItemDialogListener {
@@ -48,9 +55,32 @@ public class BudgetItemDialogFragment extends DialogFragment {
 
         viewModel = new ViewModelProvider(this).get(BudgetPlanningViewModel.class);
 
-        // TODO: Dohvati i postavi sve aktivne kategorije u spinner
-        // Na primer, viewModel.fetchAllActiveCategories();
-        // viewModel.getActiveCategories().observe(...);
+        allCategories = new ArrayList<>();
+
+        // 1. Pozivamo metodu za dohvat svih aktivnih kategorija
+        viewModel.fetchAllActiveCategories();
+
+        // 2. Posmatramo promene u listi kategorija
+        viewModel.getActiveCategories().observe(getViewLifecycleOwner(), categories -> {
+            if (categories != null && !categories.isEmpty()) {
+                allCategories = categories;
+                List<String> categoryNames = categories.stream()
+                        .map(GetCategoryDTO::getName)
+                        .collect(Collectors.toList());
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                        android.R.layout.simple_spinner_item,
+                        categoryNames);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                categorySpinner.setAdapter(adapter);
+            }
+        });
+
+        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Postavljanje listenera
         saveButton.setOnClickListener(v -> {
@@ -58,15 +88,25 @@ public class BudgetItemDialogFragment extends DialogFragment {
             String costString = itemCostEditText.getText().toString().trim();
             // GetCategoryDTO selectedCategory = (GetCategoryDTO) categorySpinner.getSelectedItem();
 
-            if (!itemName.isEmpty() && !costString.isEmpty() /* && selectedCategory != null */) {
+            if (categorySpinner.getSelectedItem() == null) {
+                Toast.makeText(getContext(), "Kategorija je obavezna.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!itemName.isEmpty() && !costString.isEmpty()) {
                 try {
                     Double itemCost = Double.parseDouble(costString);
+
+                    // Dohvati odabranu kategoriju
+                    int selectedPosition = categorySpinner.getSelectedItemPosition();
+                    GetCategoryDTO selectedCategory = allCategories.get(selectedPosition);
+
 
                     // Kreiraj novi DTO
                     GetBudgetItemDTO newBudgetItem = new GetBudgetItemDTO();
                     newBudgetItem.setName(itemName);
                     newBudgetItem.setCost(itemCost); // Postavi uneseni trošak
-                    // newBudgetItem.setCategory(selectedCategory);
+                    newBudgetItem.setCategory(selectedCategory);
 
                     // Proslijedi novu stavku glavnom fragmentu
                     if (listener != null) {
