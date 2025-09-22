@@ -100,4 +100,10 @@ public interface UserService {
     @PATCH("users/suspend/{userId}")
     Call<ResponseBody> suspendUser(@Header("Authorization") String authorization, @Path("userId") Long userId);
 
+    @POST("users/block/{userId}")
+    Call<ResponseBody> blockUser(@Header("Authorization") String authorization, @Path("userId") Long userId);
+
+    @DELETE("users/unblock/{userId}")
+    Call<ResponseBody> unblockUser(@Header("Authorization") String authorization, @Path("userId") Long userId);
+
 }
