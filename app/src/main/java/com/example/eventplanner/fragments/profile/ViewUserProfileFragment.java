@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -87,9 +88,9 @@ public class ViewUserProfileFragment extends Fragment {
         btnReportUser.setOnClickListener(v -> reportUser());
         btnBlockUser.setOnClickListener(v -> {
             if (btnBlockUser.getText().toString().equalsIgnoreCase(getString(R.string.unblock_user))) {
-                unblockUser();
+                showUnblockConfirmationDialog();
             } else {
-                blockUser();
+                showBlockConfirmationDialog();
             }
         });
     }
@@ -207,7 +208,7 @@ public class ViewUserProfileFragment extends Fragment {
 
     private void blockUser() {
         String authorization = ClientUtils.getAuthorization(getContext());
-        if (authorization == null || viewedUser == null) return;
+        if (viewedUser == null) return;
 
         ClientUtils.userService.blockUser(authorization, viewedUser.getId()).enqueue(new Callback<ResponseBody>() {
             @Override
@@ -228,7 +229,7 @@ public class ViewUserProfileFragment extends Fragment {
 
     private void unblockUser() {
         String authorization = ClientUtils.getAuthorization(getContext());
-        if (authorization == null || viewedUser == null) return;
+        if (viewedUser == null) return;
 
         ClientUtils.userService.unblockUser(authorization, viewedUser.getId()).enqueue(new Callback<ResponseBody>() {
             @Override
@@ -268,5 +269,31 @@ public class ViewUserProfileFragment extends Fragment {
             return true;
         }
         return false;
+    }
+
+    private void showBlockConfirmationDialog() {
+        if (getContext() == null) return;
+        new AlertDialog.Builder(getContext())
+                .setTitle("Block User")
+                .setMessage("Are you sure you want to block this user? \nThis will prevent them from contacting you and interacting with your content.")
+                .setPositiveButton("Block", (dialog, which) -> {
+                    blockUser();
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .create()
+                .show();
+    }
+
+    private void showUnblockConfirmationDialog() {
+        if (getContext() == null) return;
+        new AlertDialog.Builder(getContext())
+                .setTitle("Unblock User")
+                .setMessage("Are you sure you want to unblock this user? \nThey will be able to contact you again and interact with your content.")
+                .setPositiveButton("Unblock", (dialog, which) -> {
+                    unblockUser();
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .create()
+                .show();
     }
 }
