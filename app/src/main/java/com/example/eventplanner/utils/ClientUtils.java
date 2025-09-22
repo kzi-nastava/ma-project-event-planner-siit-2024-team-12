@@ -26,6 +26,7 @@ import com.example.eventplanner.fragments.comment.CommentService;
 import com.example.eventplanner.fragments.gallery.GalleryService;
 import com.example.eventplanner.fragments.notification.NotificationService;
 import com.example.eventplanner.fragments.report.ReportService;
+import com.example.eventplanner.fragments.servicereservation.ServiceReservationService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -100,5 +101,7 @@ public class ClientUtils {
     public static ReportService reportService = retrofit.create(ReportService.class);
 
     public static ServiceSolutionService serviceSolutionService = retrofit.create(ServiceSolutionService.class);
+
+    public static ServiceReservationService serviceReservationService = retrofit.create(ServiceReservationService.class);
 
 }
