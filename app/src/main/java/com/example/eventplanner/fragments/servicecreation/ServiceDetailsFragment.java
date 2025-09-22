@@ -1,5 +1,6 @@
 package com.example.eventplanner.fragments.servicecreation;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import com.example.eventplanner.utils.ClientUtils;
 
 import java.io.IOException;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,7 +34,9 @@ public class ServiceDetailsFragment extends Fragment {
     private static final String ARG_SERVICE_ID = "service_id";
     private Long serviceId;
 
-    private ImageView serviceImage;
+    private ImageView serviceImage, fav, favOutline;
+
+    private Boolean isFavorite = false;
     private TextView serviceTitle;
     private EditText name, city, price, discount, availability, reservationDeadline, cancellationDeadline, description;
     private Button chatButton, bookServiceButton;
@@ -57,6 +61,12 @@ public class ServiceDetailsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_service_details, container, false);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         serviceImage = view.findViewById(R.id.serviceImage);
         serviceTitle = view.findViewById(R.id.serviceTitle);
@@ -71,13 +81,9 @@ public class ServiceDetailsFragment extends Fragment {
         chatButton = view.findViewById(R.id.chatButton);
         bookServiceButton = view.findViewById(R.id.bookServiceButton);
         exitButton = view.findViewById(R.id.exitBtn);
+        fav = view.findViewById(R.id.fav);
+        favOutline = view.findViewById(R.id.favOutline);
 
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         fetchServiceDetails();
 
         exitButton.setOnClickListener(v -> closeForm());
@@ -85,8 +91,8 @@ public class ServiceDetailsFragment extends Fragment {
         bookServiceButton.setOnClickListener(v -> Toast.makeText(getContext(), "Booking feature not yet implemented.", Toast.LENGTH_SHORT).show());
     }
 
+
     private void fetchServiceDetails() {
-        // Dodajte ovaj red da provjerite da li je ID ispravan
         if (serviceId != null) {
             Log.d("ServiceDetailsFragment", "Received service ID: " + serviceId);
         } else {
@@ -104,8 +110,8 @@ public class ServiceDetailsFragment extends Fragment {
             public void onResponse(Call<GetServiceDTO> call, Response<GetServiceDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     populateUI(response.body());
+                    setUpFavService();
                 } else {
-                    // Ispis greške u log
                     if (response.errorBody() != null) {
                         try {
                             String error = response.errorBody().string();
@@ -124,7 +130,6 @@ public class ServiceDetailsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<GetServiceDTO> call, Throwable t) {
-                // Ispis greške u log
                 Log.e("ServiceDetailsFragment", "Network error", t);
                 Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 closeForm();
@@ -157,6 +162,107 @@ public class ServiceDetailsFragment extends Fragment {
                     .error(R.drawable.service1)
                     .into(serviceImage);
         }
+    }
+
+    private void setUpFavService() {
+        checkIfFavorite();
+
+        favOutline.setOnClickListener(v -> {
+            addToFavorites();
+        });
+
+        fav.setOnClickListener(v -> {
+            removeFromFavorites();
+        });
+    }
+
+    private void checkIfFavorite() {
+        if (serviceId == null || getContext() == null) {
+            return;
+        }
+        isFavorite = false;
+        String auth = ClientUtils.getAuthorization(getContext());
+
+        SharedPreferences pref = getContext().getSharedPreferences("AppPrefs", getContext().MODE_PRIVATE);
+        String email = pref.getString("email", "a");
+
+        Call<Boolean> call = ClientUtils.userService.isServiceFavorite(auth, email, serviceId);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    isFavorite = response.body();
+                    if (isFavorite) {
+                        fav.setVisibility(View.VISIBLE);
+                        favOutline.setVisibility(View.GONE);
+                    } else {
+                        favOutline.setVisibility(View.VISIBLE);
+                        fav.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to check if favorite!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void addToFavorites() {
+        if (serviceId == null || getContext() == null) {
+            return;
+        }
+        String auth = ClientUtils.getAuthorization(getContext());
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("AppPrefs", getContext().MODE_PRIVATE);
+        String userEmail = sharedPreferences.getString("email", "a");
+
+        Call<ResponseBody> call = ClientUtils.userService.addFavoriteService(auth, userEmail, serviceId);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    fav.setVisibility(View.VISIBLE);
+                    favOutline.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "Added service to favorites!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Unsuccessful", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to add service to favorites!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void removeFromFavorites() {
+        if (serviceId == null || getContext() == null) {
+            return;
+        }
+        String auth = ClientUtils.getAuthorization(getContext());
+        SharedPreferences pref = getContext().getSharedPreferences("AppPrefs", getContext().MODE_PRIVATE);
+        String email = pref.getString("email", "a");
+
+        Call<Void> call = ClientUtils.userService.removeFavoriteService(auth, email, serviceId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    fav.setVisibility(View.GONE);
+                    favOutline.setVisibility(View.VISIBLE);
+                    Toast.makeText(getContext(), "Removed service from favorites!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Unsuccessful", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to remove service from favorites!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void closeForm() {

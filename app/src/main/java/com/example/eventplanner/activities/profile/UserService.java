@@ -94,6 +94,24 @@ public interface UserService {
                                      @Path("email") String email,
                                      @Query("productId") Long productId);
 
+
+    @POST("users/{email}/favorite-service-addition")
+    Call<ResponseBody> addFavoriteService(@Header("Authorization") String token,
+                                        @Path("email") String email,
+                                        @Body Long serviceId);
+
+
+    @GET("users/{email}/is-favorite-service")
+    Call<Boolean> isServiceFavorite(@Header("Authorization") String token,
+                                  @Path("email") String email,
+                                  @Query("serviceId") Long serviceId);
+
+
+    @DELETE("users/{email}/remove-favorite-service")
+    Call<Void> removeFavoriteService(@Header("Authorization") String token,
+                                   @Path("email") String email,
+                                   @Query("serviceId") Long serviceId);
+
     @GET("users/{email}/profile")
     Call<GetUserDTO> getUserProfile(@Header("Authorization") String authorization, @Path("email") String email);
 
