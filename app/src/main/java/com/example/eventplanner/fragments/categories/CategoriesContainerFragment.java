@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,7 +18,7 @@ import com.example.eventplanner.viewmodels.CategoryViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public class CategoriesContainerFragment extends Fragment {
+public class CategoriesContainerFragment extends Fragment implements CategoryCreationFragment.OnCategoryCreationListener {
     private CategoryViewModel viewModel;
 
 
@@ -25,6 +28,7 @@ public class CategoriesContainerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_categories_container, container, false);
         TabLayout tabLayout = view.findViewById(R.id.tabLayoutCategories);
         ViewPager2 viewPager = view.findViewById(R.id.viewPagerCategories);
+        ImageButton createCategoryButton = view.findViewById(R.id.buttonCreateNewCategory);
         viewModel = new ViewModelProvider(requireActivity()).get(CategoryViewModel.class);
 
         CategoriesPagerAdapter adapter = new CategoriesPagerAdapter(this);
@@ -52,7 +56,35 @@ public class CategoriesContainerFragment extends Fragment {
 
         viewModel.fetchActiveCategories();
 
+        createCategoryButton.setOnClickListener(v -> {
+            // Kreiraj instancu novog fragmenta, ali sad je to DialogFragment
+            CategoryCreationFragment newFragment = CategoryCreationFragment.newInstance("CREATE");
+
+            // Prikazi dijalog
+            newFragment.show(getChildFragmentManager(), "category_creation_dialog");
+        });
+
 
         return view;
+    }
+    @Override
+    public void onCategoryCreated() {
+        // Logika za kada je kategorija uspešno kreirana
+        Toast.makeText(getContext(), "Kategorija kreirana!", Toast.LENGTH_SHORT).show();
+        // Po potrebi, osveži podatke
+        viewModel.fetchActiveCategories();
+    }
+
+    @Override
+    public void onCategorySuggested() {
+        // Logika za kada je kategorija uspešno predložena
+        Toast.makeText(getContext(), "Kategorija predložena!", Toast.LENGTH_SHORT).show();
+        viewModel.fetchRecommendedCategories();
+    }
+
+    @Override
+    public void onCategoryCreationCanceled() {
+        // Logika za kada je korisnik odustao
+        Toast.makeText(getContext(), "Kreiranje otkazano.", Toast.LENGTH_SHORT).show();
     }
 }

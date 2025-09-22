@@ -155,12 +155,13 @@ public class CategoryDetailsFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (getDialog() != null) {
+        if (getDialog() != null && getDialog().getWindow() != null) {
             DisplayMetrics displayMetrics = new DisplayMetrics();
             requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
             int screenWidth = displayMetrics.widthPixels;
 
             int dialogWidth = (int) (screenWidth * 0.8);
+            getDialog().getWindow().setBackgroundDrawableResource(R.drawable.form_frame_white);
 
             getDialog().getWindow().setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
