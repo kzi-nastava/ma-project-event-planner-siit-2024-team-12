@@ -208,7 +208,7 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
         if (getParentFragmentManager() != null) {
             ViewUserProfileFragment userProfileFragment = ViewUserProfileFragment.newInstance(userEmail);
             getParentFragmentManager().beginTransaction()
-                    .replace(R.id.notifications_container, userProfileFragment)
+                    .replace(R.id.main_fragment_container, userProfileFragment)
                     .addToBackStack(null)
                     .commit();
         }

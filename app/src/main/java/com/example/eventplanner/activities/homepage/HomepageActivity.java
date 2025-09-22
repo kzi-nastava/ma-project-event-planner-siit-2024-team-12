@@ -8,12 +8,12 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Spinner;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -27,6 +27,7 @@ import com.example.eventplanner.activities.business.BusinessRegistrationActivity
 import com.example.eventplanner.activities.calendar.CalendarActivity;
 import com.example.eventplanner.activities.charts.AttendanceChart;
 import com.example.eventplanner.activities.charts.RatingsChart;
+import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeCreationActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
 import com.example.eventplanner.activities.favorites.ExplorePageActivity;
@@ -35,14 +36,10 @@ import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
 import com.example.eventplanner.activities.favorites.FavoriteServicesActivity;
 import com.example.eventplanner.activities.product.ProvidedProductsActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
-import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
 import com.example.eventplanner.fragments.comment.CommentManagementFragment;
 import com.example.eventplanner.fragments.event.InvitedEventsListFragment;
-import com.example.eventplanner.fragments.homepage.EventListFragment;
-import com.example.eventplanner.fragments.homepage.TopEventsFragment;
-import com.example.eventplanner.fragments.homepage.TopSolutionsFragment;
-import com.example.eventplanner.fragments.homepage.SolutionListFragment;
+import com.example.eventplanner.fragments.homepage.HomepageFragment;
 import com.example.eventplanner.fragments.notification.NotificationFragment;
 import com.example.eventplanner.fragments.profile.SuspendedUserFragment;
 import com.example.eventplanner.fragments.report.ReportManagementFragment;
@@ -95,7 +92,7 @@ public class HomepageActivity extends AppCompatActivity {
                 } else {
                     setupGuestUI();
                 }
-                loadHomepageFragments();
+                loadMainFragment(new HomepageFragment());
             }
         }
     }
@@ -111,63 +108,29 @@ public class HomepageActivity extends AppCompatActivity {
         }
     }
 
-    private void loadHomepageFragments() {
-        Log.d(TAG, "loadHomepageFragments: Attempting to load homepage fragments.");
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        transaction.replace(R.id.cards_fragment_container, new TopEventsFragment());
-        transaction.replace(R.id.events_list_fragment_container, new EventListFragment());
-        transaction.replace(R.id.cards_products_fragment_container, new TopSolutionsFragment());
-        transaction.replace(R.id.ps_list_fragment_container, new SolutionListFragment());
-
-        transaction.commitAllowingStateLoss();
-        Log.d(TAG, "loadHomepageFragments: Fragments committed.");
+    private void loadMainFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, fragment)
+                .commitAllowingStateLoss();
+        Log.d(TAG, "loadMainFragment: Loaded " + fragment.getClass().getSimpleName());
     }
 
-    private void showMainUI() {
-        Log.d(TAG, "showMainUI: Restarting HomepageActivity to reset UI.");
-        Intent intent = new Intent(this, HomepageActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void navigateToFragment(int containerId, Fragment fragment) {
-        Log.d(TAG, "navigateToFragment: Navigating to new fragment. Container ID: " + getResources().getResourceEntryName(containerId));
-
-        View homepageScrollView = findViewById(R.id.homepage_scroll_view);
-        if (homepageScrollView != null) homepageScrollView.setVisibility(View.GONE);
-
-        View invitedEventsContainer = findViewById(R.id.invited_events_container);
-        if (invitedEventsContainer != null) invitedEventsContainer.setVisibility(View.GONE);
-
-        View notificationsContainer = findViewById(R.id.notifications_container);
-        if (notificationsContainer != null) notificationsContainer.setVisibility(View.GONE);
-
-        View suspendedFragmentContainer = findViewById(R.id.suspended_fragment_container);
-        if (suspendedFragmentContainer != null) suspendedFragmentContainer.setVisibility(View.GONE);
-
-        View homepageFragmentContainer = findViewById(R.id.homepage_fragment_container);
-        if (homepageFragmentContainer != null) homepageFragmentContainer.setVisibility(View.GONE);
-
-
-        View targetContainer = findViewById(containerId);
-        if (targetContainer != null) {
-            targetContainer.setVisibility(View.VISIBLE);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(containerId, fragment)
-                    .addToBackStack(null)
-                    .commitAllowingStateLoss();
-        } else {
-            Log.e(TAG, "navigateToFragment: Target container is NULL for ID: " + getResources().getResourceEntryName(containerId));
-        }
+    private void navigateToFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, fragment)
+                .addToBackStack(null)
+                .commitAllowingStateLoss();
+        Log.d(TAG, "navigateToFragment: Navigated to " + fragment.getClass().getSimpleName());
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.drawer_menu, menu);
-        MenuCompat.setGroupDividerEnabled(menu, true);
-        return true;
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() > 0) {
+            fm.popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void setupGuestUI() {
@@ -187,7 +150,7 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_signup) {
                 startActivity(new Intent(HomepageActivity.this, SignUpActivity.class));
             } else if (id == R.id.nav_home) {
-                showMainUI();
+                loadMainFragment(new HomepageFragment());
             }
             drawerLayout.closeDrawers();
             return true;
@@ -211,15 +174,15 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_log_out) {
                 logOut();
             } else if (id == R.id.nav_invited_events) {
-                navigateToFragment(R.id.invited_events_container, new InvitedEventsListFragment());
+                navigateToFragment(new InvitedEventsListFragment());
             } else if (id == R.id.nav_calendar_od) {
                 startActivity(new Intent(this, CalendarActivity.class));
             } else if (id == R.id.nav_explore_events) {
                 startActivity(new Intent(this, ExplorePageActivity.class));
             } else if (id == R.id.nav_notifications) {
-                navigateToFragment(R.id.notifications_container, new NotificationFragment());
+                navigateToFragment(new NotificationFragment());
             } else if (id == R.id.nav_home) {
-                showMainUI();
+                loadMainFragment(new HomepageFragment());
             }
             drawerLayout.closeDrawers();
             return true;
@@ -233,11 +196,11 @@ public class HomepageActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
-                showMainUI();
+                loadMainFragment(new HomepageFragment());
             } else if (id == R.id.nav_fav_events) {
                 startActivity(new Intent(this, FavoriteEventsActivity.class));
             } else if (id == R.id.nav_services) {
-                navigateToFragment(R.id.homepage_fragment_container, new ServiceManagement());
+                navigateToFragment(new ServiceManagement());
             } else if (id == R.id.nav_view_profile) {
                 startActivity(new Intent(this, ProfileViewActivity.class));
             } else if (id == R.id.nav_calendar_od) {
@@ -251,7 +214,7 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_fav_products) {
                 startActivity(new Intent(this, FavoriteProductsActivity.class));
             } else if (id == R.id.nav_notifications) {
-                navigateToFragment(R.id.notifications_container, new NotificationFragment());
+                navigateToFragment(new NotificationFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
             }
@@ -267,7 +230,7 @@ public class HomepageActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
-                showMainUI();
+                loadMainFragment(new HomepageFragment());
             } else if (id == R.id.nav_create_business) {
                 startActivity(new Intent(this, BusinessRegistrationActivity.class));
             } else if (id == R.id.nav_business_info) {
@@ -275,7 +238,7 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_products) {
                 startActivity(new Intent(this, ProvidedProductsActivity.class));
             } else if (id == R.id.nav_services) {
-                navigateToFragment(R.id.homepage_fragment_container, new ServiceManagement());
+                navigateToFragment(new ServiceManagement());
             } else if (id == R.id.nav_calendar_od) {
                 startActivity(new Intent(this, CalendarActivity.class));
             } else if (id == R.id.nav_fav_events) {
@@ -293,7 +256,7 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_event_types) {
                 startActivity(new Intent(this, EventTypeTableActivity.class));
             } else if (id == R.id.nav_notifications) {
-                navigateToFragment(R.id.notifications_container, new NotificationFragment());
+                navigateToFragment(new NotificationFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
             }
@@ -309,7 +272,7 @@ public class HomepageActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
-                showMainUI();
+                loadMainFragment(new HomepageFragment());
             } else if (id == R.id.nav_create_event_type) {
                 startActivity(new Intent(this, EventTypeCreationActivity.class));
             } else if (id == R.id.nav_event_types_overview) {
@@ -323,11 +286,11 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_ratings_chart) {
                 startActivity(new Intent(this, RatingsChart.class));
             } else if (id == R.id.nav_notifications) {
-                navigateToFragment(R.id.notifications_container, new NotificationFragment());
+                navigateToFragment(new NotificationFragment());
             } else if (id == R.id.nav_manage_comments) {
-                navigateToFragment(R.id.notifications_container, new CommentManagementFragment());
+                navigateToFragment(new CommentManagementFragment());
             } else if (id == R.id.nav_manage_reports) {
-                navigateToFragment(R.id.notifications_container, new ReportManagementFragment());
+                navigateToFragment(new ReportManagementFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
             }
@@ -370,6 +333,6 @@ public class HomepageActivity extends AppCompatActivity {
         SuspendedUserFragment suspendedFragment = new SuspendedUserFragment();
         suspendedFragment.setArguments(args);
 
-        navigateToFragment(R.id.suspended_fragment_container, suspendedFragment);
+        loadMainFragment(suspendedFragment);
     }
 }
