@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,12 +24,18 @@ import com.example.eventplanner.dto.servicereservation.CreateServiceReservationD
 import com.example.eventplanner.dto.servicereservation.CreatedServiceReservationDTO;
 import com.example.eventplanner.utils.ClientUtils;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -79,7 +86,6 @@ public class ServiceReservationDialogFragment extends DialogFragment {
         buttonReserve = view.findViewById(R.id.buttonReserve);
 
         setupEventSpinner();
-        setupDatePicker();
         setupTimePickers();
 
         buttonReserve.setOnClickListener(v -> reserveService());
@@ -87,14 +93,18 @@ public class ServiceReservationDialogFragment extends DialogFragment {
         return view;
     }
 
-    private void setupEventSpinner() {
+    private LocalDate toLocalDate(Date date) {
+        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+    }
 
+    private void setupEventSpinner() {
         String auth = ClientUtils.getAuthorization(requireContext());
         if (auth == null) {
             Toast.makeText(requireContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
             return;
         }
-        ClientUtils.eventService.getEventsByOrganizer(auth).enqueue(new retrofit2.Callback<List<GetEventDTO>>() {
+
+        ClientUtils.eventService.getEventsByOrganizer(auth).enqueue(new Callback<List<GetEventDTO>>() {
             @Override
             public void onResponse(Call<List<GetEventDTO>> call, Response<List<GetEventDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -103,33 +113,80 @@ public class ServiceReservationDialogFragment extends DialogFragment {
                         spinnerEvent.setEnabled(false);
                         buttonReserve.setEnabled(false);
                         Toast.makeText(getContext(), "You do not have events to create a reservation", Toast.LENGTH_SHORT).show();
-                    } else {
-                        List<String> eventNames = new ArrayList<>();
-                        for (GetEventDTO event : events) {
-                            eventNames.add(event.getName());
+                        return;
+                    }
+
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                    ArrayAdapter<GetEventDTO> adapter = getGetEventDTOArrayAdapter(events, formatter);
+                    spinnerEvent.setAdapter(adapter);
+
+                    List<LocalDate> eventDates = new ArrayList<>();
+                    for (GetEventDTO ev : events) {
+                        Date d = ev.getDate();
+                        if (d != null) eventDates.add(toLocalDate(d));
+                    }
+
+                    spinnerEvent.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                            GetEventDTO selectedEvent = events.get(position);
+                            Date d = selectedEvent.getDate();
+                            if (d != null) {
+                                LocalDate ld = toLocalDate(d);
+                                editTextDate.setText(ld.format(formatter));
+                            } else {
+                                editTextDate.setText("");
+                            }
                         }
 
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                                android.R.layout.simple_spinner_item, eventNames);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinnerEvent.setAdapter(adapter);
+                        @Override
+                        public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+                    });
 
-                        spinnerEvent.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
-                                GetEventDTO selectedEvent = events.get(position);
-                                editTextDate.setText(selectedEvent.getDate().toString());
-                            }
+                    setupDatePicker(eventDates);
 
-                            @Override
-                            public void onNothingSelected(android.widget.AdapterView<?> parent) {}
-                        });
-                    }
                 } else {
                     spinnerEvent.setEnabled(false);
                     buttonReserve.setEnabled(false);
                     Toast.makeText(getContext(), "Failed to load events", Toast.LENGTH_SHORT).show();
                 }
+            }
+
+            @NonNull
+            private ArrayAdapter<GetEventDTO> getGetEventDTOArrayAdapter(List<GetEventDTO> events, DateTimeFormatter formatter) {
+                ArrayAdapter<GetEventDTO> adapter = new ArrayAdapter<GetEventDTO>(requireContext(),
+                        android.R.layout.simple_spinner_item, events) {
+                    @NonNull
+                    @Override
+                    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+                        TextView tv = (TextView) super.getView(position, convertView, parent);
+                        GetEventDTO ev = getItem(position);
+                        tv.setText(ev != null ? ev.getName() : "");
+                        return tv;
+                    }
+
+                    @Override
+                    public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+                        TextView tv = (TextView) super.getDropDownView(position, convertView, parent);
+                        GetEventDTO ev = getItem(position);
+                        if (ev != null) {
+                            String suffix = "";
+                            Date d = ev.getDate(); // java.util.Date
+                            if (d != null) {
+                                LocalDate ld = toLocalDate(d);
+                                suffix = " — " + ld.format(formatter);
+                            }
+                            tv.setText(ev.getName() + suffix);
+                        } else {
+                            tv.setText("");
+                        }
+                        return tv;
+                    }
+                };
+
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                return adapter;
             }
 
             @Override
@@ -141,18 +198,45 @@ public class ServiceReservationDialogFragment extends DialogFragment {
         });
     }
 
-    private void setupDatePicker() {
+    private void setupDatePicker(List<LocalDate> eventDates) {
+        final Set<LocalDate> allowed = new HashSet<>(eventDates);
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         editTextDate.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePicker = new DatePickerDialog(requireContext(), (view, selectedYear, selectedMonth, selectedDay) -> {
-                editTextDate.setText(String.format("%02d/%02d/%d", selectedDay, selectedMonth + 1, selectedYear));
-            }, year, month, day);
+            DatePickerDialog datePicker = new DatePickerDialog(requireContext(),
+                    (view, selectedYear, selectedMonth, selectedDay) -> {
+                        LocalDate selectedDate = LocalDate.of(selectedYear, selectedMonth + 1, selectedDay);
 
-            datePicker.getDatePicker().setMinDate(calendar.getTimeInMillis());
+                        if (allowed.contains(selectedDate)) {
+                            editTextDate.setText(selectedDate.format(formatter));
+                            for (int i = 0; i < eventDates.size(); i++) {
+                                LocalDate eventDate = eventDates.get(i);
+                                if (eventDate.equals(selectedDate)) {
+                                    spinnerEvent.setSelection(i);
+                                    break;
+                                }
+                            }
+                            
+                    } else {
+                            Toast.makeText(requireContext(),
+                                    "You can only choose dates with your events",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }, year, month, day);
+
+            if (!eventDates.isEmpty()) {
+                LocalDate min = Collections.min(eventDates);
+                LocalDate max = Collections.max(eventDates);
+
+                datePicker.getDatePicker().setMinDate(min.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                datePicker.getDatePicker().setMaxDate(max.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+            }
+
             datePicker.show();
         });
     }
