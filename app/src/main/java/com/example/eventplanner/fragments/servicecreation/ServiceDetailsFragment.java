@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
+import com.example.eventplanner.fragments.servicereservation.ServiceReservationDialogFragment;
 import com.example.eventplanner.utils.ClientUtils;
 
 import java.io.IOException;
@@ -41,6 +42,8 @@ public class ServiceDetailsFragment extends Fragment {
     private EditText name, city, price, discount, availability, reservationDeadline, cancellationDeadline, description;
     private Button chatButton, bookServiceButton;
     private ImageView exitButton;
+
+    private GetServiceDTO service;
 
     public static ServiceDetailsFragment newInstance(Long serviceId) {
         ServiceDetailsFragment fragment = new ServiceDetailsFragment();
@@ -88,7 +91,6 @@ public class ServiceDetailsFragment extends Fragment {
 
         exitButton.setOnClickListener(v -> closeForm());
         chatButton.setOnClickListener(v -> Toast.makeText(getContext(), "Chat feature not yet implemented.", Toast.LENGTH_SHORT).show());
-        bookServiceButton.setOnClickListener(v -> Toast.makeText(getContext(), "Booking feature not yet implemented.", Toast.LENGTH_SHORT).show());
     }
 
 
@@ -109,8 +111,10 @@ public class ServiceDetailsFragment extends Fragment {
             @Override
             public void onResponse(Call<GetServiceDTO> call, Response<GetServiceDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    service = response.body();
                     populateUI(response.body());
                     setUpFavService();
+                    setupBookServiceButton();
                 } else {
                     if (response.errorBody() != null) {
                         try {
@@ -270,4 +274,27 @@ public class ServiceDetailsFragment extends Fragment {
             getParentFragmentManager().popBackStack();
         }
     }
+
+
+    private void setupBookServiceButton() {
+        bookServiceButton.setOnClickListener(v -> {
+            if (service != null) {
+
+                ServiceReservationDialogFragment dialog = new ServiceReservationDialogFragment();
+
+                Bundle args = new Bundle();
+                args.putLong("SERVICE_ID", serviceId);
+                args.putLong("FIXED_DURATION", service.getFixedTime());
+                args.putLong("MIN_DURATION", service.getMinTimeMinutes());
+                args.putLong("MAX_DURATION", service.getMaxTimeMinutes());
+
+                dialog.setArguments(args);
+
+                dialog.show(getParentFragmentManager(), "ServiceReservationDialog");
+            } else {
+                Toast.makeText(getContext(), "Service details not loaded yet", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }

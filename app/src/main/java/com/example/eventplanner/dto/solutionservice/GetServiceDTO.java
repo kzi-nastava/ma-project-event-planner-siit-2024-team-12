@@ -1,5 +1,7 @@
 package com.example.eventplanner.dto.solutionservice;
 
+import android.util.Log;
+
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.enumeration.ReservationType;
 import com.google.gson.annotations.SerializedName;
@@ -204,5 +206,13 @@ public class GetServiceDTO {
 
     public void setExpanded(boolean expanded) {
         isExpanded = expanded;
+    }
+
+    public Long getMinTimeMinutes() {
+        return minTime.toMinutes()*60;
+    }
+
+    public Long getMaxTimeMinutes() {
+        return maxTime.toMinutes()*60;
     }
 }
