@@ -11,7 +11,7 @@ public class CreatedServiceReservationDTO {
     private String status;
     private String message;
 
-    private LocalDateTime requestDateTime;
+    private String requestDateTime;
 
     private ServiceInfo service;
     private EventInfo event;
@@ -44,15 +44,15 @@ public class CreatedServiceReservationDTO {
 
     public static class EventInfo {
         private String name;
-        private LocalDate date;
+        private String date;
         private String city;
         private String locationName;
 
         public String getName() { return name; }
         public void setName(String name) { this.name = name; }
 
-        public LocalDate getDate() { return date; }
-        public void setDate(LocalDate date) { this.date = date; }
+        public String getDate() { return date; }
+        public void setDate(String date) { this.date = date; }
 
         public String getCity() { return city; }
         public void setCity(String city) { this.city = city; }
@@ -73,8 +73,8 @@ public class CreatedServiceReservationDTO {
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
 
-    public LocalDateTime getRequestDateTime() { return requestDateTime; }
-    public void setRequestDateTime(LocalDateTime requestDateTime) { this.requestDateTime = requestDateTime; }
+    public String getRequestDateTime() { return requestDateTime; }
+    public void setRequestDateTime(String requestDateTime) { this.requestDateTime = requestDateTime; }
 
     public ServiceInfo getService() { return service; }
     public void setService(ServiceInfo service) { this.service = service; }

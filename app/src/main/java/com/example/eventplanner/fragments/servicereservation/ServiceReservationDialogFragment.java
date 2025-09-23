@@ -26,6 +26,7 @@ import com.example.eventplanner.utils.ClientUtils;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -46,8 +47,6 @@ public class ServiceReservationDialogFragment extends DialogFragment {
     private Spinner spinnerEvent;
     private EditText editTextDate, editTextTimeFrom, editTextTimeTo;
     private Button buttonReserve;
-
-    private List<Event> organizerEvents;
     private long serviceId;
     private long minDurationMinutes = 0;
     private long maxDurationMinutes = 0;
@@ -309,46 +308,55 @@ public class ServiceReservationDialogFragment extends DialogFragment {
         CreateServiceReservationDTO dto = new CreateServiceReservationDTO();
         dto.setServiceId(serviceId);
         dto.setEventId(selectedEvent.getId());
+
         dto.setRequestedTimeFrom(LocalTime.parse(editTextTimeFrom.getText().toString(), DateTimeFormatter.ofPattern("HH:mm")));
-        dto.setRequestedTimeTo(LocalTime.parse(editTextTimeTo.getText().toString(), DateTimeFormatter.ofPattern("HH:mm")));
+        if (fixedDurationMinutes <= 0) {
+            dto.setRequestedTimeTo(LocalTime.parse(editTextTimeTo.getText().toString(), DateTimeFormatter.ofPattern("HH:mm")));
+        }
 
         String authorization = ClientUtils.getAuthorization(getContext());
         ClientUtils.serviceReservationService.reserveService(authorization, serviceId, dto)
                 .enqueue(new Callback<CreatedServiceReservationDTO>() {
                     @Override
                     public void onResponse(Call<CreatedServiceReservationDTO> call, Response<CreatedServiceReservationDTO> response) {
-                        if (response.isSuccessful()) {
-                            Toast.makeText(requireContext(), "Service booked!", Toast.LENGTH_SHORT).show();
+                        if (response.isSuccessful() && response.body() != null) {
+                            CreatedServiceReservationDTO created = response.body();
+
+                            LocalDateTime reservationDateTime = LocalDateTime.parse(created.getRequestDateTime(),
+                                    DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
+                            String dateStr = created.getEvent().getDate();
+                            LocalDate eventDate = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+
+                            Log.d("ServiceReservation", "Reservation successful at: " + reservationDateTime);
+
+
+                            Toast.makeText(requireContext(), "Service booked at " +
+                                            reservationDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                                    Toast.LENGTH_SHORT).show();
+
                             dismiss();
                         } else {
-                            Toast.makeText(requireContext(), "Error reserving the service", Toast.LENGTH_SHORT).show();
+                            try {
+                                String errorBody = response.errorBody() != null ? response.errorBody().string() : "null";
+                                Log.e("ServiceReservation", "Backend error: code=" + response.code() + ", body=" + errorBody);
+                                Toast.makeText(requireContext(),
+                                        "Error reserving the service: " + response.code(),
+                                        Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                Log.e("ServiceReservation", "Error reading errorBody", e);
+                            }
                         }
                     }
 
                     @Override
                     public void onFailure(Call<CreatedServiceReservationDTO> call, Throwable t) {
+                        Log.e("ServiceReservation", "Network failure", t);
                         Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    public static class Event {
-        private Long id;
-        private String name;
-        private LocalDate date;
 
-        public Event(Long id, String name, LocalDate date) {
-            this.id = id;
-            this.name = name;
-            this.date = date;
-        }
 
-        public Long getId() { return id; }
-        public String getName() { return name; }
-        public LocalDate getDate() { return date; }
-
-        @NonNull
-        @Override
-        public String toString() { return name; }
-    }
 }
