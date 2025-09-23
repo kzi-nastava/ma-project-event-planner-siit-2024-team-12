@@ -130,7 +130,11 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
 
             @Override
             public void onDeleteClick(GetBudgetItemDTO item, int position) {
-                showDeleteConfirmationDialog(item, position);
+                if (item.getSolutions() != null && !item.getSolutions().isEmpty()) {
+                    Toast.makeText(getContext(), "Item has purchased solutions. Cannot be deleted", Toast.LENGTH_LONG).show();
+                } else {
+                    showDeleteConfirmationDialog(item, position);
+                }
             }
 
             @Override

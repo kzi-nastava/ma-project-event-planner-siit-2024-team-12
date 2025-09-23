@@ -67,21 +67,28 @@ public class BudgetItemViewHolder extends RecyclerView.ViewHolder {
     public void bind(GetBudgetItemDTO item) {
         itemNameTextView.setText(item.getName());
         if (item.getCost() != null) {
-            itemDescriptionTextView.setText(String.format("Trošak: %.2f", item.getCost()));
+            itemDescriptionTextView.setText(String.format("Budget: %.2f" +"($)", item.getCost()));
         } else {
-            itemDescriptionTextView.setText("Trošak: Nije definisan");
+            itemDescriptionTextView.setText("Budget: Not defined");
         }
         if (item.getCategory() != null) {
             itemCategoryTextView.setText(item.getCategory().getName());
         } else {
-            itemCategoryTextView.setText("Kategorija: Nije definisana");
+            itemCategoryTextView.setText("Category: Not defined");
         }
 
-        // Prikazi dugme za rešenja samo ako postoje
-        if (item.getSolutions() != null && !item.getSolutions().isEmpty()) {
+        boolean hasSolutions = item.getSolutions() != null && !item.getSolutions().isEmpty();
+
+        if (hasSolutions) {
             viewSolutionsButton.setVisibility(View.VISIBLE);
         } else {
             viewSolutionsButton.setVisibility(View.GONE);
+        }
+
+        if (hasSolutions) {
+            deleteButton.setVisibility(View.GONE);
+        } else {
+            deleteButton.setVisibility(View.VISIBLE);
         }
     }
 
