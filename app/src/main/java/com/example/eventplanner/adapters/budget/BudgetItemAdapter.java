@@ -15,7 +15,6 @@ import java.util.List;
 public class BudgetItemAdapter extends RecyclerView.Adapter<BudgetItemViewHolder> {
 
     private List<GetBudgetItemDTO> budgetItems;
-//    private OnItemClickListener listener; // Dodajemo listener
     private OnItemActionListener listener;
 
     public BudgetItemAdapter(List<GetBudgetItemDTO> budgetItems) {
@@ -26,12 +25,6 @@ public class BudgetItemAdapter extends RecyclerView.Adapter<BudgetItemViewHolder
         void onDeleteClick(GetBudgetItemDTO item, int position);
         void onViewSolutionsClick(GetBudgetItemDTO item, int position);
     }
-//    public interface OnItemClickListener {
-//        void onItemClick(GetBudgetItemDTO item, int position);
-//    }
-//    public void setOnItemClickListener(OnItemClickListener listener) {
-//        this.listener = listener;
-//    }
     public void setOnItemActionListener(OnItemActionListener listener) {
         this.listener = listener;
     }
@@ -71,7 +64,6 @@ public class BudgetItemAdapter extends RecyclerView.Adapter<BudgetItemViewHolder
         this.budgetItems = newItems;
         notifyDataSetChanged();
     }
-    // Nova metoda za dodavanje stavke
     public void addItem(GetBudgetItemDTO newItem) {
         if (budgetItems == null) {
             budgetItems = new ArrayList<>();
@@ -80,7 +72,6 @@ public class BudgetItemAdapter extends RecyclerView.Adapter<BudgetItemViewHolder
         notifyItemInserted(budgetItems.size() - 1);
     }
 
-    // Getter za listu, potreban za slanje na backend
     public List<GetBudgetItemDTO> getItems() {
         return budgetItems;
     }

@@ -50,7 +50,6 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
     private BudgetItemAdapter budgetItemAdapter;
 
     public Budget() {
-        // Obavezni prazan konstruktor
     }
     @Override
     public void onBudgetItemAdded(GetBudgetItemDTO newItem, GetCategoryDTO selectedCategory) {
@@ -67,7 +66,6 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
             budgetItemAdapter.addItem(newItem);
         }
     }
-    // Dodajemo implementaciju za izmenu itema
     @Override
     public void onBudgetItemUpdated(GetBudgetItemDTO updatedItem, GetCategoryDTO selectedCategory, int position) {
         boolean categoryExists = false;
@@ -84,10 +82,6 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
             budgetItemAdapter.updateItem(updatedItem, position);
         }
     }
-//    @Override
-//    public void onBudgetItemAdded(GetBudgetItemDTO newItem) {
-//        budgetItemAdapter.addItem(newItem);
-//    }
 
     public static Budget newInstance(String type, @Nullable Long eventId) {
         Budget fragment = new Budget();
@@ -117,7 +111,6 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_budget, container, false);
 
-        // Inicijalizacija UI komponenti
         eventTypeSpinner = view.findViewById(R.id.spinner_event_type);
         showSuggestedCategoriesButton = view.findViewById(R.id.btn_suggested_categories);
         actionButton = view.findViewById(R.id.btn_action);
@@ -125,16 +118,11 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
         budgetItemsRecyclerView = view.findViewById(R.id.rv_budget_items);
         addItemFab = view.findViewById(R.id.fab_add_item);
 
-        // Postavi RecyclerView
         budgetItemAdapter = new BudgetItemAdapter(new ArrayList<>());
-//        budgetItemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//        budgetItemsRecyclerView.setAdapter(budgetItemAdapter);
 
-        // Postavi OnItemActionListener
         budgetItemAdapter.setOnItemActionListener(new BudgetItemAdapter.OnItemActionListener() {
             @Override
             public void onItemClick(GetBudgetItemDTO item, int position) {
-                // Pozovi dijalog za izmenu
                 BudgetItemDialogFragment dialogFragment = BudgetItemDialogFragment.newInstance(item, position);
                 dialogFragment.setBudgetItemDialogListener(Budget.this);
                 dialogFragment.show(getParentFragmentManager(), "EditBudgetItemDialog");
@@ -142,13 +130,11 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
 
             @Override
             public void onDeleteClick(GetBudgetItemDTO item, int position) {
-                // Pokaži dijalog za potvrdu brisanja
                 showDeleteConfirmationDialog(item, position);
             }
 
             @Override
             public void onViewSolutionsClick(GetBudgetItemDTO item, int position) {
-                // Pokaži dijalog sa kupljenim/rezervisanim rešenjima
                 showSolutionsDialog(item);
             }
         });
@@ -195,39 +181,33 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Ne radimo ništa
             }
         });
     }
-    // Dodatne metode za brisanje i prikaz rešenja
     private void showDeleteConfirmationDialog(GetBudgetItemDTO item, int position) {
         new AlertDialog.Builder(getContext())
-                .setTitle("Potvrdi brisanje")
-                .setMessage("Da li ste sigurni da želite obrisati stavku '" + item.getName() + "'?")
-                .setPositiveButton("Da", (dialog, which) -> {
+                .setTitle("Confirm deletion")
+                .setMessage("Are you sure you want to delete the item '" + item.getName() + "'?")
+                .setPositiveButton("Yes", (dialog, which) -> {
                     budgetItemAdapter.removeItem(position);
-                    Toast.makeText(getContext(), "Stavka obrisana.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Item deleted.", Toast.LENGTH_SHORT).show();
                 })
-                .setNegativeButton("Ne", null)
+                .setNegativeButton("No", null)
                 .show();
     }
     private void showSolutionsDialog(GetBudgetItemDTO item) {
-        // Kreiraćemo novi dijalog za prikaz rešenja
         SolutionsListDialogFragment solutionsDialog = SolutionsListDialogFragment.newInstance(item.getSolutions());
         solutionsDialog.show(getParentFragmentManager(), "SolutionsDialog");
     }
-    // Dodaj novu metodu za prikaz dijaloga
     private void showSuggestedCategoriesDialog(List<String> suggestedCategories) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Predložene kategorije")
+        builder.setTitle("Suggested categories")
                 .setItems(suggestedCategories.toArray(new String[0]), (dialog, which) -> {
-                    // Možeš dodati logiku za odabir kategorije ovde, ako je potrebno
                 })
                 .setPositiveButton("OK", (dialog, id) -> dialog.dismiss());
 
-        // Ako nema predloženih kategorija, prikaži poruku
         if (suggestedCategories.isEmpty()) {
-            builder.setMessage("Nema predloženih kategorija za ovaj tip događaja.");
+            builder.setMessage("No suggested categories for this event type.");
         }
 
         builder.create().show();
@@ -235,17 +215,15 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
 
     private void setupViewsByType() {
         if ("CREATE".equalsIgnoreCase(type)) {
-            titleTextView.setText("Planiranje budžeta");
-            actionButton.setText("Kreiraj događaj");
+            titleTextView.setText("Budget planning");
+            actionButton.setText("Create event");
             budgetItemsRecyclerView.setVisibility(View.VISIBLE);
-            // Pozivamo metodu za dohvat svih aktivnih tipova eventa
             viewModel.fetchActiveEventTypes();
         } else if ("UPDATE".equalsIgnoreCase(type)) {
-            titleTextView.setText("Ažuriranje budžeta");
-            actionButton.setText("Ažuriraj");
+            titleTextView.setText("Budget planning");
+            actionButton.setText("Update");
             budgetItemsRecyclerView.setVisibility(View.VISIBLE);
 
-            // Pozivamo metodu za dohvat budžeta
             if (eventId != null) {
                 viewModel.fetchBudgetDetails(eventId);
             }

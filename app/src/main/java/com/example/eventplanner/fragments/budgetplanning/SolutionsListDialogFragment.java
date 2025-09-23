@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,6 +53,8 @@ public class SolutionsListDialogFragment extends DialogFragment {
 
         SolutionsAdapter adapter = new SolutionsAdapter(solutions);
         solutionsRecyclerView.setAdapter(adapter);
+        ImageView exitButton = view.findViewById(R.id.iv_exit_dialog);
+        exitButton.setOnClickListener(v -> dismiss());
 
         return view;
     }
@@ -61,6 +64,7 @@ public class SolutionsListDialogFragment extends DialogFragment {
         if (getDialog() != null) {
             Window window = getDialog().getWindow();
             if (window != null) {
+                window.setBackgroundDrawableResource(R.drawable.form_frame_white);
                 WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
                 layoutParams.copyFrom(window.getAttributes());
                 layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;

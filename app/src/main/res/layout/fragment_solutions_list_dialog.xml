@@ -9,12 +9,26 @@
         android:id="@+id/tv_dialog_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Kupljena i rezervisana rešenja"
-        android:textSize="20sp"
+        android:text="Purchased solutions"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_exit_dialog"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="0dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="Zatvori"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/exit_form" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_solutions"

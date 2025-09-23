@@ -108,13 +108,13 @@
     <string name="specs_hint">Specifics</string>
 
     <!-- Budget planning -->
-    <string name="add_new_budget_item">Dodaj novu stavku budžeta</string>
+    <string name="add_new_budget_item">Create budget item</string>
     <string name="add_item">Dodaj stavku</string>
     <string name="item_name">Naziv stavke</string>
     <string name="add_new_item">Dodaj novu stavku</string>
     <string name="show_suggested_categories">Prikaži predložene kategorije</string>
-    <string name="create_budget_plan">Planiranje budžeta</string>
-    <string name="update">Ažuriraj</string>
+    <string name="create_budget_plan">Budget planning</string>
+    <string name="update">Update</string>
 
 
     <!-- Unregistered user homepage -->

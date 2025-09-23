@@ -24,7 +24,6 @@ public class BudgetPlanningViewModel extends AndroidViewModel {
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<List<GetEventTypeDTO>> activeEventTypes = new MutableLiveData<>();
     private final MutableLiveData<GetEventTypeDTO> currentEventType = new MutableLiveData<>();
-    // Novi LiveData za predložene kategorije
     private final MutableLiveData<List<String>> suggestedCategories = new MutableLiveData<>();
     private final MutableLiveData<List<GetCategoryDTO>> activeCategories = new MutableLiveData<>();
 

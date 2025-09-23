@@ -28,11 +28,10 @@ public class SolutionBudgetViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(GetPurchaseAndReservationForBudgetDTO solutionItem) {
         if (solutionItem != null && solutionItem.getSolution() != null) {
-            solutionNameTextView.setText(solutionItem.getSolution().getName());
-            solutionAmountTextView.setText(String.format("Trošak: %.2f", solutionItem.getAmount()));
-            solutionTypeTextView.setText("Tip: " + solutionItem.getSolution().getType());
+            solutionNameTextView.setText(String.format("Name: "+solutionItem.getSolution().getName()));
+            solutionAmountTextView.setText(String.format("Cost: %.2f"+"($)", solutionItem.getAmount()));
+            solutionTypeTextView.setText("Type: " + solutionItem.getSolution().getType());
 
-            // Koristimo Glide za učitavanje slika sa URL-a
             if (solutionItem.getSolution().getMainImageUrl() != null && !solutionItem.getSolution().getMainImageUrl().isEmpty()) {
                 Glide.with(itemView.getContext())
                         .load(ClientUtils.BASE_IMAGE_URL + solutionItem.getSolution().getMainImageUrl())
@@ -40,7 +39,6 @@ public class SolutionBudgetViewHolder extends RecyclerView.ViewHolder {
                         .error(R.drawable.cart)
                         .into(solutionImageView);
             } else {
-                // Ako nema URL-a, postavljamo sliku placeholdera
                 solutionImageView.setImageResource(R.drawable.cart);
             }
         }

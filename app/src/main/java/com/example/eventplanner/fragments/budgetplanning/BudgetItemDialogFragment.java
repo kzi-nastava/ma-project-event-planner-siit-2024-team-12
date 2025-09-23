@@ -1,9 +1,12 @@
 package com.example.eventplanner.fragments.budgetplanning;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,12 +35,10 @@ public class BudgetItemDialogFragment extends DialogFragment {
     private EditText itemCostEditText;
     private Spinner categorySpinner;
     private Button saveButton;
-    private Button cancelButton;
     private List<GetCategoryDTO> allCategories;
-    private GetBudgetItemDTO currentItem; // Trenutni item za uređivanje
+    private GetBudgetItemDTO currentItem;
     private int currentPosition;
 
-    // Za komunikaciju sa glavnim fragmentom
     public interface BudgetItemDialogListener {
         void onBudgetItemAdded(GetBudgetItemDTO newItem, GetCategoryDTO selectedCategory);
         void onBudgetItemUpdated(GetBudgetItemDTO updatedItem, GetCategoryDTO selectedCategory, int position);
@@ -49,7 +50,7 @@ public class BudgetItemDialogFragment extends DialogFragment {
     public static BudgetItemDialogFragment newInstance() {
         return new BudgetItemDialogFragment();
     }
-    // Metoda za kreiranje dijaloga za izmenu
+
     public static BudgetItemDialogFragment newInstance(GetBudgetItemDTO item, int position) {
         BudgetItemDialogFragment fragment = new BudgetItemDialogFragment();
         Bundle args = new Bundle();
@@ -72,21 +73,17 @@ public class BudgetItemDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_budget_item_dialog, container, false);
 
-        // Inicijalizacija View-ova
         itemNameEditText = view.findViewById(R.id.et_item_name);
         itemCostEditText = view.findViewById(R.id.et_item_cost);
         categorySpinner = view.findViewById(R.id.spinner_item_category);
         saveButton = view.findViewById(R.id.btn_save_item);
-        cancelButton = view.findViewById(R.id.btn_cancel);
 
         viewModel = new ViewModelProvider(this).get(BudgetPlanningViewModel.class);
 
         allCategories = new ArrayList<>();
 
-        // 1. Pozivamo metodu za dohvat svih aktivnih kategorija
         viewModel.fetchAllActiveCategories();
 
-        // 2. Posmatramo promene u listi kategorija
         viewModel.getActiveCategories().observe(getViewLifecycleOwner(), categories -> {
             if (categories != null && !categories.isEmpty()) {
                 allCategories = categories;
@@ -106,7 +103,7 @@ public class BudgetItemDialogFragment extends DialogFragment {
                     if (categoryIndex != -1) {
                         categorySpinner.setSelection(categoryIndex);
                     }
-                    categorySpinner.setEnabled(false); // Onemogući spinner
+                    categorySpinner.setEnabled(false);
                 }
             }
         });
@@ -117,7 +114,6 @@ public class BudgetItemDialogFragment extends DialogFragment {
             }
         });
 
-        // Postavi postojeće podatke ako je mod izmena
         if (currentItem != null) {
             itemNameEditText.setText(currentItem.getName());
             itemCostEditText.setText(String.valueOf(currentItem.getCost()));
@@ -125,13 +121,12 @@ public class BudgetItemDialogFragment extends DialogFragment {
         } else {
             saveButton.setText("Save");
         }
-        // Logika za dugme Sačuvaj/Ažuriraj
         saveButton.setOnClickListener(v -> {
             String itemName = itemNameEditText.getText().toString().trim();
             String costString = itemCostEditText.getText().toString().trim();
 
             if (categorySpinner.getSelectedItem() == null) {
-                Toast.makeText(getContext(), "Kategorija je obavezna.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Category is required.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -144,7 +139,6 @@ public class BudgetItemDialogFragment extends DialogFragment {
 
                         currentItem.setName(itemName);
                         currentItem.setCost(itemCost);
-                        // Ostavljamo originalnu kategoriju - ne postavljamo novu
                         currentItem.setCategory(originalCategory);
 
                         if (listener != null) {
@@ -170,13 +164,33 @@ public class BudgetItemDialogFragment extends DialogFragment {
             }
         });
 
-        cancelButton.setOnClickListener(v -> dismiss());
-
         return view;
     }
 
-    // Metoda za postavljanje listenera iz glavnog fragmenta
     public void setBudgetItemDialogListener(BudgetItemDialogListener listener) {
         this.listener = listener;
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null) {
+            Window window = getDialog().getWindow();
+            if (window != null) {
+                window.setBackgroundDrawableResource(R.drawable.form_frame_white);
+
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int screenWidth = displayMetrics.widthPixels;
+
+                int dialogWidth = (int) (screenWidth * 0.80);
+
+                WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+                layoutParams.copyFrom(window.getAttributes());
+
+                layoutParams.width = dialogWidth;
+                layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                window.setAttributes(layoutParams);
+            }
+        }
     }
 }

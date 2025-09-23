@@ -19,7 +19,8 @@
             android:contentDescription="Slika rešenja"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
             android:id="@+id/tv_solution_name"
@@ -30,18 +31,8 @@
             android:text="Naziv rešenja"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/tv_solution_amount"
-            app:layout_constraintStart_toEndOf="@id/iv_solution_image"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_solution_amount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cena"
-            android:textSize="16sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_solution_image"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -50,11 +41,26 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
             android:text="Tip: Usluga/Proizvod"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_solution_image"
             app:layout_constraintTop_toBottomOf="@id/tv_solution_name" />
+
+        <TextView
+            android:id="@+id/tv_solution_amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:text="Cena"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_solution_image"
+            app:layout_constraintTop_toBottomOf="@id/tv_solution_type" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
