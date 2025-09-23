@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BudgetItemDialogFragment extends DialogFragment {
+    private static final String ARG_ITEM = "item";
+    private static final String ARG_POSITION = "position";
 
     private EditText itemNameEditText;
     private EditText itemCostEditText;
@@ -32,14 +34,38 @@ public class BudgetItemDialogFragment extends DialogFragment {
     private Button saveButton;
     private Button cancelButton;
     private List<GetCategoryDTO> allCategories;
+    private GetBudgetItemDTO currentItem; // Trenutni item za uređivanje
+    private int currentPosition;
 
     // Za komunikaciju sa glavnim fragmentom
     public interface BudgetItemDialogListener {
         void onBudgetItemAdded(GetBudgetItemDTO newItem, GetCategoryDTO selectedCategory);
+        void onBudgetItemUpdated(GetBudgetItemDTO updatedItem, GetCategoryDTO selectedCategory, int position);
     }
 
     private BudgetItemDialogListener listener;
     private BudgetPlanningViewModel viewModel;
+
+    public static BudgetItemDialogFragment newInstance() {
+        return new BudgetItemDialogFragment();
+    }
+    // Metoda za kreiranje dijaloga za izmenu
+    public static BudgetItemDialogFragment newInstance(GetBudgetItemDTO item, int position) {
+        BudgetItemDialogFragment fragment = new BudgetItemDialogFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_ITEM, item);
+        args.putInt(ARG_POSITION, position);
+        fragment.setArguments(args);
+        return fragment;
+    }
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            currentItem = (GetBudgetItemDTO) getArguments().getSerializable(ARG_ITEM);
+            currentPosition = getArguments().getInt(ARG_POSITION, -1);
+        }
+    }
 
     @Nullable
     @Override
@@ -73,6 +99,14 @@ public class BudgetItemDialogFragment extends DialogFragment {
                         categoryNames);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 categorySpinner.setAdapter(adapter);
+
+                // Ako je mod izmena, postavi odabranu kategoriju
+                if (currentItem != null && currentItem.getCategory() != null) {
+                    int categoryIndex = categoryNames.indexOf(currentItem.getCategory().getName());
+                    if (categoryIndex != -1) {
+                        categorySpinner.setSelection(categoryIndex);
+                    }
+                }
             }
         });
 
@@ -82,67 +116,54 @@ public class BudgetItemDialogFragment extends DialogFragment {
             }
         });
 
-        // Postavljanje listenera
+        // Postavi postojeće podatke ako je mod izmena
+        if (currentItem != null) {
+            itemNameEditText.setText(currentItem.getName());
+            itemCostEditText.setText(String.valueOf(currentItem.getCost()));
+            saveButton.setText("Update");
+        } else {
+            saveButton.setText("Save");
+        }
         saveButton.setOnClickListener(v -> {
             String itemName = itemNameEditText.getText().toString().trim();
             String costString = itemCostEditText.getText().toString().trim();
-            // GetCategoryDTO selectedCategory = (GetCategoryDTO) categorySpinner.getSelectedItem();
 
             if (categorySpinner.getSelectedItem() == null) {
                 Toast.makeText(getContext(), "Kategorija je obavezna.", Toast.LENGTH_SHORT).show();
                 return;
             }
+            GetCategoryDTO selectedCategory = allCategories.get(categorySpinner.getSelectedItemPosition());
 
             if (!itemName.isEmpty() && !costString.isEmpty()) {
                 try {
                     Double itemCost = Double.parseDouble(costString);
 
-                    // Dohvati odabranu kategoriju
-                    int selectedPosition = categorySpinner.getSelectedItemPosition();
-                    GetCategoryDTO selectedCategory = allCategories.get(selectedPosition);
+                    if (currentItem != null) { // Logika za izmenu
+                        currentItem.setName(itemName);
+                        currentItem.setCost(itemCost);
+                        currentItem.setCategory(selectedCategory);
 
+                        if (listener != null) {
+                            listener.onBudgetItemUpdated(currentItem, selectedCategory, currentPosition);
+                        }
+                    } else { // Logika za kreiranje
+                        GetBudgetItemDTO newBudgetItem = new GetBudgetItemDTO();
+                        newBudgetItem.setName(itemName);
+                        newBudgetItem.setCost(itemCost);
+                        newBudgetItem.setCategory(selectedCategory);
 
-                    // Kreiraj novi DTO
-                    GetBudgetItemDTO newBudgetItem = new GetBudgetItemDTO();
-                    newBudgetItem.setName(itemName);
-                    newBudgetItem.setCost(itemCost); // Postavi uneseni trošak
-                    newBudgetItem.setCategory(selectedCategory);
-
-                    // Proslijedi novu stavku glavnom fragmentu
-                    if (listener != null) {
-                        listener.onBudgetItemAdded(newBudgetItem, selectedCategory);
+                        if (listener != null) {
+                            listener.onBudgetItemAdded(newBudgetItem, selectedCategory);
+                        }
                     }
                     dismiss();
                 } catch (NumberFormatException e) {
-                    Toast.makeText(getContext(), "Budget must be valid number", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Budget must be valid number.", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Toast.makeText(getContext(), "Please fill in all fields.", Toast.LENGTH_SHORT).show();
             }
         });
-
-        // Postavljanje listenera
-//        saveButton.setOnClickListener(v -> {
-//            String itemName = itemNameEditText.getText().toString().trim();
-//            String costString = itemCostEditText.getText().toString().trim();
-//            // GetCategoryDTO selectedCategory = (GetCategoryDTO) categorySpinner.getSelectedItem();
-//
-//            if (!itemName.isEmpty() && !costString.isEmpty()/* && selectedCategory != null */) {
-//                // Kreiraj novi DTO
-//                GetBudgetItemDTO newBudgetItem = new GetBudgetItemDTO();
-//                newBudgetItem.setName(itemName);
-//                newBudgetItem.setCost(0.0);
-//                // newBudgetItem.setCategory(selectedCategory);
-//
-//                // Proslijedi novu stavku glavnom fragmentu
-//                if (listener != null) {
-//                    listener.onBudgetItemAdded(newBudgetItem);
-//                }
-//                dismiss();
-//            } else {
-//                Toast.makeText(getContext(), "Naziv i kategorija su obavezni.", Toast.LENGTH_SHORT).show();
-//            }
-//        });
 
         cancelButton.setOnClickListener(v -> dismiss());
 

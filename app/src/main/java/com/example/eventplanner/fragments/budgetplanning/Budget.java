@@ -64,10 +64,27 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
         }
 
         if (categoryExists) {
-            Toast.makeText(getContext(), "Stavka s odabranom kategorijom već postoji.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "An item with the selected category already exists.", Toast.LENGTH_SHORT).show();
         } else {
             // 2. Ako kategorija ne postoji, dodajemo novi item
             budgetItemAdapter.addItem(newItem);
+        }
+    }
+    // Dodajemo implementaciju za izmenu itema
+    @Override
+    public void onBudgetItemUpdated(GetBudgetItemDTO updatedItem, GetCategoryDTO selectedCategory, int position) {
+        boolean categoryExists = false;
+        for (int i = 0; i < budgetItemAdapter.getItems().size(); i++) {
+            GetBudgetItemDTO item = budgetItemAdapter.getItems().get(i);
+            if (i != position && item.getCategory() != null && item.getCategory().getId().equals(selectedCategory.getId())) {
+                categoryExists = true;
+                break;
+            }
+        }
+        if (categoryExists) {
+            Toast.makeText(getContext(), "An item with the selected category already exists.", Toast.LENGTH_SHORT).show();
+        } else {
+            budgetItemAdapter.updateItem(updatedItem, position);
         }
     }
 //    @Override
@@ -116,6 +133,13 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
         budgetItemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         budgetItemsRecyclerView.setAdapter(budgetItemAdapter);
 
+        // Postavi listener za klik na item
+        budgetItemAdapter.setOnItemClickListener((item, position) -> {
+            BudgetItemDialogFragment dialogFragment = BudgetItemDialogFragment.newInstance(item, position);
+            dialogFragment.setBudgetItemDialogListener(this);
+            dialogFragment.show(getParentFragmentManager(), "EditBudgetItemDialog");
+        });
+
         setupViewsByType();
         setupObservers();
         setupListeners();
@@ -125,7 +149,7 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
     private void setupListeners() {
         // Postavi onClickListener za FAB
         addItemFab.setOnClickListener(v -> {
-            BudgetItemDialogFragment dialogFragment = new BudgetItemDialogFragment();
+            BudgetItemDialogFragment dialogFragment = BudgetItemDialogFragment.newInstance();
             dialogFragment.setBudgetItemDialogListener(this);
             dialogFragment.show(getParentFragmentManager(), "BudgetItemDialog");
         });

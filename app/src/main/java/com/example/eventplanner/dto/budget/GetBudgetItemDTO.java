@@ -3,9 +3,10 @@ package com.example.eventplanner.dto.budget;
 import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class GetBudgetItemDTO {
+public class GetBudgetItemDTO implements Serializable {
     private Long id;
     private String name;
     private Double cost;
