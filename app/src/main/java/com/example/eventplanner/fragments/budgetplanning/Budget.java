@@ -173,6 +173,15 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
                 });
             }
         });
+        actionButton.setOnClickListener(v -> {
+            if ("UPDATE".equalsIgnoreCase(type)) {
+                List<GetBudgetItemDTO> currentItems = budgetItemAdapter.getItems();
+                viewModel.updateBudget(currentItems, eventId);
+            } else if ("CREATE".equalsIgnoreCase(type)) {
+//                TODO
+                // Implementiraj logiku za kreiranje događaja
+            }
+        });
 
         eventTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -261,6 +270,20 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 eventTypeSpinner.setAdapter(adapter);
                 eventTypeSpinner.setEnabled(true);
+            }
+        });
+        viewModel.getUpdateSuccess().observe(getViewLifecycleOwner(), success -> {
+            if (success != null) {
+                if (success) {
+                    Toast.makeText(getContext(), "Budget updated successfully.", Toast.LENGTH_SHORT).show();
+                } else {
+                }
+            }
+        });
+
+        viewModel.getUpdatedItems().observe(getViewLifecycleOwner(), updatedItems -> {
+            if (updatedItems != null) {
+                budgetItemAdapter.setItems(updatedItems);
             }
         });
 

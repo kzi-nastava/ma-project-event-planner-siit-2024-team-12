@@ -6,6 +6,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.eventplanner.dto.budget.GetBudgetItemDTO;
+import com.example.eventplanner.dto.budget.UpdateBudgetDTO;
 import com.example.eventplanner.dto.budget.UpdateBudgetForEventDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
@@ -13,6 +15,7 @@ import com.example.eventplanner.utils.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,9 +29,15 @@ public class BudgetPlanningViewModel extends AndroidViewModel {
     private final MutableLiveData<GetEventTypeDTO> currentEventType = new MutableLiveData<>();
     private final MutableLiveData<List<String>> suggestedCategories = new MutableLiveData<>();
     private final MutableLiveData<List<GetCategoryDTO>> activeCategories = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> updateSuccess = new MutableLiveData<>();
+    private final MutableLiveData<List<GetBudgetItemDTO>> updatedItems = new MutableLiveData<>();
 
-
-    // Getter za novi LiveData
+    public LiveData<Boolean> getUpdateSuccess() {
+        return updateSuccess;
+    }
+    public LiveData<List<GetBudgetItemDTO>> getUpdatedItems() {
+        return updatedItems;
+    }
     public LiveData<List<String>> getSuggestedCategories() {
         return suggestedCategories;
     }
@@ -145,6 +154,37 @@ public class BudgetPlanningViewModel extends AndroidViewModel {
             @Override
             public void onFailure(Call<List<GetCategoryDTO>> call, Throwable t) {
                 errorMessage.setValue("Network error: " + t.getMessage());
+            }
+        });
+    }
+    public void updateBudget(List<GetBudgetItemDTO> budgetItems, Long eventId) {
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            errorMessage.setValue("User not authenticated.");
+            updateSuccess.setValue(false);
+            return;
+        }
+
+        List<UpdateBudgetDTO> updateDtos = budgetItems.stream()
+                .map(item -> new UpdateBudgetDTO(item.getId(), item.getName(), item.getCost(), Long.parseLong(item.getCategory().getId())))
+                .collect(Collectors.toList());
+
+        ClientUtils.eventService.updateBudget(auth, updateDtos, eventId).enqueue(new Callback<List<GetBudgetItemDTO>>() {
+            @Override
+            public void onResponse(Call<List<GetBudgetItemDTO>> call, Response<List<GetBudgetItemDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    updatedItems.setValue(response.body());
+                    updateSuccess.setValue(true);
+                } else {
+                    errorMessage.setValue("Error updating budget: " + response.code());
+                    updateSuccess.setValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GetBudgetItemDTO>> call, Throwable t) {
+                errorMessage.setValue("Network error: " + t.getMessage());
+                updateSuccess.setValue(false);
             }
         });
     }
