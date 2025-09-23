@@ -106,6 +106,7 @@ public class BudgetItemDialogFragment extends DialogFragment {
                     if (categoryIndex != -1) {
                         categorySpinner.setSelection(categoryIndex);
                     }
+                    categorySpinner.setEnabled(false); // Onemogući spinner
                 }
             }
         });
@@ -124,6 +125,7 @@ public class BudgetItemDialogFragment extends DialogFragment {
         } else {
             saveButton.setText("Save");
         }
+        // Logika za dugme Sačuvaj/Ažuriraj
         saveButton.setOnClickListener(v -> {
             String itemName = itemNameEditText.getText().toString().trim();
             String costString = itemCostEditText.getText().toString().trim();
@@ -132,21 +134,24 @@ public class BudgetItemDialogFragment extends DialogFragment {
                 Toast.makeText(getContext(), "Kategorija je obavezna.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            GetCategoryDTO selectedCategory = allCategories.get(categorySpinner.getSelectedItemPosition());
 
             if (!itemName.isEmpty() && !costString.isEmpty()) {
                 try {
                     Double itemCost = Double.parseDouble(costString);
 
                     if (currentItem != null) { // Logika za izmenu
+                        GetCategoryDTO originalCategory = currentItem.getCategory();
+
                         currentItem.setName(itemName);
                         currentItem.setCost(itemCost);
-                        currentItem.setCategory(selectedCategory);
+                        // Ostavljamo originalnu kategoriju - ne postavljamo novu
+                        currentItem.setCategory(originalCategory);
 
                         if (listener != null) {
-                            listener.onBudgetItemUpdated(currentItem, selectedCategory, currentPosition);
+                            listener.onBudgetItemUpdated(currentItem, originalCategory, currentPosition);
                         }
                     } else { // Logika za kreiranje
+                        GetCategoryDTO selectedCategory = allCategories.get(categorySpinner.getSelectedItemPosition());
                         GetBudgetItemDTO newBudgetItem = new GetBudgetItemDTO();
                         newBudgetItem.setName(itemName);
                         newBudgetItem.setCost(itemCost);
