@@ -54,7 +54,6 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
     }
     @Override
     public void onBudgetItemAdded(GetBudgetItemDTO newItem, GetCategoryDTO selectedCategory) {
-        // 1. Provera da li kategorija već postoji
         boolean categoryExists = false;
         for (GetBudgetItemDTO item : budgetItemAdapter.getItems()) {
             if (item.getCategory() != null && item.getCategory().getId().equals(selectedCategory.getId())) {
@@ -62,11 +61,9 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
                 break;
             }
         }
-
         if (categoryExists) {
-            Toast.makeText(getContext(), "An item with the selected category already exists.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "An item with the selected category already exists.", Toast.LENGTH_LONG).show();
         } else {
-            // 2. Ako kategorija ne postoji, dodajemo novi item
             budgetItemAdapter.addItem(newItem);
         }
     }
@@ -82,7 +79,7 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
             }
         }
         if (categoryExists) {
-            Toast.makeText(getContext(), "An item with the selected category already exists.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "An item with the selected category already exists.", Toast.LENGTH_LONG).show();
         } else {
             budgetItemAdapter.updateItem(updatedItem, position);
         }
@@ -130,15 +127,33 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
 
         // Postavi RecyclerView
         budgetItemAdapter = new BudgetItemAdapter(new ArrayList<>());
+//        budgetItemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//        budgetItemsRecyclerView.setAdapter(budgetItemAdapter);
+
+        // Postavi OnItemActionListener
+        budgetItemAdapter.setOnItemActionListener(new BudgetItemAdapter.OnItemActionListener() {
+            @Override
+            public void onItemClick(GetBudgetItemDTO item, int position) {
+                // Pozovi dijalog za izmenu
+                BudgetItemDialogFragment dialogFragment = BudgetItemDialogFragment.newInstance(item, position);
+                dialogFragment.setBudgetItemDialogListener(Budget.this);
+                dialogFragment.show(getParentFragmentManager(), "EditBudgetItemDialog");
+            }
+
+            @Override
+            public void onDeleteClick(GetBudgetItemDTO item, int position) {
+                // Pokaži dijalog za potvrdu brisanja
+                showDeleteConfirmationDialog(item, position);
+            }
+
+            @Override
+            public void onViewSolutionsClick(GetBudgetItemDTO item, int position) {
+                // Pokaži dijalog sa kupljenim/rezervisanim rešenjima
+                showSolutionsDialog(item);
+            }
+        });
         budgetItemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         budgetItemsRecyclerView.setAdapter(budgetItemAdapter);
-
-        // Postavi listener za klik na item
-        budgetItemAdapter.setOnItemClickListener((item, position) -> {
-            BudgetItemDialogFragment dialogFragment = BudgetItemDialogFragment.newInstance(item, position);
-            dialogFragment.setBudgetItemDialogListener(this);
-            dialogFragment.show(getParentFragmentManager(), "EditBudgetItemDialog");
-        });
 
         setupViewsByType();
         setupObservers();
@@ -147,14 +162,12 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
         return view;
     }
     private void setupListeners() {
-        // Postavi onClickListener za FAB
         addItemFab.setOnClickListener(v -> {
             BudgetItemDialogFragment dialogFragment = BudgetItemDialogFragment.newInstance();
             dialogFragment.setBudgetItemDialogListener(this);
             dialogFragment.show(getParentFragmentManager(), "BudgetItemDialog");
         });
 
-        // Ažuriraj listener za dugme za predložene kategorije
         showSuggestedCategoriesButton.setOnClickListener(v -> {
             if ("UPDATE".equalsIgnoreCase(type)) {
                 viewModel.getBudgetDetails().observe(getViewLifecycleOwner(), budgetDetails -> {
@@ -163,7 +176,6 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
                     }
                 });
             } else if ("CREATE".equalsIgnoreCase(type)) {
-                // Posmatraj predložene kategorije i prikaži dijalog kada podaci stignu
                 viewModel.getSuggestedCategories().observe(getViewLifecycleOwner(), suggestedCategories -> {
                     if (suggestedCategories != null) {
                         showSuggestedCategoriesDialog(suggestedCategories);
@@ -172,13 +184,11 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
             }
         });
 
-        // Listener za promjenu odabira u Spinneru
         eventTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if ("CREATE".equalsIgnoreCase(type)) {
                     String selectedEventType = (String) parent.getItemAtPosition(position);
-                    // Dohvati predložene kategorije za odabrani tip eventa
                     viewModel.fetchSuggestedCategoriesForEventType(selectedEventType);
                 }
             }
@@ -188,6 +198,23 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
                 // Ne radimo ništa
             }
         });
+    }
+    // Dodatne metode za brisanje i prikaz rešenja
+    private void showDeleteConfirmationDialog(GetBudgetItemDTO item, int position) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Potvrdi brisanje")
+                .setMessage("Da li ste sigurni da želite obrisati stavku '" + item.getName() + "'?")
+                .setPositiveButton("Da", (dialog, which) -> {
+                    budgetItemAdapter.removeItem(position);
+                    Toast.makeText(getContext(), "Stavka obrisana.", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Ne", null)
+                .show();
+    }
+    private void showSolutionsDialog(GetBudgetItemDTO item) {
+        // Kreiraćemo novi dijalog za prikaz rešenja
+        SolutionsListDialogFragment solutionsDialog = SolutionsListDialogFragment.newInstance(item.getSolutions());
+        solutionsDialog.show(getParentFragmentManager(), "SolutionsDialog");
     }
     // Dodaj novu metodu za prikaz dijaloga
     private void showSuggestedCategoriesDialog(List<String> suggestedCategories) {
@@ -226,25 +253,20 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
     }
 
     private void setupObservers() {
-        // Posmatraj promjene u budžetu
         viewModel.getBudgetDetails().observe(getViewLifecycleOwner(), budgetDetails -> {
             if (budgetDetails != null) {
-                // Ažuriraj spinner
                 if (budgetDetails.getEventType() != null) {
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
                             android.R.layout.simple_spinner_item,
                             Collections.singletonList(budgetDetails.getEventType().getName()));
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     eventTypeSpinner.setAdapter(adapter);
-                    eventTypeSpinner.setEnabled(false); // Onemogući promjenu tipa eventa
+                    eventTypeSpinner.setEnabled(false);
                 }
-
-                // **Ažuriraj RecyclerView s novim podacima**
                 budgetItemAdapter.setItems(budgetDetails.getBudgetItems());
             }
         });
 
-        // Posmatraj aktivne tipove eventa (režim kreiranja)
         viewModel.getActiveEventTypes().observe(getViewLifecycleOwner(), eventTypes -> {
             if (eventTypes != null && !eventTypes.isEmpty()) {
                 List<String> eventTypeNames = eventTypes.stream()
@@ -260,7 +282,6 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
             }
         });
 
-        // Posmatraj greške
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null) {
                 Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();

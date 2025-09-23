@@ -15,15 +15,24 @@ import java.util.List;
 public class BudgetItemAdapter extends RecyclerView.Adapter<BudgetItemViewHolder> {
 
     private List<GetBudgetItemDTO> budgetItems;
-    private OnItemClickListener listener; // Dodajemo listener
+//    private OnItemClickListener listener; // Dodajemo listener
+    private OnItemActionListener listener;
 
     public BudgetItemAdapter(List<GetBudgetItemDTO> budgetItems) {
         this.budgetItems = budgetItems;
     }
-    public interface OnItemClickListener {
+    public interface OnItemActionListener {
         void onItemClick(GetBudgetItemDTO item, int position);
+        void onDeleteClick(GetBudgetItemDTO item, int position);
+        void onViewSolutionsClick(GetBudgetItemDTO item, int position);
     }
-    public void setOnItemClickListener(OnItemClickListener listener) {
+//    public interface OnItemClickListener {
+//        void onItemClick(GetBudgetItemDTO item, int position);
+//    }
+//    public void setOnItemClickListener(OnItemClickListener listener) {
+//        this.listener = listener;
+//    }
+    public void setOnItemActionListener(OnItemActionListener listener) {
         this.listener = listener;
     }
 
@@ -39,10 +48,17 @@ public class BudgetItemAdapter extends RecyclerView.Adapter<BudgetItemViewHolder
         GetBudgetItemDTO item = budgetItems.get(position);
         holder.bind(item);
     }
+
     public void updateItem(GetBudgetItemDTO updatedItem, int position) {
         if (position >= 0 && position < budgetItems.size()) {
             budgetItems.set(position, updatedItem);
             notifyItemChanged(position);
+        }
+    }
+    public void removeItem(int position) {
+        if (position >= 0 && position < budgetItems.size()) {
+            budgetItems.remove(position);
+            notifyItemRemoved(position);
         }
     }
 

@@ -1,6 +1,8 @@
 package com.example.eventplanner.dto.budget;
 
-public class GetPurchaseAndReservationForBudgetDTO {
+import java.io.Serializable;
+
+public class GetPurchaseAndReservationForBudgetDTO implements Serializable {
     private Long id;
     private Double amount;
     private GetBudgetSolutionDTO solution;

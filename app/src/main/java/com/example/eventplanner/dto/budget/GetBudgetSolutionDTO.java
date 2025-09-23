@@ -1,6 +1,8 @@
 package com.example.eventplanner.dto.budget;
 
-public class GetBudgetSolutionDTO {
+import java.io.Serializable;
+
+public class GetBudgetSolutionDTO implements Serializable {
     private String name;
     private String mainImageUrl;
     private Long id;
