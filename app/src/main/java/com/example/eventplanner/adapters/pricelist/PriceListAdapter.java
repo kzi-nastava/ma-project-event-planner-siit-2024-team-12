@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.viewholders.PriceListItemViewHolder;
 import com.example.eventplanner.dto.pricelist.GetPriceListItemDTO;
+import com.example.eventplanner.dto.pricelist.UpdatePriceListSolutionDTO;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class PriceListAdapter extends RecyclerView.Adapter<PriceListItemViewHold
     }
 
     public interface OnItemActionListener {
-        void onSaveClick(GetPriceListItemDTO item, int position);
+        void onSaveClick(GetPriceListItemDTO item, UpdatePriceListSolutionDTO updateDTO, int position);
     }
 
     public void setOnItemActionListener(OnItemActionListener listener) {
@@ -49,5 +50,8 @@ public class PriceListAdapter extends RecyclerView.Adapter<PriceListItemViewHold
     public void setItems(List<GetPriceListItemDTO> newItems) {
         this.priceListItems = newItems;
         notifyDataSetChanged();
+    }
+    public List<GetPriceListItemDTO> getItems() {
+        return priceListItems;
     }
 }

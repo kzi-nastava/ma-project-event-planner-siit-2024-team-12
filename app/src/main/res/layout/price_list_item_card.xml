@@ -51,7 +51,7 @@
 
         <EditText
             android:id="@+id/et_price"
-            android:layout_width="0dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:background="@drawable/input_field"
@@ -70,7 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="108dp"
+            android:layout_marginEnd="16dp"
             android:text="@string/create_discount"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -78,9 +78,9 @@
 
         <EditText
             android:id="@+id/et_discount"
-            android:layout_width="0dp"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="13dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/input_field"
             android:hint="%"
             android:inputType="number"
@@ -88,6 +88,7 @@
             android:textAlignment="viewStart"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tv_discount_label"
             app:layout_constraintTop_toBottomOf="@+id/tv_discount_label"
             tools:text="52" />

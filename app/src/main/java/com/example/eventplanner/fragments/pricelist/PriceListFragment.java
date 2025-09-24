@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.pricelist.PriceListAdapter;
 import com.example.eventplanner.dto.pricelist.GetPriceListItemDTO;
+import com.example.eventplanner.dto.pricelist.GetPriceListSolutionDTO;
 import com.example.eventplanner.viewmodels.PriceListViewModel;
 
 import java.time.format.DateTimeFormatter;
@@ -68,6 +69,10 @@ public class PriceListFragment extends Fragment {
         adapter = new PriceListAdapter(new ArrayList<>());
         rvPriceListItems.setAdapter(adapter);
 
+        adapter.setOnItemActionListener((item, updateDTO, position) -> {
+            viewModel.updatePriceListItem(item.getId(), type, updateDTO);
+        });
+
         setupObservers();
 
         if (type != null) {
@@ -91,6 +96,29 @@ public class PriceListFragment extends Fragment {
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null) {
                 Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        viewModel.getUpdatedItem().observe(getViewLifecycleOwner(), updatedItem -> {
+            if (updatedItem != null) {
+                List<GetPriceListItemDTO> currentItems = adapter.getItems();
+                for (int i = 0; i < currentItems.size(); i++) {
+                    if (currentItems.get(i).getId().equals(updatedItem.getId())) {
+                        GetPriceListSolutionDTO solution = new GetPriceListSolutionDTO();
+                        solution.setPrice(updatedItem.getSolution().getPrice());
+                        solution.setDiscount(updatedItem.getSolution().getDiscount());
+                        solution.setDescription(currentItems.get(i).getSolution().getDescription());
+                        solution.setName(currentItems.get(i).getSolution().getName());
+                        currentItems.set(i, new GetPriceListItemDTO(
+                                updatedItem.getId(),
+                                updatedItem.getDiscountPrice(),
+                                solution
+                        ));
+                        adapter.notifyItemChanged(i);
+                        break;
+                    }
+                }
+                Toast.makeText(getContext(), "Item updated successfully.", Toast.LENGTH_SHORT).show();
             }
         });
     }
