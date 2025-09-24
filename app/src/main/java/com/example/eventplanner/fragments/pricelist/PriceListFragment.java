@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ public class PriceListFragment extends Fragment {
     private RecyclerView rvPriceListItems;
     private PriceListAdapter adapter;
     private ImageButton btnPdf;
+    private ImageView btnExit;
 
     public PriceListFragment() {
         // Obavezni prazan konstruktor
@@ -85,6 +87,7 @@ public class PriceListFragment extends Fragment {
         rvPriceListItems.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new PriceListAdapter(new ArrayList<>());
         rvPriceListItems.setAdapter(adapter);
+        btnExit = view.findViewById(R.id.iv_exit_dialog);
 
         btnPdf = view.findViewById(R.id.btn_generate_pdf);
 
@@ -92,6 +95,14 @@ public class PriceListFragment extends Fragment {
 
         adapter.setOnItemActionListener((item, updateDTO, position) -> {
             viewModel.updatePriceListItem(item.getId(), type, updateDTO);
+        });
+
+        btnExit.setOnClickListener(v -> {
+            if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+                getParentFragmentManager().popBackStack();
+            } else {
+                requireActivity().finish();
+            }
         });
 
         setupObservers();

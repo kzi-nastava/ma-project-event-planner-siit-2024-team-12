@@ -17,6 +17,20 @@
         tools:ignore="ContentDescription" />
 
 
+    <ImageView
+        android:id="@+id/iv_exit_dialog"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="Zatvori"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/exit_form" />
+
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
