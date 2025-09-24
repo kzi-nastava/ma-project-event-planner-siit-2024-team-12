@@ -67,7 +67,6 @@ public class PriceListFragment extends Fragment {
         rvPriceListItems.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new PriceListAdapter(new ArrayList<>());
         rvPriceListItems.setAdapter(adapter);
-        rvPriceListItems.setNestedScrollingEnabled(false);
 
         setupObservers();
 
