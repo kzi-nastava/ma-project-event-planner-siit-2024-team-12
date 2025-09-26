@@ -406,4 +406,9 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
         navigateToFragment(R.id.suspended_fragment_container, suspendedFragment);
     }
+
+    public NotificationWebSocketService getNotificationService() {
+        return notificationService;
+    }
+
 }

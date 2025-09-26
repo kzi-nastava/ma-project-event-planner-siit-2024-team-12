@@ -1,5 +1,21 @@
 package com.example.eventplanner.fragments.notification;
+
+
 import android.util.Log;
+
+import com.example.eventplanner.adapters.datetime.DurationAdapter;
+import com.example.eventplanner.adapters.datetime.LocalDateAdapter;
+import com.example.eventplanner.adapters.datetime.LocalDateTimeAdapter;
+import com.example.eventplanner.adapters.datetime.LocalTimeAdapter;
+import com.example.eventplanner.dto.notification.GetNotificationDTO;
+import com.example.eventplanner.utils.ClientUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +73,14 @@ public class NotificationWebSocketService {
                     Log.d(TAG, "✅ Received message: " + stompMessage.getPayload());
                     unreadCount++;
                     notifyListeners();
+                    Gson gson = new GsonBuilder()
+                            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                            .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
+                            .registerTypeAdapter(Duration.class, new DurationAdapter())
+                            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                            .create();
+                    GetNotificationDTO dto = gson.fromJson( stompMessage.getPayload(), GetNotificationDTO.class);
+                    notifyListener(dto);
                 }, throwable -> {
                     Log.e(TAG, "❌ Error on topic subscription", throwable);
                 });
@@ -113,4 +137,23 @@ public class NotificationWebSocketService {
             Log.d(TAG, "Disconnected from WebSocket.");
         }
     }
+
+
+    public interface NotificationListener {
+        void onNotificationReceived(GetNotificationDTO notification);
+    }
+
+    private final List<NotificationListener> notificationListeners = new ArrayList<>();
+
+    public void addNotificationListener(NotificationListener listener) {
+        notificationListeners.add(listener);
+    }
+
+    private void notifyListener(GetNotificationDTO notification) {
+        for (NotificationListener l : notificationListeners) {
+            l.onNotificationReceived(notification);
+        }
+    }
+
+
 }
