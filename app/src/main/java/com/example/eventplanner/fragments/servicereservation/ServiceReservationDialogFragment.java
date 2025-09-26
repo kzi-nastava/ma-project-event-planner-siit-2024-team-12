@@ -2,6 +2,7 @@ package com.example.eventplanner.fragments.servicereservation;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,8 @@ import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.dto.servicereservation.CreateServiceReservationDTO;
 import com.example.eventplanner.dto.servicereservation.CreatedServiceReservationDTO;
 import com.example.eventplanner.utils.ClientUtils;
+
+import org.json.JSONObject;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -337,15 +340,8 @@ public class ServiceReservationDialogFragment extends DialogFragment {
 
                             dismiss();
                         } else {
-                            try {
-                                String errorBody = response.errorBody() != null ? response.errorBody().string() : "null";
-                                Log.e("ServiceReservation", "Backend error: code=" + response.code() + ", body=" + errorBody);
-                                Toast.makeText(requireContext(),
-                                        "Error reserving the service: " + response.code(),
-                                        Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                Log.e("ServiceReservation", "Error reading errorBody", e);
-                            }
+                            String errorMessage = getErrorResponse(response);
+                            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show();
                         }
                     }
 
@@ -355,6 +351,26 @@ public class ServiceReservationDialogFragment extends DialogFragment {
                         Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+
+    private String getErrorResponse(Response<?> response) {
+        try {
+            String errorBody = response.errorBody() != null ? response.errorBody().string() : "null";
+
+            JSONObject errorJson = new JSONObject(errorBody);
+
+            if (errorJson.has("message")) {
+                return errorJson.getString("message");
+            } else if (errorJson.has("error")) {
+                return errorJson.getString("error");
+            } else {
+                return "Unexpected error occurred.";
+            }
+        } catch (Exception e) {
+            Log.e("ServiceReservation", "Error parsing errorBody", e);
+            return "Error reserving the service: " + response.code();
+        }
     }
 
 
