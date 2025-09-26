@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,7 +30,7 @@ import retrofit2.Response;
 
 public class ServiceReservationsManagementFragment extends Fragment {
 
-    private static final int PAGE_SIZE = 6;
+    private static final int PAGE_SIZE = 5;
 
     private RecyclerView recyclerReservations;
     private ImageButton prevPageButton;
@@ -54,6 +55,8 @@ public class ServiceReservationsManagementFragment extends Fragment {
         prevPageButton = v.findViewById(R.id.prevPageButton);
         nextPageButton = v.findViewById(R.id.nextPageButton);
         pageNumber = v.findViewById(R.id.pageNumber);
+        ImageView exitButton = v.findViewById(R.id.exitFormButton);
+        exitButton.setOnClickListener(v11 -> requireActivity().onBackPressed());
 
         recyclerReservations.setLayoutManager(new LinearLayoutManager(getContext()));
 

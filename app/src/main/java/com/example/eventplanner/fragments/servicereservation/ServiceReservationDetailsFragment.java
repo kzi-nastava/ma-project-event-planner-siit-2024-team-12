@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +51,8 @@ public class ServiceReservationDetailsFragment extends Fragment {
         textTimeTo = view.findViewById(R.id.textTimeTo);
         textStatus = view.findViewById(R.id.textStatus);
         buttonCancel = view.findViewById(R.id.buttonCancelReservation);
+        ImageView exitButton = view.findViewById(R.id.exitFormButton);
+        exitButton.setOnClickListener(v -> requireActivity().onBackPressed());
 
         if (getArguments() != null) {
             reservationId = getArguments().getLong("RESERVATION_ID", 0);
