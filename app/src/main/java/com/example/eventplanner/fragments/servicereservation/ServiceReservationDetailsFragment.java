@@ -10,17 +10,21 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.servicereservation.GetServiceReservationDTO;
 import com.example.eventplanner.utils.ClientUtils;
 
+import org.json.JSONObject;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 public class ServiceReservationDetailsFragment extends Fragment {
 
@@ -57,9 +61,7 @@ public class ServiceReservationDetailsFragment extends Fragment {
         textService.setOnClickListener(v -> {
         });
 
-        buttonCancel.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Cancel reservation clicked", Toast.LENGTH_SHORT).show();
-        });
+        buttonCancel.setOnClickListener(v -> showCancelConfirmationDialog());
 
         return view;
     }
@@ -110,4 +112,52 @@ public class ServiceReservationDetailsFragment extends Fragment {
             buttonCancel.setVisibility(View.GONE);
         }
     }
+
+    private void showCancelConfirmationDialog() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Cancel Reservation")
+                .setMessage("Are you sure you want to cancel this reservation?")
+                .setPositiveButton("Yes", (dialog, which) -> cancelReservation())
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .setCancelable(false)
+                .show();
+    }
+
+    private void cancelReservation() {
+        String auth = ClientUtils.getAuthorization(requireContext());
+        if (auth == null) {
+            Toast.makeText(getContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ClientUtils.serviceReservationService.cancelReservation(auth, reservationId)
+                .enqueue(new Callback<Map<String, String>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<Map<String, String>> call, @NonNull Response<Map<String, String>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            String message = response.body().getOrDefault("message", "Reservation cancelled successfully.");
+                            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                            loadReservationDetails(reservationId);
+                        } else {
+                            String errorMessage = "Unknown error";
+                            try {
+                                if (response.errorBody() != null) {
+                                    String errorBody = response.errorBody().string();
+                                    JSONObject json = new JSONObject(errorBody);
+                                    errorMessage = json.optString("message", errorBody);
+                                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+                                }
+                            } catch (Exception e) {
+                                errorMessage = "Failed to cancel reservation: " + e.getMessage();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<Map<String, String>> call, @NonNull Throwable t) {
+                        Toast.makeText(getContext(), "Error cancelling reservation: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
 }

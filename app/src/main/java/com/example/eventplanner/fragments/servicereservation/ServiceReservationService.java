@@ -5,6 +5,7 @@ import com.example.eventplanner.dto.servicereservation.CreatedServiceReservation
 import com.example.eventplanner.dto.servicereservation.GetServiceReservationDTO;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -24,7 +25,7 @@ public interface ServiceReservationService {
     );
 
     @PATCH("service-reservations/{reservationId}/cancel")
-    Call<Void> cancelReservation(
+    Call<Map<String, String>> cancelReservation(
             @Header("Authorization") String auth,
             @Path("reservationId") Long reservationId
     );
