@@ -41,12 +41,12 @@ public class ServiceReservationsAdapter extends RecyclerView.Adapter<ServiceRese
     public void onBindViewHolder(@NonNull ResViewHolder holder, int position) {
         GetServiceReservationDTO r = reservations.get(position);
 
-        String dateToDisplay = r.getServiceLocalDate() != null
-                ? r.getServiceLocalDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
-                : (r.getEventLocalDate() != null
-                ? r.getEventLocalDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
-                : "");
+        String dateToDisplay = "";
+        DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
+        if (r.getServiceLocalDate() != null) {
+            dateToDisplay = r.getServiceLocalDate().format(displayFormatter);
+        }
 
         holder.tvEventName.setText(r.getEventName());
         holder.tvServiceAndDate.setText(r.getServiceName() + " • " + dateToDisplay);

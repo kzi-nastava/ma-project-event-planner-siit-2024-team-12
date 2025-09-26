@@ -12,53 +12,62 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Event name -->
-        <TextView
-            android:id="@+id/tvEventName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Event Name"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"/>
-
-        <!-- Service + date -->
-        <TextView
-            android:id="@+id/tvServiceAndDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvEventName"
-            android:layout_marginTop="4dp"
-            android:text="Service • 20.12.2025"
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"/>
-
-        <!-- Status -->
-
-        <!-- Chevron icon -->
+        <ImageView
+            android:id="@+id/ivChevron"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_chevron_right"
+            app:tint="@android:color/darker_gray" />
 
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="39dp"
+            android:layout_toStartOf="@id/ivChevron"
+            android:layout_alignTop="@id/tvServiceAndDate"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/field_background"
-            android:padding="6dp"
-            android:text="CONFIRMED"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="4dp"
+            android:text="STATUS"
             android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end" />
 
-        <ImageView
-            android:id="@+id/ivChevron"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_below="@id/tvStatus"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="-21dp"
-            android:layout_marginEnd="-4dp"
-            android:src="@drawable/ic_chevron_right"
-            android:tint="@android:color/darker_gray" />
+        <TextView
+            android:id="@+id/tvEventName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/tvStatus"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="8dp"
+            android:text="Event Name Placeholder"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:maxLines="99"
+            android:ellipsize="none" />
+
+        <TextView
+            android:id="@+id/tvServiceAndDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvEventName"
+            android:layout_toStartOf="@id/tvStatus"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:text="Service • Date Placeholder"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp"
+            android:maxLines="99"
+            android:ellipsize="none" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
