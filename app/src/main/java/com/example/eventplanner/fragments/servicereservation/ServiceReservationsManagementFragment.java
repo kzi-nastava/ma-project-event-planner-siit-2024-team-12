@@ -59,7 +59,7 @@ public class ServiceReservationsManagementFragment extends Fragment {
 
         adapter = new ServiceReservationsAdapter(reservations, reservation -> {
             Bundle bundle = new Bundle();
-            bundle.putLong("reservationId", reservation.getReservationId());
+            bundle.putLong("RESERVATION_ID", reservation.getReservationId());
             ServiceReservationDetailsFragment fragment = new ServiceReservationDetailsFragment();
             fragment.setArguments(bundle);
 

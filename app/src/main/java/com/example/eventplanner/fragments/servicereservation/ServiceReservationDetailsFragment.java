@@ -103,5 +103,11 @@ public class ServiceReservationDetailsFragment extends Fragment {
         textTimeFrom.setText(dto.getTimeFrom() != null ? dto.getTimeFrom().format(timeFormatter) : "");
         textTimeTo.setText(dto.getTimeTo() != null ? dto.getTimeTo().format(timeFormatter) : "");
         textStatus.setText(dto.getStatus());
+
+        if ("confirmed".equalsIgnoreCase(dto.getStatus())) {
+            buttonCancel.setVisibility(View.VISIBLE);
+        } else {
+            buttonCancel.setVisibility(View.GONE);
+        }
     }
 }
