@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +51,7 @@ public class ServiceReservationDialogFragment extends DialogFragment {
     private Spinner spinnerEvent;
     private EditText editTextDate, editTextTimeFrom, editTextTimeTo;
     private Button buttonReserve;
+    private ImageView buttonClose;
     private long serviceId;
     private long minDurationMinutes = 0;
     private long maxDurationMinutes = 0;
@@ -58,11 +60,12 @@ public class ServiceReservationDialogFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (getDialog() != null) {
+        if (getDialog() != null && getDialog().getWindow() != null) {
             getDialog().getWindow().setLayout(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
+            getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
     }
 
@@ -86,11 +89,13 @@ public class ServiceReservationDialogFragment extends DialogFragment {
         editTextTimeFrom = view.findViewById(R.id.editTextTimeFrom);
         editTextTimeTo = view.findViewById(R.id.editTextTimeTo);
         buttonReserve = view.findViewById(R.id.buttonReserve);
+        buttonClose = view.findViewById(R.id.buttonClose);
 
         setupEventSpinner();
         setupTimePickers();
 
         buttonReserve.setOnClickListener(v -> reserveService());
+        buttonClose.setOnClickListener(v -> dismiss());
 
         return view;
     }
@@ -108,7 +113,7 @@ public class ServiceReservationDialogFragment extends DialogFragment {
 
         ClientUtils.eventService.getEventsByOrganizer(auth).enqueue(new Callback<List<GetEventDTO>>() {
             @Override
-            public void onResponse(Call<List<GetEventDTO>> call, Response<List<GetEventDTO>> response) {
+            public void onResponse(@NonNull Call<List<GetEventDTO>> call, @NonNull Response<List<GetEventDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<GetEventDTO> events = response.body();
                     if (events.isEmpty()) {
@@ -122,6 +127,9 @@ public class ServiceReservationDialogFragment extends DialogFragment {
 
                     ArrayAdapter<GetEventDTO> adapter = getGetEventDTOArrayAdapter(events, formatter);
                     spinnerEvent.setAdapter(adapter);
+
+                    int widthInPx = (int) (350 * getResources().getDisplayMetrics().density);
+                    spinnerEvent.setDropDownWidth(widthInPx);
 
                     List<LocalDate> eventDates = new ArrayList<>();
                     for (GetEventDTO ev : events) {
