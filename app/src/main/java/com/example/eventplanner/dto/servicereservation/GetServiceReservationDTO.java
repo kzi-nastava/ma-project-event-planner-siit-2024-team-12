@@ -8,7 +8,7 @@ public class GetServiceReservationDTO {
 
     private Long reservationId;
     private String serviceName;
-    private LocalDate serviceDate;
+    private String serviceDate;
     private Integer cancellationDeadline;
     private LocalTime timeFrom;
     private LocalTime timeTo;
@@ -21,8 +21,19 @@ public class GetServiceReservationDTO {
     // Event info
     private Long eventId;
     private String eventName;
-    private LocalDate eventDate;
     private String location;
+    private String eventDate;
+
+    private LocalDate eventLocalDate;
+
+    private LocalDate serviceLocalDate;
+
+    public LocalDate getServiceLocalDate() { return serviceLocalDate; }
+    public void setServiceLocalDate(LocalDate serviceLocalDate) { this.serviceLocalDate = serviceLocalDate; }
+
+
+    public LocalDate getEventLocalDate() { return eventLocalDate; }
+    public void setEventLocalDate(LocalDate eventLocalDate) { this.eventLocalDate = eventLocalDate; }
 
     public GetServiceReservationDTO() {
     }
@@ -43,11 +54,11 @@ public class GetServiceReservationDTO {
         this.serviceName = serviceName;
     }
 
-    public LocalDate getServiceDate() {
+    public String getServiceDate() {
         return serviceDate;
     }
 
-    public void setServiceDate(LocalDate serviceDate) {
+    public void setServiceDate(String serviceDate) {
         this.serviceDate = serviceDate;
     }
 
@@ -115,14 +126,6 @@ public class GetServiceReservationDTO {
         this.eventName = eventName;
     }
 
-    public LocalDate getEventDate() {
-        return eventDate;
-    }
-
-    public void setEventDate(LocalDate eventDate) {
-        this.eventDate = eventDate;
-    }
-
     public String getLocation() {
         return location;
     }
@@ -140,4 +143,7 @@ public class GetServiceReservationDTO {
 
     public Double getAmount() { return amount; }
     public void setAmount(Double amount) { this.amount = amount; }
+
+    public String getEventDate() { return eventDate; }
+    public void setEventDate(String eventDateString) { this.eventDate = eventDateString; }
 }

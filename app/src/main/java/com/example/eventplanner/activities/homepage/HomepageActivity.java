@@ -44,6 +44,7 @@ import com.example.eventplanner.fragments.notification.NotificationFragment;
 import com.example.eventplanner.fragments.profile.SuspendedUserFragment;
 import com.example.eventplanner.fragments.report.ReportManagementFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
+import com.example.eventplanner.fragments.servicereservation.ServiceReservationsManagementFragment;
 import com.google.android.material.navigation.NavigationView;
 
 public class HomepageActivity extends AppCompatActivity {
@@ -215,6 +216,8 @@ public class HomepageActivity extends AppCompatActivity {
                 startActivity(new Intent(this, FavoriteProductsActivity.class));
             } else if (id == R.id.nav_notifications) {
                 navigateToFragment(new NotificationFragment());
+            } else if (id == R.id.nav_service_reservations) {
+                navigateToFragment(new ServiceReservationsManagementFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
             }

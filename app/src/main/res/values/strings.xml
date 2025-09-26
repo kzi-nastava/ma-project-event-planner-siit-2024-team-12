@@ -441,5 +441,6 @@
         <i>To make a reservation, please log in with an organizer account or upgrade your role through your profile settings.</i>
     ]]>
 </string>
+    <string name="service_reservations">Service Reservations</string>
 
 </resources>

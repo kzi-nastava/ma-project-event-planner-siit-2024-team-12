@@ -96,7 +96,7 @@ public class ServiceReservationDetailsFragment extends Fragment {
 
         textEvent.setText(dto.getEventName());
         textService.setText(dto.getServiceName());
-        textDate.setText(dto.getServiceDate() != null ? dto.getServiceDate().format(dateFormatter) : "");
+        textDate.setText(dto.getServiceDate() != null ? dto.getServiceDate() : "");
         textReservationMadeOn.setText(dto.getRequestDateTime() != null ? dto.getRequestDateTime().format(dateTimeFormatter) : "");
         textCancellationDeadline.setText(dto.getCancellationDeadline() != null ? dto.getCancellationDeadline() + " days" : "");
         textFinalAmount.setText(dto.getAmount() != null ? dto.getAmount() + " USD" : "");
