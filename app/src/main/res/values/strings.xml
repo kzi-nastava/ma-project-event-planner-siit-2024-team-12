@@ -435,5 +435,11 @@
     <string name="reservation_deadline">Reservation deadline</string>
     <string name="cancellation_deadline">Cancellation deadline</string>
     <string name="book_service">Book Service</string>
+    <string name="book_service_text">
+    <![CDATA[
+        <b>Only verified organizers can book services.</b><br/><br/>
+        <i>To make a reservation, please log in with an organizer account or upgrade your role through your profile settings.</i>
+    ]]>
+</string>
 
 </resources>
