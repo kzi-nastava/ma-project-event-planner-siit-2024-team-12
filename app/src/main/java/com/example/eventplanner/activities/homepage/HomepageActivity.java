@@ -45,17 +45,22 @@ import com.example.eventplanner.fragments.homepage.TopEventsFragment;
 import com.example.eventplanner.fragments.homepage.TopSolutionsFragment;
 import com.example.eventplanner.fragments.homepage.SolutionListFragment;
 import com.example.eventplanner.fragments.notification.NotificationFragment;
+import com.example.eventplanner.fragments.notification.NotificationWebSocketService;
 import com.example.eventplanner.fragments.profile.SuspendedUserFragment;
 import com.example.eventplanner.fragments.report.ReportManagementFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
+import com.example.eventplanner.utils.ClientUtils;
 import com.google.android.material.navigation.NavigationView;
 
-public class HomepageActivity extends AppCompatActivity {
+
+public class HomepageActivity extends AppCompatActivity implements NotificationWebSocketService.NotificationCountListener {
 
     private DrawerLayout drawerLayout;
     private RecyclerView chatRecyclerView;
     private NavigationView navigationView;
     private static final String TAG = "HomepageDebug";
+
+    private NotificationWebSocketService notificationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +83,18 @@ public class HomepageActivity extends AppCompatActivity {
 
         SharedPreferences sp = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         boolean isSuspended = sp.getBoolean("isSuspended", false);
+
+        //Inicijalizacija i povezivanje na servis ako je korisnik ulogovan
+        String token = ClientUtils.getAuthorization(getApplicationContext());
+        Log.d("TOKEN_CHECK", "Token: " + token); // Proverite u logcatu da li token postoji
+
+//        String token = sp.getString("token", null);
+        if (token != null && !isSuspended) {
+            notificationService = new NotificationWebSocketService();
+            notificationService.connect(token);
+            notificationService.addListener(this); // Aktivnost se registruje kao slusac
+        }
+
 
         if (savedInstanceState == null) {
             if (isSuspended) {
@@ -111,6 +128,20 @@ public class HomepageActivity extends AppCompatActivity {
             editor.apply();
         }
     }
+
+    private void updateNotificationsBadge(int count) {
+        //TODO
+    }
+
+    // NOVI KOD: Implementiramo callback metodu iz interfejsa
+    @Override
+    public void onUnreadCountChanged(int newCount) {
+        //TODO
+
+        // Azuriraj UI na glavnoj niti (UI thread)
+//        runOnUiThread(() -> updateNotificationsBadge(newCount));
+    }
+
 
     private void loadHomepageFragments() {
         Log.d(TAG, "loadHomepageFragments: Attempting to load homepage fragments.");
