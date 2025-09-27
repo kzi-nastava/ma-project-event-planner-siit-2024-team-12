@@ -2,6 +2,12 @@ package com.example.eventplanner.activities.homepage;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -66,6 +73,11 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
     private TextView notificationBadge;
 
+    private Toolbar toolbar;
+    private ActionBarDrawerToggle toggle;
+    private DrawerArrowDrawable originalDrawerIcon;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,14 +86,39 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
         drawerLayout = findViewById(R.id.navigationView);
 
-        Toolbar toolbar = findViewById(R.id.tool_bar);
+        toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         toolbar.setOverflowIcon(null);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        originalDrawerIcon = toggle.getDrawerArrowDrawable();
+
+
+//        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+//            @Override
+//            public void onDrawerSlide(View drawerView, float slideOffset) {
+//                // Ništa ne radimo ovde
+//            }
+//
+//            @Override
+//            public void onDrawerOpened(View drawerView) {
+//                // Kada se meni otvori, sakrij tačkicu sa hamburger ikonice
+////                updateHamburgerIcon(false);
+//            }
+//
+//            @Override
+//            public void onDrawerClosed(View drawerView) {
+//                // Ništa ne radimo ovde
+//            }
+//
+//            @Override
+//            public void onDrawerStateChanged(int newState) {
+//                // Ništa ne radimo ovde
+//            }
+//        });
 
         navigationView = findViewById(R.id.nav_view);
 
@@ -134,6 +171,8 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     }
 
     private void updateNotificationsBadge(int count) {
+        updateHamburgerIcon(count > 0);
+
         if (notificationBadge != null) {
             if (count > 0) {
                 notificationBadge.setText(String.valueOf(count));
@@ -271,6 +310,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                 startActivity(new Intent(this, ExplorePageActivity.class));
             } else if (id == R.id.nav_notifications) {
                 updateNotificationsBadge(0);
+                updateHamburgerIcon(false);
                 navigateToFragment(R.id.notifications_container, new NotificationFragment());
             } else if (id == R.id.nav_home) {
                 showMainUI();
@@ -318,6 +358,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                 startActivity(new Intent(this, FavoriteProductsActivity.class));
             } else if (id == R.id.nav_notifications) {
                 updateNotificationsBadge(0);
+                updateHamburgerIcon(false);
                 navigateToFragment(R.id.notifications_container, new NotificationFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
@@ -374,6 +415,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                 startActivity(new Intent(this, EventTypeTableActivity.class));
             } else if (id == R.id.nav_notifications) {
                 updateNotificationsBadge(0);
+                updateHamburgerIcon(false);
                 navigateToFragment(R.id.notifications_container, new NotificationFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
@@ -417,6 +459,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                 startActivity(new Intent(this, RatingsChart.class));
             } else if (id == R.id.nav_notifications) {
                 updateNotificationsBadge(0);
+                updateHamburgerIcon(false);
                 navigateToFragment(R.id.notifications_container, new NotificationFragment());
             } else if(id == R.id.nav_categories){
                 navigateToFragment(R.id.notifications_container, new CategoriesContainerFragment());
@@ -468,6 +511,110 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
         navigateToFragment(R.id.suspended_fragment_container, suspendedFragment);
     }
+
+//    private void updateHamburgerIcon(boolean showDot) {
+//        if (toolbar == null) return;
+//
+//        if (showDot) {
+//            try {
+//                // Uzimamo originalnu hamburger ikonicu
+//                Drawable hamburgerIcon = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
+//
+//                // Uzimamo našu crvenu tačkicu
+//                Drawable dotDrawable = getResources().getDrawable(R.drawable.notification_dot);
+//
+//                // Kreiramo LayerDrawable koji kombinuje ove dve slike
+//                Drawable[] layers = new Drawable[]{
+//                        hamburgerIcon,
+//                        dotDrawable
+//                };
+//                LayerDrawable layerDrawable = new LayerDrawable(layers);
+//
+//                // Pozicioniramo tačkicu u gornji desni ugao
+//                // Prilagodi ove vrednosti ako je potrebno
+//                layerDrawable.setLayerInset(1, 0, 10, 20, 0);
+//
+//                // Postavljamo novu, slojevitu ikonicu
+//                toggle.setHomeAsUpIndicator(layerDrawable);
+//
+//            } catch (Exception e) {
+//                Log.e("BADGE_DEBUG", "Greška pri kreiranju ikonice sa tačkicom.", e);
+//            }
+//        } else {
+//            // Vraćamo podrazumevanu ikonicu
+//            toggle.setDrawerIndicatorEnabled(true);
+//        }
+//    }
+
+
+
+
+    //ova radi
+
+//    private void updateHamburgerIcon(boolean showDot) {
+//        if (toolbar == null || toggle == null) return;
+//
+//        if (showDot) {
+//            try {
+//                // Uzimamo originalni hamburger drawable iz toggle-a
+//                Drawable hamburgerIcon = toggle.getDrawerArrowDrawable(); // DrawerArrowDrawable
+//                Drawable dot = getResources().getDrawable(R.drawable.notification_dot);
+//
+//                Drawable[] layers = new Drawable[]{hamburgerIcon, dot};
+//                LayerDrawable layerDrawable = new LayerDrawable(layers);
+//                layerDrawable.setLayerInset(1, 0, 5, 5, 0); // top, right, bottom, left
+//
+//
+//                toolbar.setNavigationIcon(layerDrawable); //
+//
+//
+//            } catch (Exception e) {
+//                Log.e("BADGE_DEBUG", "Greška pri kreiranju ikonice sa tačkicom.", e);
+//            }
+//        } else {
+//            // Vraćamo podrazumevani hamburger
+//            toggle.setDrawerIndicatorEnabled(true);
+//        }
+//    }
+
+
+
+    //najbolja do sad
+    private void updateHamburgerIcon(boolean showDot) {
+        if (toolbar == null || toggle == null) return;
+
+        if (showDot) {
+            // Kreiramo custom DrawerArrowDrawable koji crta crvenu tačkicu
+            DrawerArrowDrawable custom = new DrawerArrowDrawable(toolbar.getContext()) {
+                @Override
+                public void draw(Canvas canvas) {
+                    super.draw(canvas);
+
+                    // Crtamo malu crvenu tačkicu
+                    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                    paint.setColor(Color.RED);
+
+                    // Odredi radijus (npr. 4dp)
+                    float radius = 4 * getResources().getDisplayMetrics().density;
+
+                    // Pozicija: gornji desni ugao hamburgera
+                    Rect bounds = getBounds();
+                    float cx = bounds.right - radius - 2 * getResources().getDisplayMetrics().density; // malo unutra
+                    float cy = bounds.top + radius + 2 * getResources().getDisplayMetrics().density;
+
+                    canvas.drawCircle(cx, cy, radius, paint);
+                }
+            };
+
+            toggle.setDrawerArrowDrawable(custom);
+        } else {
+            // Vraćamo originalni toggle drawable i omogućavamo animaciju
+//            toggle.setDrawerIndicatorEnabled(true);
+            toggle.setDrawerArrowDrawable(originalDrawerIcon);
+
+        }
+    }
+
 
     public NotificationWebSocketService getNotificationService() {
         return notificationService;
