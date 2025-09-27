@@ -86,35 +86,10 @@ public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProduc
     }
 
 
-
-    private void loadProductDetails(Context context, Long productId) {
-        String auth = ClientUtils.getAuthorization(context);
-
-        Call<GetProductDTO> call = ClientUtils.productService.getProduct(auth, productId);
-        call.enqueue(new Callback<GetProductDTO>() {
-            @Override
-            public void onResponse(Call<GetProductDTO> call, Response<GetProductDTO> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Intent intent = new Intent(context, ProductDetailsFragment.class);
-                    intent.putExtra("id", productId);
-                    context.startActivity(intent);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GetProductDTO> call, Throwable t) {
-
-            }
-        });
-    }
-
-
-
     @Override
     public int getItemCount() {
         return products.size();
     }
-
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
