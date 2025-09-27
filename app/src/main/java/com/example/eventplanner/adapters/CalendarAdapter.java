@@ -127,8 +127,19 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         dialogTitle.setPadding(50, 30, 30, 30);
         dialogTitle.setTypeface(null, Typeface.BOLD);
 
+        TextView dialogSubtitle = new TextView(context);
+        dialogSubtitle.setText("** Select event name for more details");
+        dialogSubtitle.setTextSize(16);
+        dialogSubtitle.setTextColor(ContextCompat.getColor(context, R.color.dark_gray));
+        dialogSubtitle.setPadding(50, 0, 30, 20);
+
+        LinearLayout titleLayout = new LinearLayout(context);
+        titleLayout.setOrientation(LinearLayout.VERTICAL);
+        titleLayout.addView(dialogTitle);
+        titleLayout.addView(dialogSubtitle);
+
         new AlertDialog.Builder(context)
-                .setCustomTitle(dialogTitle)
+                .setCustomTitle(titleLayout)
                 .setView(dialogView)
                 .setPositiveButton(close, (dialog, which) -> dialog.dismiss())
                 .show();

@@ -64,11 +64,6 @@ public class ProfileViewActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void closeForm(View view) {
-        Intent intent = new Intent(ProfileViewActivity.this, HomepageActivity.class);
-        startActivity(intent);
-    }
-
 
     public void deactivateAccount(View view) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);

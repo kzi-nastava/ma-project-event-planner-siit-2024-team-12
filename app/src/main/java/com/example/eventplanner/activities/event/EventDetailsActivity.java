@@ -42,6 +42,9 @@ import com.example.eventplanner.fragments.eventcreation.AgendaDialogFragment;
 import com.example.eventplanner.model.Activity;
 import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.viewmodels.EventEditViewModel;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointForward;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -61,10 +64,13 @@ import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -81,7 +87,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private String nameTxt, eventTypeTxt, dateTxt, maxGuestsTxt, descriptionTxt, locationText, currentUser;
     private Long currentEventId;
     private Boolean isFavorite, isEditable = false;
-    private ImageView fav, favOutline, exitBtn;
+    private ImageView fav, favOutline;
     private EventDetailsDTO eventDetailsDTO = new EventDetailsDTO();
     private Button editBtn, seeAgendaButton, pdfBtn;
     private List<CreateActivityDTO> activities = new ArrayList<>();
@@ -114,7 +120,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         loadActiveEventTypes();
         setUpEditBtn();
-        setUpExitBtn();
         setUpPdfBtn();
         setUpFavEvents();
 
@@ -730,7 +735,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         Set<CreateActivityDTO> unique = new HashSet<>(editViewModel.getDto().getValue().getActivities());
         eventDetailsDTO.setActivities(new ArrayList<>(unique));
-
+        eventDetailsDTO.getLocation().setName("a");
 
         Call<UpdatedEventDTO> call = ClientUtils.eventService.updateEvent(auth, currentEventId, eventDetailsDTO);
         call.enqueue(new Callback<UpdatedEventDTO>() {
@@ -758,7 +763,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<UpdatedEventDTO> call, Throwable t) {
-
+                Toast.makeText(EventDetailsActivity.this, "Failed to update event!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -792,17 +797,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     }
 
-
-
-    private void setUpExitBtn() {
-        exitBtn = findViewById(R.id.exitBtn);
-
-        exitBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(EventDetailsActivity.this, FavoriteEventsActivity.class);
-            startActivity(intent);
-        });
-    }
-
     private void enterEditMode() {
         editBtn.setText(getString(R.string.save));
 
@@ -811,7 +805,14 @@ public class EventDetailsActivity extends AppCompatActivity {
         name.setBackgroundResource(R.drawable.display_field);
         name.setFocusableInTouchMode(true);
 
-        date.setFocusableInTouchMode(true);
+        date.setFocusable(false);
+        date.setClickable(true);
+        date.setOnClickListener(v -> {
+            if (isEditable) {
+                openDatePicker(date);
+            }
+        });
+
         maxGuests.setFocusableInTouchMode(true);
         description.setFocusableInTouchMode(true);
         location.setFocusableInTouchMode(true);
@@ -828,7 +829,9 @@ public class EventDetailsActivity extends AppCompatActivity {
         name.setBackgroundColor(Color.TRANSPARENT);
         name.setFocusableInTouchMode(false);
 
-        date.setFocusableInTouchMode(false);
+        date.setFocusable(false);
+        date.setClickable(false);
+
         maxGuests.setFocusableInTouchMode(false);
         description.setFocusableInTouchMode(false);
         location.setFocusableInTouchMode(false);
@@ -854,4 +857,26 @@ public class EventDetailsActivity extends AppCompatActivity {
         location = findViewById(R.id.location);
     }
 
+
+    private void openDatePicker(EditText dateField) {
+        long tomorrow = MaterialDatePicker.todayInUtcMilliseconds() + 24 * 60 * 60 * 1000;
+
+        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointForward.from(tomorrow));
+
+        MaterialDatePicker<Long> datePicker =
+                MaterialDatePicker.Builder.datePicker()
+                        .setTitleText("Select date")
+                        .setSelection(tomorrow)
+                        .setCalendarConstraints(constraintsBuilder.build())
+                        .build();
+
+        datePicker.show(getSupportFragmentManager(), "date_picker");
+
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String formattedDate = sdf.format(new Date(selection));
+            dateField.setText(formattedDate);
+        });
+    }
 }

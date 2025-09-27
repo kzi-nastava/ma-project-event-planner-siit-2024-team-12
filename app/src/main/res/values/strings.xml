@@ -440,5 +440,15 @@
     <string name="remaining_time">Time remaining until reactivation:</string>
     <string name="contact_support">Please contact support if you believe this is a mistake.</string>
     <string name="unblock_user">Unblock</string>
+    <string name="reservation_deadline">Reservation deadline</string>
+    <string name="cancellation_deadline">Cancellation deadline</string>
+    <string name="book_service">Book Service</string>
+    <string name="book_service_text">
+    <![CDATA[
+        <b>Only verified organizers can book services.</b><br/><br/>
+        <i>To make a reservation, please log in with an organizer account or upgrade your role through your profile settings.</i>
+    ]]>
+</string>
+    <string name="service_reservations">Service Reservations</string>
 
 </resources>

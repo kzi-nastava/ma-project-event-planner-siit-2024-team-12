@@ -2,6 +2,7 @@ package com.example.eventplanner.utils;
 
 import android.widget.EditText;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -16,9 +17,10 @@ public class ValidationUtils {
     public static boolean isFieldValid(EditText field, String errorMessage) {
         String value = field.getText().toString().trim();
         if (value.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
+            showError(field, errorMessage);
             return false;
+        } else {
+            clearError(field);
         }
         return true;
     }
@@ -123,18 +125,15 @@ public class ValidationUtils {
     }
 
 
-
     public static boolean isDateValid(EditText field) {
         String datePattern = "^\\d{4}-\\d{2}-\\d{2}$"; // format yyyy-mm-dd
         String date = field.getText().toString().trim();
 
         if (!date.matches(datePattern)) {
-            field.setError("Incorrect format!");
-            field.requestFocus();
+            showError(field, "Incorrect format!");
             return false;
         }
 
-        // check if date is valid ( e.g. there is no February 30 )
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             dateFormat.setLenient(false);
@@ -142,17 +141,16 @@ public class ValidationUtils {
             long inputDateMillis = dateFormat.parse(date).getTime();
             long currentDateMillis = System.currentTimeMillis();
 
-            // check if entered date is in the past
             if (inputDateMillis < currentDateMillis) {
-                field.setError("Date cannot be in the past!");
-                field.requestFocus();
+                showError(field, "Date cannot be in the past!");
                 return false;
             }
         } catch (ParseException e) {
-            field.setError("Invalid date!");
-            field.requestFocus();
+            showError(field, "Invalid date!");
             return false;
         }
+
+        clearError(field);
 
         return true;
     }
@@ -206,4 +204,31 @@ public class ValidationUtils {
         return true;
     }
 
+
+    private static void showError(EditText field, String errorMessage) {
+        if (field.getParent().getParent() instanceof TextInputLayout) {
+            TextInputLayout layout = (TextInputLayout) field.getParent().getParent();
+            layout.setErrorEnabled(true);
+            layout.setError(errorMessage);
+
+            layout.requestLayout();
+            layout.invalidate();
+        } else {
+            field.setError(errorMessage);
+        }
+        field.requestFocus();
+    }
+
+
+    public static void clearError(EditText field) {
+        if (field.getParent().getParent() instanceof TextInputLayout) {
+            TextInputLayout layout = (TextInputLayout) field.getParent().getParent();
+            layout.setError(null);
+            layout.setErrorEnabled(false);
+        } else {
+            field.setError(null);
+        }
+    }
+
 }
+
