@@ -163,19 +163,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     }
 
 
-    private void loadHomepageFragments() {
-        Log.d(TAG, "loadHomepageFragments: Attempting to load homepage fragments.");
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        transaction.replace(R.id.cards_fragment_container, new TopEventsFragment());
-        transaction.replace(R.id.events_list_fragment_container, new EventListFragment());
-        transaction.replace(R.id.cards_products_fragment_container, new TopSolutionsFragment());
-        transaction.replace(R.id.ps_list_fragment_container, new SolutionListFragment());
-
-        transaction.commitAllowingStateLoss();
-        Log.d(TAG, "loadHomepageFragments: Fragments committed.");
-    }
     private void loadMainFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, fragment)
