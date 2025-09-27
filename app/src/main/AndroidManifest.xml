@@ -33,7 +33,7 @@
             android:name=".fragments.product.ProvidedProductsFragment"
             android:exported="false" />
         <activity
-            android:name=".activities.event.EventDetailsActivity"
+            android:name=".fragments.event.EventDetailsFragment"
             android:exported="false" />
         <activity
             android:name=".activities.charts.RatingsChart"
@@ -48,7 +48,7 @@
             android:name=".fragments.favorites.FavoriteProductsFragment"
             android:exported="false" />
         <activity
-            android:name=".activities.favorites.FavoriteEventsActivity"
+            android:name=".fragments.favorites.FavoriteEventsFragment"
             android:exported="false" />
         <activity
             android:name=".activities.solutioncategory.CategoriesTableActivity"
@@ -105,7 +105,7 @@
             android:name=".activities.auth.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.favorites.ExplorePageActivity"
+            android:name=".activities.favorites.ExplorePageFragment"
             android:exported="false" />
         <activity
             android:name=".activities.auth.AccountActivation"

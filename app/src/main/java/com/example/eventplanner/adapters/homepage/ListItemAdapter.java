@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.event.EventDetailsActivity;
+import com.example.eventplanner.fragments.event.EventDetailsFragment;
 import com.example.eventplanner.activities.homepage.CardItem;
 import com.example.eventplanner.fragments.product.ProductDetailsFragment;
 import com.example.eventplanner.dto.event.GetEventDTO;
@@ -108,7 +108,7 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
     private void openDetails(CardItem item) {
         Intent i = null;
         if (item instanceof GetEventDTO) {
-            i = new Intent(context, EventDetailsActivity.class);
+            i = new Intent(context, EventDetailsFragment.class);
             i.putExtra("id", item.getId());
         } else if (item instanceof GetHomepageSolutionDTO) {
             GetHomepageSolutionDTO solution = (GetHomepageSolutionDTO) item;

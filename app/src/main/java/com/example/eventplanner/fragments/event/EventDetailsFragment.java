@@ -1,12 +1,15 @@
-package com.example.eventplanner.activities.event;
+package com.example.eventplanner.fragments.event;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -16,7 +19,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -25,6 +27,7 @@ import androidx.core.content.FileProvider;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.dto.event.UpdatedEventDTO;
@@ -34,7 +37,6 @@ import com.example.eventplanner.enumeration.PrivacyType;
 import com.example.eventplanner.fragments.eventcreation.AgendaEditFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
 import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.dto.location.CreateLocationDTO;
@@ -60,7 +62,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -80,7 +81,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class EventDetailsActivity extends AppCompatActivity {
+public class EventDetailsFragment extends Fragment {
 
     private WebView mapWebView;
     private EditText name, date, maxGuests, description, location;
@@ -96,22 +97,30 @@ public class EventDetailsActivity extends AppCompatActivity {
     private Spinner eventTypeSpinner;
     private EventEditViewModel editViewModel;
     private List<String> acceptedGuests;
+    private View view;
+
+    private static final String ARG_EVENT_ID = "event_id";
+
+    public static EventDetailsFragment newInstance(Long eventId) {
+        EventDetailsFragment fragment = new EventDetailsFragment();
+        Bundle args = new Bundle();
+        args.putLong(ARG_EVENT_ID, eventId);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_event_details);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_event_details, container, false);
 
-        editViewModel = new ViewModelProvider(this).get(EventEditViewModel.class);
+        if (getArguments() != null) {
+            currentEventId = getArguments().getLong(ARG_EVENT_ID);
+        }
 
-        mapWebView = findViewById(R.id.mapWebView);
+        editViewModel = new ViewModelProvider(requireActivity()).get(EventEditViewModel.class);
+
+        mapWebView = view.findViewById(R.id.mapWebView);
         setupWebView();
 
         findTextViews();
@@ -123,12 +132,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         setUpPdfBtn();
         setUpFavEvents();
 
+        return view;
     }
 
 
     private void setGuestList(EventDetailsDTO dto) {
         if (dto.getPrivacyType().equals(PrivacyType.CLOSED)) {
-            String token = ClientUtils.getAuthorization(this);
+            String token = ClientUtils.getAuthorization(requireContext());
 
             Call<List<String>> call = ClientUtils.eventService.getAcceptedGuests(token, dto.getId());
             call.enqueue(new Callback<List<String>>() {
@@ -141,7 +151,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<List<String>> call, Throwable t) {
-                    Toast.makeText(EventDetailsActivity.this, "Failed to load guest list!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "Failed to load guest list!", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -149,9 +159,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     private void loadEventDetails() {
-        String auth = ClientUtils.getAuthorization(this);
-
-        currentEventId = getIntent().getLongExtra("id", 0);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<EventDetailsDTO> call = ClientUtils.eventService.getEvent(auth, currentEventId);
         call.enqueue(new Callback<EventDetailsDTO>() {
@@ -178,7 +186,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
     private void loadActiveEventTypes() {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<ArrayList<GetEventTypeDTO>> call = ClientUtils.eventTypeService.getAllActive(auth);
         call.enqueue(new Callback<ArrayList<GetEventTypeDTO>>() {
@@ -198,21 +206,20 @@ public class EventDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ArrayList<GetEventTypeDTO>> call, Throwable t) {
-                Toast.makeText(EventDetailsActivity.this, "Failed to load active event types!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Failed to load active event types!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
 
-
     private void setUpEventTypeSpinner() {
-        eventTypeSpinner = findViewById(R.id.eventType);
+        eventTypeSpinner = view.findViewById(R.id.eventType);
 
         if (eventTypeNames.isEmpty()) {
             return;
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, eventTypeNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, eventTypeNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         eventTypeSpinner.setAdapter(adapter);
 
@@ -248,7 +255,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     // **********  pdf  **********
     private void generatePdf() throws FileNotFoundException {
-        String directoryPath = getExternalFilesDir(null) + "/";
+        String directoryPath = requireActivity().getExternalFilesDir(null) + "/";
         String fileName = getNextReportFileName(directoryPath);
         String filePath = directoryPath + fileName;
 
@@ -359,13 +366,13 @@ public class EventDetailsActivity extends AppCompatActivity {
     private void openGeneratedPDF(String filePath) {
         File file = new File(filePath);
         if (file.exists()) {
-            Uri uri = FileProvider.getUriForFile(this, "com.example.eventplanner.provider", file);
+            Uri uri = FileProvider.getUriForFile(requireContext(), "com.example.eventplanner.provider", file);
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(uri, "application/pdf");
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(intent);
         } else {
-            Toast.makeText(this, "PDF not found!", Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), "PDF not found!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -374,8 +381,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     // **********  favorites  **********
     private void addToFavorites() {
-        String auth = ClientUtils.getAuthorization(this);
-        SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String auth = ClientUtils.getAuthorization(requireContext());
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String userEmail = sharedPreferences.getString("email", "a");
 
         if (currentEventId == null) {
@@ -388,17 +395,17 @@ public class EventDetailsActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     fav.setVisibility(View.VISIBLE);
-                    Toast.makeText(EventDetailsActivity.this, "Added event to favorites!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "Added event to favorites!", Toast.LENGTH_SHORT).show();
 
                 }
                 else {
-                    Toast.makeText(EventDetailsActivity.this, "Unsuccessful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "Unsuccessful", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(EventDetailsActivity.this, "Failed to add event to favorites!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Failed to add event to favorites!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -406,9 +413,9 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private void checkIfFavorite() {
         isFavorite = false;
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
-        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences pref = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String email = pref.getString("email", "a");
 
         Call<Boolean> call = ClientUtils.userService.isEventFavorite(auth, email, currentEventId);
@@ -429,16 +436,16 @@ public class EventDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(EventDetailsActivity.this, "Failed to check if favorite!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Failed to check if favorite!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
 
     private void removeFromFavorites() {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
-        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences pref = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String email = pref.getString("email", "a");
 
         if (currentEventId == null) {
@@ -452,16 +459,16 @@ public class EventDetailsActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     fav.setVisibility(View.GONE);
                     favOutline.setVisibility(View.VISIBLE);
-                    Toast.makeText(EventDetailsActivity.this, "Removed event from favorites!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "Removed event from favorites!", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Toast.makeText(EventDetailsActivity.this, "Unsuccessful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "Unsuccessful", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(EventDetailsActivity.this, "Failed to remove event from favorites!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Failed to remove event from favorites!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -532,15 +539,15 @@ public class EventDetailsActivity extends AppCompatActivity {
                     double lat = firstResult.getDouble("lat");
                     double lon = firstResult.getDouble("lon");
 
-                    runOnUiThread(() -> mapWebView.loadUrl("javascript:updateLocation(" + lat + ", " + lon + ", '" + "Event location" + "')"));
+                    requireActivity().runOnUiThread(() -> mapWebView.loadUrl("javascript:updateLocation(" + lat + ", " + lon + ", '" + "Event location" + "')"));
                 }
                 else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(EventDetailsActivity.this, "Unknown address!", Toast.LENGTH_LONG).show();
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(requireActivity(), "Unknown address!", Toast.LENGTH_LONG).show();
                     });
                 }
             } catch (Exception e) {
-                Toast.makeText(EventDetailsActivity.this, "Unknown address!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Unknown address!", Toast.LENGTH_SHORT).show();
                 Log.e("MapError", "Error fetching location: " + e.getMessage());
             }
         }).start();
@@ -634,7 +641,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
     private void setUpAgendaBtn() {
-        seeAgendaButton = findViewById(R.id.seeAgenda);
+        seeAgendaButton = view.findViewById(R.id.seeAgenda);
         List<Activity> adapterActivities = new ArrayList<>();
 
         for (CreateActivityDTO dto : activities) {
@@ -645,11 +652,11 @@ public class EventDetailsActivity extends AppCompatActivity {
         seeAgendaButton.setOnClickListener(v -> {
             if (isEditable) {
                 AgendaEditFragment editFragment = AgendaEditFragment.newInstance(eventDetailsDTO);
-                editFragment.show(getSupportFragmentManager(), "AgendaEdit");
+                editFragment.show(getParentFragmentManager(), "AgendaEdit");
             }
             else {
                 AgendaDialogFragment agendaDialog = new AgendaDialogFragment(adapterActivities);
-                agendaDialog.show(getSupportFragmentManager(), "AgendaDialog");
+                agendaDialog.show(getParentFragmentManager(), "AgendaDialog");
             }
         });
     }
@@ -659,7 +666,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         String locationInput = location.getText().toString();
         String[] parts = locationInput.split(",");
         if (parts.length != 3) {
-            Toast.makeText(EventDetailsActivity.this, "Location format is [address, city, country]!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireActivity(), "Location format is [address, city, country]!", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -681,7 +688,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
     private void loadCurrentUser() {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<GetUserDTO> call = ClientUtils.authService.getCurrentUser(auth);
         call.enqueue(new Callback<GetUserDTO>() {
@@ -692,13 +699,13 @@ public class EventDetailsActivity extends AppCompatActivity {
                     checkEditPermission();
                 }
                 else {
-                    Toast.makeText(EventDetailsActivity.this, "Error loading current user!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "Error loading current user!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<GetUserDTO> call, Throwable t) {
-                Toast.makeText(EventDetailsActivity.this, "Failed to load current user!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Failed to load current user!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -711,7 +718,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     private void setUpEditBtn() {
-        editBtn = findViewById(R.id.editBtn);
+        editBtn = view.findViewById(R.id.editBtn);
 
         editBtn.setOnClickListener(v -> {
             if (isEditable) {
@@ -725,7 +732,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     private void updateEvent() {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         if (!validateInputFields()) {
             return;
@@ -763,13 +770,13 @@ public class EventDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<UpdatedEventDTO> call, Throwable t) {
-                Toast.makeText(EventDetailsActivity.this, "Failed to update event!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Failed to update event!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void setUpPdfBtn() {
-        pdfBtn = findViewById(R.id.pdfBtn);
+        pdfBtn = view.findViewById(R.id.pdfBtn);
 
         pdfBtn.setOnClickListener(v -> {
             try {
@@ -782,8 +789,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
     private void setUpFavEvents() {
-        fav = findViewById(R.id.fav);
-        favOutline = findViewById(R.id.favOutline);
+        fav = view.findViewById(R.id.fav);
+        favOutline = view.findViewById(R.id.favOutline);
 
         checkIfFavorite();
 
@@ -836,7 +843,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         description.setFocusableInTouchMode(false);
         location.setFocusableInTouchMode(false);
 
-        View currentFocusView = getCurrentFocus();
+        View currentFocusView = requireActivity().getCurrentFocus();
         if (currentFocusView instanceof EditText) {
             currentFocusView.clearFocus();
         }
@@ -848,13 +855,13 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
     private void findTextViews() {
-        name = findViewById(R.id.name);
+        name = view.findViewById(R.id.name);
         name.setBackgroundColor(Color.TRANSPARENT);
 
-        date = findViewById(R.id.date);
-        maxGuests = findViewById(R.id.maxGuests);
-        description = findViewById(R.id.description);
-        location = findViewById(R.id.location);
+        date = view.findViewById(R.id.date);
+        maxGuests = view.findViewById(R.id.maxGuests);
+        description = view.findViewById(R.id.description);
+        location = view.findViewById(R.id.location);
     }
 
 
@@ -871,7 +878,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                         .setCalendarConstraints(constraintsBuilder.build())
                         .build();
 
-        datePicker.show(getSupportFragmentManager(), "date_picker");
+        datePicker.show(getParentFragmentManager(), "date_picker");
 
         datePicker.addOnPositiveButtonClickListener(selection -> {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
