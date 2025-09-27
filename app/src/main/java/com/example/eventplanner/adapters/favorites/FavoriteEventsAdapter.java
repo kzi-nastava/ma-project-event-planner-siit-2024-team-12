@@ -1,6 +1,5 @@
 package com.example.eventplanner.adapters.favorites;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,29 +7,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import android.content.Intent;
-
-import com.example.eventplanner.utils.ClientUtils;
-import com.example.eventplanner.activities.event.EventDetailsActivity;
-
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.dto.event.FavEventDTO;
 
-import java.io.Serializable;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAdapter.ViewHolder> {
-    private List<FavEventDTO> events;
+    public interface OnEventClickListener{
+        void onEventClickListener(Long eventId);
+    }
 
-    public FavoriteEventsAdapter(List<FavEventDTO> events) {
+    private List<FavEventDTO> events;
+    private final OnEventClickListener listener;
+
+    public FavoriteEventsAdapter(List<FavEventDTO> events, OnEventClickListener listener) {
         this.events = events;
+        this.listener = listener;
     }
 
     @Override
@@ -68,37 +62,11 @@ public class FavoriteEventsAdapter extends RecyclerView.Adapter<FavoriteEventsAd
         }
 
         holder.seeMore.setOnClickListener(v -> {
-            Context context = v.getContext();
-            loadEventDetails(context, event.getId());
-        });
-    }
-
-
-
-    private void loadEventDetails(Context context, Long eventId) {
-        String token = ClientUtils.getAuthorization(context);
-
-        Call<EventDetailsDTO> call = ClientUtils.eventService.getEvent(token, eventId);
-
-        call.enqueue(new Callback<EventDetailsDTO>() {
-            @Override
-            public void onResponse(Call<EventDetailsDTO> call, Response<EventDetailsDTO> response) {
-                if (response.isSuccessful()) {
-                    EventDetailsDTO event = response.body();
-
-                    Intent intent = new Intent(context, EventDetailsActivity.class);
-                    intent.putExtra("id", eventId);
-                    context.startActivity(intent);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<EventDetailsDTO> call, Throwable t) {
-
+            if (listener != null) {
+                listener.onEventClickListener(event.getId());
             }
         });
     }
-
 
 
     @Override

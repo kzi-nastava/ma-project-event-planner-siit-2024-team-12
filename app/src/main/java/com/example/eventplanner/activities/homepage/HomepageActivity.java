@@ -6,11 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Spinner;
@@ -21,11 +18,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
@@ -39,8 +34,8 @@ import com.example.eventplanner.activities.charts.RatingsChart;
 import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeCreationActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
-import com.example.eventplanner.activities.favorites.ExplorePageActivity;
-import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
+import com.example.eventplanner.activities.favorites.ExplorePageFragment;
+import com.example.eventplanner.fragments.favorites.FavoriteEventsFragment;
 import com.example.eventplanner.activities.favorites.FavoriteServicesActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
@@ -245,7 +240,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_calendar_od) {
                 startActivity(new Intent(this, CalendarActivity.class));
             } else if (id == R.id.nav_explore_events) {
-                startActivity(new Intent(this, ExplorePageActivity.class));
+                navigateToFragment(new ExplorePageFragment());
             } else if (id == R.id.nav_notifications) {
                 updateNotificationsBadge(0);
                 updateHamburgerIcon(false);
@@ -278,7 +273,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             if (id == R.id.nav_home) {
                 loadMainFragment(new HomepageFragment());
             } else if (id == R.id.nav_fav_events) {
-                startActivity(new Intent(this, FavoriteEventsActivity.class));
+                navigateToFragment(new FavoriteEventsFragment());
             } else if (id == R.id.nav_services) {
                 navigateToFragment(new ServiceManagement());
             } else if (id == R.id.nav_view_profile) {
@@ -288,7 +283,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_create_event) {
                 startActivity(new Intent(this, EventCreationActivity.class));
             } else if (id == R.id.nav_explore_events) {
-                startActivity(new Intent(this, ExplorePageActivity.class));
+                navigateToFragment(new ExplorePageFragment());
             } else if (id == R.id.nav_fav_services) {
                 startActivity(new Intent(this, FavoriteServicesActivity.class));
             } else if (id == R.id.nav_fav_products) {
@@ -338,13 +333,13 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_calendar_od) {
                 startActivity(new Intent(this, CalendarActivity.class));
             } else if (id == R.id.nav_fav_events) {
-                startActivity(new Intent(this, FavoriteEventsActivity.class));
+                navigateToFragment(new FavoriteEventsFragment());
             } else if (id == R.id.nav_fav_services) {
                 startActivity(new Intent(this, FavoriteServicesActivity.class));
             } else if (id == R.id.nav_fav_products) {
                 navigateToFragment(new FavoriteProductsFragment());
             } else if (id == R.id.nav_explore_events) {
-                startActivity(new Intent(this, ExplorePageActivity.class));
+                navigateToFragment(new ExplorePageFragment());
             } else if (id == R.id.nav_view_profile) {
                 startActivity(new Intent(this, ProfileViewActivity.class));
             } else if (id == R.id.nav_categories) {

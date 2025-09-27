@@ -21,8 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.calendar.CalendarActivity;
-import com.example.eventplanner.activities.favorites.ExplorePageActivity;
-import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
+import com.example.eventplanner.activities.favorites.ExplorePageFragment;
+import com.example.eventplanner.fragments.favorites.FavoriteEventsFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteProductsFragment;
 import com.example.eventplanner.activities.favorites.FavoriteServicesActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
@@ -110,7 +110,7 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
                 }
 
                 else if (id == R.id.nav_fav_events) {
-                    Intent intent = new Intent(OrganiserHomepageActivity.this, FavoriteEventsActivity.class);
+                    Intent intent = new Intent(OrganiserHomepageActivity.this, FavoriteEventsFragment.class);
                     startActivity(intent);
                 }
                 else if (id == R.id.nav_log_out) { logOut();}
@@ -158,7 +158,7 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
 
 
                 else if (id == R.id.nav_explore_events) {
-                    Intent intent = new Intent(OrganiserHomepageActivity.this, ExplorePageActivity.class);
+                    Intent intent = new Intent(OrganiserHomepageActivity.this, ExplorePageFragment.class);
                     startActivity(intent);
                 }
 
