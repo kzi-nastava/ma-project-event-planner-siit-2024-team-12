@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.servicereservation.GetServiceReservationDTO;
+import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
 import com.example.eventplanner.utils.ClientUtils;
 
 import org.json.JSONObject;
@@ -33,8 +35,9 @@ public class ServiceReservationDetailsFragment extends Fragment {
     private TextView textEvent, textService, textDate, textReservationMadeOn,
             textCancellationDeadline, textFinalAmount, textTimeFrom, textTimeTo, textStatus;
     private Button buttonCancel;
-
     private Long reservationId;
+    private LinearLayout serviceContainer;
+    private Long serviceId;
 
     @Nullable
     @Override
@@ -43,6 +46,7 @@ public class ServiceReservationDetailsFragment extends Fragment {
 
         textEvent = view.findViewById(R.id.textEvent);
         textService = view.findViewById(R.id.textService);
+        serviceContainer = view.findViewById(R.id.serviceContainer);
         textDate = view.findViewById(R.id.textDate);
         textReservationMadeOn = view.findViewById(R.id.textReservationMadeOn);
         textCancellationDeadline = view.findViewById(R.id.textCancellationDeadline);
@@ -62,10 +66,26 @@ public class ServiceReservationDetailsFragment extends Fragment {
         textEvent.setOnClickListener(v -> {
         });
 
-        textService.setOnClickListener(v -> {
-        });
 
         buttonCancel.setOnClickListener(v -> showCancelConfirmationDialog());
+
+        serviceContainer.setOnClickListener(v -> {
+            if (serviceId != null) {
+                Bundle args = new Bundle();
+                args.putLong("service_id", serviceId);
+
+                Fragment serviceDetailsFragment = new ServiceDetailsFragment();
+                serviceDetailsFragment.setArguments(args);
+
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_fragment_container, serviceDetailsFragment)
+                        .addToBackStack(null)
+                        .commit();
+            } else {
+                Toast.makeText(getContext(), "Service details not available", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return view;
     }
@@ -109,6 +129,7 @@ public class ServiceReservationDetailsFragment extends Fragment {
         textTimeFrom.setText(dto.getTimeFrom() != null ? dto.getTimeFrom().format(timeFormatter) : "");
         textTimeTo.setText(dto.getTimeTo() != null ? dto.getTimeTo().format(timeFormatter) : "");
         textStatus.setText(dto.getStatus());
+        serviceId = dto.getServiceId();
 
         if ("confirmed".equalsIgnoreCase(dto.getStatus())) {
             buttonCancel.setVisibility(View.VISIBLE);
