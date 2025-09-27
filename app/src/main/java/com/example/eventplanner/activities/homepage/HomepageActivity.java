@@ -103,15 +103,13 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         SharedPreferences sp = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         boolean isSuspended = sp.getBoolean("isSuspended", false);
 
-        //Inicijalizacija i povezivanje na servis ako je korisnik ulogovan
         String token = ClientUtils.getAuthorization(getApplicationContext());
-        Log.d("TOKEN_CHECK", "Token: " + token); // Proverite u logcatu da li token postoji
+        Log.d("TOKEN_CHECK", "Token: " + token);
 
-//        String token = sp.getString("token", null);
         if (token != null && !isSuspended) {
             notificationService = new NotificationWebSocketService();
             notificationService.connect(token);
-            notificationService.addListener(this); // Aktivnost se registruje kao slusac
+            notificationService.addListener(this);
         }
 
 
@@ -161,10 +159,8 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         }
     }
 
-    // NOVI KOD: Implementiramo callback metodu iz interfejsa
     @Override
     public void onUnreadCountChanged(int newCount) {
-        // Azuriraj UI na glavnoj niti (UI thread)
         runOnUiThread(() -> updateNotificationsBadge(newCount));
     }
 
@@ -307,7 +303,6 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             View actionView = notificationsItem.getActionView();
             if (actionView != null) {
                 notificationBadge = actionView.findViewById(R.id.notification_badge);
-                // Inicijalno postavi vrednost, ako postoji
                 if(notificationService != null){
                     updateNotificationsBadge(notificationService.getUnreadCount());
                 }
@@ -356,7 +351,6 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             View actionView = notificationsItem.getActionView();
             if (actionView != null) {
                 notificationBadge = actionView.findViewById(R.id.notification_badge);
-                // Inicijalno postavi vrednost, ako postoji
                 if(notificationService != null){
                     updateNotificationsBadge(notificationService.getUnreadCount());
                 }
@@ -412,7 +406,6 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             View actionView = notificationsItem.getActionView();
             if (actionView != null) {
                 notificationBadge = actionView.findViewById(R.id.notification_badge);
-                // Inicijalno postavi vrednost, ako postoji
                 if(notificationService != null){
                     updateNotificationsBadge(notificationService.getUnreadCount());
                 }
@@ -494,20 +487,16 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         if (toolbar == null || toggle == null) return;
 
         if (showDot && !notificationsOpen) {
-            // Kreiramo custom DrawerArrowDrawable koji crta crvenu tačkicu
             DrawerArrowDrawable custom = new DrawerArrowDrawable(toolbar.getContext()) {
                 @Override
                 public void draw(Canvas canvas) {
                     super.draw(canvas);
 
-                    // Crtamo malu crvenu tačkicu
                     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
                     paint.setColor(Color.RED);
 
-                    // Odredi radijus (npr. 4dp)
                     float radius = 4 * getResources().getDisplayMetrics().density;
 
-                    // Pozicija: gornji desni ugao hamburgera
                     Rect bounds = getBounds();
                     float cx = bounds.right - radius - 2 * getResources().getDisplayMetrics().density; // malo unutra
                     float cy = bounds.top + radius + 2 * getResources().getDisplayMetrics().density;
@@ -518,8 +507,6 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
             toggle.setDrawerArrowDrawable(custom);
         } else {
-            // Vraćamo originalni toggle drawable i omogućavamo animaciju
-//            toggle.setDrawerIndicatorEnabled(true);
             toggle.setDrawerArrowDrawable(originalDrawerIcon);
 
         }
@@ -529,14 +516,12 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     public void onNotificationsOpened() {
         if (toggle != null) {
             notificationsOpen = true;
-//            updateHamburgerIcon();
         }
     }
 
     public void onNotificationsClosed() {
         if (toggle != null) {
             notificationsOpen = false;
-//            updateHamburgerIcon();
         }
     }
 

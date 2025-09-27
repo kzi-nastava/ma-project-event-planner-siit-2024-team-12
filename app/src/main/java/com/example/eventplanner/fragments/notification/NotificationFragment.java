@@ -166,7 +166,6 @@ public class NotificationFragment extends Fragment {
     private void handleNewNotification(GetNotificationDTO notification) {
         if (getActivity() == null) return;
 
-//        getActivity().runOnUiThread(() -> {
         allNotifications.add(0, notification);
 
         if (currentPage == 0) {
@@ -180,7 +179,6 @@ public class NotificationFragment extends Fragment {
         totalPages = (int) Math.ceil((double) allNotifications.size() / PAGE_SIZE);
         updatePageIndicator();
         updateButtonStates();
-//        });
     }
 
     private void toggleMuteOptions() {
