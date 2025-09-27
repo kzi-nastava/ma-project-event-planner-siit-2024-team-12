@@ -108,22 +108,38 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
     private void openDetails(CardItem item) {
         Intent i = null;
         if (item instanceof GetEventDTO) {
-            i = new Intent(context, EventDetailsFragment.class);
-            i.putExtra("id", item.getId());
+            GetEventDTO event = (GetEventDTO) item;
+            EventDetailsFragment fragment = EventDetailsFragment.newInstance(event.getId());
+
+            if (context instanceof AppCompatActivity) {
+                AppCompatActivity activity = (AppCompatActivity) context;
+
+                activity.getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
         } else if (item instanceof GetHomepageSolutionDTO) {
             GetHomepageSolutionDTO solution = (GetHomepageSolutionDTO) item;
             if ("product".equalsIgnoreCase(solution.getType())) {
-                i = new Intent(context, ProductDetailsFragment.class);
-                i.putExtra("id", solution.getId());
+                GetHomepageSolutionDTO event = (GetHomepageSolutionDTO) item;
+                ProductDetailsFragment fragment = ProductDetailsFragment.newInstance(event.getId());
+
+                if (context instanceof AppCompatActivity) {
+                    AppCompatActivity activity = (AppCompatActivity) context;
+
+                    activity.getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
             } else if ("service".equalsIgnoreCase(solution.getType())) {
                 ServiceDetailsFragment fragment = ServiceDetailsFragment.newInstance(solution.getId());
 
                 if (context instanceof AppCompatActivity) {
                     AppCompatActivity activity = (AppCompatActivity) context;
-                    FrameLayout suspendedContainer = activity.findViewById(R.id.main_fragment_container);
-                    if (suspendedContainer != null) {
-                        suspendedContainer.setVisibility(View.VISIBLE);
-                    }
 
                     activity.getSupportFragmentManager()
                             .beginTransaction()
