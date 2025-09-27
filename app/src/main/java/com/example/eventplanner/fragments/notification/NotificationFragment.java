@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.event.EventDetailsActivity;
+import com.example.eventplanner.fragments.event.EventDetailsFragment;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.adapters.notification.NotificationAdapter;
 import com.example.eventplanner.dto.notification.GetNotificationDTO;
@@ -34,7 +34,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -77,7 +76,7 @@ public class NotificationFragment extends Fragment {
             Intent intent;
             switch (notification.getEntityType().toUpperCase()) {
                 case "EVENT":
-                    intent = new Intent(getContext(), EventDetailsActivity.class);
+                    intent = new Intent(getContext(), EventDetailsFragment.class);
                     intent.putExtra("id", notification.getEntityId());
                     startActivity(intent);
                     break;

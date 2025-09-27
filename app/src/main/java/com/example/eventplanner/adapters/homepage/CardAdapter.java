@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.event.EventDetailsActivity;
+import com.example.eventplanner.fragments.event.EventDetailsFragment;
 import com.example.eventplanner.activities.homepage.CardItem;
 import com.example.eventplanner.fragments.product.ProductDetailsFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
@@ -75,7 +75,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventViewHolde
         Intent i = null;
 
         if (item instanceof com.example.eventplanner.dto.event.GetEventDTO) {
-            i = new Intent(context, EventDetailsActivity.class);
+            i = new Intent(context, EventDetailsFragment.class);
             i.putExtra("id", item.getId());
 
         } else if (item instanceof com.example.eventplanner.dto.solution.GetHomepageSolutionDTO) {

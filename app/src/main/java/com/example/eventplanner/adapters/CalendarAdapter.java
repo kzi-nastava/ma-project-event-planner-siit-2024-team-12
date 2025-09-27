@@ -3,7 +3,6 @@ package com.example.eventplanner.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.event.EventDetailsActivity;
+import com.example.eventplanner.fragments.event.EventDetailsFragment;
 import com.example.eventplanner.dto.event.EventDetailsDTO;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -168,7 +166,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
             public void onResponse(Call<EventDetailsDTO> call, Response<EventDetailsDTO> response) {
                 if (response.isSuccessful()) {
                     EventDetailsDTO event = response.body();
-                    Intent intent = new Intent(context, EventDetailsActivity.class);
+                    Intent intent = new Intent(context, EventDetailsFragment.class);
                     intent.putExtra("id", event.getId());
                     context.startActivity(intent);
                 }

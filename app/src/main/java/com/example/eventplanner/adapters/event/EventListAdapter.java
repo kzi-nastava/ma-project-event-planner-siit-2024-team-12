@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,8 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.event.EventDetailsActivity;
-import com.example.eventplanner.adapters.homepage.CardAdapter;
+import com.example.eventplanner.fragments.event.EventDetailsFragment;
 import com.example.eventplanner.dto.event.GetEventDTO;
 
 import java.text.SimpleDateFormat;
@@ -90,7 +88,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         }
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EventDetailsActivity.class);
+            Intent intent = new Intent(context, EventDetailsFragment.class);
             intent.putExtra("id", event.getId());
             context.startActivity(intent);
         });
