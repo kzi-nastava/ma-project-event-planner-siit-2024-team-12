@@ -26,6 +26,7 @@ import com.example.eventplanner.activities.product.ProductDetailsActivity;
 import com.example.eventplanner.adapters.notification.NotificationAdapter;
 import com.example.eventplanner.dto.notification.GetNotificationDTO;
 import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
+import com.example.eventplanner.fragments.servicereservation.ServiceReservationDetailsFragment;
 import com.example.eventplanner.utils.ClientUtils;
 
 import java.time.LocalDateTime;
@@ -85,15 +86,31 @@ public class NotificationFragment extends Fragment {
                     startActivity(intent);
                     break;
                 case "SERVICE_RESERVATION":
-                    Toast.makeText(getContext(), "Service reservation details not implemented.", Toast.LENGTH_SHORT).show();
+                    if (getContext() instanceof AppCompatActivity) {
+                        AppCompatActivity activity = (AppCompatActivity) getContext();
+
+                        FrameLayout mainContainer = activity.findViewById(R.id.main_fragment_container);
+                        if (mainContainer != null) {
+                            mainContainer.setVisibility(View.VISIBLE);
+                        }
+
+                        ServiceReservationDetailsFragment fragment =
+                                ServiceReservationDetailsFragment.newInstance(notification.getEntityId());
+
+                        activity.getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_fragment_container, fragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
                     break;
                 case "SERVICE":
                     if (getContext() instanceof AppCompatActivity) {
                         AppCompatActivity activity = (AppCompatActivity) getContext();
 
-                        FrameLayout suspendedContainer = activity.findViewById(R.id.main_fragment_container);
-                        if (suspendedContainer != null) {
-                            suspendedContainer.setVisibility(View.VISIBLE);
+                        FrameLayout mainContainer = activity.findViewById(R.id.main_fragment_container);
+                        if (mainContainer != null) {
+                            mainContainer.setVisibility(View.VISIBLE);
                         }
 
                         ServiceDetailsFragment fragment = ServiceDetailsFragment.newInstance(notification.getEntityId());

@@ -239,9 +239,6 @@ public class CommentManagementFragment extends Fragment implements ManageComment
                 intent.putExtra("id", entityId);
                 startActivity(intent);
                 break;
-            case "SERVICE_RESERVATION":
-                Toast.makeText(getContext(), "Service reservation details not implemented.", Toast.LENGTH_SHORT).show();
-                break;
             case "SERVICE":
                 if (getContext() instanceof AppCompatActivity) {
                     AppCompatActivity activity = (AppCompatActivity) getContext();

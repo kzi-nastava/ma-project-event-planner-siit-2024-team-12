@@ -39,6 +39,14 @@ public class ServiceReservationDetailsFragment extends Fragment {
     private LinearLayout serviceContainer;
     private Long serviceId;
 
+    public static ServiceReservationDetailsFragment newInstance(Long reservationId) {
+        ServiceReservationDetailsFragment fragment = new ServiceReservationDetailsFragment();
+        Bundle args = new Bundle();
+        args.putLong("RESERVATION_ID", reservationId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
