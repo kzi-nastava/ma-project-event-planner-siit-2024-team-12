@@ -15,8 +15,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.service.ServiceCreationActivity;
-import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
 import com.example.eventplanner.fragments.pricelist.PriceListFragment;
 
 /**
@@ -120,7 +118,6 @@ public class ServiceManagement extends Fragment {
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
             transaction.replace(R.id.services_fragment_container, new ProductProviderServices());
-            transaction.replace(R.id.service_filter_fragment_container, new HomepageFilterFragment());
 
             transaction.commit();
         }
