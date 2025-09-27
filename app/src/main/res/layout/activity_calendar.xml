@@ -8,20 +8,6 @@
     tools:context=".activities.calendar.CalendarActivity">
 
 
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:contentDescription="TODO"
-        android:onClick="closeForm"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.959"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.026"
-        app:srcCompat="@drawable/exit_form" />
-
     <LinearLayout
         android:id="@+id/weekDaysLayout"
         android:layout_width="match_parent"
