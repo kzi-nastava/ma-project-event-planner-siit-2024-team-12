@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -22,10 +23,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.solutioncategory.CategoryCreationActivity;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
+import com.example.eventplanner.fragments.categories.CategoryCreationFragment;
+import com.example.eventplanner.viewmodels.CategoryViewModel;
 import com.example.eventplanner.viewmodels.ServiceCreationViewModel;
 
 import java.util.List;
@@ -43,6 +47,8 @@ public class ServiceCreation extends Fragment {
     private ServiceCreationViewModel viewModel;
     private Spinner categorySpinner;
     private List<GetSolutionCategoryDTO> categoryList;
+    private CategoryViewModel categoryViewModel;
+    private DialogFragment categoryCreationDialog;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -83,6 +89,7 @@ public class ServiceCreation extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         viewModel = new ViewModelProvider(requireActivity()).get(ServiceCreationViewModel.class);
+        categoryViewModel = new ViewModelProvider(requireActivity()).get(CategoryViewModel.class);
 
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -163,8 +170,8 @@ public class ServiceCreation extends Fragment {
         });
 
         newCategoryButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), CategoryCreationActivity.class);
-            activityResultLauncher.launch(intent);
+            categoryCreationDialog = CategoryCreationFragment.newInstance("SUGGEST");
+            categoryCreationDialog.show(getChildFragmentManager(), "category_creation_dialog");
         });
 
         xButton.setOnClickListener(v ->{
@@ -180,6 +187,17 @@ public class ServiceCreation extends Fragment {
             } else if (checkedId == R.id.flexible_duration_radio) {
                 fixedDurationLayout.setVisibility(View.GONE);
                 flexibleDurationLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        categoryViewModel.getCreationStatus().observe(getViewLifecycleOwner(), status -> {
+            if (status.contains("Successfully created category!") || status.contains("Successfully suggested category!")) {
+                if (categoryCreationDialog != null) {
+                    categoryCreationDialog.dismiss();
+                    categoryCreationDialog = null;
+                }
+                Toast.makeText(getContext(), status, Toast.LENGTH_SHORT).show();
+                viewModel.addSuggestedCategory(categoryViewModel.getNewlyCreatedCategory().getValue());
             }
         });
 

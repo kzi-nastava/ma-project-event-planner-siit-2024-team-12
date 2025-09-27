@@ -182,6 +182,7 @@
             android:background="@drawable/input_field"
             android:ems="10"
             android:hint="@string/price_hint"
+            android:maxLength="8"
             android:inputType="number"
             android:paddingStart="12dp"
             android:textSize="12sp"

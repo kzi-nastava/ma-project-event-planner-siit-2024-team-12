@@ -11,11 +11,13 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.service.ServiceCreationActivity;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
+import com.example.eventplanner.fragments.pricelist.PriceListFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +31,7 @@ public class ServiceManagement extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private ImageButton imgButton;
+    private Button priceListButton;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -71,10 +74,18 @@ public class ServiceManagement extends Fragment {
         // Inflate the layout for this fragment
         View rootView =  inflater.inflate(R.layout.fragment_service_management, container, false);
         imgButton = rootView.findViewById(R.id.imageButton);
+        priceListButton = rootView.findViewById(R.id.full_width_button);
         imgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openServiceCreationFragment();
+            }
+        });
+
+        priceListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openPriceListFragment();
             }
         });
 
@@ -87,6 +98,16 @@ public class ServiceManagement extends Fragment {
         getParentFragmentManager()
                 .beginTransaction()
                 .replace(R.id.homepage_fragment_container, serviceCreationContainerFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void openPriceListFragment() {
+        PriceListFragment priceListFragment = PriceListFragment.newInstance("service");
+
+        getParentFragmentManager()
+                .beginTransaction()
+                .replace(R.id.homepage_fragment_container, priceListFragment)
                 .addToBackStack(null)
                 .commit();
     }

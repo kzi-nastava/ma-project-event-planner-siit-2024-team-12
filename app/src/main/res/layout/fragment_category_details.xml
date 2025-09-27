@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="16dp"
+    tools:context=".fragments.categories.CategoryDetailsFragment">
+
+    <TextView
+        android:id="@+id/textViewDetailsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category details"
+        android:paddingLeft="30dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/dark_gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:id="@+id/textViewCategoryNameLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginBottom="6dp"
+        android:text="Name:"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewCategoryDetailsName"
+        app:layout_constraintStart_toStartOf="@+id/textViewCategoryDetailsName" />
+
+    <EditText
+        android:id="@+id/textViewCategoryDetailsName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/input_field"
+        android:paddingStart="12dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="6dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewDetailsTitle"
+        tools:text="Naziv kategorije" />
+
+    <TextView
+        android:id="@+id/textViewDescriptionLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginBottom="6dp"
+        android:text="Description:"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewCategoryDetailsDescription"
+        app:layout_constraintStart_toStartOf="@+id/textViewCategoryDetailsDescription" />
+
+    <EditText
+        android:id="@+id/textViewCategoryDetailsDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/input_field"
+        android:paddingStart="12dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="6dp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewCategoryDetailsName"
+        tools:text="Ovo je detaljan opis kategorije. Ovde može da stoji duži tekst koji objašnjava sve specifičnosti." />
+
+    <LinearLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewCategoryDetailsDescription">
+
+        <Button
+            android:id="@+id/buttonDeleteCategory"
+            android:layout_width="106dp"
+            android:layout_height="39dp"
+            android:layout_marginEnd="36dp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/black"
+            android:text="Delete"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/buttonActionCategory"
+            android:layout_width="106dp"
+            android:layout_height="39dp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/white"
+            tools:text="Action" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
