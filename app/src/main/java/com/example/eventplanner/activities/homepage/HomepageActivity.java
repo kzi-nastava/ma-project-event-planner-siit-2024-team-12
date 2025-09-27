@@ -5,8 +5,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -61,6 +63,8 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     private static final String TAG = "HomepageDebug";
 
     private NotificationWebSocketService notificationService;
+
+    private TextView notificationBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,16 +134,21 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     }
 
     private void updateNotificationsBadge(int count) {
-        //TODO
+        if (notificationBadge != null) {
+            if (count > 0) {
+                notificationBadge.setText(String.valueOf(count));
+                notificationBadge.setVisibility(View.VISIBLE);
+            } else {
+                notificationBadge.setVisibility(View.GONE);
+            }
+        }
     }
 
     // NOVI KOD: Implementiramo callback metodu iz interfejsa
     @Override
     public void onUnreadCountChanged(int newCount) {
-        //TODO
-
         // Azuriraj UI na glavnoj niti (UI thread)
-//        runOnUiThread(() -> updateNotificationsBadge(newCount));
+        runOnUiThread(() -> updateNotificationsBadge(newCount));
     }
 
 
@@ -230,6 +239,18 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         navigationView.getMenu().clear();
         navigationView.inflateMenu(R.menu.authenticated_user_menu);
 
+        MenuItem notificationsItem = navigationView.getMenu().findItem(R.id.nav_notifications);
+        if (notificationsItem != null) {
+            View actionView = notificationsItem.getActionView();
+            if (actionView != null) {
+                notificationBadge = actionView.findViewById(R.id.notification_badge);
+                // Inicijalno postavi vrednost, ako postoji
+                if(notificationService != null){
+                    updateNotificationsBadge(notificationService.getUnreadCount());
+                }
+            }
+        }
+
         RecyclerView chatRecyclerView = findViewById(R.id.chat_recycler_view);
         if (chatRecyclerView != null) chatRecyclerView.setVisibility(View.VISIBLE);
 
@@ -249,6 +270,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_explore_events) {
                 startActivity(new Intent(this, ExplorePageActivity.class));
             } else if (id == R.id.nav_notifications) {
+                updateNotificationsBadge(0);
                 navigateToFragment(R.id.notifications_container, new NotificationFragment());
             } else if (id == R.id.nav_home) {
                 showMainUI();
@@ -261,6 +283,18 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     private void setupOrganizerUI() {
         navigationView.getMenu().clear();
         navigationView.inflateMenu(R.menu.organiser_menu);
+
+        MenuItem notificationsItem = navigationView.getMenu().findItem(R.id.nav_notifications);
+        if (notificationsItem != null) {
+            View actionView = notificationsItem.getActionView();
+            if (actionView != null) {
+                notificationBadge = actionView.findViewById(R.id.notification_badge);
+                // Inicijalno postavi vrednost, ako postoji
+                if(notificationService != null){
+                    updateNotificationsBadge(notificationService.getUnreadCount());
+                }
+            }
+        }
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -283,6 +317,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_fav_products) {
                 startActivity(new Intent(this, FavoriteProductsActivity.class));
             } else if (id == R.id.nav_notifications) {
+                updateNotificationsBadge(0);
                 navigateToFragment(R.id.notifications_container, new NotificationFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
@@ -295,6 +330,19 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     private void setupProviderUI() {
         navigationView.getMenu().clear();
         navigationView.inflateMenu(R.menu.provider_menu);
+
+
+        MenuItem notificationsItem = navigationView.getMenu().findItem(R.id.nav_notifications);
+        if (notificationsItem != null) {
+            View actionView = notificationsItem.getActionView();
+            if (actionView != null) {
+                notificationBadge = actionView.findViewById(R.id.notification_badge);
+                // Inicijalno postavi vrednost, ako postoji
+                if(notificationService != null){
+                    updateNotificationsBadge(notificationService.getUnreadCount());
+                }
+            }
+        }
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -325,6 +373,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_event_types) {
                 startActivity(new Intent(this, EventTypeTableActivity.class));
             } else if (id == R.id.nav_notifications) {
+                updateNotificationsBadge(0);
                 navigateToFragment(R.id.notifications_container, new NotificationFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
@@ -337,6 +386,18 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     private void setupAdminUI() {
         navigationView.getMenu().clear();
         navigationView.inflateMenu(R.menu.admin_menu);
+
+        MenuItem notificationsItem = navigationView.getMenu().findItem(R.id.nav_notifications);
+        if (notificationsItem != null) {
+            View actionView = notificationsItem.getActionView();
+            if (actionView != null) {
+                notificationBadge = actionView.findViewById(R.id.notification_badge);
+                // Inicijalno postavi vrednost, ako postoji
+                if(notificationService != null){
+                    updateNotificationsBadge(notificationService.getUnreadCount());
+                }
+            }
+        }
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -355,6 +416,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_ratings_chart) {
                 startActivity(new Intent(this, RatingsChart.class));
             } else if (id == R.id.nav_notifications) {
+                updateNotificationsBadge(0);
                 navigateToFragment(R.id.notifications_container, new NotificationFragment());
             } else if(id == R.id.nav_categories){
                 navigateToFragment(R.id.notifications_container, new CategoriesContainerFragment());
