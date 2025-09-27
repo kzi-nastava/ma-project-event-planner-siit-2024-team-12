@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ua.naiksoftware.stomp.Stomp;
@@ -69,6 +71,7 @@ public class NotificationWebSocketService {
         Log.d(TAG, "📡 subscribeToNotifications() called");
 
         Disposable disposable = stompClient.topic("/user/queue/notifications")
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(stompMessage -> {
                     Log.d(TAG, "✅ Received message: " + stompMessage.getPayload());
                     unreadCount++;
