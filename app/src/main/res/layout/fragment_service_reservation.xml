@@ -2,7 +2,28 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/form_frame"
+        android:padding="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp">
+
+    <ImageView
+        android:id="@+id/exitFormButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="end"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/close"
+        android:src="@drawable/exit_form" />
 
     <!-- Scrollable content -->
     <ScrollView
@@ -203,15 +224,5 @@
                 android:textAllCaps="false"/>
         </LinearLayout>
     </ScrollView>
-
-    <!-- Exit button fixed top-right -->
-    <ImageView
-        android:id="@+id/exitFormButton"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="end|top"
-        android:layout_margin="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/close"
-        android:src="@drawable/exit_form" />
+    </LinearLayout>
 </FrameLayout>
