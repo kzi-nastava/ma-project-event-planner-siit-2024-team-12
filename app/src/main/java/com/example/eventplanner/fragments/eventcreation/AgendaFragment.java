@@ -83,8 +83,4 @@ public class AgendaFragment extends Fragment {
 
     }
 
-    public void closeForm(View view) {
-
-    }
-
 }

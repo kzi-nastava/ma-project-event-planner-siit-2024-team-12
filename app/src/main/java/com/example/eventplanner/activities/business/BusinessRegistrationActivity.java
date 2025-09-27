@@ -40,8 +40,4 @@ public class BusinessRegistrationActivity extends AppCompatActivity {
         }
     }
 
-    public void closeForm(View view) {
-        setResult(RESULT_CANCELED);
-        finish();
-    }
 }

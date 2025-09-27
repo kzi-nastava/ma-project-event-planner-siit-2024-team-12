@@ -218,7 +218,6 @@
                 android:layout_width="20dp"
                 android:layout_height="21dp"
                 android:contentDescription="TODO"
-                android:onClick="closeForm"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/exit_form" />

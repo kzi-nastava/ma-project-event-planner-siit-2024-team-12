@@ -79,11 +79,6 @@ public class AttendanceChart extends AppCompatActivity {
 
     }
 
-    public void closeForm(View view) {
-        setResult(RESULT_CANCELED);
-        finish();
-    }
-
 
     private void loadEventAttendance() {
         String auth = ClientUtils.getAuthorization(this);

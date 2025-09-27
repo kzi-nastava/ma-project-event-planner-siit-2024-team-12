@@ -68,7 +68,6 @@
             android:layout_height="31dp"
             android:background="@drawable/form_button"
             android:text="@string/save"
-            android:onClick="closeForm"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:backgroundTint="@color/dark_gray"

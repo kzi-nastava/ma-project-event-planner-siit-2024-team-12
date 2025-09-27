@@ -126,22 +126,4 @@ public class FavoriteProductsActivity extends AppCompatActivity {
         return (int) Math.ceil((double) allProducts.size() / PAGE_SIZE);
     }
 
-
-    public void closeForm(View view) {
-        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        String role = pref.getString("userRole", UserRole.ROLE_ORGANIZER.toString());
-
-        if (role.equals(UserRole.ROLE_ORGANIZER.toString())) {
-            Intent intent = new Intent(FavoriteProductsActivity.this, OrganiserHomepageActivity.class);
-            startActivity(intent);
-        }
-        else if (role.equals(UserRole.ROLE_PROVIDER.toString())) {
-            Intent intent = new Intent(FavoriteProductsActivity.this, ProviderHomepageActivity.class);
-            startActivity(intent);
-        }
-        else {
-            setResult(RESULT_CANCELED);
-            finish();
-        }
-    }
 }

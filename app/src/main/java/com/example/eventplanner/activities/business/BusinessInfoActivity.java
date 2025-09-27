@@ -49,14 +49,6 @@ public class BusinessInfoActivity extends AppCompatActivity {
         });
     }
 
-
-    public void closeForm(View view) {
-        Intent intent = new Intent(BusinessInfoActivity.this, ProviderHomepageActivity.class);
-        startActivity(intent);
-    }
-
-
-
     public void deactivateBusiness(View view) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 
