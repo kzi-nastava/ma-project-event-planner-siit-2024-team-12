@@ -41,6 +41,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 public class ProductDetailsFragment extends Fragment {
 
     private EditText name, availability, visibility, price, discount, category, description;
@@ -56,6 +57,16 @@ public class ProductDetailsFragment extends Fragment {
     private Uri selectedImageUri = null;
     private View view;
 
+    private static final String ARG_PRODUCT_ID = "product_id";
+
+    public static ProductDetailsFragment newInstance(Long productId) {
+        ProductDetailsFragment fragment = new ProductDetailsFragment();
+        Bundle args = new Bundle();
+        args.putLong(ARG_PRODUCT_ID, productId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
 
     @Override
@@ -63,6 +74,10 @@ public class ProductDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_product_details, container, false);
+
+        if (getArguments() != null) {
+            currentProductId = getArguments().getLong(ARG_PRODUCT_ID);
+        }
 
         findFields();
         loadProductDetails();
@@ -92,9 +107,6 @@ public class ProductDetailsFragment extends Fragment {
 
     private void loadProductDetails() {
         String auth = ClientUtils.getAuthorization(requireContext());
-
-        currentProductId = requireActivity().getIntent().getLongExtra("id", 0);
-
 
         Call<GetProductDTO> call = ClientUtils.productService.getProduct(auth, currentProductId);
         call.enqueue(new Callback<GetProductDTO>() {

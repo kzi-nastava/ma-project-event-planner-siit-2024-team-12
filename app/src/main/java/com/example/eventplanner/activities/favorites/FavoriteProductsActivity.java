@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
 import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
+import com.example.eventplanner.fragments.product.ProductDetailsFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.favorites.FavoriteProductsAdapter;
@@ -46,7 +47,16 @@ public class FavoriteProductsActivity extends AppCompatActivity {
 
         loadAllProducts();
 
-        adapter = new FavoriteProductsAdapter(currentProducts);
+        adapter = new FavoriteProductsAdapter(currentProducts, productId -> {
+            ProductDetailsFragment detailsFragment = ProductDetailsFragment.newInstance(productId);
+
+            this.getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_fragment_container, detailsFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         recyclerView.setAdapter(adapter);
 
         loadPage(currentPage);

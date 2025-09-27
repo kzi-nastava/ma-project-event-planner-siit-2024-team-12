@@ -167,9 +167,6 @@ public class ProductCreationFragment2 extends DialogFragment {
     }
 
 
-
-
-
     private void setupRadioButtons() {
         RadioGroup availabilityGroup = view.findViewById(R.id.availabilityGroup);
 

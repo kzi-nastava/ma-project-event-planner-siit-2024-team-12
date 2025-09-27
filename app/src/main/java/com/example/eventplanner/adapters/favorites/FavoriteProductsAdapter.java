@@ -27,11 +27,18 @@ import com.bumptech.glide.Glide;
 
 
 public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProductsAdapter.ViewHolder> {
+    public interface OnProductClickListener {
+        void onProductClick(Long productId);
+    }
+
     private List<FavSolutionDTO> products;
     private static final String BASE_IMAGE_URL = "http://10.0.2.2:8080";
+    private final OnProductClickListener listener;
 
-    public FavoriteProductsAdapter(List<FavSolutionDTO> products) {
+
+    public FavoriteProductsAdapter(List<FavSolutionDTO> products, OnProductClickListener listener) {
         this.products = products;
+        this.listener = listener;
     }
 
     @Override
@@ -72,8 +79,9 @@ public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProduc
         }
 
         holder.seeMore.setOnClickListener(v -> {
-            Context context = v.getContext();
-            loadProductDetails(context, product.getId());
+            if (listener != null) {
+                listener.onProductClick(product.getId());
+            }
         });
     }
 

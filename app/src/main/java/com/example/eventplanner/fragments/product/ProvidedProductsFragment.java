@@ -61,7 +61,20 @@ public class ProvidedProductsFragment extends Fragment {
 
         loadCurrentBusiness();
 
-        adapter = new FavoriteProductsAdapter(currentProducts);
+        adapter = new FavoriteProductsAdapter(currentProducts, productId -> {
+            ProductDetailsFragment detailsFragment = ProductDetailsFragment.newInstance(productId);
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_fragment_container, detailsFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+
+
+
+
         recyclerView.setAdapter(adapter);
 
         loadPage(currentPage);
