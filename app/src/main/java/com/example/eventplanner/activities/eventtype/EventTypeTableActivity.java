@@ -14,8 +14,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.enumeration.UserRole;
-import com.example.eventplanner.activities.homepage.AdminHomepageActivity;
-import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 
 public class EventTypeTableActivity extends AppCompatActivity {
 

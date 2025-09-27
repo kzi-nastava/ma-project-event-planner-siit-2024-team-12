@@ -17,9 +17,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
@@ -138,7 +138,7 @@ public class BudgetPlanningFragment extends Fragment {
                 if (response.isSuccessful()) {
                     Toast.makeText(getActivity(), "Successfully created event!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(requireActivity(), OrganiserHomepageActivity.class);
+                    Intent intent = new Intent(requireActivity(), HomepageActivity.class);
                     startActivity(intent);
                 }
                 else {

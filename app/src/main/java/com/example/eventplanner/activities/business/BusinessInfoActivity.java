@@ -17,9 +17,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
 
 import okhttp3.ResponseBody;
@@ -166,7 +166,7 @@ public class BusinessInfoActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         Toast.makeText(BusinessInfoActivity.this, "Deactivated business account!", Toast.LENGTH_SHORT).show();
 
-                        Intent intent = new Intent(BusinessInfoActivity.this, ProviderHomepageActivity.class);
+                        Intent intent = new Intent(BusinessInfoActivity.this, HomepageActivity.class);
                         startActivity(intent);
                     }
                 }

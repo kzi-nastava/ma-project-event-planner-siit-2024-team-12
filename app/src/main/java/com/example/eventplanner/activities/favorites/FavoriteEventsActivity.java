@@ -1,9 +1,7 @@
 package com.example.eventplanner.activities.favorites;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,9 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.enumeration.UserRole;
-import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
-import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.adapters.favorites.FavoriteEventsAdapter;
 import com.example.eventplanner.dto.event.FavEventDTO;
 
