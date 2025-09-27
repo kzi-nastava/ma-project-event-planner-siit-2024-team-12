@@ -2,7 +2,6 @@ package com.example.eventplanner.adapters.homepage;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.View;
@@ -18,7 +17,7 @@ import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.event.EventDetailsActivity;
 import com.example.eventplanner.activities.homepage.CardItem;
-import com.example.eventplanner.activities.product.ProductDetailsActivity;
+import com.example.eventplanner.fragments.product.ProductDetailsFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
 import com.google.android.material.imageview.ShapeableImageView;
 
@@ -84,7 +83,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventViewHolde
                     (com.example.eventplanner.dto.solution.GetHomepageSolutionDTO) item;
 
             if ("product".equalsIgnoreCase(solution.getType())) {
-                i = new Intent(context, ProductDetailsActivity.class);
+                i = new Intent(context, ProductDetailsFragment.class);
             }
             else if ("service".equalsIgnoreCase(solution.getType())) {
                 ServiceDetailsFragment fragment = ServiceDetailsFragment.newInstance(solution.getId());

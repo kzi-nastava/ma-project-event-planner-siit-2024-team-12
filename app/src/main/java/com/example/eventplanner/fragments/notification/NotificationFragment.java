@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.event.EventDetailsActivity;
-import com.example.eventplanner.activities.product.ProductDetailsActivity;
+import com.example.eventplanner.fragments.product.ProductDetailsFragment;
 import com.example.eventplanner.adapters.notification.NotificationAdapter;
 import com.example.eventplanner.dto.notification.GetNotificationDTO;
 import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
@@ -33,7 +33,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -81,7 +80,7 @@ public class NotificationFragment extends Fragment {
                     startActivity(intent);
                     break;
                 case "PRODUCT":
-                    intent = new Intent(getContext(), ProductDetailsActivity.class);
+                    intent = new Intent(getContext(), ProductDetailsFragment.class);
                     intent.putExtra("id", notification.getEntityId());
                     startActivity(intent);
                     break;

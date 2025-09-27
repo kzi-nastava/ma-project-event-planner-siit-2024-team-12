@@ -5,22 +5,20 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.product.ProvidedProductsActivity;
-import com.example.eventplanner.dto.business.CreatedBusinessDTO;
+import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.dto.product.CreatedProductDTO;
 import com.example.eventplanner.fragments.gallery.ImagePicker;
 import com.example.eventplanner.utils.ClientUtils;
@@ -114,8 +112,19 @@ public class ProductCreationFragment2 extends DialogFragment {
 
                     Toast.makeText(getActivity(), "Successfully created product!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(getActivity(), ProvidedProductsActivity.class);
-                    startActivity(intent);
+                    dismiss();
+
+                    DialogFragment prevDialog = (DialogFragment) getParentFragmentManager()
+                            .findFragmentByTag("ProductCreationFragment");
+                    if (prevDialog != null) {
+                        prevDialog.dismiss();
+                    }
+
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, new ProvidedProductsFragment())
+                            .commit();
+
                 }
                 else if (response.code() == 409) {
                     Toast.makeText(getActivity(), "Register business first!", Toast.LENGTH_SHORT).show();
@@ -150,7 +159,6 @@ public class ProductCreationFragment2 extends DialogFragment {
         viewModel.updateAttributes("visible", String.valueOf(viewModel.isVisible()));
 
         saveProduct();
-
     }
 
 

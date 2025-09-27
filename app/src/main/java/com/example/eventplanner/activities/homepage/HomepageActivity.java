@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Spinner;
 
@@ -12,11 +11,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
@@ -34,7 +31,7 @@ import com.example.eventplanner.activities.favorites.ExplorePageActivity;
 import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
 import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
 import com.example.eventplanner.activities.favorites.FavoriteServicesActivity;
-import com.example.eventplanner.activities.product.ProvidedProductsActivity;
+import com.example.eventplanner.fragments.product.ProvidedProductsFragment;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
 import com.example.eventplanner.fragments.categories.CategoriesContainerFragment;
@@ -240,7 +237,7 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_business_info) {
                 startActivity(new Intent(this, BusinessInfoActivity.class));
             } else if (id == R.id.nav_products) {
-                startActivity(new Intent(this, ProvidedProductsActivity.class));
+                navigateToFragment(new ProvidedProductsFragment());
             } else if (id == R.id.nav_services) {
                 navigateToFragment(new ServiceManagement());
             } else if (id == R.id.nav_calendar_od) {

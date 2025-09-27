@@ -26,7 +26,7 @@ import com.example.eventplanner.activities.favorites.ExplorePageActivity;
 import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
 import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
 import com.example.eventplanner.activities.favorites.FavoriteServicesActivity;
-import com.example.eventplanner.activities.product.ProvidedProductsActivity;
+import com.example.eventplanner.fragments.product.ProvidedProductsFragment;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.business.BusinessInfoActivity;
 import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
@@ -128,7 +128,7 @@ public class ProviderHomepageActivity extends AppCompatActivity {
                 }
 
                 else if (id == R.id.nav_products) {
-                    Intent intent = new Intent(ProviderHomepageActivity.this, ProvidedProductsActivity.class);
+                    Intent intent = new Intent(ProviderHomepageActivity.this, ProvidedProductsFragment.class);
                     startActivity(intent);
                 }
 

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.product.ProductDetailsActivity;
+import com.example.eventplanner.fragments.product.ProductDetailsFragment;
 import com.example.eventplanner.dto.product.GetProductDTO;
 import com.example.eventplanner.dto.solution.FavSolutionDTO;
 import com.example.eventplanner.utils.ClientUtils;
@@ -87,7 +87,7 @@ public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProduc
             @Override
             public void onResponse(Call<GetProductDTO> call, Response<GetProductDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Intent intent = new Intent(context, ProductDetailsActivity.class);
+                    Intent intent = new Intent(context, ProductDetailsFragment.class);
                     intent.putExtra("id", productId);
                     context.startActivity(intent);
                 }

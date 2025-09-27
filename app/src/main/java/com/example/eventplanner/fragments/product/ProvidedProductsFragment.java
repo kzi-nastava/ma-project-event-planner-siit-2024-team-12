@@ -1,33 +1,30 @@
-package com.example.eventplanner.activities.product;
+package com.example.eventplanner.fragments.product;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.adapters.favorites.FavoriteProductsAdapter;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.solution.FavSolutionDTO;
 import com.example.eventplanner.dto.product.GetProductDTO;
 import com.example.eventplanner.dto.solution.SolutionFilterParams;
-import com.example.eventplanner.fragments.product.ProductCreationFragment;
-import com.example.eventplanner.fragments.product.SolutionFilterFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.viewmodels.SolutionFilterViewModel;
 import com.google.android.material.chip.Chip;
@@ -41,7 +38,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class ProvidedProductsActivity extends AppCompatActivity {
+public class ProvidedProductsFragment extends Fragment {
     private RecyclerView recyclerView;
     private FavoriteProductsAdapter adapter;
     private List<FavSolutionDTO> allProducts = new ArrayList<>();
@@ -52,16 +49,15 @@ public class ProvidedProductsActivity extends AppCompatActivity {
     private ChipGroup chipGroup;
     private SolutionFilterViewModel filterViewModel;
     private EditText searchBar;
+    private View view;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_provided_products);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_provided_products, container, false);
 
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         loadCurrentBusiness();
 
@@ -77,19 +73,22 @@ public class ProvidedProductsActivity extends AppCompatActivity {
 
         setUpFilterBtn();
 
-        chipGroup = findViewById(R.id.chipGroup);
-        filterViewModel = new ViewModelProvider(this).get(SolutionFilterViewModel.class);
+        chipGroup = view.findViewById(R.id.chipGroup);
+        filterViewModel = new ViewModelProvider(requireActivity()).get(SolutionFilterViewModel.class);
 
         setChipObservers();
         setFilterObservers();
 
         setUpSearchBar();
 
+        return view;
     }
 
 
+
+
     private void setUpSearchBar() {
-        searchBar = findViewById(R.id.searchBar);
+        searchBar = view.findViewById(R.id.searchBar);
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
@@ -109,54 +108,54 @@ public class ProvidedProductsActivity extends AppCompatActivity {
 
     private void setFilterObservers() {
 
-        filterViewModel.getSelectedCategories().observe(this, selectedCategories -> filterProducts());
-        filterViewModel.getSelectedEventTypes().observe(this, selectedEventTypes -> filterProducts());
-        filterViewModel.getSelectedAvailability().observe(this, selectedAvailability -> filterProducts());
-        filterViewModel.getSelectedDescriptions().observe(this, selectedDescriptions -> filterProducts());
-        filterViewModel.getMinPrice().observe(this, minPrice -> filterProducts());
-        filterViewModel.getMaxPrice().observe(this, maxPrice -> filterProducts());
+        filterViewModel.getSelectedCategories().observe(requireActivity(), selectedCategories -> filterProducts());
+        filterViewModel.getSelectedEventTypes().observe(requireActivity(), selectedEventTypes -> filterProducts());
+        filterViewModel.getSelectedAvailability().observe(requireActivity(), selectedAvailability -> filterProducts());
+        filterViewModel.getSelectedDescriptions().observe(requireActivity(), selectedDescriptions -> filterProducts());
+        filterViewModel.getMinPrice().observe(requireActivity(), minPrice -> filterProducts());
+        filterViewModel.getMaxPrice().observe(requireActivity(), maxPrice -> filterProducts());
 
     }
 
 
     private void setChipObservers() {
-        filterViewModel.getSelectedCategories().observe(this, selectedCategories -> updateChips());
-        filterViewModel.getSelectedEventTypes().observe(this, selectedEventTypes -> updateChips());
-        filterViewModel.getSelectedAvailability().observe(this, selectedAvailability -> updateChips());
-        filterViewModel.getSelectedDescriptions().observe(this, selectedDescriptions -> updateChips());
-        filterViewModel.getMinPrice().observe(this, minPrice -> updateChips());
-        filterViewModel.getMaxPrice().observe(this, maxPrice -> updateChips());
+        filterViewModel.getSelectedCategories().observe(requireActivity(), selectedCategories -> updateChips());
+        filterViewModel.getSelectedEventTypes().observe(requireActivity(), selectedEventTypes -> updateChips());
+        filterViewModel.getSelectedAvailability().observe(requireActivity(), selectedAvailability -> updateChips());
+        filterViewModel.getSelectedDescriptions().observe(requireActivity(), selectedDescriptions -> updateChips());
+        filterViewModel.getMinPrice().observe(requireActivity(), minPrice -> updateChips());
+        filterViewModel.getMaxPrice().observe(requireActivity(), maxPrice -> updateChips());
     }
 
 
     private void setUpFilterBtn() {
-        filterBtn = findViewById(R.id.filterBtn);
+        filterBtn = view.findViewById(R.id.filterBtn);
         filterBtn.setOnClickListener(v -> {
             SolutionFilterFragment filterFragment = new SolutionFilterFragment();
-            filterFragment.show(getSupportFragmentManager(), "Filter");
+            filterFragment.show(getParentFragmentManager(), "Filter");
             filterProducts();
         });
     }
 
 
     private void setUpAddProductBtn() {
-        addProductBtn = findViewById(R.id.addProductBtn);
+        addProductBtn = view.findViewById(R.id.addProductBtn);
         addProductBtn.setOnClickListener(v -> {
             ProductCreationFragment fragment = new ProductCreationFragment();
-            fragment.show(getSupportFragmentManager(), "ProductCreationFragment");
+            fragment.show(getParentFragmentManager(), "ProductCreationFragment");
         });
     }
 
 
     private void setUpPagination() {
-        findViewById(R.id.previousPage).setOnClickListener(v -> {
+        view.findViewById(R.id.previousPage).setOnClickListener(v -> {
             if (currentPage > 1) {
                 currentPage--;
                 loadPage(currentPage);
             }
         });
 
-        findViewById(R.id.nextPage).setOnClickListener(v -> {
+        view.findViewById(R.id.nextPage).setOnClickListener(v -> {
             if (currentPage < getTotalPages()) {
                 currentPage++;
                 loadPage(currentPage);
@@ -166,14 +165,14 @@ public class ProvidedProductsActivity extends AppCompatActivity {
 
 
     private void updatePageUI() {
-        TextView pageNumberText = findViewById(R.id.pageNumber);
+        TextView pageNumberText = view.findViewById(R.id.pageNumber);
         String page = getString(R.string.page, currentPage, getTotalPages());
         pageNumberText.setText(page);
     }
 
 
     private void loadProvidedProducts(Long businessId) {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         final List<GetProductDTO>[] providedProducts = new List[]{new ArrayList<>()};
 
@@ -187,7 +186,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
                     allProducts.addAll(convertToFavDTO(providedProducts[0]));
                     loadPage(currentPage);
                 } else {
-                    Toast.makeText(ProvidedProductsActivity.this, "Error loading provided products!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Error loading provided products!", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -235,7 +234,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
 
 
     private void loadCurrentBusiness() {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<GetBusinessDTO> call = ClientUtils.businessService.getBusinessForCurrentUser(auth);
         call.enqueue(new Callback<GetBusinessDTO>() {
@@ -298,7 +297,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
 
         // for each selected filter, create a new chip and add it to the ChipGroup
         for (String item : allSelectedFilters) {
-            Chip chip = new Chip(this);
+            Chip chip = new Chip(requireContext());
             chip.setText(item);
             chip.setCloseIconVisible(true);
             chip.setOnCloseIconClickListener(v -> removeFilter(item));
@@ -309,7 +308,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
         Double maxPrice = filterViewModel.getMaxPrice().getValue();
 
         if (minPrice != null && maxPrice != null) {
-            Chip chip = new Chip(this);
+            Chip chip = new Chip(requireContext());
 
             String minToMax = getString(R.string.min_to_max, minPrice, maxPrice);
             chip.setText(minToMax);
@@ -324,7 +323,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
         }
         else {
             if (minPrice != null) {
-                Chip chip = new Chip(this);
+                Chip chip = new Chip(requireContext());
 
                 String fromMinPrice = getString(R.string.from_min_price, minPrice);
                 chip.setText(fromMinPrice);
@@ -335,7 +334,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
             }
 
             if (maxPrice != null) {
-                Chip chip = new Chip(this);
+                Chip chip = new Chip(requireContext());
 
                 String toMaxPrice = getString(R.string.to_max_price, maxPrice);
                 chip.setText(toMaxPrice);
@@ -349,7 +348,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
 
 
     private void filterProducts() {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         SolutionFilterParams params = new SolutionFilterParams();
         params.setCategories(filterViewModel.getSelectedCategories().getValue());
@@ -389,7 +388,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<GetProductDTO>> call, Throwable t) {
-                Toast.makeText(ProvidedProductsActivity.this, "Failed to load filtered products!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Failed to load filtered products!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -397,7 +396,7 @@ public class ProvidedProductsActivity extends AppCompatActivity {
 
 
     private void searchProducts() {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
 
         Call<List<GetProductDTO>> call = ClientUtils.productService.searchProvidedProducts(auth, searchBar.getText().toString());
@@ -417,13 +416,13 @@ public class ProvidedProductsActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 }
                 else {
-                    Toast.makeText(ProvidedProductsActivity.this, "Error loading search results!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Error loading search results!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<GetProductDTO>> call, Throwable t) {
-                Toast.makeText(ProvidedProductsActivity.this, "Failed to load search results!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Failed to load search results!", Toast.LENGTH_SHORT).show();
             }
         });
     }

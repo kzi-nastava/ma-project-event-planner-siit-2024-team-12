@@ -1,12 +1,15 @@
-package com.example.eventplanner.activities.product;
+package com.example.eventplanner.fragments.product;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,17 +19,12 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.gallery.GalleryDisplayActivity;
 import com.example.eventplanner.enumeration.UserRole;
-import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.product.GetProductDTO;
@@ -43,7 +41,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductDetailsActivity extends AppCompatActivity {
+public class ProductDetailsFragment extends Fragment {
 
     private EditText name, availability, visibility, price, discount, category, description;
     private Button seeEventTypes, editBtn, deleteBtn, chatBtn;
@@ -56,39 +54,32 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private String currentCompanyEmail, loadedCompanyEmail, productName;
     private TextView moreInfo, visible;
     private Uri selectedImageUri = null;
-
+    private View view;
 
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_product_details);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        view = inflater.inflate(R.layout.fragment_product_details, container, false);
 
         findFields();
-
         loadProductDetails();
 
         setUpFavProducts();
         setUpEditBtn();
 
-        ImageView galleryBtn = findViewById(R.id.images);
-        galleryBtn.setOnClickListener(v -> {
-            openProductGallery();
-        });
+        ImageView galleryBtn = view.findViewById(R.id.images);
+        galleryBtn.setOnClickListener(v -> openProductGallery());
 
+        return view;
     }
 
 
     private void openProductGallery() {
 
-        Intent intent = new Intent(this, GalleryDisplayActivity.class);
+        Intent intent = new Intent(requireActivity(), GalleryDisplayActivity.class);
         intent.putExtra("type", "product");
         intent.putExtra("id", currentProductId);
         intent.putExtra("entityName", productName);
@@ -100,9 +91,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
     private void loadProductDetails() {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
-        currentProductId = getIntent().getLongExtra("id", 0);
+        currentProductId = requireActivity().getIntent().getLongExtra("id", 0);
 
 
         Call<GetProductDTO> call = ClientUtils.productService.getProduct(auth, currentProductId);
@@ -119,13 +110,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     displayBasedOnRole();
                 }
                 else {
-                    Toast.makeText(ProductDetailsActivity.this, "Error loading product details!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Error loading product details!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<GetProductDTO> call, Throwable t) {
-                Toast.makeText(ProductDetailsActivity.this, "Failed to load product details!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Failed to load product details!", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -135,7 +126,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private void displayBasedOnRole() {
         // currently logged in user
-        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences prefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String role = prefs.getString("userRole", "");
 
 
@@ -161,7 +152,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
     private void loadCurrentCompany() {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<GetBusinessDTO> call = ClientUtils.businessService.getBusinessForCurrentUser(auth);
         call.enqueue(new Callback<GetBusinessDTO>() {
@@ -174,13 +165,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     checkEditPermission();
                 }
                 else {
-                    Toast.makeText(ProductDetailsActivity.this, "Error loading current business!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Error loading current business!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<GetBusinessDTO> call, Throwable t) {
-                Toast.makeText(ProductDetailsActivity.this, "Failed to load current business!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Failed to load current business!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -198,30 +189,30 @@ public class ProductDetailsActivity extends AppCompatActivity {
     // **********  general set up  **********
 
     private void findFields() {
-        name = findViewById(R.id.name);
-        availability = findViewById(R.id.availability);
-        visibility = findViewById(R.id.visibility);
-        price = findViewById(R.id.price);
-        discount = findViewById(R.id.discount);
-        category = findViewById(R.id.category);
-        description = findViewById(R.id.description);
+        name = view.findViewById(R.id.name);
+        availability = view.findViewById(R.id.availability);
+        visibility = view.findViewById(R.id.visibility);
+        price = view.findViewById(R.id.price);
+        discount = view.findViewById(R.id.discount);
+        category = view.findViewById(R.id.category);
+        description = view.findViewById(R.id.description);
 
-        seeEventTypes = findViewById(R.id.seeEventTypes);
+        seeEventTypes = view.findViewById(R.id.seeEventTypes);
 
-        availabilityGroup = findViewById(R.id.availabilityGroup);
-        visibilityGroup = findViewById(R.id.visibilityGroup);
+        availabilityGroup = view.findViewById(R.id.availabilityGroup);
+        visibilityGroup = view.findViewById(R.id.visibilityGroup);
 
-        availableBtn = findViewById(R.id.availableBtn);
-        unavailableBtn = findViewById(R.id.unavailableBtn);
-        visibleBtn = findViewById(R.id.visibleBtn);
-        invisibleBtn = findViewById(R.id.invisibleBtn);
+        availableBtn = view.findViewById(R.id.availableBtn);
+        unavailableBtn = view.findViewById(R.id.unavailableBtn);
+        visibleBtn = view.findViewById(R.id.visibleBtn);
+        invisibleBtn = view.findViewById(R.id.invisibleBtn);
 
-        deleteBtn = findViewById(R.id.deleteBtn);
+        deleteBtn = view.findViewById(R.id.deleteBtn);
 
-        moreInfo = findViewById(R.id.more_info);
-        chatBtn = findViewById(R.id.chatBtn);
-        shoppingCart = findViewById(R.id.shop);
-        visible = findViewById(R.id.visible);
+        moreInfo = view.findViewById(R.id.more_info);
+        chatBtn = view.findViewById(R.id.chatBtn);
+        shoppingCart = view.findViewById(R.id.shop);
+        visible = view.findViewById(R.id.visible);
 
     }
 
@@ -247,7 +238,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         eventTypes.toArray(eventTypesArray);
 
         seeEventTypes.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
             builder.setTitle("Event types :");
 
             boolean[] selected = new boolean[eventTypesArray.length];
@@ -286,8 +277,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
     // **********  favorites  **********
 
     private void setUpFavProducts() {
-        fav = findViewById(R.id.fav);
-        favOutline = findViewById(R.id.favOutline);
+        fav = view.findViewById(R.id.fav);
+        favOutline = view.findViewById(R.id.favOutline);
 
         checkIfFavorite();
 
@@ -303,8 +294,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
     private void addToFavorites() {
-        String auth = ClientUtils.getAuthorization(this);
-        SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String auth = ClientUtils.getAuthorization(requireContext());
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String userEmail = sharedPreferences.getString("email", "a");
 
         if (currentProductId == null) {
@@ -317,17 +308,17 @@ public class ProductDetailsActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     fav.setVisibility(View.VISIBLE);
-                    Toast.makeText(ProductDetailsActivity.this, "Added product to favorites!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Added product to favorites!", Toast.LENGTH_SHORT).show();
 
                 }
                 else {
-                    Toast.makeText(ProductDetailsActivity.this, "Unsuccessful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Unsuccessful", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(ProductDetailsActivity.this, "Failed to add product to favorites!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Failed to add product to favorites!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -335,9 +326,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private void checkIfFavorite() {
         isFavorite = false;
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
-        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences pref = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String email = pref.getString("email", "a");
 
         Call<Boolean> call = ClientUtils.userService.isProductFavorite(auth, email, currentProductId);
@@ -358,16 +349,16 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(ProductDetailsActivity.this, "Failed to check if favorite!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Failed to check if favorite!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
 
     private void removeFromFavorites() {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
-        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences pref = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String email = pref.getString("email", "a");
 
         if (currentProductId == null) {
@@ -381,16 +372,16 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     fav.setVisibility(View.GONE);
                     favOutline.setVisibility(View.VISIBLE);
-                    Toast.makeText(ProductDetailsActivity.this, "Removed product from favorites!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Removed product from favorites!", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Toast.makeText(ProductDetailsActivity.this, "Unsuccessful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Unsuccessful", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(ProductDetailsActivity.this, "Failed to remove product from favorites!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Failed to remove product from favorites!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -400,7 +391,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     // **********  product edit  **********
 
     private void setUpEditBtn() {
-        editBtn = findViewById(R.id.editBtn);
+        editBtn = view.findViewById(R.id.editBtn);
 
         editBtn.setOnClickListener(v -> {
             if (isEditable) {
@@ -451,7 +442,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         String available = availability.getText().toString();
 
         if (available.equals(getString(R.string.available))) {
-            availableBtn = findViewById(R.id.availableBtn);
+            availableBtn = view.findViewById(R.id.availableBtn);
             availableBtn.setChecked(true);
         }
         else {
@@ -487,7 +478,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         availability.setVisibility(View.VISIBLE);
         visibility.setVisibility(View.VISIBLE);
 
-        View currentFocusView = getCurrentFocus();
+        View currentFocusView = requireActivity().getCurrentFocus();
         if (currentFocusView instanceof EditText) {
             currentFocusView.clearFocus();
         }
@@ -498,7 +489,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
     private void loadActiveEventTypes(Button seeEventTypes, ArrayList<String> selectedEventTypes) {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<ArrayList<GetEventTypeDTO>> call = ClientUtils.eventTypeService.getAllActive(auth);
         call.enqueue(new Callback<ArrayList<GetEventTypeDTO>>() {
@@ -516,17 +507,17 @@ public class ProductDetailsActivity extends AppCompatActivity {
                         showMultiChoiceDialog(eventTypeNames, selectedEventTypes, seeEventTypes);
                     }
                     else {
-                        Toast.makeText(ProductDetailsActivity.this, "No categories available.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "No categories available.", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else {
-                    Toast.makeText(ProductDetailsActivity.this, "Failed to load categories.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to load categories.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<GetEventTypeDTO>> call, Throwable t) {
-                Toast.makeText(ProductDetailsActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -544,7 +535,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             selectedTypes[i] = selectedEventTypeNames.contains(eventTypesArray[i]);
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Selected event types");
 
         builder.setMultiChoiceItems(eventTypesArray, selectedTypes, (dialog, which, isChecked) -> {
@@ -590,7 +581,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         if (!ValidationUtils.isFieldValid(description, "Description is required!")) return false;
 
         if (selectedEventTypes.isEmpty()) {
-            Toast.makeText(ProductDetailsActivity.this, "Select event type!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Select event type!", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -619,7 +610,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
     private void updateProduct(UpdateProductDTO updateProductDTO) {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<UpdatedProductDTO> call = ClientUtils.productService.updateProduct(auth, updateProductDTO, currentProductId);
         call.enqueue(new Callback<UpdatedProductDTO>() {
@@ -657,7 +648,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private void confirmProductDeletion() {
         // confirmation dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailsActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Delete " + name.getText().toString() + "?");
         builder.setMessage("Are you sure you want to delete this product?");
 
@@ -673,26 +664,26 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
     private void deleteProduct() {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<ResponseBody> call = ClientUtils.productService.deleteProduct(auth, currentProductId);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(ProductDetailsActivity.this, "Successfully deleted product!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(ProductDetailsActivity.this, ProvidedProductsActivity.class);
+                    Toast.makeText(requireContext(), "Successfully deleted product!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(requireContext(), ProvidedProductsFragment.class);
                     startActivity(intent);
 
                 }
                 else {
-                    Toast.makeText(ProductDetailsActivity.this, "Error deleting product!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Error deleting product!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(ProductDetailsActivity.this, "Failed to delete product!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Failed to delete product!", Toast.LENGTH_SHORT).show();
             }
         });
 
