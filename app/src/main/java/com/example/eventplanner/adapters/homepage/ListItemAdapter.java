@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -20,6 +22,7 @@ import com.example.eventplanner.activities.homepage.CardItem;
 import com.example.eventplanner.activities.product.ProductDetailsActivity;
 import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.dto.solution.GetHomepageSolutionDTO;
+import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.text.SimpleDateFormat;
@@ -112,7 +115,25 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
             if ("product".equalsIgnoreCase(solution.getType())) {
                 i = new Intent(context, ProductDetailsActivity.class);
                 i.putExtra("id", solution.getId());
+            } else if ("service".equalsIgnoreCase(solution.getType())) {
+                ServiceDetailsFragment fragment = ServiceDetailsFragment.newInstance(solution.getId());
+
+                if (context instanceof AppCompatActivity) {
+                    AppCompatActivity activity = (AppCompatActivity) context;
+                    FrameLayout suspendedContainer = activity.findViewById(R.id.main_fragment_container);
+                    if (suspendedContainer != null) {
+                        suspendedContainer.setVisibility(View.VISIBLE);
+                    }
+
+                    activity.getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+
             }
+
         }
         if (i != null) {
             context.startActivity(i);

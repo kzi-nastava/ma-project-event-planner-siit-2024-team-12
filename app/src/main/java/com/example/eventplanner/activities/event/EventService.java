@@ -6,6 +6,7 @@ import com.example.eventplanner.dto.budget.UpdateBudgetForEventDTO;
 import com.example.eventplanner.dto.event.CreateEventDTO;
 import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.dto.event.FavEventDTO;
+import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.dto.event.UpdatedEventDTO;
 
 import java.util.ArrayList;
@@ -45,6 +46,10 @@ public interface EventService {
 
     @GET("events/explore-events")
     Call<ArrayList<FavEventDTO>> getOpenEvents(@Header("Authorization") String token);
+
+    @GET("events/my-events")
+    Call<List<GetEventDTO>> getEventsByOrganizer(
+            @Header("Authorization") String auth);
     @GET("events/{eventId}/budget")
     Call<UpdateBudgetForEventDTO> getBudgetDetailsByEventId(
             @Header("Authorization") String token,

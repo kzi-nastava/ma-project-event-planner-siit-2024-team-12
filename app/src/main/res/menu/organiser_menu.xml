@@ -40,6 +40,13 @@
         android:title="@string/notifications" />
 
 
+    <group android:id="@+id/service_reservations">
+        <item
+            android:id="@+id/nav_service_reservations"
+            android:title="@string/service_reservations" />
+
+    </group>
+
     <group android:id="@+id/profile">
         <item
             android:id="@+id/nav_view_profile"

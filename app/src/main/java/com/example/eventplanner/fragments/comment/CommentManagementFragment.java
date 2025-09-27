@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +25,7 @@ import com.example.eventplanner.adapters.comment.ManageCommentsAdapter;
 import com.example.eventplanner.dto.PageResponse;
 import com.example.eventplanner.dto.comment.GetCommentDTO;
 import com.example.eventplanner.fragments.profile.ViewUserProfileFragment;
+import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
 import com.example.eventplanner.utils.ClientUtils;
 
 import java.util.ArrayList;
@@ -208,7 +211,7 @@ public class CommentManagementFragment extends Fragment implements ManageComment
             ViewUserProfileFragment userProfileFragment = ViewUserProfileFragment.newInstance(userEmail);
 
             getParentFragmentManager().beginTransaction()
-                    .replace(R.id.notifications_container, userProfileFragment)
+                    .replace(R.id.main_fragment_container, userProfileFragment)
                   .addToBackStack(null)
                     .commit();
         }
@@ -236,11 +239,22 @@ public class CommentManagementFragment extends Fragment implements ManageComment
                 intent.putExtra("id", entityId);
                 startActivity(intent);
                 break;
-            case "SERVICE_RESERVATION":
-                Toast.makeText(getContext(), "Service reservation details not implemented.", Toast.LENGTH_SHORT).show();
-                break;
             case "SERVICE":
-                Toast.makeText(getContext(), "Service details not implemented.", Toast.LENGTH_SHORT).show();
+                if (getContext() instanceof AppCompatActivity) {
+                    AppCompatActivity activity = (AppCompatActivity) getContext();
+
+                    FrameLayout suspendedContainer = activity.findViewById(R.id.main_fragment_container);
+                    if (suspendedContainer != null) {
+                        suspendedContainer.setVisibility(View.VISIBLE);
+                    }
+
+                    ServiceDetailsFragment fragment = ServiceDetailsFragment.newInstance(entityId);
+                    activity.getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
                 break;
             default:
                 Toast.makeText(getContext(), "Unknown entity type: " + entityType, Toast.LENGTH_SHORT).show();
