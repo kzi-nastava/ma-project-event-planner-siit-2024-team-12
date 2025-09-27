@@ -328,7 +328,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                 startActivity(new Intent(this, BusinessInfoActivity.class));
             } else if (id == R.id.nav_products) {
                 navigateToFragment(new ProvidedProductsFragment());
-            } else if (id == R.id.nav_services) {
+            } else if (id == R.id.nav_service) {
                 navigateToFragment(new ServiceManagement());
             } else if (id == R.id.nav_calendar_od) {
                 startActivity(new Intent(this, CalendarActivity.class));

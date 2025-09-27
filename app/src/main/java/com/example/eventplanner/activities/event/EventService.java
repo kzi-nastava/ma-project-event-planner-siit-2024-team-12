@@ -3,6 +3,7 @@ package com.example.eventplanner.activities.event;
 import com.example.eventplanner.dto.budget.GetBudgetItemDTO;
 import com.example.eventplanner.dto.budget.UpdateBudgetDTO;
 import com.example.eventplanner.dto.budget.UpdateBudgetForEventDTO;
+import com.example.eventplanner.dto.event.AcceptedEventDTO;
 import com.example.eventplanner.dto.event.CreateEventDTO;
 import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.dto.event.FavEventDTO;
@@ -60,5 +61,7 @@ public interface EventService {
             @Body List<UpdateBudgetDTO> updateBudgetItems,
             @Path("eventId") Long eventId
     );
+    @GET("events/future-events")
+    Call<List<AcceptedEventDTO>> getFutureEventsByOrganizer(@Header("Authorization") String token);
 }
 

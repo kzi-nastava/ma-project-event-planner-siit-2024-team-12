@@ -13,9 +13,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.service.ServiceCreationActivity;
+import com.example.eventplanner.dto.business.GetBusinessDTO;
+import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
 import com.example.eventplanner.fragments.pricelist.PriceListFragment;
+import com.example.eventplanner.utils.ClientUtils;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,19 +82,6 @@ public class ServiceManagement extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_service_management, container, false);
         imgButton = rootView.findViewById(R.id.imageButton);
         priceListButton = rootView.findViewById(R.id.full_width_button);
-        imgButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openServiceCreationFragment();
-            }
-        });
-
-        priceListButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openPriceListFragment();
-            }
-        });
 
         return rootView;
     }
@@ -95,7 +91,7 @@ public class ServiceManagement extends Fragment {
 
         getParentFragmentManager()
                 .beginTransaction()
-                .replace(R.id.homepage_fragment_container, serviceCreationContainerFragment)
+                .replace(R.id.main_fragment_container, serviceCreationContainerFragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -105,7 +101,7 @@ public class ServiceManagement extends Fragment {
 
         getParentFragmentManager()
                 .beginTransaction()
-                .replace(R.id.homepage_fragment_container, priceListFragment)
+                .replace(R.id.main_fragment_container, priceListFragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -118,8 +114,75 @@ public class ServiceManagement extends Fragment {
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
             transaction.replace(R.id.services_fragment_container, new ProductProviderServices());
+//            transaction.replace(R.id.service_filter_fragment_container, new HomepageFilterFragment());
 
             transaction.commit();
         }
+        checkIfUserHasBusiness();
+    }
+
+    private void checkIfUserHasBusiness() {
+        String authorization = ClientUtils.getAuthorization(getContext());
+        if (authorization == null) {
+            Toast.makeText(getContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        ClientUtils.businessService.getBusinessForCurrentUser(authorization).enqueue(new Callback<GetBusinessDTO>() {
+            @Override
+            public void onResponse(Call<GetBusinessDTO> call, Response<GetBusinessDTO> response) {
+                if (response.isSuccessful()) {
+                    GetBusinessDTO business = response.body();
+                    if (business.getId() == null) {
+                        disableCreateButton();
+                    } else {
+                        enableCreateButton();
+                    }
+                } else {
+                    disableCreateButton();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetBusinessDTO> call, Throwable t) {
+                disableCreateButton();
+            }
+        });
+    }
+    private void disableCreateButton() {
+        imgButton.setEnabled(false);
+        imgButton.setAlpha(0.5f);
+        imgButton.setOnClickListener(v -> {
+            Toast.makeText(getContext(),
+                    "Must register business before creating service.",
+                    Toast.LENGTH_LONG).show();
+        });
+        priceListButton.setEnabled(false);
+        priceListButton.setAlpha(0.5f);
+        priceListButton.setOnClickListener(v -> {
+            Toast.makeText(getContext(),
+                    "Must register business first.",
+                    Toast.LENGTH_LONG).show();
+        });
+    }
+
+    private void enableCreateButton() {
+        imgButton.setEnabled(true);
+        imgButton.setAlpha(1f);
+        imgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openServiceCreationFragment();
+            }
+        });
+        priceListButton.setEnabled(true);
+        priceListButton.setAlpha(1f);
+        priceListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openPriceListFragment();
+            }
+        });
     }
 }
