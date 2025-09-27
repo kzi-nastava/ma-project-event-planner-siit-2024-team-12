@@ -3,6 +3,7 @@ package com.example.eventplanner.fragments.notification;
 
 import android.util.Log;
 
+import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.adapters.datetime.DurationAdapter;
 import com.example.eventplanner.adapters.datetime.LocalDateAdapter;
 import com.example.eventplanner.adapters.datetime.LocalDateTimeAdapter;
@@ -65,8 +66,6 @@ public class NotificationWebSocketService {
         unreadCount = 0;
         notifyListeners();
     }
-
-    // Pretplata na notifikacije
     private void subscribeToNotifications() {
         Log.d(TAG, "📡 subscribeToNotifications() called");
 
@@ -89,7 +88,7 @@ public class NotificationWebSocketService {
                 });
 
         compositeDisposable.add(disposable);
-        Log.d(TAG, "📡 Subscribed to /user/queue/notifications");
+        Log.d(TAG, "Subscribed to /user/queue/notifications");
     }
 
     public void connect(String jwtToken) {
@@ -103,9 +102,8 @@ public class NotificationWebSocketService {
             return;
         }
 
-        String url = "ws://192.168.100.26:8080/ws/websocket";
+        String url = "ws://" + BuildConfig.IP_ADDR+ ":8080/ws/websocket";
 
-        // Authorization header
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", jwtToken);
 

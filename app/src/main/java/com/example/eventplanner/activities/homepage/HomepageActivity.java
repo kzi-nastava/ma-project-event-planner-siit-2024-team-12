@@ -464,7 +464,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                     float radius = 4 * getResources().getDisplayMetrics().density;
 
                     Rect bounds = getBounds();
-                    float cx = bounds.right - radius - 2 * getResources().getDisplayMetrics().density; // malo unutra
+                    float cx = bounds.right - radius - 2 * getResources().getDisplayMetrics().density;
                     float cy = bounds.top + radius + 2 * getResources().getDisplayMetrics().density;
 
                     canvas.drawCircle(cx, cy, radius, paint);
