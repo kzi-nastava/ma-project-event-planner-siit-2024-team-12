@@ -22,7 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.event.EventDetailsActivity;
-import com.example.eventplanner.fragments.product.ProductDetailsFragment;
+import com.example.eventplanner.activities.homepage.HomepageActivity;
+import com.example.eventplanner.activities.product.ProductDetailsActivity;
 import com.example.eventplanner.adapters.notification.NotificationAdapter;
 import com.example.eventplanner.dto.notification.GetNotificationDTO;
 import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
@@ -33,6 +34,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -80,7 +82,7 @@ public class NotificationFragment extends Fragment {
                     startActivity(intent);
                     break;
                 case "PRODUCT":
-                    intent = new Intent(getContext(), ProductDetailsFragment.class);
+                    intent = new Intent(getContext(), ProductDetailsActivity.class);
                     intent.putExtra("id", notification.getEntityId());
                     startActivity(intent);
                     break;
@@ -159,6 +161,58 @@ public class NotificationFragment extends Fragment {
         checkMuteStatus();
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view,
+                              @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getActivity() instanceof HomepageActivity) {
+            NotificationWebSocketService service =
+                    ((HomepageActivity) getActivity()).getNotificationService();
+
+            if (service != null) {
+                service.addNotificationListener(this::handleNewNotification);
+            }
+        }
+
+        loadNotifications();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof HomepageActivity) {
+            ((HomepageActivity) getActivity()).onNotificationsOpened();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (getActivity() instanceof HomepageActivity) {
+            ((HomepageActivity) getActivity()).onNotificationsClosed();
+        }
+    }
+
+
+    private void handleNewNotification(GetNotificationDTO notification) {
+        if (getActivity() == null) return;
+
+        allNotifications.add(0, notification);
+
+        if (currentPage == 0) {
+            currentNotifications.add(0, notification);
+            if (currentNotifications.size() > PAGE_SIZE) {
+                currentNotifications.remove(currentNotifications.size() - 1);
+            }
+            requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
+        }
+
+        totalPages = (int) Math.ceil((double) allNotifications.size() / PAGE_SIZE);
+        updatePageIndicator();
+        updateButtonStates();
     }
 
     private void toggleMuteOptions() {

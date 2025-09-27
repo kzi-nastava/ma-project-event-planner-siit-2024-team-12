@@ -2,18 +2,30 @@ package com.example.eventplanner.activities.homepage;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
@@ -29,9 +41,9 @@ import com.example.eventplanner.activities.eventtype.EventTypeCreationActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
 import com.example.eventplanner.activities.favorites.ExplorePageActivity;
 import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
-import com.example.eventplanner.fragments.favorites.FavoriteProductsFragment;
+import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
 import com.example.eventplanner.activities.favorites.FavoriteServicesActivity;
-import com.example.eventplanner.fragments.product.ProvidedProductsFragment;
+import com.example.eventplanner.activities.product.ProvidedProductsActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
 import com.example.eventplanner.fragments.categories.CategoriesContainerFragment;
@@ -39,18 +51,32 @@ import com.example.eventplanner.fragments.comment.CommentManagementFragment;
 import com.example.eventplanner.fragments.event.InvitedEventsListFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFragment;
 import com.example.eventplanner.fragments.notification.NotificationFragment;
+import com.example.eventplanner.fragments.notification.NotificationWebSocketService;
 import com.example.eventplanner.fragments.profile.SuspendedUserFragment;
 import com.example.eventplanner.fragments.report.ReportManagementFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
+import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.fragments.servicereservation.ServiceReservationsManagementFragment;
 import com.google.android.material.navigation.NavigationView;
 
-public class HomepageActivity extends AppCompatActivity {
+
+public class HomepageActivity extends AppCompatActivity implements NotificationWebSocketService.NotificationCountListener {
 
     private DrawerLayout drawerLayout;
     private RecyclerView chatRecyclerView;
     private NavigationView navigationView;
     private static final String TAG = "HomepageDebug";
+
+    private NotificationWebSocketService notificationService;
+
+    private TextView notificationBadge;
+
+    private Toolbar toolbar;
+    private ActionBarDrawerToggle toggle;
+    private DrawerArrowDrawable originalDrawerIcon;
+    private boolean notificationsOpen = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,19 +86,30 @@ public class HomepageActivity extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.navigationView);
 
-        Toolbar toolbar = findViewById(R.id.tool_bar);
+        toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         toolbar.setOverflowIcon(null);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        originalDrawerIcon = toggle.getDrawerArrowDrawable();
 
         navigationView = findViewById(R.id.nav_view);
 
         SharedPreferences sp = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         boolean isSuspended = sp.getBoolean("isSuspended", false);
+
+        String token = ClientUtils.getAuthorization(getApplicationContext());
+        Log.d("TOKEN_CHECK", "Token: " + token);
+
+        if (token != null && !isSuspended) {
+            notificationService = new NotificationWebSocketService();
+            notificationService.connect(token);
+            notificationService.addListener(this);
+        }
+
 
         if (savedInstanceState == null) {
             if (isSuspended) {
@@ -106,6 +143,26 @@ public class HomepageActivity extends AppCompatActivity {
             editor.apply();
         }
     }
+
+    private void updateNotificationsBadge(int count) {
+        updateHamburgerIcon(count > 0);
+
+        if (notificationBadge != null && !notificationsOpen) {
+            if (count > 0) {
+                notificationBadge.setText(String.valueOf(count));
+                notificationBadge.setVisibility(View.VISIBLE);
+            } else {
+                notificationBadge.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    public void onUnreadCountChanged(int newCount) {
+        runOnUiThread(() -> updateNotificationsBadge(newCount));
+    }
+
+
 
     private void loadMainFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
@@ -160,6 +217,17 @@ public class HomepageActivity extends AppCompatActivity {
         navigationView.getMenu().clear();
         navigationView.inflateMenu(R.menu.authenticated_user_menu);
 
+        MenuItem notificationsItem = navigationView.getMenu().findItem(R.id.nav_notifications);
+        if (notificationsItem != null) {
+            View actionView = notificationsItem.getActionView();
+            if (actionView != null) {
+                notificationBadge = actionView.findViewById(R.id.notification_badge);
+                if(notificationService != null){
+                    updateNotificationsBadge(notificationService.getUnreadCount());
+                }
+            }
+        }
+
         RecyclerView chatRecyclerView = findViewById(R.id.chat_recycler_view);
         if (chatRecyclerView != null) chatRecyclerView.setVisibility(View.VISIBLE);
 
@@ -179,6 +247,8 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_explore_events) {
                 startActivity(new Intent(this, ExplorePageActivity.class));
             } else if (id == R.id.nav_notifications) {
+                updateNotificationsBadge(0);
+                updateHamburgerIcon(false);
                 navigateToFragment(new NotificationFragment());
             } else if (id == R.id.nav_home) {
                 loadMainFragment(new HomepageFragment());
@@ -191,6 +261,17 @@ public class HomepageActivity extends AppCompatActivity {
     private void setupOrganizerUI() {
         navigationView.getMenu().clear();
         navigationView.inflateMenu(R.menu.organiser_menu);
+
+        MenuItem notificationsItem = navigationView.getMenu().findItem(R.id.nav_notifications);
+        if (notificationsItem != null) {
+            View actionView = notificationsItem.getActionView();
+            if (actionView != null) {
+                notificationBadge = actionView.findViewById(R.id.notification_badge);
+                if(notificationService != null){
+                    updateNotificationsBadge(notificationService.getUnreadCount());
+                }
+            }
+        }
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -211,8 +292,10 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_fav_services) {
                 startActivity(new Intent(this, FavoriteServicesActivity.class));
             } else if (id == R.id.nav_fav_products) {
-                navigateToFragment(new FavoriteProductsFragment());
+                startActivity(new Intent(this, FavoriteProductsActivity.class));
             } else if (id == R.id.nav_notifications) {
+                updateNotificationsBadge(0);
+                updateHamburgerIcon(false);
                 navigateToFragment(new NotificationFragment());
             } else if (id == R.id.nav_service_reservations) {
                 navigateToFragment(new ServiceReservationsManagementFragment());
@@ -228,6 +311,18 @@ public class HomepageActivity extends AppCompatActivity {
         navigationView.getMenu().clear();
         navigationView.inflateMenu(R.menu.provider_menu);
 
+
+        MenuItem notificationsItem = navigationView.getMenu().findItem(R.id.nav_notifications);
+        if (notificationsItem != null) {
+            View actionView = notificationsItem.getActionView();
+            if (actionView != null) {
+                notificationBadge = actionView.findViewById(R.id.notification_badge);
+                if(notificationService != null){
+                    updateNotificationsBadge(notificationService.getUnreadCount());
+                }
+            }
+        }
+
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
@@ -237,7 +332,7 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_business_info) {
                 startActivity(new Intent(this, BusinessInfoActivity.class));
             } else if (id == R.id.nav_products) {
-                navigateToFragment(new ProvidedProductsFragment());
+                startActivity(new Intent(this, ProvidedProductsActivity.class));
             } else if (id == R.id.nav_services) {
                 navigateToFragment(new ServiceManagement());
             } else if (id == R.id.nav_calendar_od) {
@@ -247,7 +342,7 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_fav_services) {
                 startActivity(new Intent(this, FavoriteServicesActivity.class));
             } else if (id == R.id.nav_fav_products) {
-                startActivity(new Intent(this, FavoriteProductsFragment.class));
+                startActivity(new Intent(this, FavoriteProductsActivity.class));
             } else if (id == R.id.nav_explore_events) {
                 startActivity(new Intent(this, ExplorePageActivity.class));
             } else if (id == R.id.nav_view_profile) {
@@ -257,6 +352,8 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_event_types) {
                 startActivity(new Intent(this, EventTypeTableActivity.class));
             } else if (id == R.id.nav_notifications) {
+                updateNotificationsBadge(0);
+                updateHamburgerIcon(false);
                 navigateToFragment(new NotificationFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
@@ -269,6 +366,17 @@ public class HomepageActivity extends AppCompatActivity {
     private void setupAdminUI() {
         navigationView.getMenu().clear();
         navigationView.inflateMenu(R.menu.admin_menu);
+
+        MenuItem notificationsItem = navigationView.getMenu().findItem(R.id.nav_notifications);
+        if (notificationsItem != null) {
+            View actionView = notificationsItem.getActionView();
+            if (actionView != null) {
+                notificationBadge = actionView.findViewById(R.id.notification_badge);
+                if(notificationService != null){
+                    updateNotificationsBadge(notificationService.getUnreadCount());
+                }
+            }
+        }
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -287,6 +395,8 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_ratings_chart) {
                 startActivity(new Intent(this, RatingsChart.class));
             } else if (id == R.id.nav_notifications) {
+                updateNotificationsBadge(0);
+                updateHamburgerIcon(false);
                 navigateToFragment(new NotificationFragment());
             } else if(id == R.id.nav_categories){
                 navigateToFragment(new CategoriesContainerFragment());
@@ -337,5 +447,53 @@ public class HomepageActivity extends AppCompatActivity {
         suspendedFragment.setArguments(args);
 
         loadMainFragment(suspendedFragment);
+    }
+
+    private void updateHamburgerIcon(boolean showDot) {
+        if (toolbar == null || toggle == null) return;
+
+        if (showDot && !notificationsOpen) {
+            DrawerArrowDrawable custom = new DrawerArrowDrawable(toolbar.getContext()) {
+                @Override
+                public void draw(Canvas canvas) {
+                    super.draw(canvas);
+
+                    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                    paint.setColor(Color.RED);
+
+                    float radius = 4 * getResources().getDisplayMetrics().density;
+
+                    Rect bounds = getBounds();
+                    float cx = bounds.right - radius - 2 * getResources().getDisplayMetrics().density;
+                    float cy = bounds.top + radius + 2 * getResources().getDisplayMetrics().density;
+
+                    canvas.drawCircle(cx, cy, radius, paint);
+                }
+            };
+
+            toggle.setDrawerArrowDrawable(custom);
+        } else {
+            toggle.setDrawerArrowDrawable(originalDrawerIcon);
+
+        }
+    }
+
+
+    public void onNotificationsOpened() {
+        if (toggle != null) {
+            notificationsOpen = true;
+        }
+    }
+
+    public void onNotificationsClosed() {
+        if (toggle != null) {
+            notificationsOpen = false;
+        }
+    }
+
+
+
+    public NotificationWebSocketService getNotificationService() {
+        return notificationService;
     }
 }
