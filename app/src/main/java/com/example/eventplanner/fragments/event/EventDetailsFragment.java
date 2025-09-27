@@ -539,15 +539,20 @@ public class EventDetailsFragment extends Fragment {
                     double lat = firstResult.getDouble("lat");
                     double lon = firstResult.getDouble("lon");
 
-                    requireActivity().runOnUiThread(() -> mapWebView.loadUrl("javascript:updateLocation(" + lat + ", " + lon + ", '" + "Event location" + "')"));
+                    if (isAdded()) {
+                        requireActivity().runOnUiThread(() -> mapWebView.loadUrl("javascript:updateLocation(" + lat + ", " + lon + ", '" + "Event location" + "')"));
+                    }
                 }
                 else {
+                    if (isAdded()) {
                     requireActivity().runOnUiThread(() -> {
                         Toast.makeText(requireActivity(), "Unknown address!", Toast.LENGTH_LONG).show();
-                    });
+                    }); }
                 }
             } catch (Exception e) {
-                Toast.makeText(requireActivity(), "Unknown address!", Toast.LENGTH_SHORT).show();
+                if (isAdded()) {
+                    Toast.makeText(requireActivity(), "Unknown address!", Toast.LENGTH_SHORT).show();
+                }
                 Log.e("MapError", "Error fetching location: " + e.getMessage());
             }
         }).start();
