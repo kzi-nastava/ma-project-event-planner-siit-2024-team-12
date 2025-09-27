@@ -24,6 +24,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.gallery.GalleryDisplayActivity;
+import com.example.eventplanner.dto.event.AcceptedEventDTO;
+import com.example.eventplanner.dto.event.GetEventDTO;
+import com.example.eventplanner.dto.product.CreatedProductPurchaseDTO;
 import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
@@ -33,8 +36,11 @@ import com.example.eventplanner.dto.product.UpdatedProductDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.utils.ValidationUtils;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -87,6 +93,9 @@ public class ProductDetailsFragment extends Fragment {
 
         ImageView galleryBtn = view.findViewById(R.id.images);
         galleryBtn.setOnClickListener(v -> openProductGallery());
+        shoppingCart.setOnClickListener(v -> {
+            loadOrganizerEvents();
+        });
 
         return view;
     }
@@ -699,6 +708,127 @@ public class ProductDetailsFragment extends Fragment {
             }
         });
 
+    }
+
+    private void loadOrganizerEvents() {
+        String auth = ClientUtils.getAuthorization(requireContext());
+        if (auth.isEmpty()) {
+            Toast.makeText(getContext(), "User not authenticated.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Call<List<AcceptedEventDTO>> call = ClientUtils.eventService.getFutureEventsByOrganizer(auth);
+        call.enqueue(new Callback<List<AcceptedEventDTO>>() {
+            @Override
+            public void onResponse(Call<List<AcceptedEventDTO>> call, Response<List<AcceptedEventDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<AcceptedEventDTO> events = response.body();
+                    showEventsDialog(events);
+                } else if (response.code() == 403) {
+                    Toast.makeText(requireContext(), "Access denied. Only organizers can see their events.", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(requireContext(), "Failed to load events: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AcceptedEventDTO>> call, Throwable t) {
+                Log.e("ProductDetails", "Error loading events: " + t.getMessage());
+                Toast.makeText(requireContext(), "Network error while loading events.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showEventsDialog(List<AcceptedEventDTO> events) {
+        if (events.isEmpty()) {
+            Toast.makeText(requireContext(), "You have no active events to add the product to.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd. MMM yyyy.", Locale.getDefault());
+
+        String[] eventNamesWithDate = new String[events.size()];
+        for (int i = 0; i < events.size(); i++) {
+            AcceptedEventDTO event = events.get(i);
+
+            String formattedDate = "";
+            try {
+                formattedDate = dateFormat.format(event.getDate());
+            } catch (Exception e) {
+                Log.e("ProductDetails", "Error formatting date: " + e.getMessage());
+                formattedDate = "(Invalid Date)";
+            }
+
+            eventNamesWithDate[i] = event.getName() + " (" + formattedDate + ")";
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Select event");
+
+        builder.setItems(eventNamesWithDate, (dialog, which) -> {
+            AcceptedEventDTO selectedEvent = events.get(which);
+            handleEventSelection(selectedEvent);
+        });
+
+        builder.setNegativeButton(getString(R.string.cancel), (dialog, id) -> dialog.dismiss());
+
+        builder.create().show();
+    }
+
+    private void handleEventSelection(AcceptedEventDTO event) {
+        if (currentProductId == null || event.getId() == null) {
+            Toast.makeText(requireContext(), "Error: Missing product or event ID.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String auth = ClientUtils.getAuthorization(requireContext());
+        if (auth.isEmpty()) {
+            Toast.makeText(getContext(), "User not authenticated.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Long eventId = event.getId();
+        Long productId = currentProductId;
+
+        Call<CreatedProductPurchaseDTO> call = ClientUtils.productPurchaseService.createProductPurchase(
+                auth,
+                eventId,
+                productId
+        );
+
+        call.enqueue(new Callback<CreatedProductPurchaseDTO>() {
+            @Override
+            public void onResponse(Call<CreatedProductPurchaseDTO> call, Response<CreatedProductPurchaseDTO> response) {
+
+                if (response.isSuccessful()) {
+                    Toast.makeText(requireContext(), "Product successfully added to event: " + event.getName(), Toast.LENGTH_LONG).show();
+                } else {
+                    String errorMessage = "Failed to add product to event. Please try again.";
+
+                    if (response.code() == 400 && response.errorBody() != null) {
+                        try {
+                            String errorBodyString = response.errorBody().string();
+                            if (errorBodyString.contains("Not enough funds")) {
+                                errorMessage = "Not enough funds for this purchase.";
+                            } else {
+                                errorMessage = "Bad Request. The event status or product status might be invalid.";
+                            }
+                        } catch (IOException e) {
+                            Log.e("ProductDetails", "Error reading error body: " + e.getMessage());
+                        }
+                    } else if (response.code() == 403) {
+                        errorMessage = "Forbidden. You are not authorized to perform this action.";
+                    }
+
+                    Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreatedProductPurchaseDTO> call, Throwable t) {
+                Log.e("ProductDetails", "Network error during purchase: " + t.getMessage());
+                Toast.makeText(requireContext(), "Network error. Could not connect to server.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

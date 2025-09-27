@@ -26,6 +26,7 @@ import com.example.eventplanner.adapters.datetime.LocalTimeAdapter;
 import com.example.eventplanner.fragments.comment.CommentService;
 import com.example.eventplanner.fragments.gallery.GalleryService;
 import com.example.eventplanner.fragments.notification.NotificationService;
+import com.example.eventplanner.fragments.product.ProductPurchaseService;
 import com.example.eventplanner.fragments.report.ReportService;
 import com.example.eventplanner.fragments.servicereservation.ServiceReservationService;
 import com.google.gson.Gson;
@@ -105,5 +106,6 @@ public class ClientUtils {
     public static PriceListService priceListService = retrofit.create(PriceListService.class);
 
     public static ServiceReservationService serviceReservationService = retrofit.create(ServiceReservationService.class);
+    public static ProductPurchaseService productPurchaseService = retrofit.create(ProductPurchaseService.class);
 
 }
