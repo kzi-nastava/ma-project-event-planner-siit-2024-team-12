@@ -44,7 +44,7 @@
             android:name=".activities.favorites.FavoriteServicesActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.favorites.FavoriteProductsActivity"
+            android:name=".fragments.favorites.FavoriteProductsFragment"
             android:exported="false" />
         <activity
             android:name=".activities.favorites.FavoriteEventsActivity"

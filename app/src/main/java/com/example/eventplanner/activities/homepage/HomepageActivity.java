@@ -29,7 +29,7 @@ import com.example.eventplanner.activities.eventtype.EventTypeCreationActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
 import com.example.eventplanner.activities.favorites.ExplorePageActivity;
 import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
-import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
+import com.example.eventplanner.fragments.favorites.FavoriteProductsFragment;
 import com.example.eventplanner.activities.favorites.FavoriteServicesActivity;
 import com.example.eventplanner.fragments.product.ProvidedProductsFragment;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
@@ -211,7 +211,7 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_fav_services) {
                 startActivity(new Intent(this, FavoriteServicesActivity.class));
             } else if (id == R.id.nav_fav_products) {
-                startActivity(new Intent(this, FavoriteProductsActivity.class));
+                navigateToFragment(new FavoriteProductsFragment());
             } else if (id == R.id.nav_notifications) {
                 navigateToFragment(new NotificationFragment());
             } else if (id == R.id.nav_service_reservations) {
@@ -247,7 +247,7 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_fav_services) {
                 startActivity(new Intent(this, FavoriteServicesActivity.class));
             } else if (id == R.id.nav_fav_products) {
-                startActivity(new Intent(this, FavoriteProductsActivity.class));
+                startActivity(new Intent(this, FavoriteProductsFragment.class));
             } else if (id == R.id.nav_explore_events) {
                 startActivity(new Intent(this, ExplorePageActivity.class));
             } else if (id == R.id.nav_view_profile) {
