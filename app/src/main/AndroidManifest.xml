@@ -27,10 +27,10 @@
             android:name=".activities.gallery.GalleryDisplayActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.product.ProductDetailsActivity"
+            android:name=".fragments.product.ProductDetailsFragment"
             android:exported="false" />
         <activity
-            android:name=".activities.product.ProvidedProductsActivity"
+            android:name=".fragments.product.ProvidedProductsFragment"
             android:exported="false" />
         <activity
             android:name=".activities.event.EventDetailsActivity"
@@ -45,7 +45,7 @@
             android:name=".activities.favorites.FavoriteServicesActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.favorites.FavoriteProductsActivity"
+            android:name=".fragments.favorites.FavoriteProductsFragment"
             android:exported="false" />
         <activity
             android:name=".activities.favorites.FavoriteEventsActivity"

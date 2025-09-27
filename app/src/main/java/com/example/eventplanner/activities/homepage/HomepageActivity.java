@@ -41,17 +41,17 @@ import com.example.eventplanner.activities.eventtype.EventTypeCreationActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
 import com.example.eventplanner.activities.favorites.ExplorePageActivity;
 import com.example.eventplanner.activities.favorites.FavoriteEventsActivity;
-import com.example.eventplanner.activities.favorites.FavoriteProductsActivity;
 import com.example.eventplanner.activities.favorites.FavoriteServicesActivity;
-import com.example.eventplanner.activities.product.ProvidedProductsActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
 import com.example.eventplanner.fragments.categories.CategoriesContainerFragment;
 import com.example.eventplanner.fragments.comment.CommentManagementFragment;
 import com.example.eventplanner.fragments.event.InvitedEventsListFragment;
+import com.example.eventplanner.fragments.favorites.FavoriteProductsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFragment;
 import com.example.eventplanner.fragments.notification.NotificationFragment;
 import com.example.eventplanner.fragments.notification.NotificationWebSocketService;
+import com.example.eventplanner.fragments.product.ProvidedProductsFragment;
 import com.example.eventplanner.fragments.profile.SuspendedUserFragment;
 import com.example.eventplanner.fragments.report.ReportManagementFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
@@ -292,7 +292,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_fav_services) {
                 startActivity(new Intent(this, FavoriteServicesActivity.class));
             } else if (id == R.id.nav_fav_products) {
-                startActivity(new Intent(this, FavoriteProductsActivity.class));
+                navigateToFragment(new FavoriteProductsFragment());
             } else if (id == R.id.nav_notifications) {
                 updateNotificationsBadge(0);
                 updateHamburgerIcon(false);
@@ -332,7 +332,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_business_info) {
                 startActivity(new Intent(this, BusinessInfoActivity.class));
             } else if (id == R.id.nav_products) {
-                startActivity(new Intent(this, ProvidedProductsActivity.class));
+                navigateToFragment(new ProvidedProductsFragment());
             } else if (id == R.id.nav_service) {
                 navigateToFragment(new ServiceManagement());
             } else if (id == R.id.nav_calendar_od) {
@@ -342,7 +342,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_fav_services) {
                 startActivity(new Intent(this, FavoriteServicesActivity.class));
             } else if (id == R.id.nav_fav_products) {
-                startActivity(new Intent(this, FavoriteProductsActivity.class));
+                navigateToFragment(new FavoriteProductsFragment());
             } else if (id == R.id.nav_explore_events) {
                 startActivity(new Intent(this, ExplorePageActivity.class));
             } else if (id == R.id.nav_view_profile) {

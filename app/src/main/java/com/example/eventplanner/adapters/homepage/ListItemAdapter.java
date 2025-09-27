@@ -19,7 +19,7 @@ import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.event.EventDetailsActivity;
 import com.example.eventplanner.activities.homepage.CardItem;
-import com.example.eventplanner.activities.product.ProductDetailsActivity;
+import com.example.eventplanner.fragments.product.ProductDetailsFragment;
 import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.dto.solution.GetHomepageSolutionDTO;
 import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
@@ -113,7 +113,7 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
         } else if (item instanceof GetHomepageSolutionDTO) {
             GetHomepageSolutionDTO solution = (GetHomepageSolutionDTO) item;
             if ("product".equalsIgnoreCase(solution.getType())) {
-                i = new Intent(context, ProductDetailsActivity.class);
+                i = new Intent(context, ProductDetailsFragment.class);
                 i.putExtra("id", solution.getId());
             } else if ("service".equalsIgnoreCase(solution.getType())) {
                 ServiceDetailsFragment fragment = ServiceDetailsFragment.newInstance(solution.getId());

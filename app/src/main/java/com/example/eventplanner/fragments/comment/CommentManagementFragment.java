@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.event.EventDetailsActivity;
-import com.example.eventplanner.activities.product.ProductDetailsActivity;
+import com.example.eventplanner.fragments.product.ProductDetailsFragment;
 import com.example.eventplanner.adapters.comment.ManageCommentsAdapter;
 import com.example.eventplanner.dto.PageResponse;
 import com.example.eventplanner.dto.comment.GetCommentDTO;
@@ -235,7 +235,7 @@ public class CommentManagementFragment extends Fragment implements ManageComment
                 startActivity(intent);
                 break;
             case "PRODUCT":
-                intent = new Intent(getContext(), ProductDetailsActivity.class);
+                intent = new Intent(getContext(), ProductDetailsFragment.class);
                 intent.putExtra("id", entityId);
                 startActivity(intent);
                 break;

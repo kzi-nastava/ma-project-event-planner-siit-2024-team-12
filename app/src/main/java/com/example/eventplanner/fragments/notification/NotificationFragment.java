@@ -23,9 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.event.EventDetailsActivity;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
-import com.example.eventplanner.activities.product.ProductDetailsActivity;
 import com.example.eventplanner.adapters.notification.NotificationAdapter;
 import com.example.eventplanner.dto.notification.GetNotificationDTO;
+import com.example.eventplanner.fragments.product.ProductDetailsFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
 import com.example.eventplanner.fragments.servicereservation.ServiceReservationDetailsFragment;
 import com.example.eventplanner.utils.ClientUtils;
@@ -82,7 +82,7 @@ public class NotificationFragment extends Fragment {
                     startActivity(intent);
                     break;
                 case "PRODUCT":
-                    intent = new Intent(getContext(), ProductDetailsActivity.class);
+                    intent = new Intent(getContext(), ProductDetailsFragment.class);
                     intent.putExtra("id", notification.getEntityId());
                     startActivity(intent);
                     break;
