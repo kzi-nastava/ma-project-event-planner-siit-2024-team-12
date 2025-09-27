@@ -73,7 +73,7 @@ public class NotificationWebSocketService {
         Disposable disposable = stompClient.topic("/user/queue/notifications")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(stompMessage -> {
-                    Log.d(TAG, "✅ Received message: " + stompMessage.getPayload());
+                    Log.d(TAG, "Received message: " + stompMessage.getPayload());
                     unreadCount++;
                     notifyListeners();
                     Gson gson = new GsonBuilder()
@@ -85,7 +85,7 @@ public class NotificationWebSocketService {
                     GetNotificationDTO dto = gson.fromJson( stompMessage.getPayload(), GetNotificationDTO.class);
                     notifyListener(dto);
                 }, throwable -> {
-                    Log.e(TAG, "❌ Error on topic subscription", throwable);
+                    Log.e(TAG, "Error on topic subscription", throwable);
                 });
 
         compositeDisposable.add(disposable);
@@ -117,11 +117,11 @@ public class NotificationWebSocketService {
         compositeDisposable.add(stompClient.lifecycle().subscribe(lifecycleEvent -> {
             switch (lifecycleEvent.getType()) {
                 case OPENED:
-                    Log.d(TAG, "🌐 Connected to WebSocket. Now subscribing...");
+                    Log.d(TAG, "Connected to WebSocket. Now subscribing...");
                     subscribeToNotifications();
                     break;
                 case ERROR:
-                    Log.e(TAG, "⚠️ STOMP error", lifecycleEvent.getException());
+                    Log.e(TAG, "STOMP error", lifecycleEvent.getException());
                     break;
                 case CLOSED:
                     Log.w(TAG, "🔌 WebSocket connection closed.");

@@ -222,7 +222,6 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             View actionView = notificationsItem.getActionView();
             if (actionView != null) {
                 notificationBadge = actionView.findViewById(R.id.notification_badge);
-                // Inicijalno postavi vrednost, ako postoji
                 if(notificationService != null){
                     updateNotificationsBadge(notificationService.getUnreadCount());
                 }
@@ -250,7 +249,6 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_notifications) {
                 updateNotificationsBadge(0);
                 updateHamburgerIcon(false);
-                // navigateToFragment(R.id.notifications_container, new NotificationFragment());
                 navigateToFragment(new NotificationFragment());
             } else if (id == R.id.nav_home) {
                 loadMainFragment(new HomepageFragment());
@@ -298,7 +296,6 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_notifications) {
                 updateNotificationsBadge(0);
                 updateHamburgerIcon(false);
-                // navigateToFragment(R.id.notifications_container, new NotificationFragment());
                 navigateToFragment(new NotificationFragment());
             } else if (id == R.id.nav_service_reservations) {
                 navigateToFragment(new ServiceReservationsManagementFragment());
@@ -357,7 +354,6 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_notifications) {
                 updateNotificationsBadge(0);
                 updateHamburgerIcon(false);
-                // navigateToFragment(R.id.notifications_container, new NotificationFragment());
                 navigateToFragment(new NotificationFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
@@ -401,7 +397,6 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_notifications) {
                 updateNotificationsBadge(0);
                 updateHamburgerIcon(false);
-                // navigateToFragment(R.id.notifications_container, new NotificationFragment());
                 navigateToFragment(new NotificationFragment());
             } else if(id == R.id.nav_categories){
                 navigateToFragment(new CategoriesContainerFragment());
