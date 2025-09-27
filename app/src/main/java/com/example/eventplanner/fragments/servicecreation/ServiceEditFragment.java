@@ -171,12 +171,10 @@ public class ServiceEditFragment extends Fragment {
                             getActivity().getSupportFragmentManager().popBackStack();
                         }
                     },
-                    () -> {
-                        Toast.makeText(getContext(), "Failed to delete service.", Toast.LENGTH_SHORT).show();
-                        if (getActivity() != null) {
-                            getActivity().getSupportFragmentManager().popBackStack();
-                        }
-                    });
+                    (errorMessage) -> {
+                        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+                    }
+            );
         });
 
         closeFormButton.setOnClickListener(v -> {
