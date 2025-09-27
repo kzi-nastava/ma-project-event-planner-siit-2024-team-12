@@ -76,6 +76,8 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     private Toolbar toolbar;
     private ActionBarDrawerToggle toggle;
     private DrawerArrowDrawable originalDrawerIcon;
+    private boolean notificationsOpen = false;
+
 
 
     @Override
@@ -95,30 +97,6 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         originalDrawerIcon = toggle.getDrawerArrowDrawable();
-
-
-//        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
-//            @Override
-//            public void onDrawerSlide(View drawerView, float slideOffset) {
-//                // Ništa ne radimo ovde
-//            }
-//
-//            @Override
-//            public void onDrawerOpened(View drawerView) {
-//                // Kada se meni otvori, sakrij tačkicu sa hamburger ikonice
-////                updateHamburgerIcon(false);
-//            }
-//
-//            @Override
-//            public void onDrawerClosed(View drawerView) {
-//                // Ništa ne radimo ovde
-//            }
-//
-//            @Override
-//            public void onDrawerStateChanged(int newState) {
-//                // Ništa ne radimo ovde
-//            }
-//        });
 
         navigationView = findViewById(R.id.nav_view);
 
@@ -173,7 +151,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     private void updateNotificationsBadge(int count) {
         updateHamburgerIcon(count > 0);
 
-        if (notificationBadge != null) {
+        if (notificationBadge != null && !notificationsOpen) {
             if (count > 0) {
                 notificationBadge.setText(String.valueOf(count));
                 notificationBadge.setVisibility(View.VISIBLE);
@@ -512,78 +490,10 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         navigateToFragment(R.id.suspended_fragment_container, suspendedFragment);
     }
 
-//    private void updateHamburgerIcon(boolean showDot) {
-//        if (toolbar == null) return;
-//
-//        if (showDot) {
-//            try {
-//                // Uzimamo originalnu hamburger ikonicu
-//                Drawable hamburgerIcon = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
-//
-//                // Uzimamo našu crvenu tačkicu
-//                Drawable dotDrawable = getResources().getDrawable(R.drawable.notification_dot);
-//
-//                // Kreiramo LayerDrawable koji kombinuje ove dve slike
-//                Drawable[] layers = new Drawable[]{
-//                        hamburgerIcon,
-//                        dotDrawable
-//                };
-//                LayerDrawable layerDrawable = new LayerDrawable(layers);
-//
-//                // Pozicioniramo tačkicu u gornji desni ugao
-//                // Prilagodi ove vrednosti ako je potrebno
-//                layerDrawable.setLayerInset(1, 0, 10, 20, 0);
-//
-//                // Postavljamo novu, slojevitu ikonicu
-//                toggle.setHomeAsUpIndicator(layerDrawable);
-//
-//            } catch (Exception e) {
-//                Log.e("BADGE_DEBUG", "Greška pri kreiranju ikonice sa tačkicom.", e);
-//            }
-//        } else {
-//            // Vraćamo podrazumevanu ikonicu
-//            toggle.setDrawerIndicatorEnabled(true);
-//        }
-//    }
-
-
-
-
-    //ova radi
-
-//    private void updateHamburgerIcon(boolean showDot) {
-//        if (toolbar == null || toggle == null) return;
-//
-//        if (showDot) {
-//            try {
-//                // Uzimamo originalni hamburger drawable iz toggle-a
-//                Drawable hamburgerIcon = toggle.getDrawerArrowDrawable(); // DrawerArrowDrawable
-//                Drawable dot = getResources().getDrawable(R.drawable.notification_dot);
-//
-//                Drawable[] layers = new Drawable[]{hamburgerIcon, dot};
-//                LayerDrawable layerDrawable = new LayerDrawable(layers);
-//                layerDrawable.setLayerInset(1, 0, 5, 5, 0); // top, right, bottom, left
-//
-//
-//                toolbar.setNavigationIcon(layerDrawable); //
-//
-//
-//            } catch (Exception e) {
-//                Log.e("BADGE_DEBUG", "Greška pri kreiranju ikonice sa tačkicom.", e);
-//            }
-//        } else {
-//            // Vraćamo podrazumevani hamburger
-//            toggle.setDrawerIndicatorEnabled(true);
-//        }
-//    }
-
-
-
-    //najbolja do sad
     private void updateHamburgerIcon(boolean showDot) {
         if (toolbar == null || toggle == null) return;
 
-        if (showDot) {
+        if (showDot && !notificationsOpen) {
             // Kreiramo custom DrawerArrowDrawable koji crta crvenu tačkicu
             DrawerArrowDrawable custom = new DrawerArrowDrawable(toolbar.getContext()) {
                 @Override
@@ -616,8 +526,23 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     }
 
 
+    public void onNotificationsOpened() {
+        if (toggle != null) {
+            notificationsOpen = true;
+//            updateHamburgerIcon();
+        }
+    }
+
+    public void onNotificationsClosed() {
+        if (toggle != null) {
+            notificationsOpen = false;
+//            updateHamburgerIcon();
+        }
+    }
+
+
+
     public NotificationWebSocketService getNotificationService() {
         return notificationService;
     }
-
 }

@@ -146,23 +146,40 @@ public class NotificationFragment extends Fragment {
         loadNotifications();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof HomepageActivity) {
+            ((HomepageActivity) getActivity()).onNotificationsOpened();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (getActivity() instanceof HomepageActivity) {
+            ((HomepageActivity) getActivity()).onNotificationsClosed();
+        }
+    }
+
+
     private void handleNewNotification(GetNotificationDTO notification) {
         if (getActivity() == null) return;
 
 //        getActivity().runOnUiThread(() -> {
-            allNotifications.add(0, notification);
+        allNotifications.add(0, notification);
 
-            if (currentPage == 0) {
-                currentNotifications.add(0, notification);
-                if (currentNotifications.size() > PAGE_SIZE) {
-                    currentNotifications.remove(currentNotifications.size() - 1);
-                }
-                requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
+        if (currentPage == 0) {
+            currentNotifications.add(0, notification);
+            if (currentNotifications.size() > PAGE_SIZE) {
+                currentNotifications.remove(currentNotifications.size() - 1);
             }
+            requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
+        }
 
-            totalPages = (int) Math.ceil((double) allNotifications.size() / PAGE_SIZE);
-            updatePageIndicator();
-            updateButtonStates();
+        totalPages = (int) Math.ceil((double) allNotifications.size() / PAGE_SIZE);
+        updatePageIndicator();
+        updateButtonStates();
 //        });
     }
 
