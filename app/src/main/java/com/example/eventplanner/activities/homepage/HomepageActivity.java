@@ -292,7 +292,7 @@ public class HomepageActivity extends AppCompatActivity {
             } else if (id == R.id.nav_notifications) {
                 navigateToFragment(new NotificationFragment());
             } else if(id == R.id.nav_categories){
-                navigateToFragment(R.id.notifications_container, new CategoriesContainerFragment());
+                navigateToFragment(new CategoriesContainerFragment());
             } else if (id == R.id.nav_manage_comments) {
                 navigateToFragment(new CommentManagementFragment());
             } else if (id == R.id.nav_manage_reports) {
