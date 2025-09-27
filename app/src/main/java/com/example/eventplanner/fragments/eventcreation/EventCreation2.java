@@ -35,6 +35,7 @@ public class EventCreation2 extends Fragment {
 
     private EventCreationViewModel viewModel;
     private Spinner privacySpinner;
+    TextView sendInvitationsText;
 
 
     public EventCreation2() {}
@@ -52,6 +53,7 @@ public class EventCreation2 extends Fragment {
         setUpAgendaButton();
         setUpLocationButton();
         setUpDatePicker();
+        setUpInvitationSending();
 
         return view;
     }
@@ -167,6 +169,7 @@ public class EventCreation2 extends Fragment {
 
             TextInputLayout dateLayout = view.findViewById(R.id.dateLayout);
             dateLayout.setHintEnabled(false);
+            ValidationUtils.clearError(dateEditText);
 
             if (viewModel != null) {
                 viewModel.updateEventAttributes("date", formattedDate);
@@ -188,4 +191,26 @@ public class EventCreation2 extends Fragment {
         });
     }
 
+    private void setUpInvitationSending() {
+        sendInvitationsText = view.findViewById(R.id.sendInvitationsText);
+
+        sendInvitationsText.setOnClickListener(v -> {
+            TextInputEditText dateField = view.findViewById(R.id.dateEditText);
+
+            if (!ValidationUtils.isFieldValid(dateField, "Date is required!")) return;
+
+            if (!ValidationUtils.isDateValid(dateField)) return;
+
+            if (!viewModel.isLocationSet()) {
+                Toast.makeText(getActivity(), "Fill out location form!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String date = dateField.getText().toString();
+            viewModel.updateEventAttributes("date", date);
+
+            InvitationDialogFragment dialogFragment = new InvitationDialogFragment();
+            dialogFragment.show(getParentFragmentManager(), "invitationDialog");
+        });
+    }
 }
