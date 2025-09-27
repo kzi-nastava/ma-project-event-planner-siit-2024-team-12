@@ -54,18 +54,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Event"
-                android:textStyle="bold"/>
-            <TextView
-                android:id="@+id/textEvent"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
+
+            <LinearLayout
+                android:id="@+id/eventContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:background="@drawable/edit_text_background"
+                android:backgroundTint="@color/display_field_color"
                 android:clickable="true"
                 android:focusable="true"
-                android:textColor="@android:color/black"
-                android:paddingBottom="8dp"
-                android:layout_marginBottom="8dp"/>
+                android:foreground="?attr/selectableItemBackground"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/textEvent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@android:color/black"
+                    android:paddingEnd="8dp"
+                    android:text="Event Name"/>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/dark_gray"
+                    android:contentDescription="@string/next" />
+            </LinearLayout>
 
             <!-- Service -->
             <TextView

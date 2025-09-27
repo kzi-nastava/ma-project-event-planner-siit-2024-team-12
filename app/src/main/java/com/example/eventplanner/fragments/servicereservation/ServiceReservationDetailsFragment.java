@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.servicereservation.GetServiceReservationDTO;
+import com.example.eventplanner.fragments.event.EventDetailsFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
 import com.example.eventplanner.utils.ClientUtils;
 
@@ -36,8 +37,8 @@ public class ServiceReservationDetailsFragment extends Fragment {
             textCancellationDeadline, textFinalAmount, textTimeFrom, textTimeTo, textStatus;
     private Button buttonCancel;
     private Long reservationId;
-    private LinearLayout serviceContainer;
-    private Long serviceId;
+    private LinearLayout serviceContainer, eventContainer;
+    private Long serviceId, eventId;
 
     public static ServiceReservationDetailsFragment newInstance(Long reservationId) {
         ServiceReservationDetailsFragment fragment = new ServiceReservationDetailsFragment();
@@ -55,6 +56,7 @@ public class ServiceReservationDetailsFragment extends Fragment {
         textEvent = view.findViewById(R.id.textEvent);
         textService = view.findViewById(R.id.textService);
         serviceContainer = view.findViewById(R.id.serviceContainer);
+        eventContainer = view.findViewById(R.id.eventContainer);
         textDate = view.findViewById(R.id.textDate);
         textReservationMadeOn = view.findViewById(R.id.textReservationMadeOn);
         textCancellationDeadline = view.findViewById(R.id.textCancellationDeadline);
@@ -92,6 +94,24 @@ public class ServiceReservationDetailsFragment extends Fragment {
                         .commit();
             } else {
                 Toast.makeText(getContext(), "Service details not available", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        eventContainer.setOnClickListener( v -> {
+            if (eventId != null) {
+                Bundle args = new Bundle();
+                args.putLong("event_id", eventId);
+
+                Fragment eventDetailsFragment = new EventDetailsFragment();
+                eventDetailsFragment.setArguments(args);
+
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_fragment_container, eventDetailsFragment)
+                        .addToBackStack(null)
+                        .commit();
+            } else {
+                Toast.makeText(getContext(), "Event details not available", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -138,6 +158,7 @@ public class ServiceReservationDetailsFragment extends Fragment {
         textTimeTo.setText(dto.getTimeTo() != null ? dto.getTimeTo().format(timeFormatter) : "");
         textStatus.setText(dto.getStatus());
         serviceId = dto.getServiceId();
+        eventId = dto.getEventId();
 
         if ("confirmed".equalsIgnoreCase(dto.getStatus())) {
             buttonCancel.setVisibility(View.VISIBLE);

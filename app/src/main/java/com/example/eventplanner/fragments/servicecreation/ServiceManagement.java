@@ -16,9 +16,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.service.ServiceCreationActivity;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
-import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
 import com.example.eventplanner.fragments.pricelist.PriceListFragment;
 import com.example.eventplanner.utils.ClientUtils;
 
