@@ -144,12 +144,4 @@ public class ActivityFormFragment extends DialogFragment {
         }
     }
 
-
-
-
-
-    public void closeForm(View view) {
-        dismiss();
-    }
-
 }

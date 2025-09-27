@@ -13,21 +13,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.product.ProductDetailsActivity;
-import com.example.eventplanner.activities.product.ProductService;
 import com.example.eventplanner.dto.product.GetProductDTO;
 import com.example.eventplanner.dto.solution.FavSolutionDTO;
 import com.example.eventplanner.utils.ClientUtils;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.bumptech.glide.Glide;
+
+
 public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProductsAdapter.ViewHolder> {
     private List<FavSolutionDTO> products;
+    private static final String BASE_IMAGE_URL = "http://10.0.2.2:8080";
 
     public FavoriteProductsAdapter(List<FavSolutionDTO> products) {
         this.products = products;
@@ -54,14 +55,17 @@ public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProduc
         holder.discount.setText(discountOff);
         holder.productCategory.setText(product.getCategoryName());
 
+        String imageUrl = BASE_IMAGE_URL + product.getMainImageUrl();
+
+        Glide.with(holder.itemView.getContext())
+                .load(imageUrl)
+                .into(holder.productImage);
 
         if (position % 2 == 0) {
-            holder.productImage.setImageResource(R.drawable.product1);
             holder.container.removeAllViews();
             holder.container.addView(holder.productImage);
             holder.container.addView(holder.textContainer);
         } else {
-            holder.productImage.setImageResource(R.drawable.product3);
             holder.container.removeAllViews();
             holder.container.addView(holder.textContainer);
             holder.container.addView(holder.productImage);

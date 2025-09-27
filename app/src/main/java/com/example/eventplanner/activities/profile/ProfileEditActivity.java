@@ -97,13 +97,6 @@ public class ProfileEditActivity extends AppCompatActivity {
         changePasswordFragment.show(getSupportFragmentManager(), "changePasswordFragment");
     }
 
-    public void closeForm(View view) {
-        setResult(RESULT_CANCELED);
-        finish();
-    }
-
-
-
     public void update() {
         EditText nameField = findViewById(R.id.name);
         EditText surnameField = findViewById(R.id.surname);

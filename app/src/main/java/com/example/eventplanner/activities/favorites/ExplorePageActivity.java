@@ -121,8 +121,4 @@ public class ExplorePageActivity extends AppCompatActivity {
         return (int) Math.ceil((double) allEvents.size() / PAGE_SIZE);
     }
 
-    public void closeForm(View view) {
-        setResult(RESULT_CANCELED);
-        finish();
-    }
 }

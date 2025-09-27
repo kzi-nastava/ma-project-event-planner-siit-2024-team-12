@@ -47,7 +47,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private EditText name, availability, visibility, price, discount, category, description;
     private Button seeEventTypes, editBtn, deleteBtn, chatBtn;
-    private ImageView fav, favOutline, exitBtn, shoppingCart;
+    private ImageView fav, favOutline, shoppingCart;
     private Long currentProductId;
     private Boolean isFavorite, isEditable = false;
     private RadioGroup availabilityGroup, visibilityGroup;
@@ -76,7 +76,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
         loadProductDetails();
 
         setUpFavProducts();
-        setUpExitBtn();
         setUpEditBtn();
 
         ImageView galleryBtn = findViewById(R.id.images);
@@ -282,18 +281,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
             dialog.show();
         });
     }
-
-
-
-    private void setUpExitBtn() {
-        exitBtn = findViewById(R.id.exitBtn);
-
-        exitBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(ProductDetailsActivity.this, FavoriteProductsActivity.class);
-            startActivity(intent);
-        });
-    }
-
 
 
     // **********  favorites  **********

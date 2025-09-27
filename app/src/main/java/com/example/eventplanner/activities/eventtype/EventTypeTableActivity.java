@@ -45,19 +45,4 @@ public class EventTypeTableActivity extends AppCompatActivity {
         }
 
     }
-
-    public void closeForm(View view) {
-        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        String role = pref.getString("userRole", UserRole.ROLE_ADMIN.toString());
-
-        if (role.equals(UserRole.ROLE_ADMIN.toString())) {
-            Intent intent = new Intent(EventTypeTableActivity.this, AdminHomepageActivity.class);
-            startActivity(intent);
-        }
-        else {
-            Intent intent = new Intent(EventTypeTableActivity.this, ProviderHomepageActivity.class);
-            startActivity(intent);
-        }
-
-    }
 }

@@ -72,12 +72,6 @@ public class RatingsChart extends AppCompatActivity {
     }
 
 
-    public void closeForm(View view) {
-        setResult(RESULT_CANCELED);
-        finish();
-    }
-
-
     private void loadEventRatings() {
         String auth = ClientUtils.getAuthorization(this);
         Call<ArrayList<EventRatingsDTO>> call = ClientUtils.chartService.getEventRatings(auth);
