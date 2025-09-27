@@ -1,19 +1,20 @@
-package com.example.eventplanner.activities.favorites;
+package com.example.eventplanner.fragments.favorites;
 
-import android.content.Intent;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.eventplanner.enumeration.UserRole;
-import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
-import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
+import com.example.eventplanner.fragments.product.ProductDetailsFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.favorites.FavoriteProductsAdapter;
@@ -26,7 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FavoriteProductsActivity extends AppCompatActivity {
+public class FavoriteProductsFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private FavoriteProductsAdapter adapter;
@@ -34,31 +35,40 @@ public class FavoriteProductsActivity extends AppCompatActivity {
     private List<FavSolutionDTO> currentProducts = new ArrayList<>();
     private static final int PAGE_SIZE = 3;
     private int currentPage = 1;
+    private View view;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorite_products);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_favorite_products, container, false);
 
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         loadAllProducts();
 
-        adapter = new FavoriteProductsAdapter(currentProducts);
+        adapter = new FavoriteProductsAdapter(currentProducts, productId -> {
+            ProductDetailsFragment detailsFragment = ProductDetailsFragment.newInstance(productId);
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_fragment_container, detailsFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         recyclerView.setAdapter(adapter);
 
         loadPage(currentPage);
 
-        findViewById(R.id.previousPage).setOnClickListener(v -> {
+        view.findViewById(R.id.previousPage).setOnClickListener(v -> {
             if (currentPage > 1) {
                 currentPage--;
                 loadPage(currentPage);
             }
         });
 
-        findViewById(R.id.nextPage).setOnClickListener(v -> {
+        view.findViewById(R.id.nextPage).setOnClickListener(v -> {
             if (currentPage < getTotalPages()) {
                 currentPage++;
                 loadPage(currentPage);
@@ -66,19 +76,21 @@ public class FavoriteProductsActivity extends AppCompatActivity {
         });
 
         updatePageUI();
+
+        return view;
     }
 
 
 
     private void updatePageUI() {
-        TextView pageNumberText = findViewById(R.id.pageNumber);
+        TextView pageNumberText = view.findViewById(R.id.pageNumber);
         pageNumberText.setText("Page " + currentPage + " / " + getTotalPages());
     }
 
 
     private void loadAllProducts() {
-        String auth = ClientUtils.getAuthorization(this);
-        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String auth = ClientUtils.getAuthorization(requireContext());
+        SharedPreferences pref = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String email = pref.getString("email", "e");
 
         final List<FavSolutionDTO>[] favProducts = new List[]{new ArrayList<>()};
@@ -95,14 +107,14 @@ public class FavoriteProductsActivity extends AppCompatActivity {
                     allProducts.addAll(favProducts[0]);
                     loadPage(currentPage);
                 } else {
-                    Toast.makeText(FavoriteProductsActivity.this, "Error loading favorite products!" + response.code(),
+                    Toast.makeText(requireActivity(), "Error loading favorite products!" + response.code(),
                             Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<FavSolutionDTO>> call, Throwable t) {
-                Toast.makeText(FavoriteProductsActivity.this, "Failed to load favorite products!",
+                Toast.makeText(requireActivity(), "Failed to load favorite products!",
                         Toast.LENGTH_SHORT).show();
             }
         });
