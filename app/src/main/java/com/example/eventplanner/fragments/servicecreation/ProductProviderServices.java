@@ -110,12 +110,10 @@ public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
         ServiceEditFragment serviceEditFragment = ServiceEditFragment.newInstance(service.getId());
 
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-
-        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
+        
         fragmentManager
                 .beginTransaction()
-                .replace(R.id.homepage_fragment_container, serviceEditFragment)
+                .replace(R.id.main_fragment_container, serviceEditFragment)
                 .addToBackStack(null)
                 .commit();
     });

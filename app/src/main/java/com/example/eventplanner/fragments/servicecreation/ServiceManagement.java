@@ -97,7 +97,7 @@ public class ServiceManagement extends Fragment {
 
         getParentFragmentManager()
                 .beginTransaction()
-                .replace(R.id.homepage_fragment_container, serviceCreationContainerFragment)
+                .replace(R.id.main_fragment_container, serviceCreationContainerFragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -107,7 +107,7 @@ public class ServiceManagement extends Fragment {
 
         getParentFragmentManager()
                 .beginTransaction()
-                .replace(R.id.homepage_fragment_container, priceListFragment)
+                .replace(R.id.main_fragment_container, priceListFragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -120,7 +120,7 @@ public class ServiceManagement extends Fragment {
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
             transaction.replace(R.id.services_fragment_container, new ProductProviderServices());
-            transaction.replace(R.id.service_filter_fragment_container, new HomepageFilterFragment());
+//            transaction.replace(R.id.service_filter_fragment_container, new HomepageFilterFragment());
 
             transaction.commit();
         }
