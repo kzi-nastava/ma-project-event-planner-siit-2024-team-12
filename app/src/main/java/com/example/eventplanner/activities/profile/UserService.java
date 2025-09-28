@@ -124,4 +124,11 @@ public interface UserService {
     @DELETE("users/unblock/{userId}")
     Call<ResponseBody> unblockUser(@Header("Authorization") String authorization, @Path("userId") Long userId);
 
+    @GET("users/{email}/{eventId}")
+    Call<Boolean> isOrganizerHasEvent(
+            @Header("Authorization") String authorization,
+            @Path("email") String email,
+            @Path("eventId") Long eventId
+    );
+
 }

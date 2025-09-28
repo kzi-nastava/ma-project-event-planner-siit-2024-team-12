@@ -34,6 +34,7 @@ import com.example.eventplanner.dto.event.UpdatedEventDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.enumeration.PrivacyType;
+import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.fragments.eventcreation.AgendaEditFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
@@ -88,7 +89,7 @@ public class EventDetailsFragment extends Fragment {
     private String nameTxt, eventTypeTxt, dateTxt, maxGuestsTxt, descriptionTxt, locationText, currentUser;
     private Long currentEventId;
     private Boolean isFavorite, isEditable = false;
-    private ImageView fav, favOutline;
+    private ImageView fav, favOutline, budget;
     private EventDetailsDTO eventDetailsDTO = new EventDetailsDTO();
     private Button editBtn, seeAgendaButton, pdfBtn;
     private List<CreateActivityDTO> activities = new ArrayList<>();
@@ -132,7 +133,77 @@ public class EventDetailsFragment extends Fragment {
         setUpPdfBtn();
         setUpFavEvents();
 
+        budget = view.findViewById(R.id.budget);
+        setupBudgetButton();
+
         return view;
+    }
+
+    private void setupBudgetButton() {
+        SharedPreferences prefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        String role = prefs.getString("userRole", "");
+        String userEmail = prefs.getString("email", null);
+
+        if (!UserRole.ROLE_ORGANIZER.toString().equals(role) || userEmail == null || currentEventId == null) {
+            budget.setVisibility(View.GONE);
+            return;
+        }
+
+        checkOrganizerAccessToEvent(requireContext(), userEmail, currentEventId, new AccessCheckCallback() {
+            @Override
+            public void onAccessChecked(boolean hasAccess) {
+                if (hasAccess) {
+                    budget.setVisibility(View.VISIBLE);
+                } else {
+                    budget.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Log.e("BudgetCheck", errorMessage);
+                budget.setVisibility(View.GONE);
+                Toast.makeText(requireContext(), "Error checking budget access.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    public interface AccessCheckCallback {
+        void onAccessChecked(boolean hasAccess);
+        void onFailure(String errorMessage);
+    }
+
+    public void checkOrganizerAccessToEvent(Context context, String email, Long eventId, AccessCheckCallback callback) {
+        String auth = ClientUtils.getAuthorization(context);
+
+        if (auth.isEmpty() || email == null || eventId == null) {
+            Log.e("UserService", "Missing authentication or path variables.");
+            callback.onFailure("Missing required data for access check.");
+            return;
+        }
+
+        Call<Boolean> call = ClientUtils.userService.isOrganizerHasEvent(auth, email, eventId);
+
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    boolean hasAccess = response.body();
+
+                    callback.onAccessChecked(hasAccess);
+                } else {
+                    String error = "Failed to verify access. Code: " + response.code();
+                    Log.e("UserService", error);
+                    callback.onFailure(error);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                String error = "Network error: " + t.getMessage();
+                Log.e("UserService", error);
+                callback.onFailure("Network error. Please check your connection.");
+            }
+        });
     }
 
 
