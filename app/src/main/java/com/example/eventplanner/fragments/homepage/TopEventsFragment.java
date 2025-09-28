@@ -31,6 +31,7 @@ public class TopEventsFragment extends Fragment {
     private RecyclerView eventsRv;
     private CardAdapter adapter;
     private HomepageService service;
+    private View emptyView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,6 +51,7 @@ public class TopEventsFragment extends Fragment {
 
         adapter = new CardAdapter(requireContext());
         eventsRv.setAdapter(adapter);
+        emptyView = view.findViewById(R.id.empty_view);
 
         service = ClientUtils.retrofit.create(HomepageService.class);
 
@@ -81,14 +83,14 @@ public class TopEventsFragment extends Fragment {
             public void onResponse(Call<List<GetEventDTO>> call, Response<List<GetEventDTO>> response) {
                 if (!isAdded()) return;
 
-                if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     adapter.setItems(response.body());
+                    eventsRv.setVisibility(View.VISIBLE);
+                    emptyView.setVisibility(View.GONE);
                 } else {
                     adapter.setItems(Collections.emptyList());
-                    String msg = (response.code() == 401)
-                            ? "Prijavi se za personalizovane događaje."
-                            : "Nema događaja za prikaz.";
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+                    eventsRv.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -96,7 +98,8 @@ public class TopEventsFragment extends Fragment {
             public void onFailure(Call<List<GetEventDTO>> call, Throwable t) {
                 if (!isAdded()) return;
                 adapter.setItems(Collections.emptyList());
-                Toast.makeText(requireContext(), "Greška mreže: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                eventsRv.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
             }
         });
     }

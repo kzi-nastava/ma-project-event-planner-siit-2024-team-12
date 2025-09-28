@@ -31,6 +31,7 @@ public class TopSolutionsFragment extends Fragment {
     private RecyclerView solutionsRv;
     private CardAdapter adapter;
     private HomepageService service;
+    private View emptyView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,6 +51,8 @@ public class TopSolutionsFragment extends Fragment {
 
         adapter = new CardAdapter(requireContext());
         solutionsRv.setAdapter(adapter);
+
+        emptyView = view.findViewById(R.id.empty_view);
 
         service = ClientUtils.retrofit.create(HomepageService.class);
 
@@ -80,11 +83,14 @@ public class TopSolutionsFragment extends Fragment {
             public void onResponse(Call<List<GetHomepageSolutionDTO>> call, Response<List<GetHomepageSolutionDTO>> response) {
                 if (!isAdded()) return;
 
-                if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     adapter.setItems(response.body());
+                    solutionsRv.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
                 } else {
                     adapter.setItems(Collections.emptyList());
-                    Toast.makeText(requireContext(), "Nema proizvoda/usluga za prikaz.", Toast.LENGTH_SHORT).show();
+                    solutionsRv.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -92,7 +98,8 @@ public class TopSolutionsFragment extends Fragment {
             public void onFailure(Call<List<GetHomepageSolutionDTO>> call, Throwable t) {
                 if (!isAdded()) return;
                 adapter.setItems(Collections.emptyList());
-                Toast.makeText(requireContext(), "Greška mreže: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                solutionsRv.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
             }
         });
     }
