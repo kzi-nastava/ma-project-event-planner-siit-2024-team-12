@@ -22,122 +22,42 @@
         <FrameLayout
             android:id="@+id/main_fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/open_chat_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="20dp"
+            android:visibility="gone"
+            android:src="@drawable/ic_chat_icon"
+            app:backgroundTint="@color/light_gray" />
+        </FrameLayout>
+
 
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="240dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/drawer_menu" />
+        app:menu="@menu/drawer_menu"
+        app:headerLayout="@layout/nav_header"/>
 
-    <FrameLayout
-        android:id="@+id/chat_drawer"
-        android:layout_width="300dp"
+    <LinearLayout
+        android:id="@+id/chat_drawer_root"
+        android:layout_width="380dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
+        android:orientation="vertical"
         android:background="@android:color/white">
 
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/chat_fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/inboxTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/inbox"
-                    android:textColor="@color/dark_gray"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/light_gray" />
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/chat_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:clipToPadding="false"
-                android:padding="10dp" />
-
-            <LinearLayout
-                android:id="@+id/inputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/light_gray"
-                android:orientation="vertical"
-                android:padding="10dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:gravity="center_vertical"
-                        android:text="@string/to"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                    <Spinner
-                        android:id="@+id/userSpinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="2dp"
-                        android:background="@drawable/rounded_spinner"
-                        android:hint="@string/select_recipient"
-                        android:padding="8dp"
-                        android:popupBackground="@color/white"
-                        android:spinnerMode="dropdown" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <EditText
-                        android:id="@+id/messageEditText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/rounded_edit_text"
-                        android:hint="@string/type_a_message"
-                        android:inputType="text"
-                        android:padding="10dp" />
-
-                    <ImageView
-                        android:id="@+id/sendButton"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginStart="8dp"
-                        android:background="@drawable/circle_background"
-                        android:contentDescription="@string/send_message"
-                        android:padding="10dp"
-                        android:src="@drawable/send_button" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </FrameLayout>
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>
