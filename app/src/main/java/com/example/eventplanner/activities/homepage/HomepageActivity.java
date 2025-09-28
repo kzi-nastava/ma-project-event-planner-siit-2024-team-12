@@ -28,7 +28,7 @@ import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.auth.SignUpActivity;
 import com.example.eventplanner.activities.business.BusinessInfoActivity;
 import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
-import com.example.eventplanner.activities.calendar.CalendarActivity;
+import com.example.eventplanner.fragments.calendar.CalendarFragment;
 import com.example.eventplanner.activities.charts.AttendanceChart;
 import com.example.eventplanner.activities.charts.RatingsChart;
 import com.example.eventplanner.fragments.event.eventcreation.EventCreationFragment;
@@ -238,7 +238,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_invited_events) {
                 navigateToFragment(new InvitedEventsListFragment());
             } else if (id == R.id.nav_calendar_od) {
-                startActivity(new Intent(this, CalendarActivity.class));
+                navigateToFragment(new CalendarFragment());
             } else if (id == R.id.nav_explore_events) {
                 navigateToFragment(new ExplorePageFragment());
             } else if (id == R.id.nav_notifications) {
@@ -279,7 +279,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_view_profile) {
                 startActivity(new Intent(this, ProfileViewActivity.class));
             } else if (id == R.id.nav_calendar_od) {
-                startActivity(new Intent(this, CalendarActivity.class));
+                navigateToFragment(new CalendarFragment());
             } else if (id == R.id.nav_create_event) {
                 navigateToFragment(new EventCreationFragment());
             } else if (id == R.id.nav_explore_events) {
@@ -331,7 +331,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_services) {
                 navigateToFragment(new ServiceManagement());
             } else if (id == R.id.nav_calendar_od) {
-                startActivity(new Intent(this, CalendarActivity.class));
+                navigateToFragment(new CalendarFragment());
             } else if (id == R.id.nav_fav_events) {
                 navigateToFragment(new FavoriteEventsFragment());
             } else if (id == R.id.nav_fav_services) {
@@ -382,7 +382,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_event_types_overview) {
                 startActivity(new Intent(this, EventTypeTableActivity.class));
             } else if (id == R.id.nav_calendar_od) {
-                startActivity(new Intent(this, CalendarActivity.class));
+                navigateToFragment(new CalendarFragment());
             } else if (id == R.id.nav_view_profile) {
                 startActivity(new Intent(this, ProfileViewActivity.class));
             } else if (id == R.id.nav_attendance_chart) {

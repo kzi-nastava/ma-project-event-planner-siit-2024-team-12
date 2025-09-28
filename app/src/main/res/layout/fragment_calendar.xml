@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.calendar.CalendarActivity">
+    tools:context=".fragments.calendar.CalendarFragment">
 
 
     <LinearLayout
@@ -18,7 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2">
+        app:layout_constraintVertical_bias="0.18">
 
         <TextView
             android:layout_width="0dp"
@@ -98,7 +98,7 @@
         app:layout_constraintHorizontal_bias="0.456"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.042" />
+        app:layout_constraintVertical_bias="0.02" />
 
     <LinearLayout
         android:id="@+id/monthStatusLayout"
@@ -137,14 +137,14 @@
         android:layout_width="400dp"
         android:layout_height="628dp"
         android:background="@drawable/form_frame"
-        android:padding="8dp"
+        android:paddingTop="20dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/monthYearText"
-        app:layout_constraintVertical_bias="0.8"
+        app:layout_constraintVertical_bias="0.9"
         app:spanCount="7" />
 
     <Button
@@ -160,7 +160,7 @@
         app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.058" />
+        app:layout_constraintVertical_bias="0.038" />
 
     <Button
         android:id="@+id/previousMonthButton"
@@ -175,7 +175,7 @@
         app:layout_constraintHorizontal_bias="0.015"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.058" />
+        app:layout_constraintVertical_bias="0.038" />
 
     <View
         android:layout_width="23dp"
@@ -186,7 +186,7 @@
         app:layout_constraintHorizontal_bias="0.041"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.141" />
+        app:layout_constraintVertical_bias="0.12" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -199,7 +199,7 @@
         app:layout_constraintHorizontal_bias="0.137"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.14" />
+        app:layout_constraintVertical_bias="0.12" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -212,7 +212,7 @@
         app:layout_constraintHorizontal_bias="0.594"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.138" />
+        app:layout_constraintVertical_bias="0.12" />
 
     <View
         android:layout_width="23dp"
@@ -223,5 +223,5 @@
         app:layout_constraintHorizontal_bias="0.365"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.139" />
+        app:layout_constraintVertical_bias="0.12" />
 </androidx.constraintlayout.widget.ConstraintLayout>

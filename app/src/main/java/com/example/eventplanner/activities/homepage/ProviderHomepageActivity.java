@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.calendar.CalendarActivity;
+import com.example.eventplanner.fragments.calendar.CalendarFragment;
 import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
 import com.example.eventplanner.fragments.favorites.ExplorePageFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteEventsFragment;
@@ -134,7 +134,7 @@ public class ProviderHomepageActivity extends AppCompatActivity {
 
 
                 else if (id == R.id.nav_calendar_od) {
-                    Intent intent = new Intent(ProviderHomepageActivity.this, CalendarActivity.class);
+                    Intent intent = new Intent(ProviderHomepageActivity.this, CalendarFragment.class);
                     startActivity(intent);
                 }
 

@@ -51,7 +51,7 @@
             android:name=".activities.homepage.AdminHomepageActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.calendar.CalendarActivity"
+            android:name=".fragments.calendar.CalendarFragment"
             android:exported="false" />
         <activity
             android:name=".activities.eventtype.EventTypeEditActivity"
