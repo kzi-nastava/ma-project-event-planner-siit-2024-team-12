@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -28,6 +29,7 @@ import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.auth.SignUpActivity;
 import com.example.eventplanner.activities.business.BusinessInfoActivity;
 import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
+import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.fragments.calendar.CalendarFragment;
 import com.example.eventplanner.activities.charts.AttendanceChart;
 import com.example.eventplanner.activities.charts.RatingsChart;
@@ -111,7 +113,8 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                 setupGuestUI();
                 loadSuspendedFragment();
             } else {
-                String role = sp.getString("userRole", null);
+                String role = sp.getString("userRole", UserRole.ROLE_UNREGISTERED_USER.toString());
+
                 if ("ROLE_ORGANIZER".equals(role)) {
                     setupOrganizerUI();
                 } else if ("ROLE_PROVIDER".equals(role)) {
