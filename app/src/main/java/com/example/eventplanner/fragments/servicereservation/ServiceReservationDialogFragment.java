@@ -285,29 +285,38 @@ public class ServiceReservationDialogFragment extends DialogFragment {
 
 
     private void setupTimePickers() {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
         editTextTimeFrom.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
 
-            TimePickerDialog timePicker = new TimePickerDialog(requireContext(), (view, selectedHour, selectedMinute) -> {
-                LocalTime fromTime = LocalTime.of(selectedHour, selectedMinute);
-                editTextTimeFrom.setText(fromTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+            com.google.android.material.timepicker.MaterialTimePicker pickerFrom =
+                    new com.google.android.material.timepicker.MaterialTimePicker.Builder()
+                            .setTimeFormat(com.google.android.material.timepicker.TimeFormat.CLOCK_24H)
+                            .setHour(hour)
+                            .setMinute(minute)
+                            .setTitleText("Select start time")
+                            .setTheme(R.style.ThemeOverlay_App_MaterialTimePicker)
+                            .build();
+
+            pickerFrom.addOnPositiveButtonClickListener(p -> {
+                LocalTime fromTime = LocalTime.of(pickerFrom.getHour(), pickerFrom.getMinute());
+                editTextTimeFrom.setText(fromTime.format(timeFormatter));
 
                 if (fixedDurationMinutes > 0) {
                     LocalTime toTime = fromTime.plusMinutes(fixedDurationMinutes);
-                    editTextTimeTo.setText(toTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+                    editTextTimeTo.setText(toTime.format(timeFormatter));
                 }
-            }, hour, minute, true);
+            });
 
-            timePicker.show();
+            pickerFrom.show(getParentFragmentManager(), "TIME_PICKER_FROM");
         });
 
         if (fixedDurationMinutes > 0) {
-            // Fixed duration → disable end time
             editTextTimeTo.setEnabled(false);
         } else {
-            // Min/Max duration → enable end time
             editTextTimeTo.setEnabled(true);
             editTextTimeTo.setOnClickListener(v -> {
                 String fromText = editTextTimeFrom.getText().toString();
@@ -316,29 +325,39 @@ public class ServiceReservationDialogFragment extends DialogFragment {
                     return;
                 }
 
+                LocalTime fromTime = LocalTime.parse(fromText, timeFormatter);
                 Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
 
-                TimePickerDialog timePicker = new TimePickerDialog(requireContext(), (view, selectedHour, selectedMinute) -> {
-                    LocalTime toTime = LocalTime.of(selectedHour, selectedMinute);
-                    LocalTime fromTime = LocalTime.parse(fromText, DateTimeFormatter.ofPattern("HH:mm"));
+                com.google.android.material.timepicker.MaterialTimePicker pickerTo =
+                        new com.google.android.material.timepicker.MaterialTimePicker.Builder()
+                                .setTimeFormat(com.google.android.material.timepicker.TimeFormat.CLOCK_24H)
+                                .setHour(hour)
+                                .setMinute(minute)
+                                .setTitleText("Select end time")
+                                .setTheme(R.style.ThemeOverlay_App_MaterialTimePicker)
+                                .build();
+
+                pickerTo.addOnPositiveButtonClickListener(p -> {
+                    LocalTime toTime = LocalTime.of(pickerTo.getHour(), pickerTo.getMinute());
                     long durationMinutes = java.time.Duration.between(fromTime, toTime).toMinutes();
 
                     if (durationMinutes < minDurationMinutes || durationMinutes > maxDurationMinutes) {
                         Toast.makeText(requireContext(),
-                                "Service duration must be between " + minDurationMinutes/60 + " and " + maxDurationMinutes/60 + " hours",
+                                "Service duration must be between " + minDurationMinutes / 60 + " and " + maxDurationMinutes / 60 + " hours",
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    editTextTimeTo.setText(toTime.format(DateTimeFormatter.ofPattern("HH:mm")));
-                }, hour, minute, true);
+                    editTextTimeTo.setText(toTime.format(timeFormatter));
+                });
 
-                timePicker.show();
+                pickerTo.show(getParentFragmentManager(), "TIME_PICKER_TO");
             });
         }
-        }
+    }
+
 
 
     private void reserveService() {

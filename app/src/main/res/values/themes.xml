@@ -16,4 +16,11 @@
         <item name="colorSurface">@color/light_gray</item>
         <item name="colorOnSurface">@color/black</item>
     </style>
+
+    <style name="ThemeOverlay.App.MaterialTimePicker" parent="ThemeOverlay.MaterialComponents.TimePicker">
+        <item name="colorPrimary">@color/dark_gray</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSurface">@color/light_gray</item>
+        <item name="colorOnSurface">@color/black</item>
+    </style>
 </resources>
