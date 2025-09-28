@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities.charts;
+package com.example.eventplanner.services;
 
 import com.example.eventplanner.dto.charts.EventAttendanceDTO;
 import com.example.eventplanner.dto.charts.EventRatingsDTO;

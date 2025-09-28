@@ -27,15 +27,6 @@
             android:name=".activities.gallery.GalleryDisplayActivity"
             android:exported="false" />
         <activity
-            android:name=".fragments.product.ProductDetailsFragment"
-            android:exported="false" />
-        <activity
-            android:name=".fragments.product.ProvidedProductsFragment"
-            android:exported="false" />
-        <activity
-            android:name=".fragments.event.EventDetailsFragment"
-            android:exported="false" />
-        <activity
             android:name=".activities.charts.RatingsChart"
             android:exported="false" />
         <activity
@@ -45,19 +36,13 @@
             android:name=".activities.favorites.FavoriteServicesActivity"
             android:exported="false" />
         <activity
-            android:name=".fragments.favorites.FavoriteProductsFragment"
-            android:exported="false" />
-        <activity
-            android:name=".fragments.favorites.FavoriteEventsFragment"
-            android:exported="false" />
-        <activity
             android:name=".activities.solutioncategory.CategoriesTableActivity"
             android:exported="false" />
         <activity
             android:name=".activities.eventtype.EventTypeTableActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.event.EventCreationActivity"
+            android:name=".fragments.event.eventcreation.EventCreationFragment"
             android:exported="false" />
         <activity
             android:name=".activities.eventtype.EventTypeCreationActivity"
@@ -109,9 +94,6 @@
             android:exported="false" />
         <activity
             android:name=".activities.auth.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.favorites.ExplorePageFragment"
             android:exported="false" />
         <activity
             android:name=".activities.auth.AccountActivation"

@@ -21,12 +21,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.calendar.CalendarActivity;
-import com.example.eventplanner.activities.favorites.ExplorePageFragment;
+import com.example.eventplanner.fragments.favorites.ExplorePageFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteEventsFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteProductsFragment;
 import com.example.eventplanner.activities.favorites.FavoriteServicesActivity;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
-import com.example.eventplanner.activities.event.EventCreationActivity;
+import com.example.eventplanner.fragments.event.eventcreation.EventCreationFragment;
 import com.example.eventplanner.fragments.homepage.EventListFragment;
 import com.example.eventplanner.fragments.homepage.TopEventsFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFilterFragment;
@@ -152,7 +152,7 @@ public class OrganiserHomepageActivity extends AppCompatActivity {
                 }
 
                 else if (id == R.id.nav_create_event) {
-                    Intent intent = new Intent(OrganiserHomepageActivity.this, EventCreationActivity.class);
+                    Intent intent = new Intent(OrganiserHomepageActivity.this, EventCreationFragment.class);
                     startActivity(intent);
                 }
 

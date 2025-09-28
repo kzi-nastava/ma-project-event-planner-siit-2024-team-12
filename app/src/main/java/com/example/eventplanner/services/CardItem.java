@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities.homepage;
+package com.example.eventplanner.services;
 
 public interface CardItem {
     Long getId();

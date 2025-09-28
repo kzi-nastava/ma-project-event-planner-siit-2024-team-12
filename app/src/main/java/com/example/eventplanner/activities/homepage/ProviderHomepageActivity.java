@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.calendar.CalendarActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
-import com.example.eventplanner.activities.favorites.ExplorePageFragment;
+import com.example.eventplanner.fragments.favorites.ExplorePageFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteEventsFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteProductsFragment;
 import com.example.eventplanner.activities.favorites.FavoriteServicesActivity;

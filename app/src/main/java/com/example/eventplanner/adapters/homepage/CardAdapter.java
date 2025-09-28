@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.R;
 import com.example.eventplanner.fragments.event.EventDetailsFragment;
-import com.example.eventplanner.activities.homepage.CardItem;
+import com.example.eventplanner.services.CardItem;
 import com.example.eventplanner.fragments.product.ProductDetailsFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
 import com.google.android.material.imageview.ShapeableImageView;

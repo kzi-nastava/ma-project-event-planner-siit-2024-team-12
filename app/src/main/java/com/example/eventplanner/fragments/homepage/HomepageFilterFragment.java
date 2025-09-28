@@ -1,33 +1,22 @@
 package com.example.eventplanner.fragments.homepage;
 
-import android.content.Context; // Add this import
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.homepage.HomepageService;
-import com.example.eventplanner.utils.ClientUtils;
+import com.example.eventplanner.services.HomepageService;
 import com.example.eventplanner.viewmodels.EventFilterViewModel;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class HomepageFilterFragment extends Fragment {
 

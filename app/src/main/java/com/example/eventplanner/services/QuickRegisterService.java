@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities.profile;
+package com.example.eventplanner.services;
 
 
 import com.example.eventplanner.dto.event.GetEventDTO;

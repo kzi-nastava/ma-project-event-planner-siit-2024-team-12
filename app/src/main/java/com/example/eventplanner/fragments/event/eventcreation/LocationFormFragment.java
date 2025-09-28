@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments.eventcreation;
+package com.example.eventplanner.fragments.event.eventcreation;
 
 import android.os.Bundle;
 
@@ -65,9 +65,6 @@ public class LocationFormFragment extends DialogFragment {
 
             dismiss();
 
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-            fragmentManager.popBackStack();
-
         });
 
         return view;
@@ -76,8 +73,5 @@ public class LocationFormFragment extends DialogFragment {
     public void closeForm(View view) {
         dismiss();
     }
-
-
-
 
 }

@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.example.eventplanner.activities.homepage.CardItem;
+import com.example.eventplanner.services.CardItem;
 import com.example.eventplanner.adapters.homepage.ListItemAdapter;
 
 import androidx.annotation.NonNull;
@@ -24,13 +24,11 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 
-import com.example.eventplanner.viewmodels.EventFilterViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;

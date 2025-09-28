@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities.product;
+package com.example.eventplanner.services;
 
 import com.example.eventplanner.dto.product.CreateProductDTO;
 import com.example.eventplanner.dto.product.GetProductDTO;

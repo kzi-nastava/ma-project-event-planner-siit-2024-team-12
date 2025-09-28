@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,8 +19,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.service.ServiceEditActivity;
-import com.example.eventplanner.activities.service.ServiceSolutionService;
 import com.example.eventplanner.adapters.solutionservice.ServiceCardAdapter;
 import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
 import com.example.eventplanner.utils.ClientUtils;
