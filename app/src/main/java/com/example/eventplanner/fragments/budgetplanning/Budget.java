@@ -1,7 +1,10 @@
 package com.example.eventplanner.fragments.budgetplanning;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +18,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.budget.BudgetItemAdapter;
+import com.example.eventplanner.dto.budget.CreateBudgetItemDTO;
 import com.example.eventplanner.dto.budget.GetBudgetItemDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.solutioncategory.GetCategoryDTO;
 import com.example.eventplanner.viewmodels.BudgetPlanningViewModel;
+import com.example.eventplanner.viewmodels.EventCreationViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -48,6 +54,7 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
     private RecyclerView budgetItemsRecyclerView;
     private FloatingActionButton addItemFab;
     private BudgetItemAdapter budgetItemAdapter;
+    String eventTypeName;
 
     public Budget() {
     }
@@ -178,8 +185,32 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
                 List<GetBudgetItemDTO> currentItems = budgetItemAdapter.getItems();
                 viewModel.updateBudget(currentItems, eventId);
             } else if ("CREATE".equalsIgnoreCase(type)) {
-//                TODO
-                // Implementiraj logiku za kreiranje događaja
+                EventCreationViewModel eventViewModel = new ViewModelProvider(requireActivity()).get(EventCreationViewModel.class);
+                List<GetBudgetItemDTO> currentItems = budgetItemAdapter.getItems();
+                List<CreateBudgetItemDTO> createItems = new ArrayList<>();
+                for (GetBudgetItemDTO item : currentItems){
+                    CreateBudgetItemDTO createItem = new CreateBudgetItemDTO();
+                    createItem.setCost(item.getCost());
+                    createItem.setCategoryId(Long.parseLong(item.getCategory().getId()));
+                    createItem.setName(item.getName());
+                    createItems.add(createItem);
+                }
+                eventViewModel.setBudget(createItems);
+
+                SharedPreferences prefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+                String userEmail = prefs.getString("email", null);
+
+
+                eventViewModel.updateEventAttributes("eventType", eventTypeName);
+                eventViewModel.updateEventAttributes("organizer", userEmail);
+                eventViewModel.createEventAndHandleCallback(getContext(),
+                        () -> {
+                            getParentFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        },
+                        () -> {
+                            Log.i("UI_ACTION", "Event creation failed, user notified.");
+                        }
+                );
             }
         });
 
@@ -188,6 +219,7 @@ public class Budget extends Fragment implements BudgetItemDialogFragment.BudgetI
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if ("CREATE".equalsIgnoreCase(type)) {
                     String selectedEventType = (String) parent.getItemAtPosition(position);
+                    eventTypeName = selectedEventType;
                     viewModel.fetchSuggestedCategoriesForEventType(selectedEventType);
                 }
             }

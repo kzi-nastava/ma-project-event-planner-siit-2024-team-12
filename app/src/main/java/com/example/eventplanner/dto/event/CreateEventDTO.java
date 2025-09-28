@@ -1,6 +1,7 @@
 package com.example.eventplanner.dto.event;
 
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
+import com.example.eventplanner.dto.budget.CreateBudgetItemDTO;
 import com.example.eventplanner.dto.location.CreateLocationDTO;
 
 import java.util.List;
@@ -19,6 +20,8 @@ public class CreateEventDTO {
 
     private Set<String> invitedEmails;
     private String invitationContent;
+
+    private List<CreateBudgetItemDTO> budgetItems;
 
     public CreateEventDTO() { super(); }
 
@@ -56,6 +59,13 @@ public class CreateEventDTO {
     public String getInvitationContent() { return invitationContent; }
     public void setInvitationContent(String invitationContent) { this.invitationContent = invitationContent; }
 
+    public List<CreateBudgetItemDTO> getBudgetItems() {
+        return budgetItems;
+    }
+
+    public void setBudgetItems(List<CreateBudgetItemDTO> budgetItems) {
+        this.budgetItems = budgetItems;
+    }
 
     @Override
     public String toString() {

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.event.EventDetailsDTO;
+import com.example.eventplanner.fragments.budgetplanning.Budget;
 import com.example.eventplanner.fragments.budgetplanning.BudgetPlanningFragment;
 import com.example.eventplanner.fragments.event.eventcreation.EventCreation2;
 import com.example.eventplanner.model.Activity;
@@ -161,9 +162,9 @@ public class AgendaEditFragment extends DialogFragment {
         private void planBudget() {
 
 
-            BudgetPlanningFragment budgetPlanningFragment = new BudgetPlanningFragment();
+            Budget budgetFragment = Budget.newInstance("CREATE", null);
             FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.main, budgetPlanningFragment);
+            transaction.replace(R.id.main, budgetFragment);
             transaction.addToBackStack(null);
             transaction.commit();
 
