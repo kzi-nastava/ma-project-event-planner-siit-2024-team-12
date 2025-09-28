@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.adapters.conversation.MessageAdapter;
 import com.example.eventplanner.dto.conversation.GetChatMessageDTO;
 import com.example.eventplanner.dto.conversation.GetConversationDTO;
@@ -38,6 +39,7 @@ public class ConversationFragment extends Fragment {
     private TextView otherUserNameTextView;
     private EditText messageInput;
     private ImageButton sendMessageButton;
+    private View headerLayout;
 
     public static ConversationFragment newInstance(Long conversationId, String otherUserName, String otherUserEmail) {
         ConversationFragment fragment = new ConversationFragment();
@@ -68,6 +70,7 @@ public class ConversationFragment extends Fragment {
         messageInput = view.findViewById(R.id.et_message_input);
         sendMessageButton = view.findViewById(R.id.btn_send_message);
         ImageButton backButton = view.findViewById(R.id.btn_back);
+        headerLayout = view.findViewById(R.id.header_layout);
 
         if (getArguments() != null) {
             otherUserNameTextView.setText(getArguments().getString(ARG_OTHER_USER_NAME));
@@ -87,6 +90,8 @@ public class ConversationFragment extends Fragment {
         sendMessageButton.setOnClickListener(v -> sendMessage());
 
         backButton.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
+
+        headerLayout.setOnClickListener(v -> navigateToUserProfile());
 
         return view;
     }
@@ -139,6 +144,14 @@ public class ConversationFragment extends Fragment {
                 Log.e("ConversationFrag", "Network error sending message: " + t.getMessage());
             }
         });
+    }
+    private void navigateToUserProfile() {
+        if (otherUserEmail == null || getContext() == null) return;
+        if (requireActivity() instanceof HomepageActivity) {
+            ((HomepageActivity) requireActivity()).openProfileAndCloseChat(otherUserEmail);
+        } else {
+            Log.e("ConversationFrag", "Parent Activity must be HomepageActivity to handle navigation.");
+        }
     }
     
 }

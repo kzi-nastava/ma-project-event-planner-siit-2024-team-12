@@ -7,6 +7,7 @@
     android:background="@color/white">
 
     <LinearLayout
+        android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -16,22 +17,26 @@
 
         <ImageButton
             android:id="@+id/btn_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_chevron_left"
+            android:layout_width="48dp" android:layout_height="48dp" android:src="@drawable/ic_chevron_left"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Back"/>
-
-        <TextView
+            android:contentDescription="Back"
+            android:padding="8dp"/> <TextView
             android:id="@+id/tv_other_user_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:text="Name Last Name"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/black"/>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_arrow_right"  app:tint="@color/dark_gray"  android:contentDescription="View Profile"/>
+
 
     </LinearLayout>
 

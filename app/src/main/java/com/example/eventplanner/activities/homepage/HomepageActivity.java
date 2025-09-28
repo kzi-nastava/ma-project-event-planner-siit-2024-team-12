@@ -52,6 +52,7 @@ import com.example.eventplanner.fragments.notification.NotificationFragment;
 import com.example.eventplanner.fragments.notification.NotificationWebSocketService;
 import com.example.eventplanner.fragments.product.ProvidedProductsFragment;
 import com.example.eventplanner.fragments.profile.SuspendedUserFragment;
+import com.example.eventplanner.fragments.profile.ViewUserProfileFragment;
 import com.example.eventplanner.fragments.report.ReportManagementFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
 import com.example.eventplanner.utils.ClientUtils;
@@ -499,6 +500,20 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.chat_fragment_container, chatFragment)
                 .commitAllowingStateLoss();
+    }
+
+    public void openProfileAndCloseChat(String userEmail) {
+        DrawerLayout drawerLayout = findViewById(R.id.navigationView);
+        if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.END)) {
+            drawerLayout.closeDrawer(GravityCompat.END);
+        }
+
+        ViewUserProfileFragment profileFragment = ViewUserProfileFragment.newInstance(userEmail);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, profileFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     public NotificationWebSocketService getNotificationService() {
