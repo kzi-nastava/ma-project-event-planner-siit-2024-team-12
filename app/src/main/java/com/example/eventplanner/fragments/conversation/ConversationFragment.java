@@ -19,6 +19,9 @@ import com.example.eventplanner.dto.conversation.GetChatMessageDTO;
 import com.example.eventplanner.dto.conversation.GetConversationDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import java.util.Collections;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -116,7 +119,10 @@ public class ConversationFragment extends Fragment {
 
         String authHeader = ClientUtils.getAuthorization(getContext());
 
-        ClientUtils.conversationService.sendMessage(authHeader, conversationId, content).enqueue(new Callback<GetChatMessageDTO>() {
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody requestBody = RequestBody.create(mediaType, content);
+
+        ClientUtils.conversationService.sendMessage(authHeader, conversationId, requestBody).enqueue(new Callback<GetChatMessageDTO>() {
             @Override
             public void onResponse(Call<GetChatMessageDTO> call, Response<GetChatMessageDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
