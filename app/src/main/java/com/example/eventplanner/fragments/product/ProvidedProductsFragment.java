@@ -25,6 +25,7 @@ import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.dto.solution.FavSolutionDTO;
 import com.example.eventplanner.dto.product.GetProductDTO;
 import com.example.eventplanner.dto.solution.SolutionFilterParams;
+import com.example.eventplanner.fragments.pricelist.PriceListFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.viewmodels.SolutionFilterViewModel;
 import com.google.android.material.chip.Chip;
@@ -45,7 +46,7 @@ public class ProvidedProductsFragment extends Fragment {
     private List<FavSolutionDTO> currentProducts = new ArrayList<>();
     private static final int PAGE_SIZE = 3;
     private int currentPage = 1;
-    private Button addProductBtn, filterBtn;
+    private Button addProductBtn, filterBtn, priceListBtn;
     private ChipGroup chipGroup;
     private SolutionFilterViewModel filterViewModel;
     private EditText searchBar;
@@ -85,6 +86,8 @@ public class ProvidedProductsFragment extends Fragment {
         setUpAddProductBtn();
 
         setUpFilterBtn();
+
+        setUpPriceListBtn();
 
         chipGroup = view.findViewById(R.id.chipGroup);
         filterViewModel = new ViewModelProvider(requireActivity()).get(SolutionFilterViewModel.class);
@@ -157,6 +160,21 @@ public class ProvidedProductsFragment extends Fragment {
             ProductCreationFragment fragment = new ProductCreationFragment();
             fragment.show(getParentFragmentManager(), "ProductCreationFragment");
         });
+    }
+    private void setUpPriceListBtn(){
+        priceListBtn = view.findViewById(R.id.priceListBtn);
+        priceListBtn.setOnClickListener(v -> {
+            openPriceListFragment();
+        });
+    }
+    private void openPriceListFragment() {
+        PriceListFragment priceListFragment = PriceListFragment.newInstance("product");
+
+        getParentFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_fragment_container, priceListFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
 
