@@ -30,10 +30,9 @@ import com.example.eventplanner.activities.business.BusinessInfoActivity;
 import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
 import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.fragments.calendar.CalendarFragment;
-import com.example.eventplanner.activities.charts.AttendanceChart;
-import com.example.eventplanner.activities.charts.RatingsChart;
+import com.example.eventplanner.fragments.charts.AttendanceChartFragment;
+import com.example.eventplanner.fragments.charts.RatingsChartFragment;
 import com.example.eventplanner.fragments.event.eventcreation.EventCreationFragment;
-import com.example.eventplanner.fragments.eventtype.EventTypeCreationFragment;
 import com.example.eventplanner.fragments.eventtype.EventTypeTableFragment;
 import com.example.eventplanner.fragments.favorites.ExplorePageFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteEventsFragment;
@@ -382,9 +381,9 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             }  else if (id == R.id.nav_event_types_overview) {
                 navigateToFragment(new EventTypeTableFragment());
             } else if (id == R.id.nav_attendance_chart) {
-                startActivity(new Intent(this, AttendanceChart.class));
+                navigateToFragment(new AttendanceChartFragment());
             } else if (id == R.id.nav_ratings_chart) {
-                startActivity(new Intent(this, RatingsChart.class));
+                navigateToFragment(new RatingsChartFragment());
             } else if (id == R.id.nav_notifications) {
                 updateNotificationsBadge(0);
                 updateHamburgerIcon(false);

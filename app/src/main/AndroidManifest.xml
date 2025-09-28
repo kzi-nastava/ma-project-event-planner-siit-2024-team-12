@@ -27,10 +27,10 @@
             android:name=".activities.gallery.GalleryDisplayActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.charts.RatingsChart"
+            android:name=".fragments.charts.RatingsChartFragment"
             android:exported="false" />
         <activity
-            android:name=".activities.charts.AttendanceChart"
+            android:name=".fragments.charts.AttendanceChartFragment"
             android:exported="false" />
         <activity
             android:name=".activities.solutioncategory.CategoriesTableActivity"
