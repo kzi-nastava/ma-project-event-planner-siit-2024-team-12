@@ -400,7 +400,7 @@ public class NotificationFragment extends Fragment {
             }
         });
     }
-    
+
     private void setupPagination() {
         if (allNotifications.isEmpty()) {
             Toast.makeText(getContext(), "No notifications to show.", Toast.LENGTH_SHORT).show();
