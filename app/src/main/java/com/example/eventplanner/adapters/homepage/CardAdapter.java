@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.R;
+import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.fragments.event.EventDetailsFragment;
 import com.example.eventplanner.activities.homepage.CardItem;
 import com.example.eventplanner.fragments.product.ProductDetailsFragment;
@@ -75,25 +76,43 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventViewHolde
         Intent i = null;
 
         if (item instanceof com.example.eventplanner.dto.event.GetEventDTO) {
-            i = new Intent(context, EventDetailsFragment.class);
-            i.putExtra("id", item.getId());
+            GetEventDTO event = (GetEventDTO) item;
+            EventDetailsFragment fragment = EventDetailsFragment.newInstance(event.getId());
+
+            if (context instanceof AppCompatActivity) {
+                AppCompatActivity activity = (AppCompatActivity) context;
+
+                activity.getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+
+            }
 
         } else if (item instanceof com.example.eventplanner.dto.solution.GetHomepageSolutionDTO) {
             com.example.eventplanner.dto.solution.GetHomepageSolutionDTO solution =
                     (com.example.eventplanner.dto.solution.GetHomepageSolutionDTO) item;
 
             if ("product".equalsIgnoreCase(solution.getType())) {
-                i = new Intent(context, ProductDetailsFragment.class);
+                ProductDetailsFragment fragment = ProductDetailsFragment.newInstance(solution.getId());
+
+                if (context instanceof AppCompatActivity) {
+                    AppCompatActivity activity = (AppCompatActivity) context;
+
+                    activity.getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
+
+                }
             }
             else if ("service".equalsIgnoreCase(solution.getType())) {
                 ServiceDetailsFragment fragment = ServiceDetailsFragment.newInstance(solution.getId());
 
                 if (context instanceof AppCompatActivity) {
                     AppCompatActivity activity = (AppCompatActivity) context;
-                    FrameLayout suspendedContainer = activity.findViewById(R.id.main_fragment_container);
-                    if (suspendedContainer != null) {
-                        suspendedContainer.setVisibility(View.VISIBLE);
-                    }
 
                     activity.getSupportFragmentManager()
                             .beginTransaction()

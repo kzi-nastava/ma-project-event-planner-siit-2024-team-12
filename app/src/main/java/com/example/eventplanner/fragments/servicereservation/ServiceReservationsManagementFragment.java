@@ -55,8 +55,6 @@ public class ServiceReservationsManagementFragment extends Fragment {
         prevPageButton = v.findViewById(R.id.prevPageButton);
         nextPageButton = v.findViewById(R.id.nextPageButton);
         pageNumber = v.findViewById(R.id.pageNumber);
-        ImageView exitButton = v.findViewById(R.id.exitFormButton);
-        exitButton.setOnClickListener(v11 -> requireActivity().onBackPressed());
 
         recyclerReservations.setLayoutManager(new LinearLayoutManager(getContext()));
 

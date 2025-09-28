@@ -227,26 +227,34 @@ public class CommentManagementFragment extends Fragment implements ManageComment
             return;
         }
 
-        Intent intent;
         switch (entityType.toUpperCase()) {
             case "EVENT":
-                intent = new Intent(getContext(), EventDetailsFragment.class);
-                intent.putExtra("id", entityId);
-                startActivity(intent);
+                if (getContext() instanceof AppCompatActivity) {
+                    AppCompatActivity activity = (AppCompatActivity) getContext();
+
+                    EventDetailsFragment fragment = EventDetailsFragment.newInstance(entityId);
+                    activity.getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
                 break;
             case "PRODUCT":
-                intent = new Intent(getContext(), ProductDetailsFragment.class);
-                intent.putExtra("id", entityId);
-                startActivity(intent);
+                if (getContext() instanceof AppCompatActivity) {
+                    AppCompatActivity activity = (AppCompatActivity) getContext();
+
+                    ProductDetailsFragment fragment = ProductDetailsFragment.newInstance(entityId);
+                    activity.getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
                 break;
             case "SERVICE":
                 if (getContext() instanceof AppCompatActivity) {
                     AppCompatActivity activity = (AppCompatActivity) getContext();
-
-                    FrameLayout suspendedContainer = activity.findViewById(R.id.main_fragment_container);
-                    if (suspendedContainer != null) {
-                        suspendedContainer.setVisibility(View.VISIBLE);
-                    }
 
                     ServiceDetailsFragment fragment = ServiceDetailsFragment.newInstance(entityId);
                     activity.getSupportFragmentManager()
