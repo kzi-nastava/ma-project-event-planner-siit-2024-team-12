@@ -31,7 +31,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="20dp"
             android:visibility="gone"
-            android:src="@drawable/ic_inbox"
+            android:src="@drawable/ic_chat_icon"
             app:backgroundTint="@color/light_gray" />
         </FrameLayout>
 

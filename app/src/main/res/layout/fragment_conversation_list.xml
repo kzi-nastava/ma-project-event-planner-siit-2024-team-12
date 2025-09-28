@@ -54,7 +54,8 @@
         android:visibility="gone"> <ImageView
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@drawable/ic_inbox" app:tint="@color/dark_gray"
+        android:src="@drawable/ic_chat_icon"
+        app:tint="@color/dark_gray"
         android:contentDescription="@string/no_messages"/>
 
         <TextView
