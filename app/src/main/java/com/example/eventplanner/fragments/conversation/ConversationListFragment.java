@@ -44,7 +44,7 @@ public class ConversationListFragment extends Fragment {
     private void onConversationClicked(GetConversationDTO conversation) {
         if (conversation.getId() != null) {
 
-            String otherUserName = conversation.getOtherUser().getName() + " " + conversation.getOtherUser().getSurname();
+            String otherUserName = getDisplayName(conversation);
             String otherUserEmail = conversation.getOtherUser().getEmail();
 
             ConversationFragment chatFragment = ConversationFragment.newInstance(
@@ -96,5 +96,25 @@ public class ConversationListFragment extends Fragment {
                 t.printStackTrace();
             }
         });
+    }
+
+    private String getDisplayName(GetConversationDTO conversation) {
+        if (conversation.getOtherUser() == null) {
+            return "User"; // fallback
+        }
+
+        String name = conversation.getOtherUser().getName();
+        String surname = conversation.getOtherUser().getSurname();
+        String email = conversation.getOtherUser().getEmail();
+
+        if (name != null && !name.trim().isEmpty() && surname != null && !surname.trim().isEmpty()) {
+            return name + " " + surname;
+        }
+
+        if (email != null && !email.trim().isEmpty()) {
+            return email;
+        }
+
+        return "Unknown User";
     }
 }

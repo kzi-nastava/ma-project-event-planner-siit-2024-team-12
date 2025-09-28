@@ -65,9 +65,29 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             profileImage = itemView.findViewById(R.id.conversation_profile_image);
         }
 
+        private String getDisplayName(GetConversationDTO conversation) {
+            if (conversation.getOtherUser() == null) {
+                return "User"; // fallback
+            }
+
+            String name = conversation.getOtherUser().getName();
+            String surname = conversation.getOtherUser().getSurname();
+            String email = conversation.getOtherUser().getEmail();
+
+            if (name != null && !name.trim().isEmpty() && surname != null && !surname.trim().isEmpty()) {
+                return name + " " + surname;
+            }
+
+            if (email != null && !email.trim().isEmpty()) {
+                return email;
+            }
+
+            return "Unknown User";
+        }
+
         void bind(GetConversationDTO conversation, OnConversationClickListener listener) {
-            String fullName = conversation.getOtherUser().getName() + " " + conversation.getOtherUser().getSurname();
-            userName.setText(fullName);
+            String displayName = getDisplayName(conversation);
+            userName.setText(displayName);
 
             List<GetChatMessageDTO> messages = conversation.getMessages();
             if (messages != null && !messages.isEmpty()) {

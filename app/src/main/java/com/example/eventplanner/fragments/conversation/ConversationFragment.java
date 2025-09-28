@@ -78,7 +78,12 @@ public class ConversationFragment extends Fragment {
         blockMessageTextView = view.findViewById(R.id.tv_block_message);
 
         if (getArguments() != null) {
-            otherUserNameTextView.setText(getArguments().getString(ARG_OTHER_USER_NAME));
+            String nameFromArgs = getArguments().getString(ARG_OTHER_USER_NAME);
+            if (nameFromArgs != null && (nameFromArgs.trim().isEmpty() || nameFromArgs.equals("null null"))) {
+                otherUserNameTextView.setText(otherUserEmail);
+            } else {
+                otherUserNameTextView.setText(nameFromArgs);
+            }
         }
 
         // Setup RecyclerView
@@ -111,10 +116,11 @@ public class ConversationFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     GetConversationDTO conversation = response.body();
 
+                    String displayName = getDisplayName(conversation);
+                    otherUserNameTextView.setText(displayName);
+
                     if (conversation.isBlocked()) {
-                        String otherUserName = conversation.getOtherUser() != null ?
-                                conversation.getOtherUser().getName() + " " + conversation.getOtherUser().getSurname(): "";
-                        handleBlock(otherUserName);
+                        handleBlock(displayName);
                     } else {
                         messageAdapter.setMessages(conversation.getMessages());
                         messagesRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
@@ -195,6 +201,27 @@ public class ConversationFragment extends Fragment {
             }
             blockMessageTextView.setVisibility(View.GONE);
         }
+    }
+
+    private String getDisplayName(GetConversationDTO conversation) {
+        if (conversation.getOtherUser() == null) {
+            return otherUserEmail != null ? otherUserEmail : "User";
+        }
+
+        String name = conversation.getOtherUser().getName();
+        String surname = conversation.getOtherUser().getSurname();
+        String email = conversation.getOtherUser().getEmail();
+
+        if (name != null && !name.trim().isEmpty() && surname != null && !surname.trim().isEmpty()) {
+            return name + " " + surname;
+        }
+
+        if (email != null && !email.trim().isEmpty()) {
+            return email;
+        }
+
+        // Fallback
+        return otherUserEmail != null ? otherUserEmail : "Unknown User";
     }
     
 }
