@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments.businessregistration;
+package com.example.eventplanner.fragments.business.businessregistration;
 
 import android.os.Bundle;
 
@@ -14,7 +14,6 @@ import android.widget.EditText;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.utils.ValidationUtils;
-import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
 import com.example.eventplanner.viewmodels.BusinessViewModel;
 
 
@@ -32,9 +31,14 @@ public class BusinessRegistration1 extends Fragment {
 
        nextButton.setOnClickListener(v -> {
            if (saveFormData()) {
-               if (getActivity() instanceof BusinessRegistrationActivity) {
-                   ((BusinessRegistrationActivity) getActivity()).nextPage();
+               Fragment parent = requireActivity()
+                       .getSupportFragmentManager()
+                       .findFragmentById(R.id.main_fragment_container);
+
+               if (parent instanceof BusinessRegistrationFragment) {
+                   ((BusinessRegistrationFragment) parent).nextPage();
                }
+
            }
        });
 

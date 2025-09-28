@@ -1,23 +1,22 @@
-package com.example.eventplanner.activities.business;
+package com.example.eventplanner.fragments.business;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.example.eventplanner.activities.homepage.HomepageActivity;
+import com.example.eventplanner.fragments.homepage.HomepageFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
@@ -27,30 +26,30 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BusinessInfoActivity extends AppCompatActivity {
+public class BusinessInfoFragment extends Fragment {
     private String companyEmail;
+    private View view;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_business_info);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_business_info, container, false);
 
         getCurrentBusiness();
 
-        Button deactivateBtn = findViewById(R.id.deactivateButton);
-        deactivateBtn.setOnClickListener(v -> {
-            deactivateBusiness(v);
-        });
+        Button deactivateBtn = view.findViewById(R.id.deactivateButton);
+        deactivateBtn.setOnClickListener(this::deactivateBusiness);
+
+        Button editBtn = view.findViewById(R.id.editButton);
+        editBtn.setOnClickListener(this::openBusinessEditFragment);
+
+        return view;
+
     }
 
+
     public void deactivateBusiness(View view) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(requireContext());
 
         dialog.setTitle("Deactivate business?");
         dialog.setMessage("Are you sure you want to deactivate your business account?");
@@ -74,27 +73,20 @@ public class BusinessInfoActivity extends AppCompatActivity {
     }
 
 
-    public void openBusinessEditFragment(View view) {
-        Intent intent = new Intent(BusinessInfoActivity.this, BusinessEditActivity.class);
-        startActivity(intent);
-    }
-
-
-
     private void setUpFormDetails(GetBusinessDTO getBusinessDTO) {
-        TextView name = findViewById(R.id.name);
+        TextView name = view.findViewById(R.id.name);
         name.setText(getBusinessDTO.getCompanyName());
 
-        TextView email = findViewById(R.id.email);
+        TextView email = view.findViewById(R.id.email);
         email.setText(getBusinessDTO.getCompanyEmail());
 
-        TextView address = findViewById(R.id.address);
+        TextView address = view.findViewById(R.id.address);
         address.setText(getBusinessDTO.getAddress());
 
-        TextView phone = findViewById(R.id.phone);
+        TextView phone = view.findViewById(R.id.phone);
         phone.setText(getBusinessDTO.getPhone());
 
-        TextView description = findViewById(R.id.description);
+        TextView description = view.findViewById(R.id.description);
         description.setText(getBusinessDTO.getDescription());
 
         setMainImage(getBusinessDTO);
@@ -103,7 +95,7 @@ public class BusinessInfoActivity extends AppCompatActivity {
 
 
     private void setMainImage(GetBusinessDTO getBusinessDTO) {
-        ImageView mainImage = findViewById(R.id.mainImage);
+        ImageView mainImage = view.findViewById(R.id.mainImage);
         String mainImageUrl = getBusinessDTO.getMainImageUrl();
 
         String fullUrl = "http://10.0.2.2:8080" + mainImageUrl;
@@ -117,7 +109,7 @@ public class BusinessInfoActivity extends AppCompatActivity {
 
 
     private void getCurrentBusiness() {
-        String authorization = ClientUtils.getAuthorization(this);
+        String authorization = ClientUtils.getAuthorization(requireContext());
 
         Call<GetBusinessDTO> call = ClientUtils.businessService.getBusinessForCurrentUser(authorization);
 
@@ -130,14 +122,14 @@ public class BusinessInfoActivity extends AppCompatActivity {
                     companyEmail = dto.getCompanyEmail();
 
                     if (companyEmail == null) {
-                        Toast.makeText(BusinessInfoActivity.this, "You don't have an active " +
+                        Toast.makeText(requireActivity(), "You don't have an active " +
                                 "business account!", Toast.LENGTH_SHORT).show();
                     }
 
                     setUpFormDetails(dto);
                 }
                 else if (response.code() == 204 || response.body() == null) {
-                    Toast.makeText(BusinessInfoActivity.this, "You don't have an active " +
+                    Toast.makeText(requireActivity(), "You don't have an active " +
                             "business account!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -145,7 +137,7 @@ public class BusinessInfoActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<GetBusinessDTO> call, Throwable t) {
-                Toast.makeText(BusinessInfoActivity.this, "Failed to load business information!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Failed to load business information!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -153,10 +145,10 @@ public class BusinessInfoActivity extends AppCompatActivity {
 
     private void deactivate() {
         if (companyEmail == null) {
-            Toast.makeText(BusinessInfoActivity.this, "You cannot deactivate inactive business!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireActivity(), "You cannot deactivate inactive business!", Toast.LENGTH_SHORT).show();
         }
         else {
-            String authorization = ClientUtils.getAuthorization(this);
+            String authorization = ClientUtils.getAuthorization(requireContext());
 
             Call<ResponseBody> call = ClientUtils.businessService.deactivateBusiness(authorization, companyEmail);
 
@@ -164,20 +156,30 @@ public class BusinessInfoActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(BusinessInfoActivity.this, "Deactivated business account!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), "Deactivated business account!", Toast.LENGTH_SHORT).show();
 
-                        Intent intent = new Intent(BusinessInfoActivity.this, HomepageActivity.class);
-                        startActivity(intent);
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_fragment_container, new HomepageFragment())
+                                .commit();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Toast.makeText(BusinessInfoActivity.this, "Failed to deactivate business account!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "Failed to deactivate business account!", Toast.LENGTH_SHORT).show();
                 }
             });
         }
 
     }
+
+    public void openBusinessEditFragment(View view) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_fragment_container, new BusinessEditFragment())
+                .commit();
+    }
+
 
 }

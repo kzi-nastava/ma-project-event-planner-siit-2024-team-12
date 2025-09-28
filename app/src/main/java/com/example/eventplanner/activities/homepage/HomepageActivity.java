@@ -26,8 +26,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.auth.SignUpActivity;
-import com.example.eventplanner.activities.business.BusinessInfoActivity;
-import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
+import com.example.eventplanner.fragments.business.BusinessInfoFragment;
+import com.example.eventplanner.fragments.business.businessregistration.BusinessRegistrationFragment;
 import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.fragments.calendar.CalendarFragment;
 import com.example.eventplanner.fragments.charts.AttendanceChartFragment;
@@ -324,9 +324,9 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             if (id == R.id.nav_home) {
                 loadMainFragment(new HomepageFragment());
             } else if (id == R.id.nav_create_business) {
-                startActivity(new Intent(this, BusinessRegistrationActivity.class));
+                navigateToFragment(new BusinessRegistrationFragment());
             } else if (id == R.id.nav_business_info) {
-                startActivity(new Intent(this, BusinessInfoActivity.class));
+                navigateToFragment(new BusinessInfoFragment());
             } else if (id == R.id.nav_products) {
                 navigateToFragment(new ProvidedProductsFragment());
             } else if (id == R.id.nav_service) {

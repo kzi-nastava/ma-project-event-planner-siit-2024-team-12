@@ -1,12 +1,14 @@
-package com.example.eventplanner.activities.business;
+package com.example.eventplanner.fragments.business;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,10 +16,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.activities.gallery.GalleryDisplayActivity;
@@ -40,50 +45,44 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BusinessEditActivity extends AppCompatActivity {
+public class BusinessEditFragment extends Fragment {
     private Uri selectedImageUri = null;
     private Long businessId;
     private String businessName;
+    private View view;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_business_edit);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_business_edit, container, false);
 
         loadCurrentBusiness();
 
-        Button saveBtn = findViewById(R.id.saveBtn);
+        Button saveBtn = view.findViewById(R.id.saveBtn);
         saveBtn.setOnClickListener(v -> {
             update();
         });
 
 
-        ImageView addImageButton = findViewById(R.id.addImgBtn);
+        ImageView addImageButton = view.findViewById(R.id.addImgBtn);
         addImageButton.setOnClickListener(v -> {
             openGalleryForImage();
         });
 
-        Button galleryBtn = findViewById(R.id.galleryBtn);
+        Button galleryBtn = view.findViewById(R.id.galleryBtn);
         galleryBtn.setOnClickListener(v -> {
             openBusinessGallery();
         });
 
+        return view;
     }
 
 
-
     private void openBusinessGallery() {
-        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences prefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String currentUser = prefs.getString("email", "");
 
-        Intent intent = new Intent(this, GalleryDisplayActivity.class);
+        Intent intent = new Intent(requireActivity(), GalleryDisplayActivity.class);
         intent.putExtra("type", "company");
         intent.putExtra("id", businessId);
         intent.putExtra("entityName", businessName);
@@ -105,19 +104,19 @@ public class BusinessEditActivity extends AppCompatActivity {
         businessId = dto.getId();
         businessName = dto.getCompanyName();
 
-        TextView name = findViewById(R.id.name);
+        TextView name = view.findViewById(R.id.name);
         name.setText(dto.getCompanyName());
 
-        TextView email = findViewById(R.id.email);
+        TextView email = view.findViewById(R.id.email);
         email.setText(dto.getCompanyEmail());
 
-        EditText address = findViewById(R.id.address);
+        EditText address = view.findViewById(R.id.address);
         address.setText(dto.getAddress());
 
-        EditText phone = findViewById(R.id.phone);
+        EditText phone = view.findViewById(R.id.phone);
         phone.setText(dto.getPhone());
 
-        EditText description = findViewById(R.id.description);
+        EditText description = view.findViewById(R.id.description);
         description.setText(dto.getDescription());
 
         setMainImage(dto);
@@ -126,7 +125,7 @@ public class BusinessEditActivity extends AppCompatActivity {
 
 
     private void setMainImage(GetBusinessDTO dto) {
-        ImageView mainImage = findViewById(R.id.mainImage);
+        ImageView mainImage = view.findViewById(R.id.mainImage);
         String imagePath = dto.getMainImageUrl();
 
         if (imagePath != null && !imagePath.isEmpty()) {
@@ -143,7 +142,7 @@ public class BusinessEditActivity extends AppCompatActivity {
     }
 
     public void loadCurrentBusiness() {
-        String authorization = ClientUtils.getAuthorization(this);
+        String authorization = ClientUtils.getAuthorization(requireContext());
 
         Call<GetBusinessDTO> call = ClientUtils.businessService.getBusinessForCurrentUser(authorization);
 
@@ -155,21 +154,21 @@ public class BusinessEditActivity extends AppCompatActivity {
                         setUpInitialForm(response.body());
                     }
                     else {
-                        Toast.makeText(BusinessEditActivity.this, "No active business yet!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), "No active business yet!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<GetBusinessDTO> call, Throwable t) {
-                Toast.makeText(BusinessEditActivity.this, "Failed to load current business!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Failed to load current business!", Toast.LENGTH_SHORT).show();
 
             }
         });
     }
 
     private void updateBusiness(String email, UpdateBusinessDTO dto) {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<UpdatedBusinessDTO> call = ClientUtils.businessService.update(auth, email, dto);
 
@@ -177,21 +176,24 @@ public class BusinessEditActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<UpdatedBusinessDTO> call, Response<UpdatedBusinessDTO> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(BusinessEditActivity.this, "Successful business update!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "Successful business update!", Toast.LENGTH_SHORT).show();
 
                     UpdatedBusinessDTO updated = response.body();
 
                     if (updated != null && selectedImageUri != null) {
                         uploadProfileImage(businessId);
                     } else {
-                        startActivity(new Intent(BusinessEditActivity.this, BusinessInfoActivity.class));
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_fragment_container, new BusinessInfoFragment())
+                                .commit();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<UpdatedBusinessDTO> call, Throwable t) {
-                Toast.makeText(BusinessEditActivity.this, "Failed to update business!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Failed to update business!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -201,10 +203,10 @@ public class BusinessEditActivity extends AppCompatActivity {
 
         MultipartBody.Part imagePart;
         try {
-            imagePart = ImageHelper.prepareFilePart(this, "files", selectedImageUri);
+            imagePart = ImageHelper.prepareFilePart(requireContext(), "files", selectedImageUri);
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Failed to prepare image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Failed to prepare image", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -212,7 +214,7 @@ public class BusinessEditActivity extends AppCompatActivity {
         RequestBody entityId = RequestBody.create(MultipartBody.FORM, String.valueOf(businessId));
         RequestBody isMain = RequestBody.create(MultipartBody.FORM, "true");
 
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<ResponseBody> call = ClientUtils.galleryService.uploadImages(
                 auth,
@@ -228,16 +230,19 @@ public class BusinessEditActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     //Toast.makeText(BusinessEditActivity.this, "Image uploaded!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(BusinessEditActivity.this, BusinessInfoActivity.class);
-                    startActivity(intent);
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, new BusinessInfoFragment())
+                            .commit();
+
                 } else {
-                    Toast.makeText(BusinessEditActivity.this, "Upload failed: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "Upload failed: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(BusinessEditActivity.this, "Upload error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Upload error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -245,9 +250,9 @@ public class BusinessEditActivity extends AppCompatActivity {
 
 
     private void update() {
-        EditText address = findViewById(R.id.address);
-        EditText phone = findViewById(R.id.phone);
-        EditText description = findViewById(R.id.description);
+        EditText address = view.findViewById(R.id.address);
+        EditText phone = view.findViewById(R.id.phone);
+        EditText description = view.findViewById(R.id.description);
 
         if (!ValidationUtils.isFieldValid(address, "Address is required!")) return;
         if (!ValidationUtils.isFieldValid(phone, "Phone is required!")) return;
@@ -261,23 +266,22 @@ public class BusinessEditActivity extends AppCompatActivity {
                 new ArrayList<>()
         );
 
-        TextView email = findViewById(R.id.email);
+        TextView email = view.findViewById(R.id.email);
 
         updateBusiness(email.getText().toString().trim(), updateBusinessDTO);
     }
 
 
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == AppCompatActivity.RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
-            ImageView profileImage = findViewById(R.id.mainImage);
+            ImageView profileImage = view.findViewById(R.id.mainImage);
             profileImage.setImageURI(selectedImageUri);
         }
-
     }
+
 
 }

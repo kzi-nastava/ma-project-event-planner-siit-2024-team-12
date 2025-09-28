@@ -27,19 +27,7 @@
             android:name=".activities.gallery.GalleryDisplayActivity"
             android:exported="false" />
         <activity
-            android:name=".fragments.charts.RatingsChartFragment"
-            android:exported="false" />
-        <activity
-            android:name=".fragments.charts.AttendanceChartFragment"
-            android:exported="false" />
-        <activity
             android:name=".activities.solutioncategory.CategoriesTableActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.business.BusinessEditActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.business.BusinessInfoActivity"
             android:exported="false" />
         <activity
             android:name=".activities.profile.ProfileEditActivity"
@@ -55,9 +43,6 @@
             android:exported="false" />
         <activity
             android:name=".activities.service.ServiceCreationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.business.BusinessRegistrationActivity"
             android:exported="false" />
         <activity
             android:name=".activities.auth.SignUpActivity"
