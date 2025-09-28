@@ -85,8 +85,8 @@ public class TopSolutionsFragment extends Fragment {
 
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     adapter.setItems(response.body());
-                    solutionsRv.setVisibility(View.GONE);
-                    emptyView.setVisibility(View.VISIBLE);
+                    solutionsRv.setVisibility(View.VISIBLE);
+                    emptyView.setVisibility(View.GONE);
                 } else {
                     adapter.setItems(Collections.emptyList());
                     solutionsRv.setVisibility(View.GONE);

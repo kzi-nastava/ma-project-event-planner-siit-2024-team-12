@@ -49,6 +49,7 @@ public abstract class BaseListFragment<T extends CardItem, V extends ViewModel> 
     protected TextView listTitle;
     protected RadioGroup solutionTypeRadioGroup;
     protected LinearLayout filterButtonsLayout;
+    protected TextView emptyMessage;
 
     protected V filterViewModel;
     protected List<T> allItems = new ArrayList<>();
@@ -81,7 +82,7 @@ public abstract class BaseListFragment<T extends CardItem, V extends ViewModel> 
         listTitle = view.findViewById(R.id.listTitle);
         solutionTypeRadioGroup = view.findViewById(R.id.solutionTypeRadioGroup);
         filterButtonsLayout = view.findViewById(R.id.filterButtonsLayout);
-
+        emptyMessage = view.findViewById(R.id.emptyStateText);
 
         setupViewModel();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
