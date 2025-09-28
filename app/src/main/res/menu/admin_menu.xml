@@ -7,10 +7,6 @@
 
     <group android:id="@+id/event_types">
         <item
-            android:id="@+id/nav_create_event_type"
-            android:title="@string/create_event_type" />
-
-        <item
             android:id="@+id/nav_event_types_overview"
             android:title="@string/event_types_overview" />
     </group>

@@ -1,12 +1,9 @@
 package com.example.eventplanner.fragments.product;
 
-import android.app.Dialog;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -21,15 +18,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.eventtype.EventTypeCreationActivity;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.solutioncategory.GetSolutionCategoryDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.viewmodels.ProductCreationViewModel;
-import com.itextpdf.kernel.pdf.canvas.parser.EventType;
-
-import org.bouncycastle.crypto.engines.CamelliaLightEngine;
 
 import java.util.ArrayList;
 import java.util.List;

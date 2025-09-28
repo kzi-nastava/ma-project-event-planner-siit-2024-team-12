@@ -33,8 +33,8 @@ import com.example.eventplanner.fragments.calendar.CalendarFragment;
 import com.example.eventplanner.activities.charts.AttendanceChart;
 import com.example.eventplanner.activities.charts.RatingsChart;
 import com.example.eventplanner.fragments.event.eventcreation.EventCreationFragment;
-import com.example.eventplanner.activities.eventtype.EventTypeCreationActivity;
-import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
+import com.example.eventplanner.fragments.eventtype.EventTypeCreationFragment;
+import com.example.eventplanner.fragments.eventtype.EventTypeTableFragment;
 import com.example.eventplanner.fragments.favorites.ExplorePageFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteEventsFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteServicesFragment;
@@ -347,7 +347,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_categories) {
                 startActivity(new Intent(this, CategoriesTableActivity.class));
             } else if (id == R.id.nav_event_types) {
-                startActivity(new Intent(this, EventTypeTableActivity.class));
+                navigateToFragment(new EventTypeTableFragment());
             } else if (id == R.id.nav_notifications) {
                 updateNotificationsBadge(0);
                 updateHamburgerIcon(false);
@@ -379,10 +379,8 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             int id = item.getItemId();
             if (id == R.id.nav_home) {
                 loadMainFragment(new HomepageFragment());
-            } else if (id == R.id.nav_create_event_type) {
-                startActivity(new Intent(this, EventTypeCreationActivity.class));
-            } else if (id == R.id.nav_event_types_overview) {
-                startActivity(new Intent(this, EventTypeTableActivity.class));
+            }  else if (id == R.id.nav_event_types_overview) {
+                navigateToFragment(new EventTypeTableFragment());
             } else if (id == R.id.nav_attendance_chart) {
                 startActivity(new Intent(this, AttendanceChart.class));
             } else if (id == R.id.nav_ratings_chart) {

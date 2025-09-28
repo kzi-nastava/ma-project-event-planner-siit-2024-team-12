@@ -33,22 +33,7 @@
             android:name=".activities.charts.AttendanceChart"
             android:exported="false" />
         <activity
-            android:name=".fragments.favorites.FavoriteServicesFragment"
-            android:exported="false" />
-        <activity
             android:name=".activities.solutioncategory.CategoriesTableActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.eventtype.EventTypeTableActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.eventtype.EventTypeCreationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.eventtype.EventTypeEditActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.eventtype.EventTypeViewActivity"
             android:exported="false" />
         <activity
             android:name=".activities.business.BusinessEditActivity"
