@@ -384,10 +384,6 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                 startActivity(new Intent(this, EventTypeCreationActivity.class));
             } else if (id == R.id.nav_event_types_overview) {
                 startActivity(new Intent(this, EventTypeTableActivity.class));
-            } else if (id == R.id.nav_calendar_od) {
-                navigateToFragment(new CalendarFragment());
-            } else if (id == R.id.nav_view_profile) {
-                startActivity(new Intent(this, ProfileViewActivity.class));
             } else if (id == R.id.nav_attendance_chart) {
                 startActivity(new Intent(this, AttendanceChart.class));
             } else if (id == R.id.nav_ratings_chart) {
