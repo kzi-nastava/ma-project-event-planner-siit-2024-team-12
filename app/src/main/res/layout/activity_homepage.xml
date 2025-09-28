@@ -48,7 +48,7 @@
 
     <LinearLayout
         android:id="@+id/chat_drawer_root"
-        android:layout_width="350dp"
+        android:layout_width="380dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:orientation="vertical"

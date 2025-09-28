@@ -75,6 +75,12 @@ public class ClientUtils {
         return "Bearer " + token;
     }
 
+    public static String getCurrentUserEmail(Context context) {
+        if (context == null) return "";
+        SharedPreferences sharedPreferences = context.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        return sharedPreferences.getString("email", "");
+    }
+
 
     public static EventTypeService eventTypeService = retrofit.create(EventTypeService.class);
 

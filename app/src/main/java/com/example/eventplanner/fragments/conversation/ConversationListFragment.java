@@ -34,13 +34,30 @@ public class ConversationListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_conversation_list, container, false);
         recyclerView = view.findViewById(R.id.conversation_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ConversationAdapter(new ArrayList<>(), conversation -> {
-            // TODO: open messages
-        });
+        adapter = new ConversationAdapter(new ArrayList<>(), this::onConversationClicked);
         recyclerView.setAdapter(adapter);
 
         loadConversations();
         return view;
+    }
+
+    private void onConversationClicked(GetConversationDTO conversation) {
+        if (conversation.getId() != null) {
+
+            String otherUserName = conversation.getOtherUser().getName() + " " + conversation.getOtherUser().getSurname();
+            String otherUserEmail = conversation.getOtherUser().getEmail();
+
+            ConversationFragment chatFragment = ConversationFragment.newInstance(
+                    conversation.getId(),
+                    otherUserName,
+                    otherUserEmail
+            );
+
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.chat_fragment_container, chatFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
 
