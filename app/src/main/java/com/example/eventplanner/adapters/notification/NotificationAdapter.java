@@ -101,7 +101,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 itemView.setOnClickListener(null);
             }
             String senderEmail = notification.getSenderEmail();
-            if (senderEmail != null && !senderEmail.isEmpty()) {
+            if ("admin@example.com".equalsIgnoreCase(senderEmail)) {
+                senderEmailTextView.setVisibility(View.GONE);
+                senderEmailTextView.setOnClickListener(null);
+            } else if (senderEmail != null && !senderEmail.isEmpty()) {
                 senderEmailTextView.setText(senderEmail);
                 senderEmailTextView.setVisibility(View.VISIBLE);
 
