@@ -36,6 +36,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -315,45 +316,48 @@ public class NotificationFragment extends Fragment {
 
     private void checkMuteStatus() {
         String auth = ClientUtils.getAuthorization(getContext());
-        Call<String> call = ClientUtils.notificationService.getMuteStatus(auth);
+        Call<ResponseBody> call = ClientUtils.notificationService.getMuteStatus(auth);
 
-        call.enqueue(new Callback<String>() {
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 isMuted = false; // default
 
                 if (response.isSuccessful()) {
-                    String mutedUntilString = response.body();
-                    if (mutedUntilString != null && !mutedUntilString.isEmpty()) {
-                        try {
+                    try {
+                        String mutedUntilString = response.body() != null ? response.body().string() : null;
+
+                        if (mutedUntilString != null && !mutedUntilString.isEmpty()) {
+                            mutedUntilString = mutedUntilString.replace("\"", "");
+
                             LocalDateTime muteEndTime = LocalDateTime.parse(mutedUntilString);
                             isMuted = muteEndTime.isAfter(LocalDateTime.now());
                             updateMuteUI(isMuted ? muteEndTime : null);
-                        } catch (Exception e) {
-                            Log.w("NotificationFragment", "Mute status body ne može se parsirati, pretpostavljamo da nije mute-ano.");
+                        } else {
                             updateMuteUI(null);
                         }
-                    } else {
-                        // prazno body -> nije mute-ano
+                    } catch (Exception e) {
+                        Log.w("NotificationFragment", "Mute status cannot be parsed", e);
                         updateMuteUI(null);
                     }
                 } else {
                     updateMuteUI(null);
                 }
 
-                // učitaj notifikacije bez errora
                 loadNotifications();
             }
 
+
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 isMuted = false;
                 updateMuteUI(null);
-                Log.e("NotificationFragment", "Greška pri provjeri mute statusa", t);
+                Log.e("NotificationFragment", "Error loading mute status", t);
                 loadNotifications();
             }
         });
     }
+
 
     private void updateMuteUI(LocalDateTime mutedUntil) {
         if (isMuted) {

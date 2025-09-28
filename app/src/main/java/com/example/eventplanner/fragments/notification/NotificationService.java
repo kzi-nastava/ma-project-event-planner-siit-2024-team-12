@@ -5,6 +5,7 @@ import com.example.eventplanner.dto.notification.GetNotificationDTO;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -24,5 +25,5 @@ public interface NotificationService {
     Call<Void> unmuteNotifications(@Header("Authorization") String token);
 
     @GET("notifications/mute")
-    Call<String> getMuteStatus(@Header("Authorization") String token);
+    Call<ResponseBody> getMuteStatus(@Header("Authorization") String token);
 }
