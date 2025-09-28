@@ -65,8 +65,6 @@ public class ServiceReservationDetailsFragment extends Fragment {
         textTimeTo = view.findViewById(R.id.textTimeTo);
         textStatus = view.findViewById(R.id.textStatus);
         buttonCancel = view.findViewById(R.id.buttonCancelReservation);
-        ImageView exitButton = view.findViewById(R.id.exitFormButton);
-        exitButton.setOnClickListener(v -> requireActivity().onBackPressed());
 
         if (getArguments() != null) {
             reservationId = getArguments().getLong("RESERVATION_ID", 0);

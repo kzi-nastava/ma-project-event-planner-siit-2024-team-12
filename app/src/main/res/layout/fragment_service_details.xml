@@ -6,18 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".fragments.servicecreation.ServiceDetailsFragment">
 
-    <ImageView
-        android:id="@+id/exitBtn"
-        android:layout_width="23dp"
-        android:layout_height="28dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:contentDescription="@string/cancel"
-        android:src="@drawable/exit_form"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:elevation="4dp" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

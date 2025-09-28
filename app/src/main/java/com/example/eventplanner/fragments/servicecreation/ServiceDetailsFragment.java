@@ -45,10 +45,7 @@ public class ServiceDetailsFragment extends Fragment {
     private TextView serviceTitle;
     private EditText name, city, price, discount, availability, reservationDeadline, cancellationDeadline, description;
     private Button chatButton, bookServiceButton;
-    private ImageView exitButton;
-
     private GetServiceDTO service;
-
     private TextView bookServiceText;
 
     public static ServiceDetailsFragment newInstance(Long serviceId) {
@@ -89,7 +86,6 @@ public class ServiceDetailsFragment extends Fragment {
         description = view.findViewById(R.id.description);
         chatButton = view.findViewById(R.id.chatButton);
         bookServiceButton = view.findViewById(R.id.bookServiceButton);
-        exitButton = view.findViewById(R.id.exitBtn);
         fav = view.findViewById(R.id.fav);
         favOutline = view.findViewById(R.id.favOutline);
         bookServiceText = view.findViewById(R.id.bookServiceText);
@@ -100,7 +96,6 @@ public class ServiceDetailsFragment extends Fragment {
 
         fetchServiceDetails();
 
-        exitButton.setOnClickListener(v -> closeForm());
         chatButton.setOnClickListener(v -> Toast.makeText(getContext(), "Chat feature not yet implemented.", Toast.LENGTH_SHORT).show());
     }
 
