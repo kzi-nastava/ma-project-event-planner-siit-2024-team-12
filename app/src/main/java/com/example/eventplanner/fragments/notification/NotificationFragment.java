@@ -67,6 +67,12 @@ public class NotificationFragment extends Fragment {
     private int totalPages = 0;
     private boolean isMuted = false;
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("current_page", currentPage);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -206,6 +212,10 @@ public class NotificationFragment extends Fragment {
     public void onViewCreated(@NonNull View view,
                               @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState != null) {
+            currentPage = savedInstanceState.getInt("current_page", 0);
+        }
 
         if (getActivity() instanceof HomepageActivity) {
             NotificationWebSocketService service =
@@ -413,7 +423,6 @@ public class NotificationFragment extends Fragment {
         }
 
         totalPages = (int) Math.ceil((double) allNotifications.size() / PAGE_SIZE);
-        currentPage = 0;
         displayCurrentPage();
     }
 
