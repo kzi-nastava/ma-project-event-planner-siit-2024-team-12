@@ -34,6 +34,7 @@ import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.fragments.calendar.CalendarFragment;
 import com.example.eventplanner.activities.charts.AttendanceChart;
 import com.example.eventplanner.activities.charts.RatingsChart;
+import com.example.eventplanner.fragments.conversation.ConversationListFragment;
 import com.example.eventplanner.fragments.event.eventcreation.EventCreationFragment;
 import com.example.eventplanner.activities.eventtype.EventTypeCreationActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
@@ -487,12 +488,18 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             chatButton.setVisibility(View.VISIBLE);
 
             chatButton.setOnClickListener(v -> {
+                loadChatFragment();
                 drawerLayout.openDrawer(GravityCompat.END);
             });
         }
     }
 
-
+    private void loadChatFragment() {
+        Fragment chatFragment = new ConversationListFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.chat_fragment_container, chatFragment)
+                .commitAllowingStateLoss();
+    }
 
     public NotificationWebSocketService getNotificationService() {
         return notificationService;

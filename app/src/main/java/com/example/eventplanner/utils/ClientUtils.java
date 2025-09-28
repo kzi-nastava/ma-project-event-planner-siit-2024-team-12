@@ -10,6 +10,7 @@ import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.services.AuthService;
 import com.example.eventplanner.services.BusinessService;
 import com.example.eventplanner.services.ChartService;
+import com.example.eventplanner.services.ConversationService;
 import com.example.eventplanner.services.EventService;
 import com.example.eventplanner.services.EventTypeService;
 import com.example.eventplanner.services.HomepageService;
@@ -107,5 +108,7 @@ public class ClientUtils {
 
     public static ServiceReservationService serviceReservationService = retrofit.create(ServiceReservationService.class);
     public static ProductPurchaseService productPurchaseService = retrofit.create(ProductPurchaseService.class);
+
+    public static ConversationService conversationService = retrofit.create(ConversationService.class);
 
 }
