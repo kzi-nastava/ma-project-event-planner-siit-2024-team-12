@@ -1,5 +1,6 @@
 package com.example.eventplanner.services;
 
+import com.example.eventplanner.dto.business.GetBusinessAndProviderDTO;
 import com.example.eventplanner.dto.event.AcceptedEventDTO;
 import com.example.eventplanner.dto.event.FavEventDTO;
 import com.example.eventplanner.dto.solution.FavSolutionDTO;
@@ -129,6 +130,13 @@ public interface UserService {
             @Header("Authorization") String authorization,
             @Path("email") String email,
             @Path("eventId") Long eventId
+    );
+
+    @GET("users/providerInfo/{type}/{id}")
+    Call<GetBusinessAndProviderDTO> getBusinessProviderDetails(
+            @Header("Authorization") String authorization,
+            @Path("type") String type,
+            @Path("id") Long solutionId
     );
 
 }
