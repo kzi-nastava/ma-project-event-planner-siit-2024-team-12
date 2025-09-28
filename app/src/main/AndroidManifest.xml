@@ -33,7 +33,7 @@
             android:name=".activities.charts.AttendanceChart"
             android:exported="false" />
         <activity
-            android:name=".activities.favorites.FavoriteServicesActivity"
+            android:name=".fragments.favorites.FavoriteServicesFragment"
             android:exported="false" />
         <activity
             android:name=".activities.solutioncategory.CategoriesTableActivity"

@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -38,7 +37,7 @@ import com.example.eventplanner.activities.eventtype.EventTypeCreationActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
 import com.example.eventplanner.fragments.favorites.ExplorePageFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteEventsFragment;
-import com.example.eventplanner.activities.favorites.FavoriteServicesActivity;
+import com.example.eventplanner.fragments.favorites.FavoriteServicesFragment;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
 import com.example.eventplanner.fragments.categories.CategoriesContainerFragment;
@@ -288,7 +287,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_explore_events) {
                 navigateToFragment(new ExplorePageFragment());
             } else if (id == R.id.nav_fav_services) {
-                startActivity(new Intent(this, FavoriteServicesActivity.class));
+                navigateToFragment(new FavoriteServicesFragment());
             } else if (id == R.id.nav_fav_products) {
                 navigateToFragment(new FavoriteProductsFragment());
             } else if (id == R.id.nav_notifications) {
@@ -338,7 +337,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_fav_events) {
                 navigateToFragment(new FavoriteEventsFragment());
             } else if (id == R.id.nav_fav_services) {
-                startActivity(new Intent(this, FavoriteServicesActivity.class));
+                navigateToFragment(new FavoriteServicesFragment());
             } else if (id == R.id.nav_fav_products) {
                 navigateToFragment(new FavoriteProductsFragment());
             } else if (id == R.id.nav_explore_events) {

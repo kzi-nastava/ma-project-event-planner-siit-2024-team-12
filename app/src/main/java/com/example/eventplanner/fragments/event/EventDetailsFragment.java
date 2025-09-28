@@ -127,7 +127,7 @@ public class EventDetailsFragment extends Fragment {
 
         loadEventDetails();
         loadActiveEventTypes();
-        
+
         setUpEditBtn();
         setUpPdfBtn();
         setUpFavEvents();
