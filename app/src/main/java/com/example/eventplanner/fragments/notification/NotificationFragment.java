@@ -26,6 +26,7 @@ import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.adapters.notification.NotificationAdapter;
 import com.example.eventplanner.dto.notification.GetNotificationDTO;
 import com.example.eventplanner.fragments.product.ProductDetailsFragment;
+import com.example.eventplanner.fragments.profile.ViewUserProfileFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
 import com.example.eventplanner.fragments.servicereservation.ServiceReservationDetailsFragment;
 import com.example.eventplanner.utils.ClientUtils;
@@ -151,6 +152,18 @@ public class NotificationFragment extends Fragment {
                     Toast.makeText(getContext(), "Unknown notification type.", Toast.LENGTH_SHORT).show();
                     break;
             }
+        },
+                senderEmail -> {
+                    if (getContext() instanceof AppCompatActivity) {
+                        AppCompatActivity activity = (AppCompatActivity) getContext();
+                        ViewUserProfileFragment fragment = ViewUserProfileFragment.newInstance(senderEmail);
+                        activity.getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_fragment_container, fragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+
         });
         recyclerView.setAdapter(adapter);
 
@@ -307,6 +320,8 @@ public class NotificationFragment extends Fragment {
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
+                isMuted = false; // default
+
                 if (response.isSuccessful()) {
                     String mutedUntilString = response.body();
                     if (mutedUntilString != null && !mutedUntilString.isEmpty()) {
@@ -315,18 +330,18 @@ public class NotificationFragment extends Fragment {
                             isMuted = muteEndTime.isAfter(LocalDateTime.now());
                             updateMuteUI(isMuted ? muteEndTime : null);
                         } catch (Exception e) {
-                            Log.e("NotificationFragment", "Error parsing muteUntil date: " + mutedUntilString, e);
-                            isMuted = false;
+                            Log.w("NotificationFragment", "Mute status body ne može se parsirati, pretpostavljamo da nije mute-ano.");
                             updateMuteUI(null);
                         }
                     } else {
-                        isMuted = false;
+                        // prazno body -> nije mute-ano
                         updateMuteUI(null);
                     }
                 } else {
-                    isMuted = false;
                     updateMuteUI(null);
                 }
+
+                // učitaj notifikacije bez errora
                 loadNotifications();
             }
 
@@ -334,11 +349,12 @@ public class NotificationFragment extends Fragment {
             public void onFailure(Call<String> call, Throwable t) {
                 isMuted = false;
                 updateMuteUI(null);
-                Log.e("NotificationFragment", "Network error checking mute status", t);
+                Log.e("NotificationFragment", "Greška pri provjeri mute statusa", t);
                 loadNotifications();
             }
         });
     }
+
     private void updateMuteUI(LocalDateTime mutedUntil) {
         if (isMuted) {
             muteToggleButton.setImageResource(R.drawable.ic_mute_notifications);
@@ -363,53 +379,28 @@ public class NotificationFragment extends Fragment {
 
     private void loadNotifications() {
         String auth = ClientUtils.getAuthorization(getContext());
+        Call<List<GetNotificationDTO>> call = ClientUtils.notificationService.getFilteredNotifications(auth);
 
-        if (isMuted) {
-            Call<List<GetNotificationDTO>> call = ClientUtils.notificationService.getFilteredNotifications(auth);
+        call.enqueue(new Callback<List<GetNotificationDTO>>() {
+            @Override
+            public void onResponse(Call<List<GetNotificationDTO>> call, Response<List<GetNotificationDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    allNotifications.clear();
+                    allNotifications.addAll(response.body());
+                    setupPagination();
+                } else {
+                    Log.e("NotificationFragment", "Error loading noitifications: " + response.code());
+                }
+            }
 
-            call.enqueue(new Callback<List<GetNotificationDTO>>() {
-                @Override
-                public void onResponse(Call<List<GetNotificationDTO>> call, Response<List<GetNotificationDTO>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        allNotifications.clear();
-                        allNotifications.addAll(response.body());
-                        setupPagination();
-                    } else {
-                        Toast.makeText(getContext(), "Error loading notifications: " + response.code(), Toast.LENGTH_SHORT).show();
-                        Log.e("NotificationFragment", "Error loading notifications: " + response.code() + " " + response.message());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<GetNotificationDTO>> call, Throwable t) {
-                    Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    Log.e("NotificationFragment", "Network error occurred", t);
-                }
-            });
-        } else {
-            Call<List<GetNotificationDTO>> call = ClientUtils.notificationService.getFilteredNotifications(auth);
-            call.enqueue(new Callback<List<GetNotificationDTO>>() {
-                @Override
-                public void onResponse(Call<List<GetNotificationDTO>> call, Response<List<GetNotificationDTO>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        allNotifications.clear();
-                        allNotifications.addAll(response.body());
-                        setupPagination();
-                    } else {
-                        Toast.makeText(getContext(), "Error loading notifications: " + response.code(), Toast.LENGTH_SHORT).show();
-                        Log.e("NotificationFragment", "Error loading notifications: " + response.code() + " " + response.message());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<GetNotificationDTO>> call, Throwable t) {
-                    Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    Log.e("NotificationFragment", "Network error occurred", t);
-                }
-            });
-        }
+            @Override
+            public void onFailure(Call<List<GetNotificationDTO>> call, Throwable t) {
+                Log.e("NotificationFragment", "Error loading notifications", t);
+                Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
-
+    
     private void setupPagination() {
         if (allNotifications.isEmpty()) {
             Toast.makeText(getContext(), "No notifications to show.", Toast.LENGTH_SHORT).show();
