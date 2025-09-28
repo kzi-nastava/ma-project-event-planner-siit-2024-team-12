@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments.eventcreation;
+package com.example.eventplanner.fragments.event.eventcreation;
 
 import android.app.Dialog;
 import android.os.Bundle;

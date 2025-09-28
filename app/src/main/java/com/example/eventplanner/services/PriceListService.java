@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities.service;
+package com.example.eventplanner.services;
 
 import com.example.eventplanner.dto.pricelist.GetPriceListDTO;
 import com.example.eventplanner.dto.pricelist.UpdatePriceListSolutionDTO;

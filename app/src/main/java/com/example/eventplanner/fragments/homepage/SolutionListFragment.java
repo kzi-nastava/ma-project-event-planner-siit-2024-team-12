@@ -2,25 +2,22 @@ package com.example.eventplanner.fragments.homepage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.homepage.HomepageService;
+import com.example.eventplanner.services.HomepageService;
 import com.example.eventplanner.adapters.homepage.ListItemAdapter;
 import com.example.eventplanner.dto.solution.GetHomepageSolutionDTO;
 import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.viewmodels.HomeSolutionFilterViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 

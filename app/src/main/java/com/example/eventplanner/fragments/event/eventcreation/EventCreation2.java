@@ -1,24 +1,24 @@
-package com.example.eventplanner.fragments.eventcreation;
+package com.example.eventplanner.fragments.event.eventcreation;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.fragments.event.eventcreation.agenda.AgendaEditFragment;
 import com.example.eventplanner.utils.ValidationUtils;
-import com.example.eventplanner.activities.event.EventCreationActivity;
 import com.example.eventplanner.viewmodels.EventCreationViewModel;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
@@ -75,11 +75,12 @@ public class EventCreation2 extends Fragment {
     private void setUpBackButton() {
         Button backButton = view.findViewById(R.id.back2);
         backButton.setOnClickListener(v -> {
-            if (getActivity() instanceof EventCreationActivity) {
-                ((EventCreationActivity) getActivity()).previousPage();
+            if (getParentFragment() instanceof EventCreationFragment) {
+                ((EventCreationFragment) getParentFragment()).previousPage();
             }
         });
     }
+
 
 
     private void setUpPrivacySpinner() {
@@ -131,7 +132,7 @@ public class EventCreation2 extends Fragment {
             viewModel.updateEventAttributes("privacy", privacy);
             view.findViewById(R.id.frame).setVisibility(View.GONE);
 
-            AgendaFragment agendaFragment = new AgendaFragment();
+            AgendaEditFragment.AgendaFragment agendaFragment = new AgendaEditFragment.AgendaFragment();
             FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.main, agendaFragment);
             transaction.addToBackStack(null);

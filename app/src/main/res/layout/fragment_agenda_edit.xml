@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.eventcreation.AgendaEditFragment">
+    tools:context=".fragments.event.eventcreation.agenda.AgendaEditFragment">
 
 
     <TextView
@@ -65,7 +65,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/eventTypeFragmentContainer"
-        android:name="com.example.eventplanner.fragments.eventcreation.AgendaTableFragment"
+        android:name="com.example.eventplanner.fragments.event.eventcreation.agenda.AgendaTableFragment"
         android:layout_width="419dp"
         android:layout_height="643dp"
         app:layout_constraintBottom_toBottomOf="parent"

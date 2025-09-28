@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.homepage.HomepageService;
+import com.example.eventplanner.services.HomepageService;
 import com.example.eventplanner.adapters.homepage.ListItemAdapter;
 import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.enumeration.UserRole;
@@ -21,7 +21,6 @@ import com.google.android.material.chip.Chip;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 

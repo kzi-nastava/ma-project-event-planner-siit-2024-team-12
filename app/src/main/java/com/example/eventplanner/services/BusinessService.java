@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities.business;
+package com.example.eventplanner.services;
 
 import com.example.eventplanner.dto.business.CreateBusinessDTO;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
