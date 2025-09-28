@@ -1,19 +1,29 @@
 package com.example.eventplanner.viewmodels;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
+import com.example.eventplanner.dto.budget.CreateBudgetItemDTO;
 import com.example.eventplanner.dto.event.CreateEventDTO;
 import com.example.eventplanner.dto.location.CreateLocationDTO;
+import com.example.eventplanner.utils.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 // used for setting event attributes across different fragments
 public class EventCreationViewModel extends AndroidViewModel {
@@ -111,6 +121,65 @@ public class EventCreationViewModel extends AndroidViewModel {
 
     public String getInvitationContent() {
         return dto.getValue() != null ? dto.getValue().getInvitationContent() : null;
+    }
+
+    public void setBudget(List<CreateBudgetItemDTO> items){
+        CreateEventDTO current = dto.getValue();
+        current.setBudgetItems(items);
+    }
+
+    public void createEventAndHandleCallback(Context context , Runnable onSuccess, Runnable onFailure) {
+
+        String auth = ClientUtils.getAuthorization(context);
+
+        CreateEventDTO eventDto = dto.getValue();
+
+        if (auth.isEmpty() || eventDto == null) {
+            Log.e("API_CALL", "Authentication token or event data is missing.");
+            Toast.makeText(context, "Missing data to create event.", Toast.LENGTH_SHORT).show();
+            if (onFailure != null) onFailure.run();
+            return;
+        }
+
+        Call<ResponseBody> call = ClientUtils.eventService.createEvent(auth, eventDto);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                if (response.isSuccessful()) {
+                    ResponseBody responseBody = response.body();
+
+                    if (responseBody != null) {
+                        Log.d("API_CALL", "Successfully created event.");
+                        Toast.makeText(context, "Successfully created event.", Toast.LENGTH_LONG).show();
+                        if (onSuccess != null) onSuccess.run();
+
+                    }
+                } else {
+                    String errorMessage = "Error creating event: " + response.code();
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : null;
+                        if (errorBody != null && !errorBody.isEmpty()) {
+                            errorMessage = errorBody;
+                        }
+                    } catch (Exception e) {
+                        Log.e("API_CALL", "Error reading error body: " + e.getMessage());
+                    }
+
+                    Log.e("API_CALL", "Unsuccessful response: " + response.code() + ", Message: " + errorMessage);
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
+                    if (onFailure != null) onFailure.run();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("API_CALL", "Network failure while creating event: " + t.getMessage());
+                Toast.makeText(context, "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                if (onFailure != null) onFailure.run();
+            }
+        });
     }
 
 }
