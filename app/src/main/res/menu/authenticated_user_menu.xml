@@ -1,31 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/nav_home"
-        android:title="@string/home" />
 
+    <group android:id="@+id/home_group">
+        <item
+            android:id="@+id/nav_home"
+            android:title="@string/home" />
+    </group>
 
-    <item
-        android:id="@+id/nav_calendar_od"
-        android:title="@string/calendar" />
+    <group android:id="@+id/calendar_group">
+        <item
+            android:id="@+id/nav_calendar_od"
+            android:title="@string/calendar" />
+    </group>
 
+    <group android:id="@+id/events_group">
+        <item
+            android:id="@+id/nav_invited_events"
+            android:title="@string/invited_events" />
 
-    <item
-        android:id="@+id/nav_invited_events"
-        android:title="@string/invited_events" />
+        <item
+            android:id="@+id/nav_explore_events"
+            android:title="@string/explore_events" />
+    </group>
 
-    <item
-        android:id="@+id/nav_explore_events"
-        android:title="@string/explore_events" />
+    <group android:id="@+id/notifications_group">
+        <item
+            android:id="@+id/nav_notifications"
+            android:title="@string/notifications"
+            app:actionLayout="@layout/menu_item_notification_badge" />
+    </group>
 
-    <item
-        android:id="@+id/nav_notifications"
-        android:title="@string/notifications"
-        app:actionLayout="@layout/menu_item_notification_badge" />
-
-
-    <group android:id="@+id/profile">
+    <group android:id="@+id/profile_group">
         <item
             android:id="@+id/nav_view_profile"
             android:title="@string/view_profile" />
