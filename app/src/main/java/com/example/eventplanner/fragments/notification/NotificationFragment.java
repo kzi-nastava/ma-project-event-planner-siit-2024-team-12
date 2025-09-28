@@ -66,6 +66,7 @@ public class NotificationFragment extends Fragment {
     private int currentPage = 0;
     private int totalPages = 0;
     private boolean isMuted = false;
+    private TextView noNotificationsTextView;
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -173,6 +174,7 @@ public class NotificationFragment extends Fragment {
 
         });
         recyclerView.setAdapter(adapter);
+        noNotificationsTextView = view.findViewById(R.id.no_notifications_text);
 
         prevPageButton = view.findViewById(R.id.prevPageButton);
         nextPageButton = view.findViewById(R.id.nextPageButton);
@@ -417,7 +419,8 @@ public class NotificationFragment extends Fragment {
 
     private void setupPagination() {
         if (allNotifications.isEmpty()) {
-            Toast.makeText(getContext(), "No notifications to show.", Toast.LENGTH_SHORT).show();
+            noNotificationsTextView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
             pageIndicatorTextView.setText("");
             return;
         }
