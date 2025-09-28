@@ -139,7 +139,7 @@
                 android:id="@+id/dateIcon"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/ic_calendar"
+                android:src="@drawable/calendar"
                 android:contentDescription="@string/calendar"
                 app:tint="#444444" />
             <TextView

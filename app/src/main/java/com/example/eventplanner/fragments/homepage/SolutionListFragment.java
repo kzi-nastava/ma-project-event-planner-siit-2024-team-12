@@ -141,17 +141,23 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
                     allItems.addAll(response.body());
                     currentPage = 0;
                     updateRecyclerView();
-                    Log.d("FilterDebug", "Successfully loaded " + allItems.size() + " items.");
+
+                    if (allItems.isEmpty()) {
+                        emptyMessage.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    } else {
+                        emptyMessage.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
                 } else {
-                    Log.e("FilterDebug", "Failed to load solutions: " + response.code() + " " + response.message());
-                    Toast.makeText(requireContext(), "Failed to load solutions.", Toast.LENGTH_SHORT).show();
+                    emptyMessage.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<GetHomepageSolutionDTO>> call, @NonNull Throwable t) {
                 if (!isAdded()) return;
-                Log.e("FilterDebug", "Error loading solutions: ", t);
                 Toast.makeText(requireContext(), "Error loading solutions: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
