@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Spinner;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -53,6 +55,7 @@ import com.example.eventplanner.fragments.report.ReportManagementFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceManagement;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.fragments.servicereservation.ServiceReservationsManagementFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 
@@ -116,12 +119,15 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
                 if ("ROLE_ORGANIZER".equals(role)) {
                     setupOrganizerUI();
+                    enableChatDrawer();
                 } else if ("ROLE_PROVIDER".equals(role)) {
                     setupProviderUI();
+                    enableChatDrawer();
                 } else if ("ROLE_ADMIN".equals(role)) {
                     setupAdminUI();
                 } else if ("ROLE_AUTHENTICATED_USER".equals(role)) {
                     setupAuthenticatedUserUI();
+                    enableChatDrawer();
                 } else {
                     setupGuestUI();
                 }
@@ -190,12 +196,6 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         navigationView.getMenu().clear();
         navigationView.inflateMenu(R.menu.drawer_menu);
 
-        RecyclerView chatRecyclerView = findViewById(R.id.chat_recycler_view);
-        if (chatRecyclerView != null) chatRecyclerView.setVisibility(View.GONE);
-
-        Spinner userSpinner = findViewById(R.id.userSpinner);
-        if (userSpinner != null) userSpinner.setVisibility(View.GONE);
-
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_login) {
@@ -224,12 +224,6 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                 }
             }
         }
-
-        RecyclerView chatRecyclerView = findViewById(R.id.chat_recycler_view);
-        if (chatRecyclerView != null) chatRecyclerView.setVisibility(View.VISIBLE);
-
-        Spinner userSpinner = findViewById(R.id.userSpinner);
-        if (userSpinner != null) userSpinner.setVisibility(View.VISIBLE);
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -481,6 +475,20 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     public void onNotificationsClosed() {
         if (toggle != null) {
             notificationsOpen = false;
+        }
+    }
+
+    private void enableChatDrawer() {
+        View chatDrawer = findViewById(R.id.chat_drawer_root);
+        FloatingActionButton chatButton = findViewById(R.id.open_chat_button);
+
+        if (chatDrawer != null && chatButton != null) {
+            chatDrawer.setVisibility(View.VISIBLE);
+            chatButton.setVisibility(View.VISIBLE);
+
+            chatButton.setOnClickListener(v -> {
+                drawerLayout.openDrawer(GravityCompat.END);
+            });
         }
     }
 
