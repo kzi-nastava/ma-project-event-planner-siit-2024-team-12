@@ -1,5 +1,7 @@
 package com.example.eventplanner.fragments.profile;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -19,6 +21,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.business.GetBusinessAndProviderDTO;
+import com.example.eventplanner.enumeration.UserRole;
+import com.example.eventplanner.fragments.report.ReportUserFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.viewmodels.BusinessProviderViewModel;
 
@@ -40,6 +44,7 @@ public class BusinessProviderDialogFragment extends DialogFragment {
     private ImageView ivProviderImage;
     private TextView tvProviderNameSurname;
     private TextView tvProviderEmail;
+    private Button reportBtn;
 
 
     public static BusinessProviderDialogFragment newInstance(String type, Long solutionId) {
@@ -81,6 +86,28 @@ public class BusinessProviderDialogFragment extends DialogFragment {
         ivProviderImage = view.findViewById(R.id.iv_provider_image);
         tvProviderNameSurname = view.findViewById(R.id.tv_provider_name_surname);
         tvProviderEmail = view.findViewById(R.id.tv_provider_email);
+        reportBtn = view.findViewById(R.id.reportBtn);
+
+        reportBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Long reportedUserId = viewModel.getBusinessProviderDetails().getValue().getProviderId();
+                if(reportedUserId==null){
+                    return;
+                }
+                ReportUserFragment dialogFragment =
+                        ReportUserFragment.newInstance(reportedUserId);
+
+                dialogFragment.show(getParentFragmentManager(), "ReportUserDialog");
+            }
+        });
+
+        SharedPreferences prefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        String role = prefs.getString("userRole", "");
+
+        if (!UserRole.ROLE_ORGANIZER.toString().equals(role)) {
+            reportBtn.setVisibility(View.GONE);
+        }
 
         if (solutionId != null && type != null) {
             viewModel.fetchBusinessProviderDetails(type, solutionId);
