@@ -24,6 +24,7 @@ import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
 import com.example.eventplanner.enumeration.UserRole;
+import com.example.eventplanner.fragments.profile.BusinessProviderDialogFragment;
 import com.example.eventplanner.fragments.servicereservation.ServiceReservationDialogFragment;
 import com.example.eventplanner.utils.ClientUtils;
 
@@ -39,7 +40,7 @@ public class ServiceDetailsFragment extends Fragment {
     private static final String ARG_SERVICE_ID = "service_id";
     private Long serviceId;
 
-    private ImageView serviceImage, fav, favOutline;
+    private ImageView serviceImage, fav, favOutline, providerInfo;
 
     private Boolean isFavorite = false;
     private TextView serviceTitle;
@@ -97,6 +98,24 @@ public class ServiceDetailsFragment extends Fragment {
         fetchServiceDetails();
 
         chatButton.setOnClickListener(v -> Toast.makeText(getContext(), "Chat feature not yet implemented.", Toast.LENGTH_SHORT).show());
+
+        providerInfo = view.findViewById(R.id.providerInfo);
+        providerInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (serviceId == null) {
+                    Toast.makeText(getContext(), "Service details not available.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                BusinessProviderDialogFragment dialogFragment =
+                        BusinessProviderDialogFragment.newInstance("service", serviceId);
+
+                dialogFragment.show(getParentFragmentManager(), "BusinessProviderDialog");
+
+            }
+        });
     }
 
 

@@ -14,6 +14,13 @@ import java.util.List;
 public class SolutionsAdapter extends RecyclerView.Adapter<SolutionBudgetViewHolder> {
 
     private final List<GetPurchaseAndReservationForBudgetDTO> solutions;
+    private OnSolutionClickListener clickListener;
+    public interface OnSolutionClickListener {
+        void onSolutionClick(String type, Long solutionId);
+    }
+    public void setOnSolutionClickListener(OnSolutionClickListener listener) {
+        this.clickListener = listener;
+    }
 
     public SolutionsAdapter(List<GetPurchaseAndReservationForBudgetDTO> solutions) {
         this.solutions = solutions;
@@ -30,6 +37,14 @@ public class SolutionsAdapter extends RecyclerView.Adapter<SolutionBudgetViewHol
     public void onBindViewHolder(@NonNull SolutionBudgetViewHolder holder, int position) {
         GetPurchaseAndReservationForBudgetDTO solution = solutions.get(position);
         holder.bind(solution);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (clickListener != null && solution.getSolution() != null) {
+                String type = solution.getSolution().getType();
+                Long id = solution.getSolution().getId();
+                clickListener.onSolutionClick(type, id);
+            }
+        });
     }
 
     @Override
