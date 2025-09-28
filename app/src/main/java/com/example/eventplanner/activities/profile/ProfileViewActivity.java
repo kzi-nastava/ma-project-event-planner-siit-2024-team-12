@@ -20,14 +20,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.activities.auth.SignUpActivity;
-import com.example.eventplanner.dto.business.GetBusinessDTO;
 import com.example.eventplanner.fragments.others.ChangePasswordFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
-import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
-import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.google.gson.Gson;
 

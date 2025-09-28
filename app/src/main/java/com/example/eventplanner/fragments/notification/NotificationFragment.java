@@ -73,17 +73,43 @@ public class NotificationFragment extends Fragment {
         recyclerView = view.findViewById(R.id.notifications_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new NotificationAdapter(getContext(), currentNotifications, notification -> {
-            Intent intent;
             switch (notification.getEntityType().toUpperCase()) {
                 case "EVENT":
-                    intent = new Intent(getContext(), EventDetailsFragment.class);
-                    intent.putExtra("id", notification.getEntityId());
-                    startActivity(intent);
+                    if (getContext() instanceof AppCompatActivity) {
+                        AppCompatActivity activity = (AppCompatActivity) getContext();
+
+                        FrameLayout mainContainer = activity.findViewById(R.id.main_fragment_container);
+                        if (mainContainer != null) {
+                            mainContainer.setVisibility(View.VISIBLE);
+                        }
+
+                        EventDetailsFragment fragment = EventDetailsFragment.newInstance(notification.getEntityId());
+
+                        activity.getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_fragment_container, fragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
                     break;
                 case "PRODUCT":
-                    intent = new Intent(getContext(), ProductDetailsFragment.class);
-                    intent.putExtra("id", notification.getEntityId());
-                    startActivity(intent);
+                    if (getContext() instanceof AppCompatActivity) {
+                        AppCompatActivity activity = (AppCompatActivity) getContext();
+
+                        FrameLayout mainContainer = activity.findViewById(R.id.main_fragment_container);
+                        if (mainContainer != null) {
+                            mainContainer.setVisibility(View.VISIBLE);
+                        }
+
+                        ProductDetailsFragment fragment =
+                                ProductDetailsFragment.newInstance(notification.getEntityId());
+
+                        activity.getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_fragment_container, fragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
                     break;
                 case "SERVICE_RESERVATION":
                     if (getContext() instanceof AppCompatActivity) {

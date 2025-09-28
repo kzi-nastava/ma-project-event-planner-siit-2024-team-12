@@ -3,7 +3,6 @@ package com.example.eventplanner.activities.auth;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,11 +17,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
-import com.example.eventplanner.fragments.profile.SuspendedUserFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.utils.ValidationUtils;
-import com.example.eventplanner.activities.homepage.OrganiserHomepageActivity;
 import com.example.eventplanner.dto.auth.LogInRequest;
 import com.example.eventplanner.dto.auth.UserTokenState;
 import com.example.eventplanner.fragments.others.ResetPasswordFragment;
@@ -73,11 +70,6 @@ public class LoginActivity extends AppCompatActivity {
 
     public void openSignUp(View view) {
         Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-        startActivity(intent);
-    }
-
-    public void openHomePage() {
-        Intent intent = new Intent(LoginActivity.this, OrganiserHomepageActivity.class);
         startActivity(intent);
     }
 

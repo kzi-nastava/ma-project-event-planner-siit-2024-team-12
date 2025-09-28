@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +20,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.dto.business.CreatedBusinessDTO;
-import com.example.eventplanner.fragments.gallery.GalleryService;
 import com.example.eventplanner.fragments.gallery.ImagePicker;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
@@ -30,17 +29,12 @@ import com.example.eventplanner.utils.ImageHelper;
 import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.activities.business.BusinessInfoActivity;
 import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
-import com.example.eventplanner.activities.homepage.ProviderHomepageActivity;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.viewmodels.BusinessViewModel;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -204,7 +198,7 @@ public class BusinessRegistration2 extends Fragment {
 
                     else if (response.code() == 403) {
                         Toast.makeText(getActivity(), "You already have an active business account!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getActivity(), ProviderHomepageActivity.class);
+                        Intent intent = new Intent(getActivity(), HomepageActivity.class);
                         startActivity(intent);
                     }
 

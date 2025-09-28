@@ -42,16 +42,13 @@
             android:name=".activities.eventtype.EventTypeTableActivity"
             android:exported="false" />
         <activity
-            android:name=".fragments.event.eventcreation.EventCreationFragment"
+            android:name=".activities.event.EventCreationActivity"
             android:exported="false" />
         <activity
             android:name=".activities.eventtype.EventTypeCreationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.homepage.AdminHomepageActivity"
-            android:exported="false" />
-        <activity
-            android:name=".fragments.calendar.CalendarFragment"
+            android:name=".activities.calendar.CalendarActivity"
             android:exported="false" />
         <activity
             android:name=".activities.eventtype.EventTypeEditActivity"
@@ -67,9 +64,6 @@
             android:exported="false" />
         <activity
             android:name=".activities.profile.ProfileEditActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.homepage.OrganiserHomepageActivity"
             android:exported="false" />
         <activity
             android:name=".activities.profile.ProfileViewActivity"
@@ -109,9 +103,6 @@
                     android:scheme="http" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.homepage.ProviderHomepageActivity"
-            android:exported="false" />
         <activity
             android:name=".activities.homepage.SplashScreenActivity"
             android:exported="true">

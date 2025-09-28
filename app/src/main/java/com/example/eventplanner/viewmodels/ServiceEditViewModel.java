@@ -137,8 +137,11 @@ public class ServiceEditViewModel extends AndroidViewModel {
             }
         });
     }
+    public interface Action1<T> {
+        void run(T t);
+    }
 
-    public void deleteService(Long serviceId, Runnable onSuccess, Runnable onFailure) {
+    public void deleteService(Long serviceId, Runnable onSuccess, Action1<String> onFailure) {
         isSaving.setValue(true);
         String auth = ClientUtils.getAuthorization(getApplication());
         if (auth.isEmpty()) {
@@ -155,8 +158,26 @@ public class ServiceEditViewModel extends AndroidViewModel {
                     Log.d("ServiceEditViewModel", "Service deleted successfully.");
                     if (onSuccess != null) onSuccess.run();
                 } else {
-                    Log.e("ServiceEditViewModel", "Failed to delete service. Code: " + response.code());
-                    if (onFailure != null) onFailure.run();
+                    String errorMessage = "Failed to delete service. (Code: " + response.code() + ")";
+
+                    if (response.code() == 400 && response.errorBody() != null) {
+                        try {
+                            String errorBodyString = response.errorBody().string();
+                            if (errorBodyString.contains("Service has future reservation")) {
+                                errorMessage = "Service has future reservation.";
+                            } else if (errorBodyString.contains("Service with id")) {
+                                errorMessage = "Service not found.";
+                            } else {
+                                errorMessage = "Bad Request. Please try again.";
+                            }
+
+                        } catch (Exception e) {
+                            Log.e("ServiceEditViewModel", "Error processing error body: " + e.getMessage());
+                        }
+                    }
+
+                    Log.e("ServiceEditViewModel", "Failed to delete service: " + errorMessage);
+                    if (onFailure != null) onFailure.run(errorMessage);
                 }
             }
 
@@ -164,7 +185,7 @@ public class ServiceEditViewModel extends AndroidViewModel {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 isSaving.setValue(false);
                 Log.e("ServiceEditViewModel", "Network error while deleting service: " + t.getMessage());
-                if (onFailure != null) onFailure.run();
+                if (onFailure != null) onFailure.run("Network error. Could not connect to server.");
             }
         });
     }
