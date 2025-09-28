@@ -35,6 +35,7 @@ import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.enumeration.PrivacyType;
 import com.example.eventplanner.enumeration.UserRole;
+import com.example.eventplanner.fragments.budgetplanning.Budget;
 import com.example.eventplanner.fragments.eventcreation.AgendaEditFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
@@ -135,6 +136,7 @@ public class EventDetailsFragment extends Fragment {
 
         budget = view.findViewById(R.id.budget);
         setupBudgetButton();
+        setupBudgetButtonListener();
 
         return view;
     }
@@ -204,6 +206,25 @@ public class EventDetailsFragment extends Fragment {
                 callback.onFailure("Network error. Please check your connection.");
             }
         });
+    }
+    private void setupBudgetButtonListener() {
+        budget.setOnClickListener(v -> {
+            navigateToBudgetFragment();
+        });
+    }
+
+    private void navigateToBudgetFragment() {
+
+        if (currentEventId == null) {
+            return;
+        }
+
+        Budget budgetFragment = Budget.newInstance("UPDATE", currentEventId);
+
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, budgetFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
 
