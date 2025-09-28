@@ -28,6 +28,7 @@ import com.example.eventplanner.activities.auth.LoginActivity;
 import com.example.eventplanner.activities.auth.SignUpActivity;
 import com.example.eventplanner.activities.business.BusinessInfoActivity;
 import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
+import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.fragments.calendar.CalendarFragment;
 import com.example.eventplanner.activities.charts.AttendanceChart;
 import com.example.eventplanner.activities.charts.RatingsChart;
@@ -36,7 +37,7 @@ import com.example.eventplanner.activities.eventtype.EventTypeCreationActivity;
 import com.example.eventplanner.activities.eventtype.EventTypeTableActivity;
 import com.example.eventplanner.fragments.favorites.ExplorePageFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteEventsFragment;
-import com.example.eventplanner.activities.favorites.FavoriteServicesActivity;
+import com.example.eventplanner.fragments.favorites.FavoriteServicesFragment;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
 import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
 import com.example.eventplanner.fragments.categories.CategoriesContainerFragment;
@@ -111,7 +112,8 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                 setupGuestUI();
                 loadSuspendedFragment();
             } else {
-                String role = sp.getString("userRole", null);
+                String role = sp.getString("userRole", UserRole.ROLE_UNREGISTERED_USER.toString());
+
                 if ("ROLE_ORGANIZER".equals(role)) {
                     setupOrganizerUI();
                 } else if ("ROLE_PROVIDER".equals(role)) {
@@ -285,7 +287,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_explore_events) {
                 navigateToFragment(new ExplorePageFragment());
             } else if (id == R.id.nav_fav_services) {
-                startActivity(new Intent(this, FavoriteServicesActivity.class));
+                navigateToFragment(new FavoriteServicesFragment());
             } else if (id == R.id.nav_fav_products) {
                 navigateToFragment(new FavoriteProductsFragment());
             } else if (id == R.id.nav_notifications) {
@@ -335,7 +337,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_fav_events) {
                 navigateToFragment(new FavoriteEventsFragment());
             } else if (id == R.id.nav_fav_services) {
-                startActivity(new Intent(this, FavoriteServicesActivity.class));
+                navigateToFragment(new FavoriteServicesFragment());
             } else if (id == R.id.nav_fav_products) {
                 navigateToFragment(new FavoriteProductsFragment());
             } else if (id == R.id.nav_explore_events) {
@@ -381,10 +383,6 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                 startActivity(new Intent(this, EventTypeCreationActivity.class));
             } else if (id == R.id.nav_event_types_overview) {
                 startActivity(new Intent(this, EventTypeTableActivity.class));
-            } else if (id == R.id.nav_calendar_od) {
-                navigateToFragment(new CalendarFragment());
-            } else if (id == R.id.nav_view_profile) {
-                startActivity(new Intent(this, ProfileViewActivity.class));
             } else if (id == R.id.nav_attendance_chart) {
                 startActivity(new Intent(this, AttendanceChart.class));
             } else if (id == R.id.nav_ratings_chart) {

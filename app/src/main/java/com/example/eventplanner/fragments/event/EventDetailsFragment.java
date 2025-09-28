@@ -29,6 +29,7 @@ import com.example.eventplanner.dto.event.UpdatedEventDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.enumeration.PrivacyType;
+import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.fragments.event.eventcreation.agenda.AgendaEditFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
@@ -80,7 +81,7 @@ public class EventDetailsFragment extends Fragment {
 
     private WebView mapWebView;
     private EditText name, date, maxGuests, description, location;
-    private String nameTxt, eventTypeTxt, dateTxt, maxGuestsTxt, descriptionTxt, locationText, currentUser;
+    private String nameTxt, eventTypeTxt, dateTxt, maxGuestsTxt, descriptionTxt, locationText, currentUser, userRole;
     private Long currentEventId;
     private Boolean isFavorite, isEditable = false;
     private ImageView fav, favOutline;
@@ -116,13 +117,17 @@ public class EventDetailsFragment extends Fragment {
         editViewModel = new ViewModelProvider(requireActivity()).get(EventEditViewModel.class);
 
         mapWebView = view.findViewById(R.id.mapWebView);
+
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        userRole = sharedPreferences.getString("userRole", UserRole.ROLE_UNREGISTERED_USER.toString());
+
         setupWebView();
 
         findTextViews();
 
         loadEventDetails();
-
         loadActiveEventTypes();
+
         setUpEditBtn();
         setUpPdfBtn();
         setUpFavEvents();
@@ -720,6 +725,10 @@ public class EventDetailsFragment extends Fragment {
     private void setUpEditBtn() {
         editBtn = view.findViewById(R.id.editBtn);
 
+        if (userRole.equals(UserRole.ROLE_UNREGISTERED_USER.toString())) {
+            editBtn.setVisibility(View.GONE);
+        }
+
         editBtn.setOnClickListener(v -> {
             if (isEditable) {
                 updateEvent();
@@ -777,6 +786,10 @@ public class EventDetailsFragment extends Fragment {
 
     private void setUpPdfBtn() {
         pdfBtn = view.findViewById(R.id.pdfBtn);
+
+        if (userRole.equals(UserRole.ROLE_UNREGISTERED_USER.toString())) {
+            pdfBtn.setVisibility(View.GONE);
+        }
 
         pdfBtn.setOnClickListener(v -> {
             try {
