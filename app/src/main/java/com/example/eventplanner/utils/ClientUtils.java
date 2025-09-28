@@ -67,7 +67,7 @@ public class ClientUtils {
         String token = getAuthToken(context);
 
         if (token == null) {
-            Toast.makeText(context, "User not authenticated", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "User not authenticated", Toast.LENGTH_SHORT).show();
             return "";
         }
 
