@@ -33,6 +33,7 @@ import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.product.GetProductDTO;
 import com.example.eventplanner.dto.product.UpdateProductDTO;
 import com.example.eventplanner.dto.product.UpdatedProductDTO;
+import com.example.eventplanner.fragments.homepage.HomepageFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.utils.ValidationUtils;
 
@@ -693,8 +694,11 @@ public class ProductDetailsFragment extends Fragment {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(requireContext(), "Successfully deleted product!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(requireContext(), ProvidedProductsFragment.class);
-                    startActivity(intent);
+
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, new HomepageFragment())
+                            .commit();
 
                 }
                 else {
