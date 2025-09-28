@@ -158,6 +158,9 @@ public class ProductDetailsFragment extends Fragment {
         else if (role.equals(UserRole.ROLE_PROVIDER.toString())) {
             loadCurrentCompany();
         }
+        else {
+            editBtn.setVisibility(View.GONE);
+        }
 
     }
 
