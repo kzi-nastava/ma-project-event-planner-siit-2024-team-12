@@ -454,5 +454,6 @@
     <string name="empty_solutions">There are currently no products and services based in your city.</string>
     <string name="no_results">There are no results that match filter criteria.</string>
     <string name="no_notifications">You currently have no notifications.</string>
+    <string name="unavailable_conversation">This conversation is unavailable due to communication restrictions.</string>
 
 </resources>

@@ -18,6 +18,7 @@ import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.adapters.conversation.MessageAdapter;
 import com.example.eventplanner.dto.conversation.GetChatMessageDTO;
 import com.example.eventplanner.dto.conversation.GetConversationDTO;
+import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import java.util.Collections;
 
@@ -40,6 +41,9 @@ public class ConversationFragment extends Fragment {
     private EditText messageInput;
     private ImageButton sendMessageButton;
     private View headerLayout;
+    private TextView blockMessageTextView;
+    private Long otherUserId;
+    private Long currentUserId;
 
     public static ConversationFragment newInstance(Long conversationId, String otherUserName, String otherUserEmail) {
         ConversationFragment fragment = new ConversationFragment();
@@ -71,6 +75,7 @@ public class ConversationFragment extends Fragment {
         sendMessageButton = view.findViewById(R.id.btn_send_message);
         ImageButton backButton = view.findViewById(R.id.btn_back);
         headerLayout = view.findViewById(R.id.header_layout);
+        blockMessageTextView = view.findViewById(R.id.tv_block_message);
 
         if (getArguments() != null) {
             otherUserNameTextView.setText(getArguments().getString(ARG_OTHER_USER_NAME));
@@ -104,8 +109,19 @@ public class ConversationFragment extends Fragment {
             @Override
             public void onResponse(Call<GetConversationDTO> call, Response<GetConversationDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    messageAdapter.setMessages(response.body().getMessages());
-                    messagesRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+                    GetConversationDTO conversation = response.body();
+
+                    if (conversation.isBlocked()) {
+                        String otherUserName = conversation.getOtherUser() != null ?
+                                conversation.getOtherUser().getName() + " " + conversation.getOtherUser().getSurname(): "";
+                        handleBlock(otherUserName);
+                    } else {
+                        messageAdapter.setMessages(conversation.getMessages());
+                        messagesRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+                        toggleChatElements(false);
+                    }
+                } else if (response.code() == 403) {
+                    handleBlock(otherUserNameTextView.getText().toString());
                 } else {
                     Log.e("ConversationFrag", "Failed to load conversation details. Code: " + response.code());
                 }
@@ -134,7 +150,9 @@ public class ConversationFragment extends Fragment {
                     messageAdapter.addMessage(response.body());
                     messageInput.setText("");
                     messagesRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
-                } else {
+                } else if (response.code() == 403) {
+                    handleBlock(otherUserNameTextView.getText().toString());
+                }else {
                     Log.e("ConversationFrag", "Failed to send message. Code: " + response.code());
                 }
             }
@@ -151,6 +169,31 @@ public class ConversationFragment extends Fragment {
             ((HomepageActivity) requireActivity()).openProfileAndCloseChat(otherUserEmail);
         } else {
             Log.e("ConversationFrag", "Parent Activity must be HomepageActivity to handle navigation.");
+        }
+    }
+
+    private void handleBlock(String blockedUserName) {
+        String message = "This conversation is unavailable due to communication restrictions between you and " + blockedUserName + ".";
+        blockMessageTextView.setText(message);
+
+        toggleChatElements(true);
+    }
+
+    private void toggleChatElements(boolean isBlocked) {
+        View inputLayout = getView().findViewById(R.id.message_input_layout);
+
+        if (isBlocked) {
+            messagesRecyclerView.setVisibility(View.GONE);
+            if (inputLayout != null) {
+                inputLayout.setVisibility(View.GONE);
+            }
+            blockMessageTextView.setVisibility(View.VISIBLE);
+        } else {
+            messagesRecyclerView.setVisibility(View.VISIBLE);
+            if (inputLayout != null) {
+                inputLayout.setVisibility(View.VISIBLE);
+            }
+            blockMessageTextView.setVisibility(View.GONE);
         }
     }
     
