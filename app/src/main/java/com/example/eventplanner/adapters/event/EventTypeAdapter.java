@@ -1,21 +1,19 @@
 package com.example.eventplanner.adapters.event;
 
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.viewholders.EventTypeViewHolder;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
-import com.example.eventplanner.activities.eventtype.EventTypeViewActivity;
-import com.example.eventplanner.activities.eventtype.EventTypeEditActivity;
+import com.example.eventplanner.fragments.eventtype.EventTypeEditFragment;
+import com.example.eventplanner.fragments.eventtype.EventTypeViewFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +39,6 @@ public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeViewHolder> 
 
         holder.idTextView.setText(String.valueOf(eventType.getId()));
         holder.nameTextView.setText(eventType.getName());
-
-
 
 
         // Show or hide status and buttons based on expansion state
@@ -77,30 +73,40 @@ public class EventTypeAdapter extends RecyclerView.Adapter<EventTypeViewHolder> 
 
         // Set click listeners for the buttons
         holder.viewButton.setOnClickListener(v -> {
-            Context context = v.getContext();
-            Intent intent = new Intent(context, EventTypeViewActivity.class);
+            Bundle args = new Bundle();
+            args.putString("eventTypeName", eventType.getName());
+            args.putString("eventTypeDescription", eventType.getDescription());
+            args.putStringArrayList("suggestedCategoryNames", new ArrayList<>(eventType.getSuggestedCategoryNames()));
 
-            // Pass event type details to EventTypeViewActivity
-            intent.putExtra("eventTypeName", eventType.getName());
-            intent.putExtra("eventTypeDescription", eventType.getDescription());
-            intent.putExtra("suggestedCategoryNames", new ArrayList<>(eventType.getSuggestedCategoryNames()));
+            EventTypeViewFragment fragment = new EventTypeViewFragment();
+            fragment.setArguments(args);
 
-            context.startActivity(intent);
+            fragment.show(
+                    ((AppCompatActivity) v.getContext()).getSupportFragmentManager(),
+                    "eventTypeViewDialog"
+            );
         });
+
 
 
         holder.editButton.setOnClickListener(v -> {
-            Context context = v.getContext();
-            Intent intent = new Intent(context, EventTypeEditActivity.class);
+            Bundle args = new Bundle();
+            args.putLong("eventTypeId", eventType.getId());
+            args.putString("eventTypeName", eventType.getName());
+            args.putString("eventTypeDescription", eventType.getDescription());
+            args.putStringArrayList("suggestedCategoryNames", new ArrayList<>(eventType.getSuggestedCategoryNames()));
+            args.putBoolean("isActive", eventType.getIsActive());
 
-            intent.putExtra("eventTypeId", eventType.getId());
-            intent.putExtra("eventTypeName", eventType.getName());
-            intent.putExtra("eventTypeDescription", eventType.getDescription());
-            intent.putExtra("suggestedCategoryNames", new ArrayList<>(eventType.getSuggestedCategoryNames()));
-            intent.putExtra("isActive", eventType.getIsActive());
+            EventTypeEditFragment fragment = new EventTypeEditFragment();
+            fragment.setArguments(args);
 
-            context.startActivity(intent);
+            fragment.show(
+                    ((AppCompatActivity) v.getContext()).getSupportFragmentManager(),
+                    "eventTypeEditDialog"
+            );
         });
+
+
     }
 
     @Override
