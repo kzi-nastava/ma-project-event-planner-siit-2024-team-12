@@ -28,15 +28,19 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private final Context context;
     private final List<GetNotificationDTO> notificationList;
     private final NotificationClickListener clickListener;
+
+    private static SenderEmailClickListener senderEmailClickListener = null;
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
 
 
-    public NotificationAdapter(Context context, List<GetNotificationDTO> notificationList, NotificationClickListener clickListener) {
+    public NotificationAdapter(Context context, List<GetNotificationDTO> notificationList, NotificationClickListener clickListener,
+                               SenderEmailClickListener senderEmailClickListener) {
         this.context = context;
         this.notificationList = notificationList;
         this.clickListener = clickListener;
+        this.senderEmailClickListener = senderEmailClickListener;
     }
 
     @NonNull
@@ -44,6 +48,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public NotificationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notification, parent, false);
         return new NotificationViewHolder(view);
+    }
+
+    @FunctionalInterface
+    public interface SenderEmailClickListener {
+        void onSenderEmailClick(String email);
     }
 
     @Override
@@ -63,6 +72,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         private final TextView timeTextView;
         private final ImageView iconImageView;
+        public TextView senderEmailTextView;
 
         public NotificationViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -70,6 +80,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             dateTextView = itemView.findViewById(R.id.notification_date);
             timeTextView = itemView.findViewById(R.id.notification_time);
             iconImageView = itemView.findViewById(R.id.notification_icon);
+            senderEmailTextView = itemView.findViewById(R.id.sender_email_text);
         }
 
         public void bind(GetNotificationDTO notification, NotificationClickListener clickListener) {
@@ -89,6 +100,24 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             } else {
                 itemView.setOnClickListener(null);
             }
+            String senderEmail = notification.getSenderEmail();
+            if ("admin@example.com".equalsIgnoreCase(senderEmail)) {
+                senderEmailTextView.setVisibility(View.GONE);
+                senderEmailTextView.setOnClickListener(null);
+            } else if (senderEmail != null && !senderEmail.isEmpty()) {
+                senderEmailTextView.setText(senderEmail);
+                senderEmailTextView.setVisibility(View.VISIBLE);
+
+                senderEmailTextView.setOnClickListener(v -> {
+                    if (senderEmailClickListener != null) {
+                        senderEmailClickListener.onSenderEmailClick(senderEmail);
+                    }
+                });
+            } else {
+                senderEmailTextView.setVisibility(View.GONE);
+                senderEmailTextView.setOnClickListener(null);
+            }
+
         }
 
         private static int getIconForType(NotificationType type) {

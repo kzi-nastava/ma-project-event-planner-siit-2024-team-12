@@ -25,6 +25,9 @@ import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.dto.servicereservation.CreateServiceReservationDTO;
 import com.example.eventplanner.dto.servicereservation.CreatedServiceReservationDTO;
 import com.example.eventplanner.utils.ClientUtils;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointForward;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
 import org.json.JSONObject;
 
@@ -33,6 +36,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -209,72 +213,110 @@ public class ServiceReservationDialogFragment extends DialogFragment {
     }
 
     private void setupDatePicker(List<LocalDate> eventDates) {
+        if (eventDates == null || eventDates.isEmpty()) return;
         final Set<LocalDate> allowed = new HashSet<>(eventDates);
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        editTextDate.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
+        long todayMillisUtc = LocalDate.now()
+                .atStartOfDay(ZoneOffset.UTC)
+                .toInstant()
+                .toEpochMilli();
 
-            DatePickerDialog datePicker = new DatePickerDialog(requireContext(),
-                    (view, selectedYear, selectedMonth, selectedDay) -> {
-                        LocalDate selectedDate = LocalDate.of(selectedYear, selectedMonth + 1, selectedDay);
+        long minMillis = todayMillisUtc;
+        long maxMillis = Collections.max(eventDates)
+                .atStartOfDay(ZoneOffset.UTC)
+                .toInstant()
+                .toEpochMilli();
 
-                        if (allowed.contains(selectedDate)) {
-                            editTextDate.setText(selectedDate.format(formatter));
-                            for (int i = 0; i < eventDates.size(); i++) {
-                                LocalDate eventDate = eventDates.get(i);
-                                if (eventDate.equals(selectedDate)) {
-                                    spinnerEvent.setSelection(i);
-                                    break;
-                                }
-                            }
-                            
-                    } else {
-                            Toast.makeText(requireContext(),
-                                    "You can only choose dates with your events",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }, year, month, day);
+        CalendarConstraints constraints = new CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointForward.from(minMillis))
+                .setStart(minMillis)
+                .setEnd(maxMillis)
+                .build();
 
-            if (!eventDates.isEmpty()) {
-                LocalDate min = Collections.min(eventDates);
-                LocalDate max = Collections.max(eventDates);
+        Long initialSelection = null;
+        int selectedPos = spinnerEvent.getSelectedItemPosition();
+        if (selectedPos != Spinner.INVALID_POSITION) {
+            LocalDate initialDate = eventDates.get(selectedPos);
+            initialSelection = initialDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
 
-                datePicker.getDatePicker().setMinDate(min.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
-                datePicker.getDatePicker().setMaxDate(max.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            editTextDate.setText(initialDate.format(formatter));
+        }
+
+        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select event date")
+                .setCalendarConstraints(constraints)
+                .setTheme(R.style.ThemeOverlay_App_MaterialCalendar);
+
+        if (initialSelection != null) {
+            builder.setSelection(initialSelection);
+        }
+
+        MaterialDatePicker<Long> datePicker = builder.build();
+
+        editTextDate.setOnClickListener(v ->
+                datePicker.show(getParentFragmentManager(), "DATE_PICKER")
+        );
+
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            if (selection == null) return;
+            LocalDate picked = Instant.ofEpochMilli(selection)
+                    .atZone(ZoneOffset.UTC)
+                    .toLocalDate();
+
+            if (!allowed.contains(picked)) {
+                Toast.makeText(requireContext(),
+                        "You can only choose dates that match your events",
+                        Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            datePicker.show();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            editTextDate.setText(picked.format(formatter));
+
+            for (int i = 0; i < eventDates.size(); i++) {
+                if (eventDates.get(i).equals(picked)) {
+                    spinnerEvent.setSelection(i);
+                    break;
+                }
+            }
         });
     }
 
+
     private void setupTimePickers() {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
         editTextTimeFrom.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
 
-            TimePickerDialog timePicker = new TimePickerDialog(requireContext(), (view, selectedHour, selectedMinute) -> {
-                LocalTime fromTime = LocalTime.of(selectedHour, selectedMinute);
-                editTextTimeFrom.setText(fromTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+            com.google.android.material.timepicker.MaterialTimePicker pickerFrom =
+                    new com.google.android.material.timepicker.MaterialTimePicker.Builder()
+                            .setTimeFormat(com.google.android.material.timepicker.TimeFormat.CLOCK_24H)
+                            .setHour(hour)
+                            .setMinute(minute)
+                            .setTitleText("Select start time")
+                            .setTheme(R.style.ThemeOverlay_App_MaterialTimePicker)
+                            .build();
+
+            pickerFrom.addOnPositiveButtonClickListener(p -> {
+                LocalTime fromTime = LocalTime.of(pickerFrom.getHour(), pickerFrom.getMinute());
+                editTextTimeFrom.setText(fromTime.format(timeFormatter));
 
                 if (fixedDurationMinutes > 0) {
                     LocalTime toTime = fromTime.plusMinutes(fixedDurationMinutes);
-                    editTextTimeTo.setText(toTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+                    editTextTimeTo.setText(toTime.format(timeFormatter));
                 }
-            }, hour, minute, true);
+            });
 
-            timePicker.show();
+            pickerFrom.show(getParentFragmentManager(), "TIME_PICKER_FROM");
         });
 
         if (fixedDurationMinutes > 0) {
-            // Fixed duration → disable end time
             editTextTimeTo.setEnabled(false);
         } else {
-            // Min/Max duration → enable end time
             editTextTimeTo.setEnabled(true);
             editTextTimeTo.setOnClickListener(v -> {
                 String fromText = editTextTimeFrom.getText().toString();
@@ -283,29 +325,39 @@ public class ServiceReservationDialogFragment extends DialogFragment {
                     return;
                 }
 
+                LocalTime fromTime = LocalTime.parse(fromText, timeFormatter);
                 Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
 
-                TimePickerDialog timePicker = new TimePickerDialog(requireContext(), (view, selectedHour, selectedMinute) -> {
-                    LocalTime toTime = LocalTime.of(selectedHour, selectedMinute);
-                    LocalTime fromTime = LocalTime.parse(fromText, DateTimeFormatter.ofPattern("HH:mm"));
+                com.google.android.material.timepicker.MaterialTimePicker pickerTo =
+                        new com.google.android.material.timepicker.MaterialTimePicker.Builder()
+                                .setTimeFormat(com.google.android.material.timepicker.TimeFormat.CLOCK_24H)
+                                .setHour(hour)
+                                .setMinute(minute)
+                                .setTitleText("Select end time")
+                                .setTheme(R.style.ThemeOverlay_App_MaterialTimePicker)
+                                .build();
+
+                pickerTo.addOnPositiveButtonClickListener(p -> {
+                    LocalTime toTime = LocalTime.of(pickerTo.getHour(), pickerTo.getMinute());
                     long durationMinutes = java.time.Duration.between(fromTime, toTime).toMinutes();
 
                     if (durationMinutes < minDurationMinutes || durationMinutes > maxDurationMinutes) {
                         Toast.makeText(requireContext(),
-                                "Service duration must be between " + minDurationMinutes/60 + " and " + maxDurationMinutes/60 + " hours",
+                                "Service duration must be between " + minDurationMinutes / 60 + " and " + maxDurationMinutes / 60 + " hours",
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    editTextTimeTo.setText(toTime.format(DateTimeFormatter.ofPattern("HH:mm")));
-                }, hour, minute, true);
+                    editTextTimeTo.setText(toTime.format(timeFormatter));
+                });
 
-                timePicker.show();
+                pickerTo.show(getParentFragmentManager(), "TIME_PICKER_TO");
             });
         }
-        }
+    }
+
 
 
     private void reserveService() {

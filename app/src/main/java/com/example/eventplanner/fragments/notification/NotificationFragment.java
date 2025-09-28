@@ -26,6 +26,7 @@ import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.adapters.notification.NotificationAdapter;
 import com.example.eventplanner.dto.notification.GetNotificationDTO;
 import com.example.eventplanner.fragments.product.ProductDetailsFragment;
+import com.example.eventplanner.fragments.profile.ViewUserProfileFragment;
 import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
 import com.example.eventplanner.fragments.servicereservation.ServiceReservationDetailsFragment;
 import com.example.eventplanner.utils.ClientUtils;
@@ -35,6 +36,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -64,6 +66,13 @@ public class NotificationFragment extends Fragment {
     private int currentPage = 0;
     private int totalPages = 0;
     private boolean isMuted = false;
+    private TextView noNotificationsTextView;
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("current_page", currentPage);
+    }
 
     @Nullable
     @Override
@@ -151,8 +160,21 @@ public class NotificationFragment extends Fragment {
                     Toast.makeText(getContext(), "Unknown notification type.", Toast.LENGTH_SHORT).show();
                     break;
             }
+        },
+                senderEmail -> {
+                    if (getContext() instanceof AppCompatActivity) {
+                        AppCompatActivity activity = (AppCompatActivity) getContext();
+                        ViewUserProfileFragment fragment = ViewUserProfileFragment.newInstance(senderEmail);
+                        activity.getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_fragment_container, fragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+
         });
         recyclerView.setAdapter(adapter);
+        noNotificationsTextView = view.findViewById(R.id.no_notifications_text);
 
         prevPageButton = view.findViewById(R.id.prevPageButton);
         nextPageButton = view.findViewById(R.id.nextPageButton);
@@ -192,6 +214,10 @@ public class NotificationFragment extends Fragment {
     public void onViewCreated(@NonNull View view,
                               @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState != null) {
+            currentPage = savedInstanceState.getInt("current_page", 0);
+        }
 
         if (getActivity() instanceof HomepageActivity) {
             NotificationWebSocketService service =
@@ -302,43 +328,49 @@ public class NotificationFragment extends Fragment {
 
     private void checkMuteStatus() {
         String auth = ClientUtils.getAuthorization(getContext());
-        Call<String> call = ClientUtils.notificationService.getMuteStatus(auth);
+        Call<ResponseBody> call = ClientUtils.notificationService.getMuteStatus(auth);
 
-        call.enqueue(new Callback<String>() {
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                isMuted = false; // default
+
                 if (response.isSuccessful()) {
-                    String mutedUntilString = response.body();
-                    if (mutedUntilString != null && !mutedUntilString.isEmpty()) {
-                        try {
+                    try {
+                        String mutedUntilString = response.body() != null ? response.body().string() : null;
+
+                        if (mutedUntilString != null && !mutedUntilString.isEmpty()) {
+                            mutedUntilString = mutedUntilString.replace("\"", "");
+
                             LocalDateTime muteEndTime = LocalDateTime.parse(mutedUntilString);
                             isMuted = muteEndTime.isAfter(LocalDateTime.now());
                             updateMuteUI(isMuted ? muteEndTime : null);
-                        } catch (Exception e) {
-                            Log.e("NotificationFragment", "Error parsing muteUntil date: " + mutedUntilString, e);
-                            isMuted = false;
+                        } else {
                             updateMuteUI(null);
                         }
-                    } else {
-                        isMuted = false;
+                    } catch (Exception e) {
+                        Log.w("NotificationFragment", "Mute status cannot be parsed", e);
                         updateMuteUI(null);
                     }
                 } else {
-                    isMuted = false;
                     updateMuteUI(null);
                 }
+
                 loadNotifications();
             }
 
+
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 isMuted = false;
                 updateMuteUI(null);
-                Log.e("NotificationFragment", "Network error checking mute status", t);
+                Log.e("NotificationFragment", "Error loading mute status", t);
                 loadNotifications();
             }
         });
     }
+
+
     private void updateMuteUI(LocalDateTime mutedUntil) {
         if (isMuted) {
             muteToggleButton.setImageResource(R.drawable.ic_mute_notifications);
@@ -363,62 +395,37 @@ public class NotificationFragment extends Fragment {
 
     private void loadNotifications() {
         String auth = ClientUtils.getAuthorization(getContext());
+        Call<List<GetNotificationDTO>> call = ClientUtils.notificationService.getFilteredNotifications(auth);
 
-        if (isMuted) {
-            Call<List<GetNotificationDTO>> call = ClientUtils.notificationService.getFilteredNotifications(auth);
+        call.enqueue(new Callback<List<GetNotificationDTO>>() {
+            @Override
+            public void onResponse(Call<List<GetNotificationDTO>> call, Response<List<GetNotificationDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    allNotifications.clear();
+                    allNotifications.addAll(response.body());
+                    setupPagination();
+                } else {
+                    Log.e("NotificationFragment", "Error loading noitifications: " + response.code());
+                }
+            }
 
-            call.enqueue(new Callback<List<GetNotificationDTO>>() {
-                @Override
-                public void onResponse(Call<List<GetNotificationDTO>> call, Response<List<GetNotificationDTO>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        allNotifications.clear();
-                        allNotifications.addAll(response.body());
-                        setupPagination();
-                    } else {
-                        Toast.makeText(getContext(), "Error loading notifications: " + response.code(), Toast.LENGTH_SHORT).show();
-                        Log.e("NotificationFragment", "Error loading notifications: " + response.code() + " " + response.message());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<GetNotificationDTO>> call, Throwable t) {
-                    Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    Log.e("NotificationFragment", "Network error occurred", t);
-                }
-            });
-        } else {
-            Call<List<GetNotificationDTO>> call = ClientUtils.notificationService.getFilteredNotifications(auth);
-            call.enqueue(new Callback<List<GetNotificationDTO>>() {
-                @Override
-                public void onResponse(Call<List<GetNotificationDTO>> call, Response<List<GetNotificationDTO>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        allNotifications.clear();
-                        allNotifications.addAll(response.body());
-                        setupPagination();
-                    } else {
-                        Toast.makeText(getContext(), "Error loading notifications: " + response.code(), Toast.LENGTH_SHORT).show();
-                        Log.e("NotificationFragment", "Error loading notifications: " + response.code() + " " + response.message());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<GetNotificationDTO>> call, Throwable t) {
-                    Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    Log.e("NotificationFragment", "Network error occurred", t);
-                }
-            });
-        }
+            @Override
+            public void onFailure(Call<List<GetNotificationDTO>> call, Throwable t) {
+                Log.e("NotificationFragment", "Error loading notifications", t);
+                Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void setupPagination() {
         if (allNotifications.isEmpty()) {
-            Toast.makeText(getContext(), "No notifications to show.", Toast.LENGTH_SHORT).show();
+            noNotificationsTextView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
             pageIndicatorTextView.setText("");
             return;
         }
 
         totalPages = (int) Math.ceil((double) allNotifications.size() / PAGE_SIZE);
-        currentPage = 0;
         displayCurrentPage();
     }
 

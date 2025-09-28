@@ -146,7 +146,14 @@ public class ViewUserProfileFragment extends Fragment {
     private void updateBlockButtonState() {
         if (viewedUser == null || currentUserRole == null || currentUserId == null || currentUserBlockedUsersIds == null) {
             btnBlockUser.setVisibility(View.GONE);
+            btnReportUser.setVisibility(View.GONE);
             return;
+        }
+
+        if (Objects.equals(currentUserId, viewedUser.getId())) {
+            btnReportUser.setVisibility(View.GONE);
+        } else {
+            btnReportUser.setVisibility(View.VISIBLE);
         }
 
         boolean canBlock = canBlockUser(currentUserRole.toString(), viewedUser.getRole());

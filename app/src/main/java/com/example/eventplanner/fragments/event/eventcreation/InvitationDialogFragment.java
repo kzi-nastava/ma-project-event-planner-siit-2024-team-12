@@ -1,5 +1,6 @@
 package com.example.eventplanner.fragments.event.eventcreation;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -39,13 +40,27 @@ public class InvitationDialogFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (getDialog() != null) {
-            getDialog().getWindow().setLayout(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            );
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.90);
+            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+            getDialog().getWindow().setLayout(width, height);
+            getDialog().getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
         }
     }
+
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+        }
+
+        return dialog;
+    }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,6 +83,8 @@ public class InvitationDialogFragment extends DialogFragment {
         invitedEmailsChipGroup = view.findViewById(R.id.invited_emails_chip_group);
         invitationContentEditText = view.findViewById(R.id.invitation_content_edit_text);
         Button sendButton = view.findViewById(R.id.send_button);
+        ImageButton closeButton = view.findViewById(R.id.close_button);
+        closeButton.setOnClickListener(v -> dismiss());
 
         if (viewModel.getInvitedEmails() != null) {
             invitedEmails.addAll(viewModel.getInvitedEmails());

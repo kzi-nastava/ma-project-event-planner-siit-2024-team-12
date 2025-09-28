@@ -15,10 +15,15 @@ import com.example.eventplanner.dto.solution.FavSolutionDTO;
 import java.util.List;
 
 public class FavoriteServicesAdapter extends RecyclerView.Adapter<FavoriteServicesAdapter.ViewHolder> {
+    public interface OnServiceClickListener {
+        void onServiceClick(Long serviceId);
+    }
     private List<FavSolutionDTO> services;
+    private final OnServiceClickListener listener;
 
-    public FavoriteServicesAdapter(List<FavSolutionDTO> services) {
+    public FavoriteServicesAdapter(List<FavSolutionDTO> services, OnServiceClickListener listener) {
         this.services = services;
+        this.listener = listener;
     }
 
     @Override
@@ -52,7 +57,9 @@ public class FavoriteServicesAdapter extends RecyclerView.Adapter<FavoriteServic
         }
 
         holder.seeMore.setOnClickListener(v -> {
-
+            if (listener != null) {
+                listener.onServiceClick(service.getId());
+            }
         });
     }
 

@@ -1,15 +1,21 @@
-package com.example.eventplanner.activities.favorites;
+package com.example.eventplanner.fragments.favorites;
 
+import android.app.Service;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.favorites.FavoriteServicesAdapter;
@@ -22,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FavoriteServicesActivity extends AppCompatActivity {
+public class FavoriteServicesFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private FavoriteServicesAdapter adapter;
@@ -30,31 +36,39 @@ public class FavoriteServicesActivity extends AppCompatActivity {
     private List<FavSolutionDTO> currentServices = new ArrayList<>();
     private static final int PAGE_SIZE = 3;
     private int currentPage = 1;
+    private View view;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorite_services);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_favorite_services, container, false);
 
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         loadAllServices();
 
-        adapter = new FavoriteServicesAdapter(currentServices);
+        adapter = new FavoriteServicesAdapter(currentServices, serviceId -> {
+            ServiceDetailsFragment detailsFragment = ServiceDetailsFragment.newInstance(serviceId);
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_fragment_container, detailsFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
         recyclerView.setAdapter(adapter);
 
         loadPage(currentPage);
 
-        findViewById(R.id.previousPage).setOnClickListener(v -> {
+        view.findViewById(R.id.previousPage).setOnClickListener(v -> {
             if (currentPage > 1) {
                 currentPage--;
                 loadPage(currentPage);
             }
         });
 
-        findViewById(R.id.nextPage).setOnClickListener(v -> {
+        view.findViewById(R.id.nextPage).setOnClickListener(v -> {
             if (currentPage < getTotalPages()) {
                 currentPage++;
                 loadPage(currentPage);
@@ -62,19 +76,20 @@ public class FavoriteServicesActivity extends AppCompatActivity {
         });
 
         updatePageUI();
+
+        return view;
     }
 
 
-
     private void updatePageUI() {
-        TextView pageNumberText = findViewById(R.id.pageNumber);
+        TextView pageNumberText = view.findViewById(R.id.pageNumber);
         pageNumberText.setText("Page " + currentPage + " / " + getTotalPages());
     }
 
 
     private void loadAllServices() {
-        String auth = ClientUtils.getAuthorization(this);
-        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String auth = ClientUtils.getAuthorization(requireContext());
+        SharedPreferences pref = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String email = pref.getString("email", "e");
 
         final List<FavSolutionDTO>[] favServices = new List[]{new ArrayList<>()};
@@ -91,14 +106,14 @@ public class FavoriteServicesActivity extends AppCompatActivity {
                     allServices.addAll(favServices[0]);
                     loadPage(currentPage);
                 } else {
-                    Toast.makeText(FavoriteServicesActivity.this, "Error loading favorite services!" + response.code(),
+                    Toast.makeText(requireActivity(), "Error loading favorite services!" + response.code(),
                             Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<FavSolutionDTO>> call, Throwable t) {
-                Toast.makeText(FavoriteServicesActivity.this, "Failed to load favorite services!",
+                Toast.makeText(requireActivity(), "Failed to load favorite services!",
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -120,10 +135,5 @@ public class FavoriteServicesActivity extends AppCompatActivity {
 
     private int getTotalPages() {
         return (int) Math.ceil((double) allServices.size() / PAGE_SIZE);
-    }
-
-    public void closeForm(View view) {
-        setResult(RESULT_CANCELED);
-        finish();
     }
 }

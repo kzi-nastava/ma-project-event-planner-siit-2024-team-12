@@ -138,7 +138,18 @@ public class EventListFragment extends BaseListFragment<GetEventDTO, EventFilter
                     allItems.addAll(response.body());
                     currentPage = 0;
                     updateRecyclerView();
+
+                    if (allItems.isEmpty()) {
+                        emptyMessage.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    } else {
+                        emptyMessage.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
                 } else {
+                    emptyMessage.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+
                     Toast.makeText(requireContext(), "No events to show.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -146,7 +157,7 @@ public class EventListFragment extends BaseListFragment<GetEventDTO, EventFilter
             @Override
             public void onFailure(@NonNull Call<List<GetEventDTO>> call, @NonNull Throwable t) {
                 if (!isAdded()) return;
-                Toast.makeText(requireContext(), "Greška: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Error loading events: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
