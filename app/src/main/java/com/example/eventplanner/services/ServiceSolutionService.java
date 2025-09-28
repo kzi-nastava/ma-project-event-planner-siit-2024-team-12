@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities.service;
+package com.example.eventplanner.services;
 
 import com.example.eventplanner.dto.solutionservice.CreateServiceDTO;
 import com.example.eventplanner.dto.solutionservice.CreatedServiceDTO;
@@ -17,7 +17,6 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 public interface ServiceSolutionService {
 

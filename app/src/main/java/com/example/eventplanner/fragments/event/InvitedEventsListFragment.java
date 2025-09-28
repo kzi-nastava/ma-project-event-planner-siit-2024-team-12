@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.profile.QuickRegisterService;
+import com.example.eventplanner.services.QuickRegisterService;
 import com.example.eventplanner.adapters.homepage.ListItemAdapter;
 import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.fragments.homepage.BaseListFragment;

@@ -1,7 +1,7 @@
 package com.example.eventplanner.dto.solution;
 
 
-import com.example.eventplanner.activities.homepage.CardItem;
+import com.example.eventplanner.services.CardItem;
 
 public class GetHomepageSolutionDTO implements CardItem {
     private Long id;

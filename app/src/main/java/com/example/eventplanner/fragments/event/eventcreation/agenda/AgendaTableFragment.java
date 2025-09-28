@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments.eventcreation;
+package com.example.eventplanner.fragments.event.eventcreation.agenda;
 
 import android.os.Bundle;
 

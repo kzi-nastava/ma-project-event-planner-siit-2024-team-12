@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities.homepage;
+package com.example.eventplanner.services;
 
 import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.dto.solution.GetHomepageSolutionDTO;

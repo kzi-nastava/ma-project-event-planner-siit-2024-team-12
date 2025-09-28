@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.SingleSelectAdapter;
-import com.example.eventplanner.activities.homepage.HomepageService;
+import com.example.eventplanner.services.HomepageService;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.viewmodels.EventFilterViewModel;
 

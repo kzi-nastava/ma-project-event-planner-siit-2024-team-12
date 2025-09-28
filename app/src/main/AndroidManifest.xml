@@ -42,13 +42,7 @@
             android:name=".activities.eventtype.EventTypeTableActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.event.EventCreationActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.eventtype.EventTypeCreationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.calendar.CalendarActivity"
             android:exported="false" />
         <activity
             android:name=".activities.eventtype.EventTypeEditActivity"
