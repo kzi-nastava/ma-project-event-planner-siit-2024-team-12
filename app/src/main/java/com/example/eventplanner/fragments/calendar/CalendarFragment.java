@@ -1,18 +1,23 @@
-package com.example.eventplanner.activities.calendar;
+package com.example.eventplanner.fragments.calendar;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventplanner.fragments.event.EventDetailsFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.enumeration.UserRole;
@@ -30,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CalendarActivity extends AppCompatActivity {
+public class CalendarFragment extends Fragment {
 
     private RecyclerView calendarRecyclerView;
     private CalendarAdapter calendarAdapter;
@@ -38,22 +43,23 @@ public class CalendarActivity extends AppCompatActivity {
     private Calendar currentCalendar;
     private HashMap<String, List<String>> acceptedEvents = new HashMap<>();
     private HashMap<String, List<String>> createdEvents = new HashMap<>();
-    String userRole;
+    private View view;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calendar);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        monthYearText = findViewById(R.id.monthYearText);
-        calendarRecyclerView = findViewById(R.id.calendarRecyclerView);
-        Button previousMonthButton = findViewById(R.id.previousMonthButton);
-        Button nextMonthButton = findViewById(R.id.nextMonthButton);
+        monthYearText = view.findViewById(R.id.monthYearText);
+        calendarRecyclerView = view.findViewById(R.id.calendarRecyclerView);
+        Button previousMonthButton = view.findViewById(R.id.previousMonthButton);
+        Button nextMonthButton = view.findViewById(R.id.nextMonthButton);
 
         currentCalendar = Calendar.getInstance();
 
-        calendarRecyclerView.setLayoutManager(new GridLayoutManager(this, 7));
+        calendarRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 7));
         calendarRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
@@ -75,7 +81,14 @@ public class CalendarActivity extends AppCompatActivity {
             currentCalendar.add(Calendar.MONTH, 1);
             updateCalendar();
         });
+
+        return view;
+
     }
+
+
+
+
 
     private void updateCalendar() {
         int month = currentCalendar.get(Calendar.MONTH);
@@ -88,7 +101,7 @@ public class CalendarActivity extends AppCompatActivity {
         loadAcceptedEvents(acceptedEvents);
 
         // only organizers can see events they created too
-        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences pref = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String role = pref.getString("userRole", UserRole.ROLE_ORGANIZER.toString());
 
         if (role.equals(UserRole.ROLE_ORGANIZER.toString())) {
@@ -97,7 +110,15 @@ public class CalendarActivity extends AppCompatActivity {
 
         // Update adapter
         if (calendarAdapter == null) {
-            calendarAdapter = new CalendarAdapter(days, acceptedEvents, createdEvents, month, year);
+            calendarAdapter = new CalendarAdapter(days, acceptedEvents, createdEvents, month, year,
+                eventId -> {
+                    Fragment detailsFragment = EventDetailsFragment.newInstance(eventId);
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, detailsFragment)
+                            .addToBackStack(null)
+                            .commit();
+                });
             calendarRecyclerView.setAdapter(calendarAdapter);
         } else {
             calendarAdapter.updateData(days, acceptedEvents, createdEvents, month, year);
@@ -139,9 +160,9 @@ public class CalendarActivity extends AppCompatActivity {
 
 
     private void loadAcceptedEvents(HashMap<String, List<String>> events) {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
-        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences pref = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String email = pref.getString("email", "e");
 
         Call<ArrayList<AcceptedEventDTO>> call = ClientUtils.userService.getAcceptedEvents(auth, email);
@@ -164,7 +185,7 @@ public class CalendarActivity extends AppCompatActivity {
                         events.get(formattedDate).add(event.getName());
                     }
 
-                    runOnUiThread(() -> {
+                    requireActivity().runOnUiThread(() -> {
                         calendarAdapter.updateData(generateDaysForMonth(), events, createdEvents, currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.YEAR));
                         calendarAdapter.notifyDataSetChanged();
                     });
@@ -173,7 +194,7 @@ public class CalendarActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ArrayList<AcceptedEventDTO>> call, Throwable t) {
-                Toast.makeText(CalendarActivity.this, "Failed to load accepted events!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Failed to load accepted events!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -181,9 +202,9 @@ public class CalendarActivity extends AppCompatActivity {
 
 
     private void loadCreatedEvents(HashMap<String, List<String>> events) {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
-        SharedPreferences pref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences pref = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String email = pref.getString("email", "e");
 
         Call<ArrayList<AcceptedEventDTO>> call = ClientUtils.userService.getCreatedEvents(auth, email);
@@ -206,18 +227,18 @@ public class CalendarActivity extends AppCompatActivity {
                         events.get(formattedDate).add(event.getName());
                     }
 
-                    runOnUiThread(() -> {
+                    requireActivity().runOnUiThread(() -> {
                         calendarAdapter.updateData(generateDaysForMonth(), acceptedEvents, events, currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.YEAR));
                         calendarAdapter.notifyDataSetChanged();
                     });
                 } else if (response.code() == 404) {
-                    Toast.makeText(CalendarActivity.this, "You don't have any events!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "You don't have any events!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<AcceptedEventDTO>> call, Throwable t) {
-                Toast.makeText(CalendarActivity.this, "Failed to load created events!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Failed to load created events!", Toast.LENGTH_SHORT).show();
             }
         });
     }

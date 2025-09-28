@@ -34,14 +34,21 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
     private HashMap<String, List<String>> createdEvents;
     private int month, year;
 
+    public interface OnEventClickListener {
+        void onEventClick(Long eventId);
+    }
+
+    private OnEventClickListener listener;
 
     public CalendarAdapter(List<String> days, HashMap<String, List<String>> acceptedEvents,
-                           HashMap<String, List<String>> createdEvents, int month, int year) {
+                           HashMap<String, List<String>> createdEvents, int month, int year,
+                           OnEventClickListener listener) {
         this.days = days;
         this.acceptedEvents = acceptedEvents;
         this.createdEvents = createdEvents;
         this.month = month;
         this.year = year;
+        this.listener = listener;
     }
 
 
@@ -110,14 +117,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         acceptedEventsList.setText(acceptedEventsText);
         createdEventsList.setText(createdEventsText);
 
-        acceptedEventsList.setOnClickListener(v -> {
-            showEventSelectionDialog(context, "Select event to view details:", acceptedEventList);
-        });
-
-        createdEventsList.setOnClickListener(v -> {
-            showEventSelectionDialog(context, "Select event to view details:", createdEventList);
-        });
-
         TextView dialogTitle = new TextView(context);
         dialogTitle.setText(date + "   " + events);
         dialogTitle.setTextSize(22);
@@ -136,25 +135,39 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         titleLayout.addView(dialogTitle);
         titleLayout.addView(dialogSubtitle);
 
-        new AlertDialog.Builder(context)
+        AlertDialog eventDialog = new AlertDialog.Builder(context)
                 .setCustomTitle(titleLayout)
                 .setView(dialogView)
                 .setPositiveButton(close, (dialog, which) -> dialog.dismiss())
-                .show();
+                .create();
+
+        acceptedEventsList.setOnClickListener(v ->
+                showEventSelectionDialog(context, "Select event to view details:", acceptedEventList, eventDialog));
+
+        createdEventsList.setOnClickListener(v ->
+                showEventSelectionDialog(context, "Select event to view details:", createdEventList, eventDialog));
+
+        eventDialog.show();
     }
 
-
-    private void showEventSelectionDialog(Context context, String title, List<String> eventList) {
+    private void showEventSelectionDialog(Context context, String title, List<String> eventList, AlertDialog parentDialog) {
         String[] eventArray = eventList.toArray(new String[0]);
 
-        new AlertDialog.Builder(context)
+        AlertDialog selectionDialog = new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setItems(eventArray, (dialog, which) -> {
                     String selectedEvent = eventArray[which];
+
+                    dialog.dismiss();
+                    parentDialog.dismiss(); 
+
                     findByName(context, selectedEvent);
                 })
-                .show();
+                .create();
+
+        selectionDialog.show();
     }
+
 
 
     private void findByName(Context context, String eventName) {
@@ -166,9 +179,11 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
             public void onResponse(Call<EventDetailsDTO> call, Response<EventDetailsDTO> response) {
                 if (response.isSuccessful()) {
                     EventDetailsDTO event = response.body();
-                    Intent intent = new Intent(context, EventDetailsFragment.class);
-                    intent.putExtra("id", event.getId());
-                    context.startActivity(intent);
+
+                    if (listener != null) {
+                        assert event != null;
+                        listener.onEventClick(event.getId());
+                    }
                 }
                 else {
                     Toast.makeText(context, "Error loading event details!", Toast.LENGTH_SHORT).show();

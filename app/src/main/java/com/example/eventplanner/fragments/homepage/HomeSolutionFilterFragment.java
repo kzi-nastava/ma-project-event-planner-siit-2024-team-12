@@ -1,14 +1,11 @@
 package com.example.eventplanner.fragments.homepage;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +19,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.SingleSelectAdapter;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.viewmodels.HomeSolutionFilterViewModel;
-import com.example.eventplanner.activities.homepage.HomepageService;
-import com.example.eventplanner.enumeration.UserRole;
+import com.example.eventplanner.services.HomepageService;
 
 import java.util.ArrayList;
 import java.util.HashMap;

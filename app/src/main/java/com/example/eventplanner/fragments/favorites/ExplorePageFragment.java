@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities.favorites;
+package com.example.eventplanner.fragments.favorites;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

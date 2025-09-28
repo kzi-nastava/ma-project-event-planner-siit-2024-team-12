@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities.solutioncategory;
+package com.example.eventplanner.services;
 
 import com.example.eventplanner.dto.solutioncategory.CreateCategoryDTO;
 import com.example.eventplanner.dto.solutioncategory.CreatedCategoryDTO;

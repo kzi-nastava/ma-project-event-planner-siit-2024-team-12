@@ -10,9 +10,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.eventplanner.activities.eventtype.EventTypeService;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
-import com.example.eventplanner.dto.solutionservice.CreateServiceDTO;
 import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
 import com.example.eventplanner.dto.solutionservice.UpdateServiceDTO;
 import com.example.eventplanner.dto.solutionservice.UpdatedServiceDTO;

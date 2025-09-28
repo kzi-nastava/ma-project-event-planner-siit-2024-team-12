@@ -1,20 +1,17 @@
-package com.example.eventplanner.activities.auth;
+package com.example.eventplanner.services;
 
 import com.example.eventplanner.dto.auth.LogInRequest;
 import com.example.eventplanner.dto.auth.PasswordChangeRequest;
-import com.example.eventplanner.dto.auth.UserTokenState;
 import com.example.eventplanner.dto.user.CreateUserDTO;
 import com.example.eventplanner.dto.user.GetUserDTO;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface AuthService {

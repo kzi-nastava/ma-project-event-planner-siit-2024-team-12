@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.viewholders.AgendaViewHolder;
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
-import com.example.eventplanner.fragments.eventcreation.ActivityFormFragment;
+import com.example.eventplanner.fragments.event.eventcreation.agenda.ActivityFormFragment;
 import com.example.eventplanner.model.Activity;
 import com.example.eventplanner.viewmodels.EventEditViewModel;
 

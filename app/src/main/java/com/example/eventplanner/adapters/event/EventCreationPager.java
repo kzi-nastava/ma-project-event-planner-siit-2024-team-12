@@ -5,13 +5,17 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.eventplanner.fragments.eventcreation.EventCreation1;
-import com.example.eventplanner.fragments.eventcreation.EventCreation2;
+import com.example.eventplanner.fragments.event.eventcreation.EventCreation1;
+import com.example.eventplanner.fragments.event.eventcreation.EventCreation2;
 
 public class EventCreationPager extends FragmentStateAdapter {
 
     public EventCreationPager(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
+    }
+
+    public EventCreationPager(@NonNull Fragment fragment) {
+        super(fragment);
     }
 
     @NonNull

@@ -21,12 +21,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -34,13 +29,13 @@ import com.example.eventplanner.dto.event.UpdatedEventDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.enumeration.PrivacyType;
-import com.example.eventplanner.fragments.eventcreation.AgendaEditFragment;
+import com.example.eventplanner.fragments.event.eventcreation.agenda.AgendaEditFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.agenda.CreateActivityDTO;
 import com.example.eventplanner.dto.event.EventDetailsDTO;
 import com.example.eventplanner.dto.location.CreateLocationDTO;
-import com.example.eventplanner.fragments.eventcreation.AgendaDialogFragment;
+import com.example.eventplanner.fragments.event.eventcreation.agenda.AgendaDialogFragment;
 import com.example.eventplanner.model.Activity;
 import com.example.eventplanner.utils.ValidationUtils;
 import com.example.eventplanner.viewmodels.EventEditViewModel;

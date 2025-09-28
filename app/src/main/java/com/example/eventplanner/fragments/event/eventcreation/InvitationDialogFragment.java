@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments.eventcreation;
+package com.example.eventplanner.fragments.event.eventcreation;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
