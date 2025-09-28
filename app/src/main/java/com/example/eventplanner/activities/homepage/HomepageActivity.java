@@ -255,7 +255,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
     private void setupOrganizerUI() {
         navigationView.getMenu().clear();
-        navigationView.inflateMenu(R.menu.organiser_menu);
+        navigationView.inflateMenu(R.menu.organizer_menu);
 
         MenuItem notificationsItem = navigationView.getMenu().findItem(R.id.nav_notifications);
         if (notificationsItem != null) {

@@ -25,6 +25,9 @@ import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.dto.servicereservation.CreateServiceReservationDTO;
 import com.example.eventplanner.dto.servicereservation.CreatedServiceReservationDTO;
 import com.example.eventplanner.utils.ClientUtils;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointForward;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
 import org.json.JSONObject;
 
@@ -33,6 +36,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -209,47 +213,76 @@ public class ServiceReservationDialogFragment extends DialogFragment {
     }
 
     private void setupDatePicker(List<LocalDate> eventDates) {
+        if (eventDates == null || eventDates.isEmpty()) return;
         final Set<LocalDate> allowed = new HashSet<>(eventDates);
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        editTextDate.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
+        long todayMillisUtc = LocalDate.now()
+                .atStartOfDay(ZoneOffset.UTC)
+                .toInstant()
+                .toEpochMilli();
 
-            DatePickerDialog datePicker = new DatePickerDialog(requireContext(),
-                    (view, selectedYear, selectedMonth, selectedDay) -> {
-                        LocalDate selectedDate = LocalDate.of(selectedYear, selectedMonth + 1, selectedDay);
+        long minMillis = todayMillisUtc;
+        long maxMillis = Collections.max(eventDates)
+                .atStartOfDay(ZoneOffset.UTC)
+                .toInstant()
+                .toEpochMilli();
 
-                        if (allowed.contains(selectedDate)) {
-                            editTextDate.setText(selectedDate.format(formatter));
-                            for (int i = 0; i < eventDates.size(); i++) {
-                                LocalDate eventDate = eventDates.get(i);
-                                if (eventDate.equals(selectedDate)) {
-                                    spinnerEvent.setSelection(i);
-                                    break;
-                                }
-                            }
-                            
-                    } else {
-                            Toast.makeText(requireContext(),
-                                    "You can only choose dates with your events",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }, year, month, day);
+        CalendarConstraints constraints = new CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointForward.from(minMillis))
+                .setStart(minMillis)
+                .setEnd(maxMillis)
+                .build();
 
-            if (!eventDates.isEmpty()) {
-                LocalDate min = Collections.min(eventDates);
-                LocalDate max = Collections.max(eventDates);
+        Long initialSelection = null;
+        int selectedPos = spinnerEvent.getSelectedItemPosition();
+        if (selectedPos != Spinner.INVALID_POSITION) {
+            LocalDate initialDate = eventDates.get(selectedPos);
+            initialSelection = initialDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
 
-                datePicker.getDatePicker().setMinDate(min.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
-                datePicker.getDatePicker().setMaxDate(max.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            editTextDate.setText(initialDate.format(formatter));
+        }
+
+        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select event date")
+                .setCalendarConstraints(constraints)
+                .setTheme(R.style.ThemeOverlay_App_MaterialCalendar);
+
+        if (initialSelection != null) {
+            builder.setSelection(initialSelection);
+        }
+
+        MaterialDatePicker<Long> datePicker = builder.build();
+
+        editTextDate.setOnClickListener(v ->
+                datePicker.show(getParentFragmentManager(), "DATE_PICKER")
+        );
+
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            if (selection == null) return;
+            LocalDate picked = Instant.ofEpochMilli(selection)
+                    .atZone(ZoneOffset.UTC)
+                    .toLocalDate();
+
+            if (!allowed.contains(picked)) {
+                Toast.makeText(requireContext(),
+                        "You can only choose dates that match your events",
+                        Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            datePicker.show();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            editTextDate.setText(picked.format(formatter));
+
+            for (int i = 0; i < eventDates.size(); i++) {
+                if (eventDates.get(i).equals(picked)) {
+                    spinnerEvent.setSelection(i);
+                    break;
+                }
+            }
         });
     }
+
 
     private void setupTimePickers() {
         editTextTimeFrom.setOnClickListener(v -> {
