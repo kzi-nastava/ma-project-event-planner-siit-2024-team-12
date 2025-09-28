@@ -516,6 +516,13 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                 .commit();
     }
 
+    public void closeChatSidebar() {
+        DrawerLayout drawerLayout = findViewById(R.id.navigationView);
+        if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.END)) {
+            drawerLayout.closeDrawer(GravityCompat.END);
+        }
+    }
+
     public NotificationWebSocketService getNotificationService() {
         return notificationService;
     }

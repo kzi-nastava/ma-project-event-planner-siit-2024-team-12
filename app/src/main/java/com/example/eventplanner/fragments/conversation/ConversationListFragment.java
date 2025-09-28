@@ -6,12 +6,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.adapters.conversation.ConversationAdapter;
 import com.example.eventplanner.dto.conversation.GetConversationDTO;
 import com.example.eventplanner.utils.ClientUtils;
@@ -27,6 +30,7 @@ public class ConversationListFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ConversationAdapter adapter;
+    private View emptyStateLayout;
 
     @Nullable
     @Override
@@ -36,6 +40,10 @@ public class ConversationListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new ConversationAdapter(new ArrayList<>(), this::onConversationClicked);
         recyclerView.setAdapter(adapter);
+        ImageButton closeButton = view.findViewById(R.id.btn_close_sidebar);
+        emptyStateLayout = view.findViewById(R.id.empty_state_layout);
+
+        closeButton.setOnClickListener(v -> closeSidebar());
 
         loadConversations();
         return view;
@@ -73,10 +81,10 @@ public class ConversationListFragment extends Fragment {
 
                     if (conversations != null && !conversations.isEmpty()) {
                         adapter.setConversations(conversations);
-                        Log.d("ConversationFragment", "SUCCESS: Conversations loaded. Count: " + conversations.size());
+                        toggleEmptyState(false);
                     } else {
-                        Log.d("ConversationFragment", "SUCCESS: No conversations found (server returned 200 OK, but body is null or empty).");
-                        // show "no messages yet"
+                        toggleEmptyState(true);
+
                     }
 
                 } else {
@@ -116,5 +124,25 @@ public class ConversationListFragment extends Fragment {
         }
 
         return "Unknown User";
+    }
+
+    private void closeSidebar() {
+        if (requireActivity() instanceof HomepageActivity) {
+            ((HomepageActivity) requireActivity()).closeChatSidebar();
+
+        } else {
+            Log.e("ConversationListFrag", "Parent Activity is not HomepageActivity. Cannot close sidebar.");
+            requireActivity().getSupportFragmentManager().popBackStack();
+        }
+    }
+
+    private void toggleEmptyState(boolean isEmpty) {
+        if (isEmpty) {
+            recyclerView.setVisibility(View.GONE);
+            emptyStateLayout.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyStateLayout.setVisibility(View.GONE);
+        }
     }
 }

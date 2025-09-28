@@ -455,5 +455,10 @@
     <string name="no_results">There are no results that match filter criteria.</string>
     <string name="no_notifications">You currently have no notifications.</string>
     <string name="unavailable_conversation">This conversation is unavailable due to communication restrictions.</string>
+    <string name="no_convos">There are no active conversations</string>
+    <string name="start_convo">When you start a conversation, it will appear here.</string>
+    <string name="no_messages">No messages</string>
+    <string name="last_message">Last message...</string>
+    <string name="user_name">User Name</string>
 
 </resources>
