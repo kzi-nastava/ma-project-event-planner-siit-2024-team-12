@@ -1,18 +1,18 @@
-package com.example.eventplanner.activities.eventtype;
+package com.example.eventplanner.fragments.eventtype;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
@@ -28,39 +28,34 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EventTypeCreationActivity extends AppCompatActivity {
+public class EventTypeCreationFragment extends Fragment {
 
     private boolean[] selectedCategories;
     private String[] categories;
     private List<String> selectedCategoryNames = new ArrayList<>();
+    private View view;
+
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_event_type_creation);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_event_type_creation, container, false);
 
-
-        Button categoriesButton = findViewById(R.id.recommendedCategoriesButton);
+        Button categoriesButton = view.findViewById(R.id.recommendedCategoriesButton);
         loadCategories(categoriesButton);
 
-        Button createButton = findViewById(R.id.createButton);
+        Button createButton = view.findViewById(R.id.createButton);
         createButton.setOnClickListener(v -> {
             createCategory();
         });
 
+        return view;
     }
 
 
 
     private void loadCategories(Button categoriesButton) {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<List<GetSolutionCategoryDTO>> call = ClientUtils.solutionCategoryService.getAllAccepted(auth);
 
@@ -77,7 +72,7 @@ public class EventTypeCreationActivity extends AppCompatActivity {
                     }
 
                     categoriesButton.setOnClickListener(v -> {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(EventTypeCreationActivity.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
                         builder.setTitle("Select Categories");
 
                         builder.setMultiChoiceItems(categories, selectedCategories, (dialog, which, isChecked) -> {
@@ -102,13 +97,13 @@ public class EventTypeCreationActivity extends AppCompatActivity {
                         builder.create().show();
                     });
                 } else {
-                    Toast.makeText(EventTypeCreationActivity.this, "Failed to load categories", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "Failed to load categories", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<GetSolutionCategoryDTO>> call, Throwable t) {
-                Toast.makeText(EventTypeCreationActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Network error", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -116,8 +111,8 @@ public class EventTypeCreationActivity extends AppCompatActivity {
 
 
     private void createCategory() {
-        EditText nameText = findViewById(R.id.name);
-        EditText descriptionText = findViewById(R.id.description);
+        EditText nameText = view.findViewById(R.id.name);
+        EditText descriptionText = view.findViewById(R.id.description);
 
         // validate input data
         if (!ValidationUtils.isFieldValid(nameText, "Name is required!")) return;
@@ -142,7 +137,7 @@ public class EventTypeCreationActivity extends AppCompatActivity {
         createEventTypeDTO.setDescription(description);
         createEventTypeDTO.setCategoryNames(selectedCategoryNames);
 
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<GetEventTypeDTO> call = ClientUtils.eventTypeService.createEventType(auth, createEventTypeDTO);
 
@@ -150,16 +145,18 @@ public class EventTypeCreationActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<GetEventTypeDTO> call, Response<GetEventTypeDTO> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(EventTypeCreationActivity.this, "Successfully created event type!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "Successfully created event type!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(EventTypeCreationActivity.this, EventTypeTableActivity.class);
-                    startActivity(intent);
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, new EventTypeTableFragment())
+                            .commit();
                 }
             }
 
             @Override
             public void onFailure(Call<GetEventTypeDTO> call, Throwable t) {
-                Toast.makeText(EventTypeCreationActivity.this, "Error creating event type!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Error creating event type!", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -27,28 +27,13 @@
             android:name=".activities.gallery.GalleryDisplayActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.charts.RatingsChart"
+            android:name=".fragments.charts.RatingsChartFragment"
             android:exported="false" />
         <activity
-            android:name=".activities.charts.AttendanceChart"
-            android:exported="false" />
-        <activity
-            android:name=".fragments.favorites.FavoriteServicesFragment"
+            android:name=".fragments.charts.AttendanceChartFragment"
             android:exported="false" />
         <activity
             android:name=".activities.solutioncategory.CategoriesTableActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.eventtype.EventTypeTableActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.eventtype.EventTypeCreationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.eventtype.EventTypeEditActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.eventtype.EventTypeViewActivity"
             android:exported="false" />
         <activity
             android:name=".activities.business.BusinessEditActivity"

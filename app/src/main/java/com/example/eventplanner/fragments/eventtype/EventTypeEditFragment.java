@@ -1,20 +1,21 @@
-package com.example.eventplanner.activities.eventtype;
+package com.example.eventplanner.fragments.eventtype;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.DialogFragment;
 
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
@@ -32,25 +33,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EventTypeEditActivity extends AppCompatActivity {
+public class EventTypeEditFragment extends DialogFragment {
     private Long currentId;
     private String name, description;
     private EditText nameField, descriptionField;
     private ArrayList<String> selectedCategoryNames;
-    private Intent intent;
     private Button categoriesButton, deactivationButton, editButton;
+    private View view;
+    private Boolean isActive;
+
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_event_type_edit);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_event_type_edit, container, false);
 
         retrieveInitialValues();
         setFields();
@@ -58,12 +54,13 @@ public class EventTypeEditActivity extends AppCompatActivity {
         setUpDeactivationButton();
         setUpEditButton();
 
+        return view;
     }
 
 
     private void setUpEditButton() {
         // set on click listener for edit button
-        editButton = findViewById(R.id.editButton);
+        editButton = view.findViewById(R.id.editButton);
         categoriesButton.setText(selectedCategoryNames.isEmpty() ?
                 getString(R.string.recommended_categories) :
                 String.join(", ", selectedCategoryNames));
@@ -81,17 +78,19 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
 
     private void setUpDeactivationButton() {
-        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences prefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String role = prefs.getString("userRole", UserRole.ROLE_ADMIN.toString());
 
-        deactivationButton = findViewById(R.id.deactivateButton);
+        deactivationButton = view.findViewById(R.id.deactivateButton);
 
         // provider cannot (de)activate event type but can edit
         if (role.equals(UserRole.ROLE_PROVIDER.toString())) {
             deactivationButton.setVisibility(View.GONE);
         }
 
-        boolean isActive = intent.getBooleanExtra("isActive", true);
+        if (getArguments() != null) {
+            isActive = getArguments().getBoolean("isActive");
+        }
 
         deactivationButton.setText(isActive ? getString(R.string.deactivate) : getString(R.string.activate));
 
@@ -104,10 +103,10 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
     private void confirmDeactivation(boolean isActive) {
         // confirmation dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(EventTypeEditActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle(isActive ? getString(R.string.deactivate) + " " +
-                EventTypeEditActivity.this.nameField.getText() + "?" :
-                getString(R.string.activate) + " " + EventTypeEditActivity.this.nameField.getText() + "?");
+                nameField.getText() + "?" :
+                getString(R.string.activate) + " " + nameField.getText() + "?");
 
         builder.setMessage(isActive ? getString(R.string.deactivation_confirmation) :
                 getString(R.string.activation_confirmation));
@@ -129,7 +128,7 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
     private void setUpCategoriesButton() {
         // set on click listener for categoriesButton
-        categoriesButton = findViewById(R.id.recommendedCategoriesButton);
+        categoriesButton = view.findViewById(R.id.recommendedCategoriesButton);
         categoriesButton.setOnClickListener(v -> {
             loadAcceptedCategories(categoriesButton, selectedCategoryNames);
         });
@@ -137,8 +136,8 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
 
     private void setFields() {
-        nameField = findViewById(R.id.eventTypeName);
-        descriptionField = findViewById(R.id.eventTypeDescription);
+        nameField = view.findViewById(R.id.eventTypeName);
+        descriptionField = view.findViewById(R.id.eventTypeDescription);
 
         // make the name field read-only
         nameField.setText(name);
@@ -153,17 +152,17 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
     private void retrieveInitialValues() {
         // receive data passed from EventTypeAdapter
-        intent = getIntent();
-
-        currentId = intent.getLongExtra("eventTypeId", 0);
-        name = intent.getStringExtra("eventTypeName");
-        description = intent.getStringExtra("eventTypeDescription");
-        selectedCategoryNames = intent.getStringArrayListExtra("suggestedCategoryNames");
+        if (getArguments() != null) {
+            currentId = getArguments().getLong("eventTypeId", 0);
+            name = getArguments().getString("eventTypeName");
+            description = getArguments().getString("eventTypeDescription");
+            selectedCategoryNames = getArguments().getStringArrayList("suggestedCategoryNames");
+        }
     }
 
 
     private void activateEventType(Long id, Button activationButton) {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<ResponseBody> call = ClientUtils.eventTypeService.activateEventType(auth, id);
 
@@ -171,25 +170,29 @@ public class EventTypeEditActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(EventTypeEditActivity.this, getString(R.string.activated_event_type), Toast.LENGTH_SHORT).show();
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(requireActivity(), getString(R.string.activated_event_type), Toast.LENGTH_SHORT).show();
 
-                        Intent intent = new Intent(EventTypeEditActivity.this, EventTypeTableActivity.class);
-                        startActivity(intent);
+                        requireActivity().getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.main_fragment_container, new EventTypeTableFragment())
+                                        .commit();
 
                         activationButton.setText(getString(R.string.deactivate));
+
+                        dismiss();
                     });
                 } else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(EventTypeEditActivity.this, getString(R.string.failed_to_activate) + response.message(), Toast.LENGTH_SHORT).show();
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(requireActivity(), getString(R.string.failed_to_activate) + response.message(), Toast.LENGTH_SHORT).show();
                     });
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                runOnUiThread(() -> {
-                    Toast.makeText(EventTypeEditActivity.this, getString(R.string.error) + t.getMessage(), Toast.LENGTH_SHORT).show();
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(requireActivity(), getString(R.string.error) + t.getMessage(), Toast.LENGTH_SHORT).show();
                 });
             }
         });
@@ -197,7 +200,7 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
 
     private void deactivateEventType(Long id, Button activationButton) {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<ResponseBody> call = ClientUtils.eventTypeService.deactivateEventType(auth, id);
 
@@ -205,26 +208,30 @@ public class EventTypeEditActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(EventTypeEditActivity.this, getString(R.string.deactivated_event_type), Toast.LENGTH_SHORT).show();
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(requireActivity(), getString(R.string.deactivated_event_type), Toast.LENGTH_SHORT).show();
 
-                        Intent intent = new Intent(EventTypeEditActivity.this, EventTypeTableActivity.class);
-                        startActivity(intent);
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_fragment_container, new EventTypeTableFragment())
+                                .commit();
 
                         activationButton.setText(getString(R.string.activate));
 
+                        dismiss();
+
                     });
                 } else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(EventTypeEditActivity.this, getString(R.string.failed_to_deactivate) + response.message(), Toast.LENGTH_SHORT).show();
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(requireActivity(), getString(R.string.failed_to_deactivate) + response.message(), Toast.LENGTH_SHORT).show();
                     });
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                runOnUiThread(() -> {
-                    Toast.makeText(EventTypeEditActivity.this, getString(R.string.error) + t.getMessage(), Toast.LENGTH_SHORT).show();
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(requireActivity(), getString(R.string.error) + t.getMessage(), Toast.LENGTH_SHORT).show();
                 });
             }
         });
@@ -232,7 +239,7 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
 
     private void loadAcceptedCategories(Button categoriesButton, ArrayList<String> selectedCategoryNames) {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<List<GetSolutionCategoryDTO>> call = ClientUtils.solutionCategoryService.getAllAccepted(auth);
 
@@ -249,16 +256,16 @@ public class EventTypeEditActivity extends AppCompatActivity {
                     if (!allCategoryNames.isEmpty()) {
                         showMultiChoiceDialog(allCategoryNames, selectedCategoryNames, categoriesButton);
                     } else {
-                        Toast.makeText(EventTypeEditActivity.this, getString(R.string.no_categories_available), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), getString(R.string.no_categories_available), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(EventTypeEditActivity.this, getString(R.string.failed_to_load_categories), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), getString(R.string.failed_to_load_categories), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<GetSolutionCategoryDTO>> call, Throwable t) {
-                Toast.makeText(EventTypeEditActivity.this, getString(R.string.error) + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), getString(R.string.error) + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -273,7 +280,7 @@ public class EventTypeEditActivity extends AppCompatActivity {
             selectedCategories[i] = selectedCategoryNames.contains(categoriesArray[i]);
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle(getString(R.string.recommended_categories));
 
         builder.setMultiChoiceItems(categoriesArray, selectedCategories, (dialog, which, isChecked) -> {
@@ -306,7 +313,7 @@ public class EventTypeEditActivity extends AppCompatActivity {
 
 
     private void updateEventType(UpdateEventTypeDTO dto) {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         if (!ValidationUtils.isFieldValid(descriptionField, "Description is required!")) return;
         // admin doesn't have to select suggested categories when updating event type
@@ -320,12 +327,16 @@ public class EventTypeEditActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     GetEventTypeDTO updatedEventType = response.body();
 
-                    runOnUiThread(() -> {
-                        Toast.makeText(EventTypeEditActivity.this, getString(R.string.event_type_updated), Toast.LENGTH_SHORT).show();
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(requireActivity(), getString(R.string.event_type_updated), Toast.LENGTH_SHORT).show();
                     });
 
-                    Intent intent = new Intent(EventTypeEditActivity.this, EventTypeTableActivity.class);
-                    startActivity(intent);
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, new EventTypeTableFragment())
+                            .commit();
+
+                    dismiss();
                 }
 
                 else if (response.code() == 103) {
@@ -333,15 +344,15 @@ public class EventTypeEditActivity extends AppCompatActivity {
                 }
 
                 else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(EventTypeEditActivity.this, getString(R.string.failed_to_update) + response.message(), Toast.LENGTH_SHORT).show();
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(requireActivity(), getString(R.string.failed_to_update) + response.message(), Toast.LENGTH_SHORT).show();
                     });
                 }
             }
 
             @Override
             public void onFailure(Call<GetEventTypeDTO> call, Throwable t) {;
-                runOnUiThread(() -> {
+                requireActivity().runOnUiThread(() -> {
                     //Toast.makeText(EventTypeEditActivity.this, getString(R.string.error) + t.getMessage(), Toast.LENGTH_SHORT).show();
                 });
             }

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.eventtype.EventTypeEditActivity">
+    tools:context=".fragments.eventtype.EventTypeViewFragment">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,11 +21,12 @@
         app:layout_constraintVertical_bias="0.498" >
 
 
+
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/create_event_type"
+            android:text="@string/event_type_details"
             android:textAlignment="center"
             android:textColor="@color/dark_gray"
             android:textSize="25sp"
@@ -52,13 +53,14 @@
             app:layout_constraintVertical_bias="0.294" />
 
 
-        <EditText
-            android:id="@+id/name"
+        <TextView
+            android:id="@+id/eventTypeName"
             android:layout_width="243dp"
             android:layout_height="28dp"
             android:background="@drawable/input_field"
             android:inputType="text"
             android:paddingStart="10dp"
+            android:paddingTop="5dp"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -79,12 +81,11 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.489" />
+            app:layout_constraintVertical_bias="0.501" />
 
 
-
-        <EditText
-            android:id="@+id/description"
+        <TextView
+            android:id="@+id/eventTypeDescription"
             android:layout_width="246dp"
             android:layout_height="wrap_content"
             android:background="@drawable/input_field"
@@ -92,28 +93,14 @@
             android:paddingStart="10dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
+            android:scrollbars="vertical"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.592" />
-
-
-
-        <TextView
-            android:id="@+id/textView77"
-            android:layout_width="152dp"
-            android:layout_height="21dp"
-            android:text="@string/recommended_categories_ast"
-            android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.744" />
+            app:layout_constraintVertical_bias="0.579" />
 
         <Button
             android:id="@+id/recommendedCategoriesButton"
@@ -129,24 +116,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/name"
-            app:layout_constraintVertical_bias="0.109" />
-
-        <Button
-            android:id="@+id/createButton"
-            android:layout_width="89dp"
-            android:layout_height="37dp"
-            android:background="@drawable/form_button"
-            android:text="@string/create"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toBottomOf="@id/eventTypeName"
+            app:layout_constraintVertical_bias="0.078" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
