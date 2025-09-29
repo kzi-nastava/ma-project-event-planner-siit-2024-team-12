@@ -133,10 +133,14 @@ public class ProfileViewFragment extends Fragment {
             Button upgradeRoleBtn = view.findViewById(R.id.upgradeRoleBtn);
             if (upgradeRoleBtn != null) {
                 upgradeRoleBtn.setOnClickListener(v -> {
-                    Intent intent = new Intent(requireActivity(), SignUpFragment.class);
-                    intent.putExtra("IS_UPGRADE", true);
-                    intent.putExtra("USER_EMAIL", getUserDTO.getEmail());
-                    startActivity(intent);
+                    SignUpFragment signUpFragment = new SignUpFragment();
+
+                    Bundle args = new Bundle();
+                    args.putBoolean("IS_UPGRADE", true);
+                    args.putString("USER_EMAIL", getUserDTO.getEmail());
+                    signUpFragment.setArguments(args);
+
+                    signUpFragment.show(getParentFragmentManager(), "signUpFragment");
                 });
             }
 

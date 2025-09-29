@@ -34,10 +34,9 @@ public class SignUpFragment extends DialogFragment {
 
         viewModel = new ViewModelProvider(this).get(SignUpViewModel.class);
 
-        Intent intent = requireActivity().getIntent();
-        if (intent != null) {
-            isUpgrade = intent.getBooleanExtra("IS_UPGRADE", false);
-            userEmail = intent.getStringExtra("USER_EMAIL");
+        if (getArguments() != null) {
+            isUpgrade = getArguments().getBoolean("IS_UPGRADE", false);
+            userEmail = getArguments().getString("USER_EMAIL");
         }
 
         viewModel.setUpgradeMode(isUpgrade);
