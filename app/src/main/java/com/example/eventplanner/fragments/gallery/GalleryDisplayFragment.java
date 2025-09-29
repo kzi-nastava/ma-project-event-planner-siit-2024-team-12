@@ -1,28 +1,22 @@
-package com.example.eventplanner.activities.gallery;
+package com.example.eventplanner.fragments.gallery;
 
-import android.content.Intent;
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.gallery.GalleryAdapter;
-import com.example.eventplanner.fragments.gallery.ImagePicker;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.utils.ImageHelper;
 
@@ -30,51 +24,61 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class GalleryDisplayActivity extends AppCompatActivity {
+public class GalleryDisplayFragment extends Fragment {
     private String type, ownerEmail, currentUserEmail, currentCompanyEmail;
     private Long entityId;
     private GalleryAdapter adapter;
+    private View view;
     private static final String BASE_IMAGE_URL = "http://10.0.2.2:8080";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gallery_display);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_gallery_display, container, false);
 
         initData();
         setupUI();
 
         if (type == null || entityId == -1) {
-            Toast.makeText(this, "Invalid gallery arguments", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
+            Toast.makeText(requireActivity(), "Invalid gallery arguments", Toast.LENGTH_SHORT).show();
+            requireActivity().finish();
         }
 
         setUpTitle();
         fetchImages();
+
+        return view;
     }
 
-    private void initData() {
-        type = getIntent().getStringExtra("type");
-        entityId = getIntent().getLongExtra("id", -1);
-        ownerEmail = getIntent().getStringExtra("ownerEmail");
-        currentCompanyEmail = getIntent().getStringExtra("currentCompanyEmail");
 
-        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+
+    private void initData() {
+        Bundle args = getArguments();
+        if (args != null) {
+            type = args.getString("type");
+            entityId = args.getLong("id", -1);
+            ownerEmail = args.getString("ownerEmail");
+            currentCompanyEmail = args.getString("currentCompanyEmail");
+        } else {
+            type = null;
+            entityId = -1L;
+            ownerEmail = null;
+            currentCompanyEmail = null;
+        }
+
+        SharedPreferences prefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         currentUserEmail = prefs.getString("email", "");
     }
 
+
     private void setupUI() {
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
 
         boolean canModify = false;
 
@@ -90,31 +94,31 @@ public class GalleryDisplayActivity extends AppCompatActivity {
                 String relativePath = imageUrl.replace(BASE_IMAGE_URL, "");
                 deleteImage(relativePath, imageUrl);
             } else {
-                Toast.makeText(this, "Not authorized for image deletion.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Not authorized for image deletion.", Toast.LENGTH_SHORT).show();
             }
         });
 
         recyclerView.setAdapter(adapter);
 
-        Button addImageButton = findViewById(R.id.addImageButton);
+        Button addImageButton = view.findViewById(R.id.addImageButton);
         if (!canModify) {
             addImageButton.setVisibility(View.GONE);
         } else {
             addImageButton.setOnClickListener(v -> {
                 ImagePicker imagePicker = new ImagePicker();
                 imagePicker.setImageDialogListener(selectedUris -> {
-                    ImageHelper.uploadMultipleImages(this, selectedUris, type, entityId,
+                    ImageHelper.uploadMultipleImages(requireContext(), selectedUris, type, entityId,
                             "false", this::fetchImages, () -> {});
                 });
-                imagePicker.show(getSupportFragmentManager(), "image_picker");
+                imagePicker.show(getParentFragmentManager(), "image_picker");
             });
         }
     }
 
 
     private void setUpTitle() {
-        TextView titleTextView = findViewById(R.id.titleTextView);
-        String entityName = getIntent().getStringExtra("entityName");
+        TextView titleTextView = view.findViewById(R.id.titleTextView);
+        String entityName = getArguments().getString("entityName");
         if (entityName != null && !entityName.isEmpty()) {
             titleTextView.setText(entityName + " photos");
         } else {
@@ -123,7 +127,7 @@ public class GalleryDisplayActivity extends AppCompatActivity {
     }
 
     private void fetchImages() {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         Call<List<String>> call = ClientUtils.galleryService.getImages(auth, type, entityId);
 
@@ -140,20 +144,20 @@ public class GalleryDisplayActivity extends AppCompatActivity {
 
                     adapter.setImageUrls(fullUrls);
                 } else {
-                    Toast.makeText(GalleryDisplayActivity.this, "No images found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(), "No images found", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<String>> call, Throwable t) {
-                Toast.makeText(GalleryDisplayActivity.this, "Failed to load images", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Failed to load images", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
 
     private void deleteImage(String relativePath, String fullUrl) {
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         ClientUtils.galleryService.deleteImage(auth, type, entityId, relativePath)
                 .enqueue(new Callback<ResponseBody>() {
@@ -164,7 +168,7 @@ public class GalleryDisplayActivity extends AppCompatActivity {
                         } else {
                             try {
                                 String error = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
-                                Toast.makeText(GalleryDisplayActivity.this, "Failed to delete image on server: " + error, Toast.LENGTH_LONG).show();
+                                Toast.makeText(requireActivity(), "Failed to delete image on server: " + error, Toast.LENGTH_LONG).show();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -173,7 +177,7 @@ public class GalleryDisplayActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(GalleryDisplayActivity.this, "Delete failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), "Delete failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

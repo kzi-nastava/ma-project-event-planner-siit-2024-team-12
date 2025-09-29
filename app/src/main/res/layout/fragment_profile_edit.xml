@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.profile.ProfileEditActivity">
+    tools:context=".fragments.profile.ProfileEditFragment">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,11 +47,10 @@
 
 
         <Button
-            android:id="@+id/editButton3"
+            android:id="@+id/changePass"
             android:layout_width="114dp"
             android:layout_height="33dp"
             android:background="@drawable/form_button"
-            android:onClick="openChangePassword"
             android:text="@string/change_pass"
             android:textAllCaps="false"
             android:textColor="@color/white"

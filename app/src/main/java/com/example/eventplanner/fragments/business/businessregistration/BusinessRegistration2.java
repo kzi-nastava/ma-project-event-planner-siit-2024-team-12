@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments.businessregistration;
+package com.example.eventplanner.fragments.business.businessregistration;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,8 +27,7 @@ import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.utils.ImageHelper;
 import com.example.eventplanner.utils.ValidationUtils;
-import com.example.eventplanner.activities.business.BusinessInfoActivity;
-import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
+import com.example.eventplanner.fragments.business.BusinessInfoFragment;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.viewmodels.BusinessViewModel;
 import com.google.gson.Gson;
@@ -62,10 +61,15 @@ public class BusinessRegistration2 extends Fragment {
         Button registerButton = view.findViewById(R.id.register);
 
         backButton.setOnClickListener(v -> {
-            if (getActivity() instanceof BusinessRegistrationActivity) {
-                ((BusinessRegistrationActivity) getActivity()).previousPage();
+            Fragment parent = requireActivity()
+                    .getSupportFragmentManager()
+                    .findFragmentById(R.id.main_fragment_container);
+
+            if (parent instanceof BusinessRegistrationFragment) {
+                ((BusinessRegistrationFragment) parent).previousPage();
             }
         });
+
 
         registerButton.setOnClickListener(v -> {
             createBusiness();
@@ -190,8 +194,10 @@ public class BusinessRegistration2 extends Fragment {
                         Long businessId = dto.getId();
                         uploadBusinessImages(businessId);
 
-                        Intent intent = new Intent(getActivity(), BusinessInfoActivity.class);
-                        startActivity(intent);
+                        requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, new BusinessInfoFragment())
+                            .commit();
 
                         Toast.makeText(getActivity(), registrationSuccess, Toast.LENGTH_SHORT).show();
                     }

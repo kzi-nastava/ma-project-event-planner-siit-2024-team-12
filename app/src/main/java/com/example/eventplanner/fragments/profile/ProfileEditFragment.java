@@ -1,10 +1,12 @@
-package com.example.eventplanner.activities.profile;
+package com.example.eventplanner.fragments.profile;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -12,10 +14,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.dto.LocationDTO;
@@ -38,40 +42,37 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProfileEditActivity extends AppCompatActivity {
+public class ProfileEditFragment extends Fragment {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri selectedImageUri = null;
     private ImageView profileImage;
     private Long userId = null;
 
+    private View view;
+
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_profile_edit);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_profile_edit, container, false);
 
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-        findViewById(R.id.addImgBtn).setOnClickListener(v -> openImageChooser());
+        view.findViewById(R.id.addImgBtn).setOnClickListener(v -> openImageChooser());
 
         setUpInitialForm();
 
-        Button saveBtn = findViewById(R.id.saveBtn);
+        Button saveBtn = view.findViewById(R.id.saveBtn);
         saveBtn.setOnClickListener(v -> {
             update();
         });
 
 
-        profileImage = findViewById(R.id.profileImage);
+        Button changePass = view.findViewById(R.id.changePass);
+        changePass.setOnClickListener(this::openChangePassword);
 
+        return view;
     }
 
 
@@ -81,12 +82,14 @@ public class ProfileEditActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == AppCompatActivity.RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
+            ImageView profileImage = view.findViewById(R.id.profileImage);
             profileImage.setImageURI(selectedImageUri);
         }
     }
@@ -94,15 +97,15 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     public void openChangePassword(View view) {
         ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
-        changePasswordFragment.show(getSupportFragmentManager(), "changePasswordFragment");
+        changePasswordFragment.show(getParentFragmentManager(), "changePasswordFragment");
     }
 
     public void update() {
-        EditText nameField = findViewById(R.id.name);
-        EditText surnameField = findViewById(R.id.surname);
-        EditText phoneField = findViewById(R.id.phone);
-        EditText addressField = findViewById(R.id.address);
-        TextView emailField = findViewById(R.id.email);
+        EditText nameField = view.findViewById(R.id.name);
+        EditText surnameField = view.findViewById(R.id.surname);
+        EditText phoneField = view.findViewById(R.id.phone);
+        EditText addressField = view.findViewById(R.id.address);
+        TextView emailField = view.findViewById(R.id.email);
 
         // in case user tries to delete data completely
 
@@ -133,7 +136,7 @@ public class ProfileEditActivity extends AppCompatActivity {
 
 
     public void updateUser(String email, UpdateUserDTO updateUserDTO) {
-        String authorization = ClientUtils.getAuthorization(this);
+        String authorization = ClientUtils.getAuthorization(requireContext());
 
         Call<UpdatedUserDTO> call = ClientUtils.userService.update(authorization, email, updateUserDTO);
 
@@ -145,7 +148,7 @@ public class ProfileEditActivity extends AppCompatActivity {
                         uploadProfileImage();
                     } else {
                         openProfileView();
-                        Toast.makeText(ProfileEditActivity.this, "Successful update!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), "Successful update!", Toast.LENGTH_SHORT).show();
                     }
                 }
         }
@@ -154,22 +157,26 @@ public class ProfileEditActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<UpdatedUserDTO> call, Throwable t) {
-                Toast.makeText(ProfileEditActivity.this, "Failed update!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Failed update!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
 
     private void setMainImage(GetUserDTO dto) {
+        profileImage = view.findViewById(R.id.profileImage);
         String imageUrl = dto.getImageUrl();
+
         if (imageUrl != null && !imageUrl.isEmpty()) {
             String fullUrl = "http://10.0.2.2:8080" + imageUrl;
 
-            Glide.with(ProfileEditActivity.this)
+            Glide.with(this)
                     .load(fullUrl)
                     .placeholder(R.drawable.user_logo)
                     .error(R.drawable.user_logo)
                     .into(profileImage);
+        } else {
+            profileImage.setImageResource(R.drawable.user_logo);
         }
 
     }
@@ -177,7 +184,7 @@ public class ProfileEditActivity extends AppCompatActivity {
 
 
     public void setUpInitialForm() {
-       String authorization = ClientUtils.getAuthorization(this);
+       String authorization = ClientUtils.getAuthorization(requireContext());
 
         Call<GetUserDTO> call = ClientUtils.authService.getCurrentUser(authorization);
 
@@ -190,19 +197,19 @@ public class ProfileEditActivity extends AppCompatActivity {
                     if (dto != null) {
                         userId = dto.getId();
 
-                        EditText nameField = findViewById(R.id.name);
+                        EditText nameField = view.findViewById(R.id.name);
                         nameField.setText(dto.getName());
 
-                        EditText surnameField = findViewById(R.id.surname);
+                        EditText surnameField = view.findViewById(R.id.surname);
                         surnameField.setText(dto.getSurname());
 
-                        TextView emailField = findViewById(R.id.email);
+                        TextView emailField = view.findViewById(R.id.email);
                         emailField.setText(dto.getEmail());
 
-                        EditText phoneField = findViewById(R.id.phone);
+                        EditText phoneField = view.findViewById(R.id.phone);
                         phoneField.setText(dto.getPhone());
 
-                        EditText addressField = findViewById(R.id.address);
+                        EditText addressField = view.findViewById(R.id.address);
                         String fullAddress = dto.getLocation().getAddress() + ", " +
                                 dto.getLocation().getCity() + ", " + dto.getLocation().getCountry();
                         addressField.setText(fullAddress);
@@ -228,10 +235,10 @@ public class ProfileEditActivity extends AppCompatActivity {
 
         MultipartBody.Part imagePart;
         try {
-            imagePart = ImageHelper.prepareFilePart(this, "files", selectedImageUri);
+            imagePart = ImageHelper.prepareFilePart(requireContext(), "files", selectedImageUri);
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Failed to prepare image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireActivity(), "Failed to prepare image", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -239,24 +246,23 @@ public class ProfileEditActivity extends AppCompatActivity {
         RequestBody entityIdPart = RequestBody.create(MultipartBody.FORM, String.valueOf(userId));
         RequestBody isMainPart = RequestBody.create(MultipartBody.FORM, "true");
 
-        String auth = ClientUtils.getAuthorization(this);
+        String auth = ClientUtils.getAuthorization(requireContext());
 
         ClientUtils.galleryService.uploadImages(auth, typePart, entityIdPart, List.of(imagePart), isMainPart)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(ProfileEditActivity.this, "Profile image uploaded!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireActivity(), "Profile image uploaded!", Toast.LENGTH_SHORT).show();
                             openProfileView();
                         } else {
-                            Toast.makeText(ProfileEditActivity.this, "Upload failed: " + response.code(), Toast.LENGTH_SHORT).show();
-                            openProfileView();
+                            Toast.makeText(requireActivity(), "Upload failed: " + response.code(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(ProfileEditActivity.this, "Upload error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), "Upload error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                         openProfileView();
                     }
                 });
@@ -264,9 +270,10 @@ public class ProfileEditActivity extends AppCompatActivity {
 
 
     private void openProfileView() {
-        Intent intent = new Intent(ProfileEditActivity.this, ProfileViewActivity.class);
-        startActivity(intent);
-        finish();
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_fragment_container, new ProfileViewFragment())
+                .commit();
     }
 
 }

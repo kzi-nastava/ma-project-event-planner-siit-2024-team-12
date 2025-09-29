@@ -26,10 +26,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.auth.LoginActivity;
-import com.example.eventplanner.activities.auth.SignUpActivity;
-import com.example.eventplanner.activities.business.BusinessInfoActivity;
-import com.example.eventplanner.activities.business.BusinessRegistrationActivity;
+import com.example.eventplanner.fragments.auth.LoginFragment;
+import com.example.eventplanner.fragments.auth.SignUpFragment;
+import com.example.eventplanner.fragments.business.BusinessInfoFragment;
+import com.example.eventplanner.fragments.business.businessregistration.BusinessRegistrationFragment;
 import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.fragments.calendar.CalendarFragment;
 import com.example.eventplanner.fragments.conversation.ConversationListFragment;
@@ -40,8 +40,8 @@ import com.example.eventplanner.fragments.eventtype.EventTypeTableFragment;
 import com.example.eventplanner.fragments.favorites.ExplorePageFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteEventsFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteServicesFragment;
-import com.example.eventplanner.activities.profile.ProfileViewActivity;
-import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
+import com.example.eventplanner.fragments.profile.ProfileViewFragment;
+import com.example.eventplanner.fragments.solutioncategory.CategoriesTableFragment;
 import com.example.eventplanner.fragments.categories.CategoriesContainerFragment;
 import com.example.eventplanner.fragments.comment.CommentManagementFragment;
 import com.example.eventplanner.fragments.event.InvitedEventsListFragment;
@@ -135,6 +135,12 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                 loadMainFragment(new HomepageFragment());
             }
         }
+
+        if (getIntent().getBooleanExtra("showLogin", false)) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_fragment_container, new LoginFragment())
+                    .commit();
+        }
     }
 
     @Override
@@ -200,9 +206,11 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_login) {
-                startActivity(new Intent(HomepageActivity.this, LoginActivity.class));
+                LoginFragment loginFragment = new LoginFragment();
+                loginFragment.show(getSupportFragmentManager(), "loginFragment");
             } else if (id == R.id.nav_signup) {
-                startActivity(new Intent(HomepageActivity.this, SignUpActivity.class));
+                SignUpFragment signUpFragment = new SignUpFragment();
+                signUpFragment.show(getSupportFragmentManager(), "signUpFragment");
             } else if (id == R.id.nav_home) {
                 loadMainFragment(new HomepageFragment());
             }
@@ -229,7 +237,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_view_profile) {
-                startActivity(new Intent(HomepageActivity.this, ProfileViewActivity.class));
+                navigateToFragment(new ProfileViewFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
             } else if (id == R.id.nav_invited_events) {
@@ -274,7 +282,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_services) {
                 navigateToFragment(new ServiceManagement());
             } else if (id == R.id.nav_view_profile) {
-                startActivity(new Intent(this, ProfileViewActivity.class));
+                navigateToFragment(new ProfileViewFragment());
             } else if (id == R.id.nav_calendar_od) {
                 navigateToFragment(new CalendarFragment());
             } else if (id == R.id.nav_create_event) {
@@ -320,9 +328,9 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             if (id == R.id.nav_home) {
                 loadMainFragment(new HomepageFragment());
             } else if (id == R.id.nav_create_business) {
-                startActivity(new Intent(this, BusinessRegistrationActivity.class));
+                navigateToFragment(new BusinessRegistrationFragment());
             } else if (id == R.id.nav_business_info) {
-                startActivity(new Intent(this, BusinessInfoActivity.class));
+                navigateToFragment(new BusinessInfoFragment());
             } else if (id == R.id.nav_products) {
                 navigateToFragment(new ProvidedProductsFragment());
             } else if (id == R.id.nav_service) {
@@ -338,9 +346,9 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_explore_events) {
                 navigateToFragment(new ExplorePageFragment());
             } else if (id == R.id.nav_view_profile) {
-                startActivity(new Intent(this, ProfileViewActivity.class));
+                navigateToFragment(new ProfileViewFragment());
             } else if (id == R.id.nav_categories) {
-                startActivity(new Intent(this, CategoriesTableActivity.class));
+                navigateToFragment(new CategoriesTableFragment());
             } else if (id == R.id.nav_event_types) {
                 navigateToFragment(new EventTypeTableFragment());
             } else if (id == R.id.nav_notifications) {

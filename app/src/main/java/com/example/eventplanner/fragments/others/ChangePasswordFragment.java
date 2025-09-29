@@ -16,10 +16,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.eventplanner.activities.homepage.HomepageActivity;
+import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.utils.ValidationUtils;
-import com.example.eventplanner.activities.auth.LoginActivity;
+import com.example.eventplanner.fragments.auth.LoginFragment;
 import com.example.eventplanner.dto.auth.PasswordChangeRequest;
 
 import okhttp3.ResponseBody;
@@ -70,8 +72,17 @@ public class ChangePasswordFragment extends DialogFragment {
                 if (response.isSuccessful()) {
                     Toast.makeText(getActivity(), "Password changed successfully!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    SharedPreferences sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+                    sharedPreferences.edit().remove("token").apply();
+
+                    sharedPreferences.edit().putString("userRole", UserRole.ROLE_UNREGISTERED_USER.toString()).apply();
+
+                    Intent intent = new Intent(requireActivity(), HomepageActivity.class);
+                    intent.putExtra("showLogin", true);
                     startActivity(intent);
+
+                    dismiss();
+
                 }
 
                 else if (response.code() == 403) {

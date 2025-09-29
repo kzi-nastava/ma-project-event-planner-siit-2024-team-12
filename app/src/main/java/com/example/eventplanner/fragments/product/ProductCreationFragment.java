@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -230,7 +231,6 @@ public class ProductCreationFragment extends DialogFragment {
                 return;
             }
         }
-
 
         ProductCreationFragment2 fragment2 = new ProductCreationFragment2();
         fragment2.show(getParentFragmentManager(), "ProductCreation2");
