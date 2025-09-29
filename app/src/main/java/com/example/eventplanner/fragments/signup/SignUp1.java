@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.utils.ValidationUtils;
-import com.example.eventplanner.activities.auth.SignUpActivity;
+import com.example.eventplanner.fragments.auth.SignUpFragment;
 import com.example.eventplanner.viewmodels.SignUpViewModel;
 
 public class SignUp1 extends Fragment {
@@ -60,7 +60,9 @@ public class SignUp1 extends Fragment {
         }
 
         nextButton.setOnClickListener(v -> {
-            if (getActivity() instanceof SignUpActivity) {
+            SignUpFragment parent = (SignUpFragment) getParentFragment();
+
+            if (parent != null) {
 
                 if (!isUpgrade) {
                     if (!ValidationUtils.isFieldValid(emailField, "Email is required!")) return;
@@ -74,7 +76,7 @@ public class SignUp1 extends Fragment {
                 if (!isUpgrade) { viewModel.updateSignUpAttributes("email", emailField.getText().toString()); }
                 viewModel.updateSignUpAttributes("password", passwordField.getText().toString());
 
-                ((SignUpActivity) getActivity()).nextPage();
+                parent.nextPage();
             }
         });
 

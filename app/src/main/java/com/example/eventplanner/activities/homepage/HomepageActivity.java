@@ -24,8 +24,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.auth.LoginActivity;
-import com.example.eventplanner.activities.auth.SignUpActivity;
+import com.example.eventplanner.fragments.auth.LoginFragment;
+import com.example.eventplanner.fragments.auth.SignUpFragment;
 import com.example.eventplanner.fragments.business.BusinessInfoFragment;
 import com.example.eventplanner.fragments.business.businessregistration.BusinessRegistrationFragment;
 import com.example.eventplanner.enumeration.UserRole;
@@ -127,6 +127,12 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                 loadMainFragment(new HomepageFragment());
             }
         }
+
+        if (getIntent().getBooleanExtra("showLogin", false)) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_fragment_container, new LoginFragment())
+                    .commit();
+        }
     }
 
     @Override
@@ -198,9 +204,11 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_login) {
-                startActivity(new Intent(HomepageActivity.this, LoginActivity.class));
+                LoginFragment loginFragment = new LoginFragment();
+                loginFragment.show(getSupportFragmentManager(), "loginFragment");
             } else if (id == R.id.nav_signup) {
-                startActivity(new Intent(HomepageActivity.this, SignUpActivity.class));
+                SignUpFragment signUpFragment = new SignUpFragment();
+                signUpFragment.show(getSupportFragmentManager(), "signUpFragment");
             } else if (id == R.id.nav_home) {
                 loadMainFragment(new HomepageFragment());
             }

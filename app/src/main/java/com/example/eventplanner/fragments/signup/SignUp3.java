@@ -1,7 +1,6 @@
 package com.example.eventplanner.fragments.signup;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,15 +17,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.dto.user.CreatedUserDTO;
 import com.example.eventplanner.dto.user.UpgradeUserDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.utils.ValidationUtils;
-import com.example.eventplanner.activities.auth.LoginActivity;
-import com.example.eventplanner.activities.auth.SignUpActivity;
+import com.example.eventplanner.fragments.auth.LoginFragment;
+import com.example.eventplanner.fragments.auth.SignUpFragment;
 import com.example.eventplanner.dto.user.CreateUserDTO;
 import com.example.eventplanner.viewmodels.SignUpViewModel;
 
@@ -80,8 +78,10 @@ public class SignUp3 extends Fragment {
 
 
         backButton.setOnClickListener(v -> {
-            if (getActivity() instanceof SignUpActivity) {
-                ((SignUpActivity) getActivity()).previousPage();
+            SignUpFragment parent = (SignUpFragment) getParentFragment();
+
+            if (parent != null) {
+                parent.previousPage();
             }
         });
 
@@ -167,8 +167,9 @@ public class SignUp3 extends Fragment {
                 if (response.isSuccessful()) {
                     Toast.makeText(getActivity(), "We've sent account activation link to" +
                             " your email address!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(requireActivity(), LoginActivity.class);
-                    startActivity(intent);
+
+                    LoginFragment loginFragment = new LoginFragment();
+                    loginFragment.show(getParentFragmentManager(), "loginFragment");
                 }
 
                 else if (response.code() == 409) {
@@ -208,10 +209,9 @@ public class SignUp3 extends Fragment {
 
                     Toast.makeText(getActivity(), "Role upgraded successfully!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    LoginFragment loginFragment = new LoginFragment();
+                    loginFragment.show(getParentFragmentManager(), "loginFragment");
 
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
 
                     if (getActivity() != null) {
                         getActivity().finish();

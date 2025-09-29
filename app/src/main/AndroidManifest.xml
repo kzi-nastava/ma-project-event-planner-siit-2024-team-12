@@ -36,13 +36,7 @@
             android:name=".activities.service.ServiceCreationActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.auth.SignUpActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.homepage.HomepageActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.auth.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".activities.auth.AccountActivation"

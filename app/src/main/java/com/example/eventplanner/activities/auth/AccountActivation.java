@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.eventplanner.fragments.auth.SignUpFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.fragments.others.AccountVerification;
@@ -61,7 +62,7 @@ public class AccountActivation extends AppCompatActivity {
                     }
                     else if (response.code() == 410) {
                         Toast.makeText(AccountActivation.this, "Expired activation link! Sign up again.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(AccountActivation.this, SignUpActivity.class);
+                        Intent intent = new Intent(AccountActivation.this, SignUpFragment.class);
                         startActivity(intent);
                     }
                     else {

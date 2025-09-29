@@ -18,7 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.example.eventplanner.activities.auth.SignUpActivity;
+import com.example.eventplanner.fragments.auth.SignUpFragment;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.fragments.homepage.HomepageFragment;
 import com.example.eventplanner.fragments.others.ChangePasswordFragment;
@@ -133,7 +133,7 @@ public class ProfileViewFragment extends Fragment {
             Button upgradeRoleBtn = view.findViewById(R.id.upgradeRoleBtn);
             if (upgradeRoleBtn != null) {
                 upgradeRoleBtn.setOnClickListener(v -> {
-                    Intent intent = new Intent(requireActivity(), SignUpActivity.class);
+                    Intent intent = new Intent(requireActivity(), SignUpFragment.class);
                     intent.putExtra("IS_UPGRADE", true);
                     intent.putExtra("USER_EMAIL", getUserDTO.getEmail());
                     startActivity(intent);

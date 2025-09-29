@@ -15,8 +15,8 @@ public class SignUpPagerAdapter extends FragmentStateAdapter {
     private final boolean isUpgrade;
     private final String userEmail;
 
-    public SignUpPagerAdapter(@NonNull FragmentActivity fragmentActivity, boolean isUpgrade, String userEmail) {
-        super(fragmentActivity);
+    public SignUpPagerAdapter(@NonNull Fragment fragment, boolean isUpgrade, String userEmail) {
+        super(fragment);
         this.isUpgrade = isUpgrade;
         this.userEmail = userEmail;
     }
