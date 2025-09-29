@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +65,12 @@ public class EventFilterFragment extends DialogFragment {
 
         filterBtn = view.findViewById(R.id.filterBtn);
         filterBtn.setOnClickListener(v -> applyFilters());
+        ImageButton closeButton = view.findViewById(R.id.closeButton);
+        if (closeButton != null) {
+            closeButton.setOnClickListener(v -> {
+                dismiss(); 
+            });
+        }
         View cityFilterLayout = view.findViewById(R.id.cityFilter);
 
         filterViewModel.getIgnoreCityFilter().observe(getViewLifecycleOwner(), ignoreCity -> {
