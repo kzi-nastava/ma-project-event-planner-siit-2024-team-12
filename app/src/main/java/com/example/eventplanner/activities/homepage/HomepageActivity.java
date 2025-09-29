@@ -81,6 +81,8 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
     private ConversationWebSocketService conversationWebSocketService;
 
+    private boolean conversationOpen;
+
 
 
     @Override
@@ -174,7 +176,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
     private void updateMessageBadge(int count) {
 
-        if (messageBadge != null ) { // && !messagesOpen
+        if (messageBadge != null && !conversationOpen ) {
             if (count > 0) {
                 messageBadge.setText(String.valueOf(count));
                 messageBadge.setVisibility(View.VISIBLE);
@@ -504,6 +506,17 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     public void onNotificationsClosed() {
         if (toggle != null) {
             notificationsOpen = false;
+        }
+    }
+    public void onConversationOpened() {
+        if (toggle != null) {
+            conversationOpen = true;
+        }
+    }
+
+    public void onConversationClosed() {
+        if (toggle != null) {
+            conversationOpen = false;
         }
     }
 

@@ -135,6 +135,26 @@ public class ConversationFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    if (getActivity() instanceof HomepageActivity) {
+        ((HomepageActivity) getActivity()).onConversationOpened();
+    }
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (getActivity() instanceof HomepageActivity) {
+            ((HomepageActivity) getActivity()).onConversationClosed();
+        }
+    }
+
+
+
     private void handleNewNotification(List<GetChatMessageDTO> newMessages) {
         if (getActivity() == null || newMessages == null || newMessages.isEmpty()) return;
 
@@ -144,7 +164,7 @@ public class ConversationFragment extends Fragment {
                 messageAdapter.addMessage(msg);
                 messagesRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
             }
-            markConversationAsReadOnServer();
+//            markConversationAsReadOnServer();
         });
     }
 
