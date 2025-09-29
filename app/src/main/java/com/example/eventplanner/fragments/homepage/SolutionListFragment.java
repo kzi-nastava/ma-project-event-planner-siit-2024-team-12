@@ -112,6 +112,7 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
         String bearer = token != null ? "Bearer " + token : null;
 
         String sortByParam = payload.getSortBy() != null ? payload.getSortBy().toLowerCase(Locale.getDefault()) : null;
+        boolean limitTo10 = payload.isLimitTo10();
 
         service.searchSolutions(
                 bearer,
@@ -130,7 +131,7 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
                 0, // page
                 100, // size
                 payload.getType(), // type
-                false, // limitTo10
+                limitTo10, // limitTo10
                 payload.isIgnoreCityFilter() // ignoreCityFilter
         ).enqueue(new Callback<List<GetHomepageSolutionDTO>>() {
             @Override

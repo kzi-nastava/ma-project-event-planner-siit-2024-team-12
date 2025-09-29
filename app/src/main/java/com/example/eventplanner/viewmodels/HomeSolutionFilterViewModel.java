@@ -28,6 +28,11 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Boolean> isPrivileged = new MutableLiveData<>(false);
 
+    private final MutableLiveData<Boolean> limitTo10 = new MutableLiveData<>(false);
+
+    public LiveData<Boolean> getLimitTo10() { return limitTo10; }
+    public void setLimitTo10(boolean limit) { limitTo10.setValue(limit); }
+
     public LiveData<Boolean> getIsPrivileged() {
         return isPrivileged;
     }
@@ -100,7 +105,8 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
                 sortDir.getValue(),
                 type.getValue(),
                 ignoreCityFilter.getValue(),
-                selectedLocation.getValue()
+                selectedLocation.getValue(),
+                Boolean.TRUE.equals(limitTo10.getValue())
         ));
     }
 
@@ -123,8 +129,11 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
         public final boolean ignoreCityFilter;
 
         public final String location;
+        public final boolean limitTo10;
 
-        public FilterPayload(String category, String eventType, Double minPrice, Double maxPrice, Double minDiscount, Double maxDiscount, String searchQuery, Double rating, String sortBy, String sortDir, String type, boolean ignoreCityFilter, String location) {
+        public FilterPayload(String category, String eventType, Double minPrice, Double maxPrice, Double minDiscount,
+                             Double maxDiscount, String searchQuery, Double rating, String sortBy, String sortDir,
+                             String type, boolean ignoreCityFilter, String location, boolean limitTo10) {
             this.category = category;
             this.eventType = eventType;
             this.minPrice = minPrice;
@@ -138,6 +147,7 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
             this.type = type;
             this.ignoreCityFilter = ignoreCityFilter;
             this.location = location;
+            this.limitTo10 = limitTo10;
         }
 
         public String getSearchQuery() { return searchQuery; }
@@ -147,6 +157,7 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
         public String getSortDir() { return sortDir; }
         public boolean isIgnoreCityFilter() { return ignoreCityFilter; }
         public String getLocation() { return location; }
+        public boolean isLimitTo10() { return limitTo10; }
     }
 
     public void resetFilters() {
@@ -163,6 +174,7 @@ public class HomeSolutionFilterViewModel extends AndroidViewModel {
         type.setValue(null);
         ignoreCityFilter.setValue(false);
         selectedLocation.setValue(null);
+        limitTo10.setValue(false);
         applyNow();
     }
 }

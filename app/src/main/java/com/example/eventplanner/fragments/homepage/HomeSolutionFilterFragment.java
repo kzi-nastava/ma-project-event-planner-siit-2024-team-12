@@ -161,6 +161,7 @@ public class HomeSolutionFilterFragment extends DialogFragment {
         filterViewModel.setSortDir(selectedSortDirection != null ? selectedSortDirection.toUpperCase() : null);
 
         setUpPriceAndDiscountRange();
+        filterViewModel.setLimitTo10(true);
 
         filterViewModel.applyNow();
         dismiss();
