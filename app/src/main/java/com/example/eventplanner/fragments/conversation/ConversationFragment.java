@@ -144,6 +144,7 @@ public class ConversationFragment extends Fragment {
                 messageAdapter.addMessage(msg);
                 messagesRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
             }
+            markConversationAsReadOnServer();
         });
     }
 
@@ -220,6 +221,45 @@ public class ConversationFragment extends Fragment {
             }
         });
     }
+    private void markConversationAsReadOnServer() {
+        if (conversationId == null) return;
+        String authHeader = ClientUtils.getAuthorization(getContext());
+
+        ClientUtils.conversationService.markAllAsRead(authHeader, conversationId).enqueue(new Callback<GetConversationDTO>() {
+            @Override
+            public void onResponse(Call<GetConversationDTO> call, Response<GetConversationDTO> response) {
+                if (response.isSuccessful()) {
+                    Log.d("ConversationFrag", "Successfully marked conversation " + conversationId + " as read.");
+                    // Ovdje ne treba da ažuriramo listu poruka u adapteru,
+                    // jer je poruka već prikazana u handleNewNotification
+                } else {
+                    Log.e("ConversationFrag", "Failed to mark as read: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetConversationDTO> call, Throwable t) {
+                Log.e("ConversationFrag", "Network error on markAllAsRead: " + t.getMessage());
+            }
+        });
+    }
+//    @Override
+//    public void onDestroyView() {
+//        super.onDestroyView();
+//        // UKOLIKO KONVERZACIJA NIJE BLOKIRANA:
+//        // Finalni poziv API-ju da osiguramo da je status "pročitano"
+//        // ažuriran pre nego što se fragment zatvori.
+//        markConversationAsReadOnServer();
+//
+//        // Obavezno uklonite listener za WebSocket
+//        if (getActivity() instanceof HomepageActivity) {
+//            ConversationWebSocketService service =
+//                    ((HomepageActivity) getActivity()).getConversationService();
+//            if (service != null) {
+//                service.removeConversationListener(this::handleNewNotification); // MORATE IMPLEMENTIRATI removeConversationListener U WS SERVICE
+//            }
+//        }
+//    }
     private void navigateToUserProfile() {
         if (otherUserEmail == null || getContext() == null) return;
         if (requireActivity() instanceof HomepageActivity) {
