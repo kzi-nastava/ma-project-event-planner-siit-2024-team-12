@@ -460,5 +460,6 @@
     <string name="no_messages">No messages</string>
     <string name="last_message">Last message...</string>
     <string name="user_name">User Name</string>
+    <string name="no_reservations">You currently have no service reservations. Start planning your event now!</string>
 
 </resources>
