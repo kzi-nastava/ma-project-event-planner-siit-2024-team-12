@@ -120,7 +120,7 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
 
     @Override
     public void onDeleteClick(Long reportId) {
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(getContext(), R.style.RoundedAlertDialogTheme)
                 .setTitle("Confirm Deletion")
                 .setMessage("Are you sure you want to permanently delete this report? \nThis action cannot be undone.")
                 .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
@@ -155,7 +155,7 @@ public class ReportManagementFragment extends Fragment implements ReportsAdapter
 
     @Override
     public void onSuspendClick(Long userId) {
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(getContext(), R.style.RoundedAlertDialogTheme)
                 .setTitle("Confirm Suspension")
                 .setMessage("Are you sure you want to suspend this user? \nThe user will be suspended for 3 days. This action cannot be undone.")
                 .setPositiveButton("Suspend", new DialogInterface.OnClickListener() {

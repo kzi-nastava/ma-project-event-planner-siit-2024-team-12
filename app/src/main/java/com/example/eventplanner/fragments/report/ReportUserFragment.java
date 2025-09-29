@@ -78,7 +78,7 @@ public class ReportUserFragment extends DialogFragment {
     }
 
     private void showConfirmationDialog(String reason) {
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(getContext(), R.style.RoundedAlertDialogTheme)
                 .setTitle("Confirm Report")
                 .setMessage("Are you sure you want to report this user?")
                 .setPositiveButton("Report", (dialog, which) -> reportUser(reason))

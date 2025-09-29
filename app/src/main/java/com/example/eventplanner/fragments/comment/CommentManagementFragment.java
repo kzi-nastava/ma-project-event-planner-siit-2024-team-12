@@ -139,7 +139,7 @@ public class CommentManagementFragment extends Fragment implements ManageComment
             message = "Are you sure you want to delete this comment? This action is permanent and the comment will be removed.";
         }
 
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(getContext(), R.style.RoundedAlertDialogTheme)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("Confirm", (dialog, which) -> {
