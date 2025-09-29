@@ -99,6 +99,7 @@ public class EventListFragment extends BaseListFragment<GetEventDTO, EventFilter
         boolean ignoreCityParam = !isPrivileged || payload.isIgnoreCityFilter();
         String searchQueryParam = (payload.getSearchQuery() != null && !payload.getSearchQuery().isEmpty()) ? payload.getSearchQuery() : null;
         Integer maxGuestsParam = payload.maxGuests;
+        boolean limitTo10 = payload.limitTo10;
 
         String sortByParam = payload.getSortBy();
         if (sortByParam != null) {
@@ -127,7 +128,7 @@ public class EventListFragment extends BaseListFragment<GetEventDTO, EventFilter
                 payload.getSortDir(),
                 0,
                 100,
-                false,
+                limitTo10,
                 ignoreCityParam
         ).enqueue(new Callback<List<GetEventDTO>>() {
             @Override

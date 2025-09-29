@@ -192,6 +192,7 @@ public class EventFilterFragment extends DialogFragment {
 
         filterViewModel.setMinDate(startDateText.getText().toString());
         filterViewModel.setMaxDate(endDateText.getText().toString());
+        filterViewModel.setLimitTo10(true);
 
         filterViewModel.applyNow();
         dismiss();
