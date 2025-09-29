@@ -39,7 +39,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/eventTypeFragmentContainer"
-        android:name="com.example.eventplanner.fragments.CategoriesTableFragment"
+        android:name="com.example.eventplanner.fragments.others.CategoriesTableFragment"
         android:layout_width="419dp"
         android:layout_height="603dp"
         app:layout_constraintBottom_toBottomOf="parent"

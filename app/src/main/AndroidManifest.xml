@@ -27,12 +27,6 @@
             android:name=".activities.gallery.GalleryDisplayActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.profile.ProfileEditActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.profile.ProfileViewActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.service.ServiceEditActivity"
             android:exported="false" />
         <activity

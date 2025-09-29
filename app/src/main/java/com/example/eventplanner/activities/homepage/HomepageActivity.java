@@ -37,7 +37,7 @@ import com.example.eventplanner.fragments.eventtype.EventTypeTableFragment;
 import com.example.eventplanner.fragments.favorites.ExplorePageFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteEventsFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteServicesFragment;
-import com.example.eventplanner.activities.profile.ProfileViewActivity;
+import com.example.eventplanner.fragments.profile.ProfileViewFragment;
 import com.example.eventplanner.fragments.solutioncategory.CategoriesTableFragment;
 import com.example.eventplanner.fragments.categories.CategoriesContainerFragment;
 import com.example.eventplanner.fragments.comment.CommentManagementFragment;
@@ -233,7 +233,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_view_profile) {
-                startActivity(new Intent(HomepageActivity.this, ProfileViewActivity.class));
+                navigateToFragment(new ProfileViewFragment());
             } else if (id == R.id.nav_log_out) {
                 logOut();
             } else if (id == R.id.nav_invited_events) {
@@ -278,7 +278,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_services) {
                 navigateToFragment(new ServiceManagement());
             } else if (id == R.id.nav_view_profile) {
-                startActivity(new Intent(this, ProfileViewActivity.class));
+                navigateToFragment(new ProfileViewFragment());
             } else if (id == R.id.nav_calendar_od) {
                 navigateToFragment(new CalendarFragment());
             } else if (id == R.id.nav_create_event) {
@@ -342,7 +342,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_explore_events) {
                 navigateToFragment(new ExplorePageFragment());
             } else if (id == R.id.nav_view_profile) {
-                startActivity(new Intent(this, ProfileViewActivity.class));
+                navigateToFragment(new ProfileViewFragment());
             } else if (id == R.id.nav_categories) {
                 navigateToFragment(new CategoriesTableFragment());
             } else if (id == R.id.nav_event_types) {

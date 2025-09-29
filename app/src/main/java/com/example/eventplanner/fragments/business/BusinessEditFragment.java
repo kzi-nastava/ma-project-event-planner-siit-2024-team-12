@@ -46,6 +46,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class BusinessEditFragment extends Fragment {
+    private static final int PICK_IMAGE_REQUEST = 1001;
     private Uri selectedImageUri = null;
     private Long businessId;
     private String businessName;
@@ -91,8 +92,6 @@ public class BusinessEditFragment extends Fragment {
 
     }
 
-
-    private static final int PICK_IMAGE_REQUEST = 1001;
 
     private void openGalleryForImage() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
