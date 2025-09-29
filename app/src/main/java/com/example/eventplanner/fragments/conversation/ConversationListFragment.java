@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.adapters.conversation.ConversationAdapter;
+import com.example.eventplanner.dto.conversation.GetChatMessageDTO;
 import com.example.eventplanner.dto.conversation.GetConversationDTO;
 import com.example.eventplanner.utils.ClientUtils;
 
@@ -32,15 +33,17 @@ public class ConversationListFragment extends Fragment implements ConversationWe
     private ConversationAdapter adapter;
     private View emptyStateLayout;
     private ConversationWebSocketService webSocketService;
+    private String loggedInUserEmail;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_conversation_list, container, false);
+        loggedInUserEmail = ClientUtils.getCurrentUserEmail(getContext());
         recyclerView = view.findViewById(R.id.conversation_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ConversationAdapter(new ArrayList<>(), this::onConversationClicked);
+        adapter = new ConversationAdapter(new ArrayList<>(), this::onConversationClicked, loggedInUserEmail);
         recyclerView.setAdapter(adapter);
         ImageButton closeButton = view.findViewById(R.id.btn_close_sidebar);
         emptyStateLayout = view.findViewById(R.id.empty_state_layout);
@@ -99,7 +102,60 @@ public class ConversationListFragment extends Fragment implements ConversationWe
                     .replace(R.id.chat_fragment_container, chatFragment)
                     .addToBackStack(null)
                     .commit();
+
+            if (hasUnreadMessagesForCurrentUser(conversation)) {
+                markAsReadAndUpdate(conversation);
+            }
         }
+    }
+
+    private boolean hasUnreadMessagesForCurrentUser(GetConversationDTO conversation) {
+        List<GetChatMessageDTO> messages = conversation.getMessages();
+        if (messages == null || messages.isEmpty() || loggedInUserEmail == null) {
+            return false;
+        }
+
+        for (GetChatMessageDTO message : messages) {
+            // Nepročitana poruka koju je poslao drugi korisnik
+            if (!message.isRead() && !message.getSenderEmail().equals(loggedInUserEmail)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private void markAsReadAndUpdate(GetConversationDTO conversation) {
+        Long conversationId = conversation.getId();
+        Log.d("ConversationFragment", "Marking conversation " + conversationId + " as read...");
+        String authHeader = ClientUtils.getAuthorization(getContext());
+
+        // POZIV API-ja za označavanje kao pročitanog
+        // Očekujemo da server vrati AŽURIRANI DTO gde su sve poruke u nizu označene kao pročitane (read: true)
+        ClientUtils.conversationService.markAllAsRead(authHeader, conversationId).enqueue(new Callback<GetConversationDTO>() {
+            @Override
+            public void onResponse(Call<GetConversationDTO> call, Response<GetConversationDTO> response) {
+                if (response.isSuccessful()) {
+                    GetConversationDTO updated = response.body();
+                    if (updated != null) {
+                        // Ažuriramo adapter sa novim DTO-om
+                        if (getActivity() != null && adapter != null) {
+                            getActivity().runOnUiThread(() -> {
+                                // updateAndMoveToTop će zameniti stari DTO novim
+                                adapter.updateAndMoveToTop(updated);
+                            });
+                        }
+                    }
+                } else {
+                    Log.e("ConversationListFrag", "Failed to mark as read: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetConversationDTO> call, Throwable t) {
+                Log.e("ConversationListFrag", "Network error on markAsRead: " + t.getMessage());
+            }
+        });
     }
 
 
