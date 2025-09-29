@@ -21,6 +21,7 @@ import com.example.eventplanner.adapters.SingleSelectAdapter;
 import com.example.eventplanner.services.HomepageService;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.viewmodels.EventFilterViewModel;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -97,24 +98,64 @@ public class EventFilterFragment extends DialogFragment {
     }
 
     private void setupDatePickers() {
-        Calendar calendar = Calendar.getInstance();
-
+        long today = MaterialDatePicker.todayInUtcMilliseconds();
         startDateText.setOnClickListener(v -> {
-            DatePickerDialog dpd = new DatePickerDialog(getContext(), (view, year, month, day) -> {
-                startDateText.setText(String.format("%04d-%02d-%02d", year, month + 1, day));
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-            dpd.show();
-        });
 
+            MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                    .setTheme(R.style.ThemeOverlay_App_MaterialCalendar)
+                    .setTitleText("Select Start Date")
+                    .setSelection(today)
+                    .build();
+
+            datePicker.addOnPositiveButtonClickListener(selection -> {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(selection);
+
+                String formattedDate = String.format(Locale.getDefault(),
+                        "%04d-%02d-%02d",
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH) + 1,
+                        calendar.get(Calendar.DAY_OF_MONTH));
+
+                startDateText.setText(formattedDate);
+            });
+
+            datePicker.show(getParentFragmentManager(), "MATERIAL_DATE_PICKER_START");
+        });
         endDateText.setOnClickListener(v -> {
-            DatePickerDialog dpd = new DatePickerDialog(getContext(), (view, year, month, day) -> {
-                endDateText.setText(String.format("%04d-%02d-%02d", year, month + 1, day));
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-            dpd.show();
+
+            MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                    .setTheme(R.style.ThemeOverlay_App_MaterialCalendar)
+                    .setTitleText("Select End Date")
+                    .setSelection(today)
+                    .build();
+
+            datePicker.addOnPositiveButtonClickListener(selection -> {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(selection);
+
+                String formattedDate = String.format(Locale.getDefault(),
+                        "%04d-%02d-%02d",
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH) + 1,
+                        calendar.get(Calendar.DAY_OF_MONTH));
+
+                endDateText.setText(formattedDate);
+            });
+
+            datePicker.show(getParentFragmentManager(), "MATERIAL_DATE_PICKER_END");
         });
     }
 
     private void applyFilters() {
+        String startDate = startDateText.getText().toString();
+        String endDate = endDateText.getText().toString();
+
+        if (!isValidDateRange(startDate, endDate)) {
+            Toast.makeText(getContext(), "Invalid date range: Start Date cannot be after End Date.", Toast.LENGTH_LONG).show();
+
+            return;
+        }
         String selectedCity = ((SingleSelectAdapter) ((RecyclerView) view.findViewById(R.id.cityFilter)
                 .findViewById(R.id.options)).getAdapter()).getSelectedItem();
 
@@ -271,5 +312,25 @@ public class EventFilterFragment extends DialogFragment {
     private String toAllUpperCase(String input) {
         if (input == null) return null;
         return input.toUpperCase(Locale.getDefault());
+    }
+
+    private boolean isValidDateRange(String startDateStr, String endDateStr) {
+        if (startDateStr.isEmpty() || endDateStr.isEmpty()) {
+            return true;
+        }
+
+        try {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+            Calendar startDate = Calendar.getInstance();
+            startDate.setTime(sdf.parse(startDateStr));
+
+            Calendar endDate = Calendar.getInstance();
+            endDate.setTime(sdf.parse(endDateStr));
+            return !startDate.after(endDate);
+
+        } catch (java.text.ParseException e) {
+            return false;
+        }
     }
 }
