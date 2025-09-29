@@ -166,7 +166,7 @@ public class ServiceReservationDetailsFragment extends Fragment {
     }
 
     private void showCancelConfirmationDialog() {
-        new AlertDialog.Builder(requireContext())
+        new AlertDialog.Builder(requireContext(), R.style.RoundedAlertDialogTheme)
                 .setTitle("Cancel Reservation")
                 .setMessage("Are you sure you want to cancel this reservation?")
                 .setPositiveButton("Yes", (dialog, which) -> cancelReservation())

@@ -407,7 +407,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     }
 
     private void logOut() {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.RoundedAlertDialogTheme)
                 .setTitle("Log out?")
                 .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("YES", (dialog, which) -> {
