@@ -396,6 +396,10 @@ public class ServiceDetailsFragment extends Fragment {
             Toast.makeText(requireActivity(), "Upgrade your role first.", Toast.LENGTH_SHORT).show();
             return;
         }
+        if(role.equals(UserRole.ROLE_ADMIN.toString())){
+            Toast.makeText(requireActivity(), "You are not allowed to add to favorites.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Call<ResponseBody> call = ClientUtils.userService.addFavoriteService(auth, userEmail, serviceId);
         call.enqueue(new Callback<ResponseBody>() {
@@ -432,6 +436,10 @@ public class ServiceDetailsFragment extends Fragment {
         }
         if(role.equals(UserRole.ROLE_AUTHENTICATED_USER.toString())){
             Toast.makeText(requireActivity(), "Upgrade your role first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(role.equals(UserRole.ROLE_ADMIN.toString())){
+            Toast.makeText(requireActivity(), "You are not allowed to remove from favorites.", Toast.LENGTH_SHORT).show();
             return;
         }
 

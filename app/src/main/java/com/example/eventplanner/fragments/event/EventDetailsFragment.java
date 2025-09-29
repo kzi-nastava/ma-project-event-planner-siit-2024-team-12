@@ -157,6 +157,12 @@ public class EventDetailsFragment extends Fragment {
             Toast.makeText(getContext(), "Authentication or event ID is missing.", Toast.LENGTH_SHORT).show();
             return;
         }
+        SharedPreferences pref = getContext().getSharedPreferences("AppPrefs", getContext().MODE_PRIVATE);
+        String role = pref.getString("userRole", "");
+        if(role.equals(UserRole.ROLE_ADMIN.toString())){
+            Toast.makeText(requireActivity(), "Cannot chat with organizer", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Call<Long> call = ClientUtils.conversationService.getConversationIdForEventOwner(
                 auth,
@@ -175,9 +181,13 @@ public class EventDetailsFragment extends Fragment {
                         Toast.makeText(getContext(), "Conversation not found.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Log.e("ChatAPI", "Failed to get conversation ID. HTTP " + response.code());
-                    String msg = "Error checking chat status: " + response.code();
-                    Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+                    if(response.code()==403){
+                        Toast.makeText(getContext(), "Communication blocked with this user.", Toast.LENGTH_LONG).show();
+                    }else{
+                        Log.e("ChatAPI", "Failed to get conversation ID. HTTP " + response.code());
+                        String msg = "Error checking chat status: " + response.code();
+                        Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+                    }
                 }
             }
 
@@ -627,6 +637,10 @@ public class EventDetailsFragment extends Fragment {
             Toast.makeText(requireActivity(), "Upgrade your role first.", Toast.LENGTH_SHORT).show();
             return;
         }
+        if(role.equals(UserRole.ROLE_ADMIN.toString())){
+            Toast.makeText(requireActivity(), "You are not allowed to add to favorites.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (currentEventId == null) {
             return;
         }
@@ -697,6 +711,10 @@ public class EventDetailsFragment extends Fragment {
         }
         if(role.equals(UserRole.ROLE_AUTHENTICATED_USER.toString())){
             Toast.makeText(requireActivity(), "Upgrade your role first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(role.equals(UserRole.ROLE_ADMIN.toString())){
+            Toast.makeText(requireActivity(), "You are not allowed to remove from favorites.", Toast.LENGTH_SHORT).show();
             return;
         }
 
