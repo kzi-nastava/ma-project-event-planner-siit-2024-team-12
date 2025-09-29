@@ -65,9 +65,9 @@ public class EventFilterViewModel extends ViewModel {
         selectedCities.setValue(cities != null ? new ArrayList<>(cities) : new ArrayList<>());
     }
     public void setSelectedEventTypes(List<String> types) { selectedEventTypes.setValue(new ArrayList<>(types)); }
-    public void setSelectedRating(@Nullable Integer rating) { selectedRating.setValue(rating); } // NULL OK
+    public void setSelectedRating(@Nullable Integer rating) { selectedRating.setValue(rating); }
     public void setSelectedSortOptions(@Nullable String sortBy) { selectedSortOptions.setValue(sortBy); }
-    public void setSortDir(@Nullable String dir) { sortDir.setValue(dir); } // "ASC"/"DESC" ili null
+    public void setSortDir(@Nullable String dir) { sortDir.setValue(dir); } // "ASC"/"DESC"
     public void setMinDate(String date) { minDate.setValue(date == null ? "" : date); }
     public void setMaxDate(String date) { maxDate.setValue(date == null ? "" : date); }
 

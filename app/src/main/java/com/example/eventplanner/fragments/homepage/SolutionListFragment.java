@@ -232,10 +232,16 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
                 filterViewModel.applyNow();
             });
         }
-        if (p.getSortBy() != null) {
-            String sortByText = p.getSortBy().substring(0, 1).toUpperCase() + p.getSortBy().substring(1) + " " + p.getSortDir();
+        if (p.sortBy != null && !p.sortBy.isEmpty()) {
+            String sortByText = p.getSortBy().toUpperCase(Locale.getDefault());
+
             addFilterChip("Sort: " + sortByText, () -> {
                 filterViewModel.setSortBy(null);
+                filterViewModel.applyNow();
+            });
+        }
+        if (p.sortDir != null && !p.sortDir.isEmpty()) {
+            addFilterChip("Dir: " + p.getSortDir(), () -> {
                 filterViewModel.setSortDir(null);
                 filterViewModel.applyNow();
             });
