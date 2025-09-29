@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/nav_home"
+        android:title="@string/home" />
+
+    <group android:id="@+id/event_types">
+        <item
+            android:id="@+id/nav_event_types_overview"
+            android:title="@string/event_types_overview" />
+    </group>
+
+    <group android:id="@+id/notify">
+        <item
+            android:id="@+id/nav_notifications"
+            android:title="@string/notifications"
+            app:actionLayout="@layout/menu_item_notification_badge" />
+
+    </group>
+
+    <group android:id="@+id/cat">
+        <item
+            android:id="@+id/nav_categories"
+            android:title="@string/categories" />
+    </group>
+
+    <group android:id="@+id/charts">
+        <item
+            android:id="@+id/nav_attendance_chart"
+            android:title="@string/attendance_chart" />
+
+        <item
+            android:id="@+id/nav_ratings_chart"
+            android:title="@string/ratings_chart"/>
+    </group>
+
+    <group android:id="@+id/management">
+        <item
+            android:id="@+id/nav_manage_comments"
+            android:title="@string/manage_comments" />
+
+        <item
+            android:id="@+id/nav_manage_reports"
+            android:title="@string/manage_reports"/>
+    </group>
+
+    <item
+        android:id="@+id/nav_log_out"
+        android:title="@string/log_out" />
+
+</menu>

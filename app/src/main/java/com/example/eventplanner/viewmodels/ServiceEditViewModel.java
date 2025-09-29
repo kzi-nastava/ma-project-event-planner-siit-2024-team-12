@@ -1,0 +1,224 @@
+package com.example.eventplanner.viewmodels;
+
+import android.app.Application;
+import android.net.Uri;
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
+import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
+import com.example.eventplanner.dto.solutionservice.UpdateServiceDTO;
+import com.example.eventplanner.dto.solutionservice.UpdatedServiceDTO;
+import com.example.eventplanner.utils.ClientUtils;
+
+import java.util.ArrayList;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class ServiceEditViewModel extends AndroidViewModel {
+
+    private final MutableLiveData<GetServiceDTO> serviceData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isSaving = new MutableLiveData<>(false);
+    private final MutableLiveData<ArrayList<GetEventTypeDTO>> eventTypes = new MutableLiveData<>();
+    private Uri newImageUri;
+
+    public ServiceEditViewModel(@NonNull Application application) {
+        super(application);
+    }
+    public LiveData<ArrayList<GetEventTypeDTO>> getEventTypes() {
+        return eventTypes;
+    }
+
+    public MutableLiveData<GetServiceDTO> getServiceData() {
+        return serviceData;
+    }
+    public void setNewImageUri(Uri uri) {
+        this.newImageUri = uri;
+    }
+
+    public Uri getNewImageUri() {
+        return newImageUri;
+    }
+
+    public MutableLiveData<Boolean> getIsSaving() {
+        return isSaving;
+    }
+
+    /**
+     * Dobavlja podatke o usluzi sa servera na osnovu ID-a.
+     * @param serviceId ID usluge.
+     */
+    public void fetchService(Long serviceId) {
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            Log.e("ServiceEditViewModel", "Authentication token is missing.");
+            return;
+        }
+
+        ClientUtils.serviceSolutionService.getService(auth, serviceId).enqueue(new Callback<GetServiceDTO>() {
+            @Override
+            public void onResponse(Call<GetServiceDTO> call, Response<GetServiceDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    serviceData.setValue(response.body());
+                    Log.d("ServiceEditViewModel", "Service fetched successfully: " + response.body().getName());
+                } else {
+                    Log.e("ServiceEditViewModel", "Failed to fetch service. Code: " + response.code());
+                    Toast.makeText(getApplication(), "Greška pri učitavanju usluge.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetServiceDTO> call, Throwable t) {
+                Log.e("ServiceEditViewModel", "Network error while fetching service: " + t.getMessage());
+                Toast.makeText(getApplication(), "Greška na mreži pri učitavanju usluge.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void fetchEventTypes() {
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            Log.e("ServiceEditViewModel", "Authentication token is missing.");
+            return;
+        }
+
+        ClientUtils.eventTypeService.getAllActive(auth).enqueue(new Callback<ArrayList<GetEventTypeDTO>>() {
+            @Override
+            public void onResponse(Call<ArrayList<GetEventTypeDTO>> call, Response<ArrayList<GetEventTypeDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    eventTypes.setValue(response.body());
+                } else {
+                    eventTypes.setValue(new ArrayList<>());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<GetEventTypeDTO>> call, Throwable t) {
+                eventTypes.setValue(new ArrayList<>());
+            }
+        });
+    }
+
+    public void updateService(Long serviceId, UpdateServiceDTO updateServiceDto, Runnable onSuccess, Runnable onFailure) {
+        isSaving.setValue(true);
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            Log.e("ServiceEditViewModel", "Authentication token is missing.");
+            isSaving.setValue(false);
+            return;
+        }
+
+        ClientUtils.serviceSolutionService.updateService(auth, serviceId, updateServiceDto).enqueue(new Callback<UpdatedServiceDTO>() {
+            @Override
+            public void onResponse(Call<UpdatedServiceDTO> call, Response<UpdatedServiceDTO> response) {
+                isSaving.setValue(false);
+                if (response.isSuccessful()) {
+                    Log.d("ServiceEditViewModel", "Service updated successfully.");
+                    if (onSuccess != null) onSuccess.run();
+                } else {
+                    Log.e("ServiceEditViewModel", "Failed to update service. Code: " + response.code());
+                    if (onFailure != null) onFailure.run();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdatedServiceDTO> call, Throwable t) {
+                isSaving.setValue(false);
+                Log.e("ServiceEditViewModel", "Network error while updating service: " + t.getMessage());
+                if (onFailure != null) onFailure.run();
+            }
+        });
+    }
+    public interface Action1<T> {
+        void run(T t);
+    }
+
+    public void deleteService(Long serviceId, Runnable onSuccess, Action1<String> onFailure) {
+        isSaving.setValue(true);
+        String auth = ClientUtils.getAuthorization(getApplication());
+        if (auth.isEmpty()) {
+            Log.e("ServiceEditViewModel", "Authentication token is missing.");
+            isSaving.setValue(false);
+            return;
+        }
+
+        ClientUtils.serviceSolutionService.deleteService(auth, serviceId).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                isSaving.setValue(false);
+                if (response.isSuccessful()) {
+                    Log.d("ServiceEditViewModel", "Service deleted successfully.");
+                    if (onSuccess != null) onSuccess.run();
+                } else {
+                    String errorMessage = "Failed to delete service. (Code: " + response.code() + ")";
+
+                    if (response.code() == 400 && response.errorBody() != null) {
+                        try {
+                            String errorBodyString = response.errorBody().string();
+                            if (errorBodyString.contains("Service has future reservation")) {
+                                errorMessage = "Service has future reservation.";
+                            } else if (errorBodyString.contains("Service with id")) {
+                                errorMessage = "Service not found.";
+                            } else {
+                                errorMessage = "Bad Request. Please try again.";
+                            }
+
+                        } catch (Exception e) {
+                            Log.e("ServiceEditViewModel", "Error processing error body: " + e.getMessage());
+                        }
+                    }
+
+                    Log.e("ServiceEditViewModel", "Failed to delete service: " + errorMessage);
+                    if (onFailure != null) onFailure.run(errorMessage);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                isSaving.setValue(false);
+                Log.e("ServiceEditViewModel", "Network error while deleting service: " + t.getMessage());
+                if (onFailure != null) onFailure.run("Network error. Could not connect to server.");
+            }
+        });
+    }
+    public void deleteImage(Long entityId, String imageUrl, Runnable onSuccess, Runnable onFailure) {
+        String auth = ClientUtils.getAuthorization(getApplication()); // Ovde se dobija token
+        if (auth.isEmpty()) {
+            Log.e("ViewModel", "Authentication token is missing.");
+            if (onFailure != null) onFailure.run();
+            return;
+        }
+
+        ClientUtils.galleryService.deleteImage(auth, "service", entityId, imageUrl).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Log.d("ViewModel", "Image deleted successfully.");
+                    if (onSuccess != null) onSuccess.run();
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "No error body";
+                        Log.e("ViewModel", "Failed to delete image. Code: " + response.code() + ", Error: " + errorBody);
+                    } catch (Exception e) {
+                        Log.e("ViewModel", "Failed to delete image, unable to parse error body.", e);
+                    }
+                    if (onFailure != null) onFailure.run();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("ViewModel", "Network error while deleting image: " + t.getMessage());
+                if (onFailure != null) onFailure.run();
+            }
+        });
+    }
+}

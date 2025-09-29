@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/nav_home"
+        android:title="@string/home" />
+
+
+    <group android:id="@+id/events_od">
+        <item
+            android:id="@+id/nav_create_event"
+            android:title="@string/create_event" />
+
+    </group>
+
+    <item
+        android:id="@+id/nav_calendar_od"
+        android:title="@string/calendar" />
+
+
+    <group android:id="@+id/favorites">
+        <item
+            android:id="@+id/nav_fav_events"
+            android:title="@string/fav_events" />
+
+        <item
+            android:id="@+id/nav_fav_services"
+            android:title="@string/fav_services" />
+
+        <item
+            android:id="@+id/nav_fav_products"
+            android:title="@string/fav_products" />
+
+        <item
+            android:id="@+id/nav_explore_events"
+            android:title="@string/explore_events" />
+    </group>
+
+    <item
+        android:id="@+id/nav_notifications"
+        android:title="@string/notifications"
+        app:actionLayout="@layout/menu_item_notification_badge" />
+
+
+    <group android:id="@+id/service_reservations">
+        <item
+            android:id="@+id/nav_service_reservations"
+            android:title="@string/service_reservations" />
+
+    </group>
+
+    <group android:id="@+id/profile">
+        <item
+            android:id="@+id/nav_view_profile"
+            android:title="@string/view_profile" />
+
+        <item
+            android:id="@+id/nav_log_out"
+            android:title="@string/log_out" />
+    </group>
+
+</menu>

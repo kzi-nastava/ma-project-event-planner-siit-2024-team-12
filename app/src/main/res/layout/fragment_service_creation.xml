@@ -5,10 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ServiceCreationActivity">
+    tools:context=".fragments.servicecreation.ServiceCreationContainer">
 
-
-    <!-- form frame -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -28,7 +26,7 @@
             android:id="@+id/imageView5"
             android:layout_width="20dp"
             android:layout_height="21dp"
-            android:contentDescription="TODO"
+            android:contentDescription="@string/close_form_description"
             android:onClick="closeForm"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -56,24 +54,8 @@
 
 
         <EditText
-            android:id="@+id/editText"
-            android:layout_width="240dp"
-            android:layout_height="32dp"
-            android:background="@drawable/input_field"
-            android:ems="10"
-            android:hint="@string/Service_duration"
-            android:inputType="text"
-            android:paddingStart="12dp"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.637" />
-
-        <EditText
             android:id="@+id/editTextServiceName"
-            android:layout_width="240dp"
+            android:layout_width="250dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
             android:ems="10"
@@ -131,8 +113,110 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.342" />
 
+        <RadioGroup
+            android:id="@+id/duration_radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.135"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.62">
 
+            <RadioButton
+                android:id="@+id/fixed_duration_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/fixed"
+                android:textSize="12sp" />
+
+            <RadioButton
+                android:id="@+id/flexible_duration_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:text="@string/flexible"
+                android:textSize="12sp" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/fixed_duration_layout"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/duration_radio_group"
+            app:layout_constraintVertical_bias="0.1"
+            android:visibility="visible">
+
+            <EditText
+                android:id="@+id/fixed_hours_edittext"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="32dp"
+                android:background="@drawable/input_field"
+                android:ems="10"
+                android:hint="@string/hours"
+                android:inputType="number"
+                android:paddingStart="12dp"
+                android:textSize="12sp"
+                android:layout_marginEnd="8dp"/>
+
+            <EditText
+                android:id="@+id/fixed_minutes_edittext"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="32dp"
+                android:background="@drawable/input_field"
+                android:ems="10"
+                android:hint="@string/minutes"
+                android:inputType="number"
+                android:paddingStart="12dp"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/flexible_duration_layout"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/duration_radio_group"
+            app:layout_constraintVertical_bias="0.1"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/flexible_from_edittext"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="32dp"
+                android:background="@drawable/input_field"
+                android:ems="10"
+                android:hint="@string/from"
+                android:inputType="number"
+                android:paddingStart="12dp"
+                android:textSize="12sp"
+                android:layout_marginEnd="8dp"/>
+
+            <EditText
+                android:id="@+id/flexible_to_edittext"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="32dp"
+                android:background="@drawable/input_field"
+                android:ems="10"
+                android:hint="@string/to"
+                android:inputType="number"
+                android:paddingStart="12dp"
+                android:textSize="12sp" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

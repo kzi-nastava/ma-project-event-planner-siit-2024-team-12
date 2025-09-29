@@ -1,0 +1,158 @@
+package com.example.eventplanner.adapters.conversation;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
+import com.example.eventplanner.R;
+import com.example.eventplanner.dto.conversation.GetConversationDTO;
+import com.example.eventplanner.dto.conversation.GetChatMessageDTO;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapter.ConversationViewHolder> {
+
+    public interface OnConversationClickListener {
+        void onConversationClick(GetConversationDTO conversation);
+    }
+
+    private List<GetConversationDTO> conversations;
+    private final OnConversationClickListener listener;
+    private final String loggedInUserEmail;
+
+    public ConversationAdapter(List<GetConversationDTO> conversations, OnConversationClickListener listener, String loggedInUserEmail) {
+        this.conversations = conversations;
+        this.listener = listener;
+        this.loggedInUserEmail = loggedInUserEmail;
+    }
+
+    public void setConversations(List<GetConversationDTO> conversations) {
+        this.conversations = conversations;
+        notifyDataSetChanged();
+    }
+
+    @NonNull
+    @Override
+    public ConversationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_conversation, parent, false);
+        return new ConversationViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ConversationViewHolder holder, int position) {
+        holder.bind(conversations.get(position), listener, loggedInUserEmail);
+    }
+
+    @Override
+    public int getItemCount() {
+        return conversations != null ? conversations.size() : 0;
+    }
+
+    public void updateAndMoveToTop(GetConversationDTO updatedConversation) {
+        int existingPosition = -1;
+        for (int i = 0; i < conversations.size(); i++) {
+            if (conversations.get(i).getId().equals(updatedConversation.getId())) {
+                existingPosition = i;
+                break;
+            }
+        }
+
+        if (existingPosition != -1) {
+            conversations.remove(existingPosition);
+        }
+
+        conversations.add(0, updatedConversation);
+
+        if (existingPosition != -1) {
+            notifyItemMoved(existingPosition, 0);
+            notifyItemChanged(0);
+        } else {
+            notifyItemInserted(0);
+        }
+    }
+
+    static class ConversationViewHolder extends RecyclerView.ViewHolder {
+        private final TextView userName;
+        private final TextView lastMessage;
+        private final TextView lastUpdated;
+        private final ImageView profileImage;
+        private final LinearLayout conversationLayout;
+
+        ConversationViewHolder(@NonNull View itemView) {
+            super(itemView);
+            userName = itemView.findViewById(R.id.conversation_user_name);
+            lastMessage = itemView.findViewById(R.id.conversation_last_message);
+            lastUpdated = itemView.findViewById(R.id.conversation_last_updated);
+            profileImage = itemView.findViewById(R.id.conversation_profile_image);
+            conversationLayout = itemView.findViewById(R.id.conversation_item_layout);
+        }
+        private boolean hasUnreadMessages(GetConversationDTO conversation, String currentEmail) {
+            List<GetChatMessageDTO> messages = conversation.getMessages();
+            if (messages == null || messages.isEmpty()) {
+                return false;
+            }
+
+            for (GetChatMessageDTO message : messages) {
+                if (!message.isRead() && !message.getSenderEmail().equals(currentEmail)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private String getDisplayName(GetConversationDTO conversation) {
+            if (conversation.getOtherUser() == null) {
+                return "User"; // fallback
+            }
+
+            String name = conversation.getOtherUser().getName();
+            String surname = conversation.getOtherUser().getSurname();
+            String email = conversation.getOtherUser().getEmail();
+
+            if (name != null && !name.trim().isEmpty() && surname != null && !surname.trim().isEmpty()) {
+                return name + " " + surname;
+            }
+
+            if (email != null && !email.trim().isEmpty()) {
+                return email;
+            }
+
+            return "Unknown User";
+        }
+
+        void bind(GetConversationDTO conversation, OnConversationClickListener listener, String loggedInUserEmail) {
+            String displayName = getDisplayName(conversation);
+            userName.setText(displayName);
+
+            List<GetChatMessageDTO> messages = conversation.getMessages();
+            if (messages != null && !messages.isEmpty()) {
+                GetChatMessageDTO lastMsg = messages.get(messages.size() - 1);
+                lastMessage.setText(lastMsg.getContent());
+
+                if (lastMsg.getTimestamp() != null) {
+                    lastUpdated.setText(lastMsg.getTimestamp().format(DateTimeFormatter.ofPattern("dd.MM HH:mm")));
+                }
+            } else {
+                lastMessage.setText("No messages yet");
+                lastUpdated.setText("");
+            }
+
+            boolean unread = hasUnreadMessages(conversation, loggedInUserEmail);
+
+            if (unread) {
+                conversationLayout.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.activeButtonBackground));
+            } else {
+                conversationLayout.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.white));
+            }
+
+            itemView.setOnClickListener(v -> listener.onConversationClick(conversation));
+        }
+    }
+}

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.BusinessRegistrationActivity">
+    tools:context=".fragments.business.businessregistration.BusinessRegistrationFragment">
 
 
     <!-- form frame -->
@@ -21,99 +21,75 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.498" >
 
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="20dp"
-            android:layout_height="21dp"
-            android:contentDescription="TODO"
-            android:onClick="closeForm"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/exit_form" />
-
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/business_reg"
+            android:text="@string/business_reg_II"
             android:textAlignment="center"
             android:textColor="@color/dark_gray"
             android:textSize="25sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.466"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.066" />
-
+            app:layout_constraintVertical_bias="0.132" />
 
         <EditText
-            android:id="@+id/editTextText"
+            android:id="@+id/phone"
             android:layout_width="240dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
             android:ems="10"
-            android:hint="@string/phone"
+            android:hint="@string/phone_format"
             android:inputType="text"
             android:paddingStart="12dp"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.566"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.219" />
+            app:layout_constraintVertical_bias="0.307" />
 
 
         <EditText
-            android:id="@+id/editTextText3"
+            android:id="@+id/description"
             android:layout_width="237dp"
-            android:layout_height="92dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/input_field"
             android:ems="10"
             android:hint="@string/description"
-            android:inputType="text"
-            android:paddingStart="12dp"
+            android:inputType="textMultiLine"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.424"
+            app:layout_constraintHorizontal_bias="0.515"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.424" />
-
-
-        <ImageView
-            android:id="@+id/selectedImage"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:background="@drawable/input_field"
-            android:contentDescription="@string/selected_image"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.905"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.78" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/uploadImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/upload_image"
+            android:layout_width="240dp"
+            android:layout_height="32dp"
+            android:background="@drawable/input_field"
+            android:text="@string/add_company_images"
             android:textAllCaps="false"
+            android:textColor="@color/dark_gray"
+            android:textAlignment="textStart"
+            android:paddingStart="10dp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.082"
+            app:layout_constraintHorizontal_bias="0.466"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.813" />
+            app:layout_constraintVertical_bias="0.675" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/register"
@@ -136,6 +112,7 @@
             android:layout_width="121dp"
             android:layout_height="42dp"
             android:background="@drawable/form_button"
+            android:backgroundTint="@color/dark_gray"
             android:text="@string/back"
             android:textAllCaps="false"
             android:textColor="@android:color/white"

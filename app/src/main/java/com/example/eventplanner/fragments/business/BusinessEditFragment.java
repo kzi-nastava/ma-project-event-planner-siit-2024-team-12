@@ -1,0 +1,291 @@
+package com.example.eventplanner.fragments.business;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
+import com.example.eventplanner.BuildConfig;
+import com.example.eventplanner.fragments.gallery.GalleryDisplayFragment;
+import com.example.eventplanner.utils.ClientUtils;
+import com.example.eventplanner.R;
+import com.example.eventplanner.utils.ImageHelper;
+import com.example.eventplanner.utils.ValidationUtils;
+import com.example.eventplanner.dto.business.GetBusinessDTO;
+import com.example.eventplanner.dto.business.UpdateBusinessDTO;
+import com.example.eventplanner.dto.business.UpdatedBusinessDTO;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class BusinessEditFragment extends Fragment {
+    private static final int PICK_IMAGE_REQUEST = 1001;
+    private Uri selectedImageUri = null;
+    private Long businessId;
+    private String businessName;
+    private View view;
+
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_business_edit, container, false);
+
+        loadCurrentBusiness();
+
+        Button saveBtn = view.findViewById(R.id.saveBtn);
+        saveBtn.setOnClickListener(v -> {
+            update();
+        });
+
+
+        ImageView addImageButton = view.findViewById(R.id.addImgBtn);
+        addImageButton.setOnClickListener(v -> {
+            openGalleryForImage();
+        });
+
+        Button galleryBtn = view.findViewById(R.id.galleryBtn);
+        galleryBtn.setOnClickListener(v -> {
+            openBusinessGallery();
+        });
+
+        return view;
+    }
+
+
+    private void openBusinessGallery() {
+        SharedPreferences prefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        String currentUser = prefs.getString("email", "");
+
+        GalleryDisplayFragment galleryFragment = new GalleryDisplayFragment();
+
+        Bundle args = new Bundle();
+        args.putString("type", "company");
+        args.putLong("id", businessId);
+        args.putString("entityName", businessName);
+        args.putString("ownerEmail", currentUser);
+
+        galleryFragment.setArguments(args);
+
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_fragment_container, galleryFragment)
+                .commit();
+    }
+
+
+
+    private void openGalleryForImage() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    public void setUpInitialForm(GetBusinessDTO dto) {
+        businessId = dto.getId();
+        businessName = dto.getCompanyName();
+
+        TextView name = view.findViewById(R.id.name);
+        name.setText(dto.getCompanyName());
+
+        TextView email = view.findViewById(R.id.email);
+        email.setText(dto.getCompanyEmail());
+
+        EditText address = view.findViewById(R.id.address);
+        address.setText(dto.getAddress());
+
+        EditText phone = view.findViewById(R.id.phone);
+        phone.setText(dto.getPhone());
+
+        EditText description = view.findViewById(R.id.description);
+        description.setText(dto.getDescription());
+
+        setMainImage(dto);
+
+    }
+
+
+    private void setMainImage(GetBusinessDTO dto) {
+        ImageView mainImage = view.findViewById(R.id.mainImage);
+        String imgUrl = dto.getMainImageUrl();
+
+        if (imgUrl != null && !imgUrl.isEmpty()) {
+            String fullUrl = imgUrl.startsWith("http") ? imgUrl : "http://" + BuildConfig.IP_ADDR + ":8080" + imgUrl;
+
+            Glide.with(this)
+                    .load(fullUrl)
+                    .placeholder(R.drawable.user_logo)
+                    .error(R.drawable.user_logo)
+                    .into(mainImage);
+        } else {
+            mainImage.setImageResource(R.drawable.user_logo);
+        }
+    }
+
+    public void loadCurrentBusiness() {
+        String authorization = ClientUtils.getAuthorization(requireContext());
+
+        Call<GetBusinessDTO> call = ClientUtils.businessService.getBusinessForCurrentUser(authorization);
+
+        call.enqueue(new Callback<GetBusinessDTO>() {
+            @Override
+            public void onResponse(Call<GetBusinessDTO> call, Response<GetBusinessDTO> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        setUpInitialForm(response.body());
+                    }
+                    else {
+                        Toast.makeText(requireActivity(), "No active business yet!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetBusinessDTO> call, Throwable t) {
+                Toast.makeText(requireActivity(), "Failed to load current business!", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    private void updateBusiness(String email, UpdateBusinessDTO dto) {
+        String auth = ClientUtils.getAuthorization(requireContext());
+
+        Call<UpdatedBusinessDTO> call = ClientUtils.businessService.update(auth, email, dto);
+
+        call.enqueue(new Callback<UpdatedBusinessDTO>() {
+            @Override
+            public void onResponse(Call<UpdatedBusinessDTO> call, Response<UpdatedBusinessDTO> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(requireActivity(), "Successful business update!", Toast.LENGTH_SHORT).show();
+
+                    UpdatedBusinessDTO updated = response.body();
+
+                    if (updated != null && selectedImageUri != null) {
+                        uploadProfileImage(businessId);
+                    } else {
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_fragment_container, new BusinessInfoFragment())
+                                .commit();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdatedBusinessDTO> call, Throwable t) {
+                Toast.makeText(requireActivity(), "Failed to update business!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void uploadProfileImage(Long businessId) {
+        if (selectedImageUri == null) return;
+
+        MultipartBody.Part imagePart;
+        try {
+            imagePart = ImageHelper.prepareFilePart(requireContext(), "files", selectedImageUri);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(requireContext(), "Failed to prepare image", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        RequestBody type = RequestBody.create(MultipartBody.FORM, "company");
+        RequestBody entityId = RequestBody.create(MultipartBody.FORM, String.valueOf(businessId));
+        RequestBody isMain = RequestBody.create(MultipartBody.FORM, "true");
+
+        String auth = ClientUtils.getAuthorization(requireContext());
+
+        Call<ResponseBody> call = ClientUtils.galleryService.uploadImages(
+                auth,
+                type,
+                entityId,
+                List.of(imagePart),
+                isMain
+        );
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    //Toast.makeText(BusinessEditActivity.this, "Image uploaded!", Toast.LENGTH_SHORT).show();
+
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, new BusinessInfoFragment())
+                            .commit();
+
+                } else {
+                    Toast.makeText(requireActivity(), "Upload failed: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(requireActivity(), "Upload error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+    private void update() {
+        EditText address = view.findViewById(R.id.address);
+        EditText phone = view.findViewById(R.id.phone);
+        EditText description = view.findViewById(R.id.description);
+
+        if (!ValidationUtils.isFieldValid(address, "Address is required!")) return;
+        if (!ValidationUtils.isFieldValid(phone, "Phone is required!")) return;
+        if (!ValidationUtils.isPhoneValid(phone, phone.getText().toString().trim())) return;
+        if (!ValidationUtils.isFieldValid(description, "Description is required!")) return;
+
+        UpdateBusinessDTO updateBusinessDTO = new UpdateBusinessDTO(
+                address.getText().toString().trim(),
+                phone.getText().toString().trim(),
+                description.getText().toString().trim(),
+                new ArrayList<>()
+        );
+
+        TextView email = view.findViewById(R.id.email);
+
+        updateBusiness(email.getText().toString().trim(), updateBusinessDTO);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == AppCompatActivity.RESULT_OK && data != null && data.getData() != null) {
+            selectedImageUri = data.getData();
+            ImageView profileImage = view.findViewById(R.id.mainImage);
+            profileImage.setImageURI(selectedImageUri);
+        }
+    }
+
+
+}

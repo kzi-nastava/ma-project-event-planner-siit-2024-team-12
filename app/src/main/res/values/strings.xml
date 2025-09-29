@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EventPlanner</string>
+    <string name="app_name">Event Planner</string>
 
 
     <!-- Service management -->
@@ -14,12 +14,113 @@
     <string name="service_4">Service 4</string>
     <string name="service_5">Service 5</string>
     <string name="desc">The best service...</string>
+    <string name="service_title_placeholder">Service Title</string>
+    <string name="service_image_description">Image of the service</string>
+
+    <!-- Create service form -->
+    <string name="price">Price</string>
+    <string name="discount">Discount</string>
+    <string name="plus_button">Add service</string>
+    <string name="create_service">Create service</string>
+    <string name="create_category_title">Create category</string>
+    <string-array name="service_category_spinner">
+        <item>Category 1</item>
+        <item>Category 2</item>
+        <item>Category 3</item>
+    </string-array>
+    <string name="service_name">Service name:</string>
+    <string name="Service_duration">Duration:</string>
+    <string name="create_category">Create new</string>
+    <string name="create_price">Price ($):</string>
+    <string name="create_discount">Discount (%):</string>
+    <string name="create_res_deadline">Reservation deadline:</string>
+    <string name="create_cancel_deadline">Cancellation deadline:</string>
+    <string-array name="service_visibility_spinner">
+        <item>Visible</item>
+        <item>Invisible</item>
+    </string-array>
+    <string-array name="service_availability_spinner">
+        <item>Available</item>
+        <item>Unavailable</item>
+    </string-array>
+    <string-array name="service_event_type_spinner">
+        <item>Event 1</item>
+        <item>Event 2</item>
+        <item>Event 3</item>
+    </string-array>
+    <string-array name="service_reservation_confirmation_spinner">
+        <item>AUTOMATIC</item>
+        <item>MANUAL</item>
+    </string-array>
+    <string name="service_description">Description:</string>
+    <string name="service_image_url">Image url:</string>
+    <string name="service_specificities">Specificities</string>
+    <string name="service_created">Service created successfully!</string>
+    <string name="category_created">Category created successfully!</string>
+    <string name="service_edited">Service edited successfully!</string>
+    <string name="service_deleted">Service deleted successfully!</string>
+    <string name="close_form_description">Close form</string>
+    <string name="fixed">Fixed duration</string>
+    <string name="flexible">Flexible duration</string>
+    <string name="hours">Hours:</string>
+    <string name="minutes">Minutes:</string>
+    <string name="from">From:</string>
+    <string name="unavailable_dates">Unavailable dates</string>
+    <string name="select_date">Select date</string>
+    <string name="available_days">Available days</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
+    <string name="working_hours">Working hours</string>
+    <string name="select_time">Select time</string>
+    <string name="change_image_description">Change image</string>
+    <string name="delete_image_description">Delete image</string>
+
+    <!-- Edit service form -->
+
+    <string name="exit_form">Exit Form</string>
+    <string name="service_name_label">Service name:</string>
+    <string name="service_name_hint">Service name</string>
+    <string name="service_category_label">Category:</string>
+    <string name="category_hint">Category</string>
+    <string name="service_price_label">Price($):</string>
+    <string name="price_hint">0</string>
+    <string name="service_discount_label">Sale(%):</string>
+    <string name="discount_hint">0</string>
+    <string name="service_time_type_label">Reservation type:</string>
+    <string name="fixed_time">Fixed time</string>
+    <string name="flexible_time">Flexible time</string>
+    <string name="duration_hours_label">Hours:</string>
+    <string name="duration_minutes_label">Minutes:</string>
+    <string name="from_time_label">From:</string>
+    <string name="to_time_label">To:</string>
+    <string name="event_type_label">Event type:</string>
+    <string name="reservation_type_label">Reservation type:</string>
+    <string name="visibility_label">Visibility:</string>
+    <string name="availability_label">Availability:</string>
+    <string name="description_label">Description:</string>
+    <string name="description_hint">Descrtiption</string>
+    <string name="specs_label">Specifics:</string>
+    <string name="specs_hint">Specifics</string>
+
+    <!-- Budget planning -->
+    <string name="add_new_budget_item">Create budget item</string>
+    <string name="add_item">Dodaj stavku</string>
+    <string name="item_name">Naziv stavke</string>
+    <string name="add_new_item">Dodaj novu stavku</string>
+    <string name="show_suggested_categories">Prikaži predložene kategorije</string>
+    <string name="create_budget_plan">Budget planning</string>
+    <string name="update">Update</string>
 
 
     <!-- Unregistered user homepage -->
     <string name="open_drawer">Open Navigation Drawer</string>
     <string name="close_drawer">Close Navigation Drawer</string>
-    <string name="events">MOST POPULAR EVENTS IN YOUR CITY</string>
+    <string name="events">MOST POPULAR EVENTS</string>
     <string name="event_1">Event 1</string>
     <string name="event_2">Event 2</string>
     <string name="event_3">Event 3</string>
@@ -63,7 +164,9 @@
     <string name="description">Description :</string>
     <string name="images">Images :</string>
     <string name="register">Register</string>
+    <string name="business_reg_success">Successful business registration!</string>
     <string name="registration_success">Successful registration! Visit the link we sent to your email address.</string>
+    <string name="gallery">Gallery</string>
 
 
     <!-- Search and filters -->
@@ -85,56 +188,13 @@
 
 
     <!-- Products and services -->
-    <string name="products_services">MOST POPULAR PRODUCTS/SERVICES IN YOUR CITY</string>
+    <string name="products_services">MOST POPULAR PRODUCTS&amp;SERVICES</string>
     <string name="product_1">Product 1</string>
     <string name="product_2">Product 2</string>
     <string name="product_3">Product 3</string>
     <string name="product_4">Product 4</string>
     <string name="product_5">Product 5</string>
     <string name="category1">Category 1</string>
-
-
-    <!-- Create service form -->
-    <string name="price">Price</string>
-    <string name="discount">Discount</string>
-    <string name="plus_button">Add service</string>
-    <string name="create_service">Create service</string>
-    <string name="create_category_title">Create category</string>
-    <string-array name="service_category_spinner">
-        <item>Category 1</item>
-        <item>Category 2</item>
-        <item>Category 3</item>
-    </string-array>
-    <string name="service_name">Service name:</string>
-    <string name="Service_duration">Duration:</string>
-    <string name="create_category">Create new</string>
-    <string name="create_price">Price:</string>
-    <string name="create_discount">Discount:</string>
-    <string name="create_res_deadline">Reservation deadline:</string>
-    <string-array name="service_visibility_spinner">
-        <item>Visible</item>
-        <item>Invisible</item>
-    </string-array>
-    <string-array name="service_availability_spinner">
-        <item>Available</item>
-        <item>Unavailable</item>
-    </string-array>
-    <string-array name="service_event_type_spinner">
-        <item>Event 1</item>
-        <item>Event 2</item>
-        <item>Event 3</item>
-    </string-array>
-    <string-array name="service_reservation_confirmation_spinner">
-        <item>Automatic</item>
-        <item>Manual</item>
-    </string-array>
-    <string name="service_description">Description:</string>
-    <string name="service_image_url">Image url:</string>
-    <string name="service_specificities">Specificities</string>
-    <string name="service_created">Service created successfully!</string>
-    <string name="category_created">Category created successfully!</string>
-    <string name="service_edited">Service edited successfully!</string>
-    <string name="service_deleted">Service deleted successfully!</string>
 
 
     <!-- Account activation/verification -->
@@ -147,7 +207,6 @@
 
     <!-- drawer menu items -->
     <string name="home">Home</string>
-    <string name="about_us">About us</string>
     <string name="events_menu">Events</string>
     <string name="products">Products</string>
     <string name="services">Services</string>
@@ -155,13 +214,21 @@
 
     <!-- organiser menu items -->
     <string name="create_event">Create event</string>
-    <string name="fav_events">Favourite events</string>
+    <string name="explore_events">Explore events</string>
     <string name="calendar">Calendar</string>
-    <string name="solutions">Solutions</string>
-    <string name="view_profile">View profile</string>
-    <string name="change_pass">Change password</string>
+    <string name="fav_events">Favorite events</string>
+    <string name="fav_services">Favorite services</string>
+    <string name="fav_products">Favorite products</string>
     <string name="notifications">Notifications</string>
+    <string name="view_profile">View profile</string>
     <string name="log_out">Log out</string>
+
+
+    <!-- provider menu -->
+    <string name="create_business">Business registration</string>
+    <string name="view_business">Business info</string>
+    <string name="categories">Categories</string>
+    <string name="event_types">Event types</string>
 
 
     <!-- Buttons -->
@@ -180,6 +247,7 @@
     <!-- password change -->
     <string name="old_pass">Old password :</string>
     <string name="new_pass">New password :</string>
+    <string name="change_pass">Change password</string>
 
     <!-- chat options -->
     <string name="chat">Chat</string>
@@ -200,5 +268,199 @@
     <string name="email_ast">Email*</string>
     <string name="phone_ast">Phone*</string>
     <string name="address_ast">Address*</string>
+
+    <string name="company_name_ast">Company name*</string>
+    <string name="company_email_ast">Company email*</string>
+    <string name="description_ast">Description*</string>
+
+
+    <string name="expand_arrow">Expand arrow</string>
+
+    <string name="event_type_details">Event type details</string>
+    <string name="recommended_categories">Recommended categories</string>
+    <string name="recommended_categories_ast">Recommended categories*</string>
+    <string name="event_type_edit">Edit event type</string>
+    <string name="create_event_type">Create event type</string>
+    <string name="event_types_overview">Event types overview</string>
+
+    <string name="create">Create</string>
+    <string name="max_guests">Maximum number of guests :</string>
+    <string name="date">Date [ yyyy-mm-dd ] :</string>
+    <string name="location">Location</string>
+
+    <string name="privacy_type">Privacy type*</string>
+    <string-array name="privacy_types">
+        <item>OPEN</item>
+        <item>CLOSED</item>
+    </string-array>
+    <string name="add_agenda">Add agenda</string>
+
+    <string name="location_details">Location details</string>
+    <string name="venue_name">Venue name :</string>
+    <string name="city">City :</string>
+    <string name="country">Country :</string>
+
+    <string name="provider_event_types">Event types for your solutions</string>
+    <string name="provider_categories">Solution categories you offer</string>
+
+    <string name="activity">Activity</string>
+    <string name="time">Time [ HH:mm - HH:mm ] :</string>
+    <string name="activity_name">Activity name</string>
+    <string name="add">Add</string>
+    <string name="agenda">Agenda</string>
+    <string name="add_activity">Add activity</string>
+
+    <string name="send_invitations">Send invitations</string>
+
+    <string name="plan_budget">Plan budget</string>
+    <string name="event_type">Event type :</string>
+    <string name="clearer_view">*Click for clearer view</string>
+    <string name="phone_format">Phone [ + [country code] [local number] ] :</string>
+    <string name="status">Status :</string>
+
+    <string name="description_in_table_row"><b>Description*</b>\n%s</string>
+    <string name="status_in_table_row"><b>Status*</b>\n%s</string>
+
+    <string name="accepted">Accepted</string>
+    <string name="created">Created</string>
+    <string name="no_events">No events</string>
+    <string name="close">Close</string>
+    <string name="events_title">Events</string>
+    <string name="explore_public_events">Explore public events</string>
+    <string name="attendance_chart">Event attendance chart\n</string>
+    <string name="ratings_chart">Event ratings chart</string>
+    <string name="more_details">For more details :</string>
+    <string name="generate_pdf">Generate pdf report</string>
+    <string name="event_type_ast">Event type*</string>
+    <string name="date_ast">Date*</string>
+    <string name="max_guests_ast">Max guests*</string>
+    <string name="generate_pdf_event">Generate pdf</string>
+    <string name="location_ast">Location*</string>
+    <string name="see_agenda">See agenda</string>
+
+    <string name="activity_name_in_table"><b>Activity name*</b>\n%s</string>
+    <string name="location_in_table"><b>Location*</b>\n%s</string>
+    <string name="create_product">Create product</string>
+    <string name="category_ast">Category*</string>
+    <string name="event_types_ast">Event types*</string>
+    <string name="select_event_types">Select event types</string>
+
+    <string name="add_category_recommendation">Add category recommendation</string>
+    <string name="availability_ast">Availability*</string>
+    <string name="visibility_ast">Visibility*</string>
+    <string name="available">Available</string>
+    <string name="unavailable">Unavailable</string>
+    <string name="price_ast">Price*</string>
+    <string name="discount_ast">Discount [ % ]*</string>
+    <string name="visible">Visible</string>
+    <string name="invisible">Invisible</string>
+    <string name="create_product_II">Create product II</string>
+    <string name="sign_up_II">Sign up II</string>
+    <string name="sign_up_III">Sign up III</string>
+    <string name="create_event_II">Create event II</string>
+    <string name="business_reg_II">Business registration II</string>
+    <string name="offered_products">Products your business offers</string>
+
+    <string name="discount_off">%s%% off</string>
+    <string name="see_event_types">See event types</string>
+    <string name="min_price">Min price :</string>
+    <string name="max_price">Max price :</string>
+    <string name="filter">Filter</string>
+    <string name="category">Category</string>
+    <string name="availability">Availability</string>
+    <string name="description_filter">Description</string>
+    <string name="event_type_filter">Event type</string>
+
+    <string name="from_min_price">From %.1f</string>
+    <string name="to_max_price">To %.1f</string>
+    <string name="min_to_max">%.1f - %.1f</string>
+    <string name="page">Page %d / %d</string>
+
+    <string name="name_simple">Name</string>
+    <string name="id">ID</string>
+    <string name="status_simple">Status</string>
+    <string name="view">View</string>
+    <string name="deactivation_confirmation">Are you sure you want to deactivate this event type?</string>
+    <string name="activation_confirmation">Are you sure you want to activate this event type?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="activated_event_type">Activated event type!</string>
+    <string name="failed_to_activate">Failed to activate: </string>
+    <string name="error">Error: </string>
+    <string name="deactivated_event_type">Deactivated event type!</string>
+    <string name="failed_to_deactivate">"Failed to deactivate: "</string>
+    <string name="no_categories_available">No categories available!</string>
+    <string name="failed_to_load_categories">Failed to load categories!</string>
+    <string name="ok">OK</string>
+    <string name="failed_to_update">"Failed to update: "</string>
+    <string name="event_type_updated">Event type updated successfully!</string>
+    <string name="active">Active</string>
+    <string name="inactive">Inactive</string>
+    <string name="filter_parameter">Filter parameter</string>
+    <string name="chat_with_us">Chat with us</string>
+    <string name="chat_with_organizer">Chat with organizer</string>
+    <string name="need_more_info">Need more info?</string>
+    <string name="add_company_images">Add company images</string>
+    <string name="add_images">Add images</string>
+    <string name="address_format">Address [street, city, country] :</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <!-- Filters -->
+    <string name="start_date">Start date</string>
+    <string name="end_date">End date</string>
+    <string name="rating">Rating</string>
+    <string name="apply">Apply</string>
+    <string name="all_events">ALL EVENTS</string>
+    <string name="only_from_my_city">Only from my city</string>
+    <string name="all">All</string>
+    <string name="all_products_services">ALL PRODUCTS &amp; SERVICES</string>
+    <string name="max_discount">Max discount</string>
+    <string name="min_discount">Min discount</string>
+    <string name="sort_by">Sort by</string>
+    <string name="sort_direction">Sort direction</string>
+    <string name="invitation_text">We’re thrilled to welcome you to an unforgettable experience! Come and make memories, meet new people, and celebrate together!</string>
+    <string name="invited_events_title">INVITED EVENTS</string>
+    <string name="invited_events">Invited events</string>
+    <string name="your_notifications">Your Notifications</string>
+    <string name="mute_notifications">Mute Notifications</string>
+    <string name="notification_message">Notification content\n</string>
+    <string name="timestamp">Timestamp</string>
+    <string name="notification_icon">Notification icon</string>
+    <string name="notifications_muted_until">Muted until: %1$s</string>
+    <string name="mute_notifications_status">Mute Notifications</string>
+    <string name="mute_for">Mute for:</string>
+    <string name="unmute_notifications">Unmute Notifications</string>
+    <string name="unmute_indefinitely">Muted until: Until you turn it back on</string>
+    <string name="manage_comments">Manage comments</string>
+    <string name="manage_reports">Manage reports</string>
+    <string name="block_user">Block</string>
+    <string name="report_user">Report</string>
+    <string name="suspended_title">Your account is currently suspended.</string>
+    <string name="remaining_time">Time remaining until reactivation:</string>
+    <string name="contact_support">Please contact support if you believe this is a mistake.</string>
+    <string name="unblock_user">Unblock</string>
+    <string name="reservation_deadline">Reservation deadline</string>
+    <string name="cancellation_deadline">Cancellation deadline</string>
+    <string name="book_service">Book Service</string>
+    <string name="book_service_text">
+    <![CDATA[
+        <b>Only verified organizers can book services.</b><br/><br/>
+        <i>To make a reservation, please log in with an organizer account or upgrade your role through your profile settings.</i>
+    ]]>
+</string>
+    <string name="service_reservations">Service Reservations</string>
+    <string name="empty_events">There are currently no events based in your city.</string>
+    <string name="empty_solutions">There are currently no products and services based in your city.</string>
+    <string name="no_results">There are no results that match filter criteria.</string>
+    <string name="no_notifications">You currently have no notifications.</string>
+    <string name="unavailable_conversation">This conversation is unavailable due to communication restrictions.</string>
+    <string name="no_convos">There are no active conversations</string>
+    <string name="start_convo">When you start a conversation, it will appear here.</string>
+    <string name="no_messages">No messages</string>
+    <string name="last_message">Last message...</string>
+    <string name="user_name">User Name</string>
+    <string name="no_reservations">You currently have no service reservations. Start planning your event now!</string>
 
 </resources>

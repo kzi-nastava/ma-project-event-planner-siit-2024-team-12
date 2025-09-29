@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/nav_home"
+        android:title="@string/home" />
+
+    <group android:id="@+id/business">
+        <item
+            android:id="@+id/nav_create_business"
+            android:title="@string/create_business" />
+
+        <item
+            android:id="@+id/nav_business_info"
+            android:title="@string/view_business" />
+    </group>
+
+
+    <group>
+        <item
+            android:id="@+id/nav_service"
+            android:title="@string/services" />
+
+        <item
+            android:id="@+id/nav_products"
+            android:title="@string/products" />
+
+        <item
+            android:id="@+id/nav_categories"
+            android:title="@string/categories" />
+
+        <item
+            android:id="@+id/nav_event_types"
+            android:title="@string/event_types" />
+
+    </group>
+
+
+    <group android:id="@+id/calendar">
+        <item
+            android:id="@+id/nav_calendar_od"
+            android:title="@string/calendar" />
+    </group>
+
+
+    <group android:id="@+id/favorites">
+        <item
+            android:id="@+id/nav_fav_events"
+            android:title="@string/fav_events" />
+
+        <item
+            android:id="@+id/nav_fav_services"
+            android:title="@string/fav_services" />
+
+        <item
+            android:id="@+id/nav_fav_products"
+            android:title="@string/fav_products" />
+
+        <item
+            android:id="@+id/nav_explore_events"
+            android:title="@string/explore_events" />
+    </group>
+
+    <item
+        android:id="@+id/nav_notifications"
+        android:title="@string/notifications"
+        app:actionLayout="@layout/menu_item_notification_badge" />
+
+
+    <group android:id="@+id/profile">
+        <item
+            android:id="@+id/nav_view_profile"
+            android:title="@string/view_profile" />
+
+        <item
+            android:id="@+id/nav_log_out"
+            android:title="@string/log_out" />
+    </group>
+</menu>

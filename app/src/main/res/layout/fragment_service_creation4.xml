@@ -5,10 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ServiceCreationActivity">
+    tools:context=".fragments.servicecreation.ServiceCreationContainer">
 
-
-    <!-- form frame -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="302dp"
         android:layout_height="428dp"
@@ -36,7 +34,6 @@
             app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/exit_form" />
 
-
         <TextView
             android:id="@+id/textViewTextView444"
             android:layout_width="wrap_content"
@@ -53,25 +50,37 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.12" />
 
-
-        <EditText
-            android:id="@+id/editTextTextEdit444"
-            android:layout_width="240dp"
-            android:layout_height="32dp"
-            android:background="@drawable/input_field"
-            android:ems="10"
-            android:hint="@string/service_image_url"
-            android:inputType="text"
-            android:paddingStart="12dp"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <ImageView
+            android:id="@+id/service_image_preview"
+            android:layout_width="134dp"
+            android:layout_height="116dp"
+            android:contentDescription="Service Image Preview"
+            android:scaleType="centerCrop"
+            android:src="@drawable/shopping_cart"
+            app:layout_constraintBottom_toTopOf="@+id/service_specificities_edittext"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.154"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.318" />
+            app:layout_constraintVertical_bias="0.864" />
+
+        <ImageButton
+            android:id="@+id/select_image_button"
+            android:layout_width="42dp"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:contentDescription="Select Image Button"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_add_image"
+            app:layout_constraintBottom_toTopOf="@+id/service_specificities_edittext"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.815"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.536" />
 
         <EditText
-            android:id="@+id/editTextText444"
+            android:id="@+id/service_description_edittext"
             android:layout_width="240dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
@@ -84,10 +93,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.587" />
+            app:layout_constraintVertical_bias="0.711" />
 
         <EditText
-            android:id="@+id/editTextTextEdit4444"
+            android:id="@+id/service_specificities_edittext"
             android:layout_width="240dp"
             android:layout_height="32dp"
             android:background="@drawable/input_field"
@@ -100,14 +109,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.45" />
+            app:layout_constraintVertical_bias="0.601" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/submitService"
             android:layout_width="106dp"
             android:layout_height="39dp"
             android:background="@drawable/form_button"
-            android:text="@string/submit"
+            android:text="@string/next"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="11sp"
@@ -116,7 +125,7 @@
             app:layout_constraintHorizontal_bias="0.908"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.823" />
+            app:layout_constraintVertical_bias="0.843" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/backServiceCreate4"
@@ -132,12 +141,6 @@
             app:layout_constraintHorizontal_bias="0.091"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.823" />
-
-
-
-
+            app:layout_constraintVertical_bias="0.843" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

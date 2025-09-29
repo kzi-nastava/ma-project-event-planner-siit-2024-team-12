@@ -1,0 +1,461 @@
+package com.example.eventplanner.fragments.product;
+
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.favorites.FavoriteProductsAdapter;
+import com.example.eventplanner.dto.business.GetBusinessDTO;
+import com.example.eventplanner.dto.solution.FavSolutionDTO;
+import com.example.eventplanner.dto.product.GetProductDTO;
+import com.example.eventplanner.dto.solution.SolutionFilterParams;
+import com.example.eventplanner.fragments.pricelist.PriceListFragment;
+import com.example.eventplanner.utils.ClientUtils;
+import com.example.eventplanner.viewmodels.SolutionFilterViewModel;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+
+public class ProvidedProductsFragment extends Fragment {
+    private RecyclerView recyclerView;
+    private FavoriteProductsAdapter adapter;
+    private List<FavSolutionDTO> allProducts = new ArrayList<>();
+    private List<FavSolutionDTO> currentProducts = new ArrayList<>();
+    private static final int PAGE_SIZE = 3;
+    private int currentPage = 1;
+    private Button addProductBtn, filterBtn, priceListBtn;
+    private ChipGroup chipGroup;
+    private SolutionFilterViewModel filterViewModel;
+    private EditText searchBar;
+    private View view;
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_provided_products, container, false);
+
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        loadCurrentBusiness();
+
+        adapter = new FavoriteProductsAdapter(currentProducts, productId -> {
+            ProductDetailsFragment detailsFragment = ProductDetailsFragment.newInstance(productId);
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_fragment_container, detailsFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+
+
+
+
+        recyclerView.setAdapter(adapter);
+
+        loadPage(currentPage);
+        setUpPagination();
+
+        updatePageUI();
+
+        setUpAddProductBtn();
+
+        setUpFilterBtn();
+
+        setUpPriceListBtn();
+
+        chipGroup = view.findViewById(R.id.chipGroup);
+        filterViewModel = new ViewModelProvider(requireActivity()).get(SolutionFilterViewModel.class);
+
+        setChipObservers();
+        setFilterObservers();
+
+        setUpSearchBar();
+
+        return view;
+    }
+
+
+
+
+    private void setUpSearchBar() {
+        searchBar = view.findViewById(R.id.searchBar);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                searchProducts();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+    }
+
+
+    private void setFilterObservers() {
+
+        filterViewModel.getSelectedCategories().observe(requireActivity(), selectedCategories -> filterProducts());
+        filterViewModel.getSelectedEventTypes().observe(requireActivity(), selectedEventTypes -> filterProducts());
+        filterViewModel.getSelectedAvailability().observe(requireActivity(), selectedAvailability -> filterProducts());
+        filterViewModel.getSelectedDescriptions().observe(requireActivity(), selectedDescriptions -> filterProducts());
+        filterViewModel.getMinPrice().observe(requireActivity(), minPrice -> filterProducts());
+        filterViewModel.getMaxPrice().observe(requireActivity(), maxPrice -> filterProducts());
+
+    }
+
+
+    private void setChipObservers() {
+        filterViewModel.getSelectedCategories().observe(requireActivity(), selectedCategories -> updateChips());
+        filterViewModel.getSelectedEventTypes().observe(requireActivity(), selectedEventTypes -> updateChips());
+        filterViewModel.getSelectedAvailability().observe(requireActivity(), selectedAvailability -> updateChips());
+        filterViewModel.getSelectedDescriptions().observe(requireActivity(), selectedDescriptions -> updateChips());
+        filterViewModel.getMinPrice().observe(requireActivity(), minPrice -> updateChips());
+        filterViewModel.getMaxPrice().observe(requireActivity(), maxPrice -> updateChips());
+    }
+
+
+    private void setUpFilterBtn() {
+        filterBtn = view.findViewById(R.id.filterBtn);
+        filterBtn.setOnClickListener(v -> {
+            SolutionFilterFragment filterFragment = new SolutionFilterFragment();
+            filterFragment.show(getParentFragmentManager(), "Filter");
+            filterProducts();
+        });
+    }
+
+
+    private void setUpAddProductBtn() {
+        addProductBtn = view.findViewById(R.id.addProductBtn);
+        addProductBtn.setOnClickListener(v -> {
+            ProductCreationFragment fragment = new ProductCreationFragment();
+            fragment.show(getParentFragmentManager(), "ProductCreationFragment");
+        });
+    }
+    private void setUpPriceListBtn(){
+        priceListBtn = view.findViewById(R.id.priceListBtn);
+        priceListBtn.setOnClickListener(v -> {
+            openPriceListFragment();
+        });
+    }
+    private void openPriceListFragment() {
+        PriceListFragment priceListFragment = PriceListFragment.newInstance("product");
+
+        getParentFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_fragment_container, priceListFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+
+    private void setUpPagination() {
+        view.findViewById(R.id.previousPage).setOnClickListener(v -> {
+            if (currentPage > 1) {
+                currentPage--;
+                loadPage(currentPage);
+            }
+        });
+
+        view.findViewById(R.id.nextPage).setOnClickListener(v -> {
+            if (currentPage < getTotalPages()) {
+                currentPage++;
+                loadPage(currentPage);
+            }
+        });
+    }
+
+
+    private void updatePageUI() {
+        TextView pageNumberText = view.findViewById(R.id.pageNumber);
+        String page = getString(R.string.page, currentPage, getTotalPages());
+        pageNumberText.setText(page);
+    }
+
+
+    private void loadProvidedProducts(Long businessId) {
+        String auth = ClientUtils.getAuthorization(requireContext());
+
+        final List<GetProductDTO>[] providedProducts = new List[]{new ArrayList<>()};
+
+        Call<ArrayList<GetProductDTO>> call = ClientUtils.businessService.getProvidersProducts(auth, businessId);
+        call.enqueue(new Callback<ArrayList<GetProductDTO>>() {
+            @Override
+            public void onResponse(Call<ArrayList<GetProductDTO>> call, Response<ArrayList<GetProductDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    providedProducts[0] = response.body();
+                    allProducts.clear();
+                    allProducts.addAll(convertToFavDTO(providedProducts[0]));
+                    loadPage(currentPage);
+                } else {
+                    Toast.makeText(requireContext(), "Error loading provided products!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<GetProductDTO>> call, Throwable t) {
+                //Toast.makeText(ProvidedProductsActivity.this, "Failed to load provided products!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void loadPage(int page) {
+        int startIndex = (page - 1) * PAGE_SIZE;
+        int endIndex = Math.min(startIndex + PAGE_SIZE, allProducts.size());
+
+        currentProducts.clear();
+        currentProducts.addAll(allProducts.subList(startIndex, endIndex));
+        adapter.notifyDataSetChanged();
+
+        updatePageUI();
+    }
+
+
+    private int getTotalPages() {
+        return (int) Math.ceil((double) allProducts.size() / PAGE_SIZE);
+    }
+
+
+    private List<FavSolutionDTO> convertToFavDTO(List<GetProductDTO> providedProducts) {
+        List<FavSolutionDTO> converted = new ArrayList<>();
+
+        for (GetProductDTO getProductDTO : providedProducts) {
+            converted.add(new FavSolutionDTO(getProductDTO.getId(),
+                                             getProductDTO.getName(),
+                                             getProductDTO.getDescription(),
+                                             getProductDTO.getMainImageUrl(),
+                                             getProductDTO.getCity(),
+                                             getProductDTO.getPrice(),
+                                             getProductDTO.getDiscount(),
+                                             getProductDTO.getCategoryName()));
+        }
+
+        return converted;
+    }
+
+
+    private void loadCurrentBusiness() {
+        String auth = ClientUtils.getAuthorization(requireContext());
+
+        Call<GetBusinessDTO> call = ClientUtils.businessService.getBusinessForCurrentUser(auth);
+        call.enqueue(new Callback<GetBusinessDTO>() {
+            @Override
+            public void onResponse(Call<GetBusinessDTO> call, Response<GetBusinessDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    loadProvidedProducts(response.body().getId());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetBusinessDTO> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+    public void removeFilter(String item) {
+        if (filterViewModel.getSelectedCategories().getValue().contains(item)) {
+            filterViewModel.removeCategory(item);
+        } else if (filterViewModel.getSelectedEventTypes().getValue().contains(item)) {
+            filterViewModel.removeEventType(item);
+        } else if (filterViewModel.getSelectedAvailability().getValue().contains(item)) {
+            filterViewModel.removeAvailability(item);
+        } else if (filterViewModel.getSelectedDescriptions().getValue().contains(item)) {
+            filterViewModel.removeDescription(item);
+        }
+
+        else {
+            Double minPrice = filterViewModel.getMinPrice().getValue();
+            Double maxPrice = filterViewModel.getMaxPrice().getValue();
+
+            // "min - max" format
+            if (minPrice != null && maxPrice != null && item.equals(getString(R.string.min_to_max, minPrice, maxPrice))) {
+                filterViewModel.setMinPrice(null);
+                filterViewModel.setMaxPrice(null);
+            } else if (minPrice != null && item.equals(String.valueOf(minPrice))) {
+                filterViewModel.setMinPrice(null);
+            } else if (maxPrice != null && item.equals(String.valueOf(maxPrice))) {
+                filterViewModel.setMaxPrice(null);
+            }
+        }
+
+        updateChips();
+    }
+
+
+    private void updateChips() {
+        chipGroup.removeAllViews();
+
+        // combine all selected filters into one list
+        List<String> allSelectedFilters = new ArrayList<>();
+        allSelectedFilters.addAll(filterViewModel.getSelectedCategories().getValue() != null ? filterViewModel.getSelectedCategories().getValue() : new ArrayList<>());
+        allSelectedFilters.addAll(filterViewModel.getSelectedEventTypes().getValue() != null ? filterViewModel.getSelectedEventTypes().getValue() : new ArrayList<>());
+        allSelectedFilters.addAll(filterViewModel.getSelectedAvailability().getValue() != null ? filterViewModel.getSelectedAvailability().getValue() : new ArrayList<>());
+        allSelectedFilters.addAll(filterViewModel.getSelectedDescriptions().getValue() != null ? filterViewModel.getSelectedDescriptions().getValue() : new ArrayList<>());
+
+        Log.d("updateChips", "Selected filters: " + allSelectedFilters);
+
+        // for each selected filter, create a new chip and add it to the ChipGroup
+        for (String item : allSelectedFilters) {
+            Chip chip = new Chip(requireContext());
+            chip.setText(item);
+            chip.setCloseIconVisible(true);
+            chip.setOnCloseIconClickListener(v -> removeFilter(item));
+            chipGroup.addView(chip);
+        }
+
+        Double minPrice = filterViewModel.getMinPrice().getValue();
+        Double maxPrice = filterViewModel.getMaxPrice().getValue();
+
+        if (minPrice != null && maxPrice != null) {
+            Chip chip = new Chip(requireContext());
+
+            String minToMax = getString(R.string.min_to_max, minPrice, maxPrice);
+            chip.setText(minToMax);
+
+            chip.setCloseIconVisible(true);
+            chip.setOnCloseIconClickListener(v -> {
+                removeFilter(String.valueOf(minPrice));
+                removeFilter(String.valueOf(maxPrice));
+            });
+
+            chipGroup.addView(chip);
+        }
+        else {
+            if (minPrice != null) {
+                Chip chip = new Chip(requireContext());
+
+                String fromMinPrice = getString(R.string.from_min_price, minPrice);
+                chip.setText(fromMinPrice);
+
+                chip.setCloseIconVisible(true);
+                chip.setOnCloseIconClickListener(v -> removeFilter(String.valueOf(minPrice)));
+                chipGroup.addView(chip);
+            }
+
+            if (maxPrice != null) {
+                Chip chip = new Chip(requireContext());
+
+                String toMaxPrice = getString(R.string.to_max_price, maxPrice);
+                chip.setText(toMaxPrice);
+
+                chip.setCloseIconVisible(true);
+                chip.setOnCloseIconClickListener(v -> removeFilter(String.valueOf(maxPrice)));
+                chipGroup.addView(chip);
+            }
+        }
+    }
+
+
+    private void filterProducts() {
+        String auth = ClientUtils.getAuthorization(requireContext());
+
+        SolutionFilterParams params = new SolutionFilterParams();
+        params.setCategories(filterViewModel.getSelectedCategories().getValue());
+        params.setEventTypes(filterViewModel.getSelectedEventTypes().getValue());
+        params.setDescriptions(filterViewModel.getSelectedDescriptions().getValue());
+
+
+        List<String> availabilityVM = filterViewModel.getSelectedAvailability().getValue();
+        List<Boolean> availabilityBoolean = new ArrayList<>();
+
+        assert availabilityVM != null;
+        for (String availability : availabilityVM) {
+            availabilityBoolean.add(availability.equals(getString(R.string.available)));
+        }
+
+        params.setIsAvailable(availabilityBoolean);
+        params.setMinPrice(filterViewModel.getMinPrice().getValue());
+        params.setMaxPrice(filterViewModel.getMaxPrice().getValue());
+
+
+        Call<List<GetProductDTO>> call = ClientUtils.productService.filterProvidedProducts(auth, params);
+        call.enqueue(new Callback<List<GetProductDTO>>() {
+            @Override
+            public void onResponse(Call<List<GetProductDTO>> call, Response<List<GetProductDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<GetProductDTO> filtered = response.body();
+                    allProducts.clear();
+                    for (GetProductDTO dto : filtered) {
+                        allProducts.add(new FavSolutionDTO(dto.getId(), dto.getName(),
+                                dto.getDescription(), dto.getMainImageUrl(), dto.getCity(),
+                                dto.getPrice(), dto.getDiscount(), dto.getCategoryName()));
+                    }
+                    loadPage(currentPage);  // reload the page with the filtered products
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GetProductDTO>> call, Throwable t) {
+                Toast.makeText(requireContext(), "Failed to load filtered products!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+    private void searchProducts() {
+        String auth = ClientUtils.getAuthorization(requireContext());
+
+
+        Call<List<GetProductDTO>> call = ClientUtils.productService.searchProvidedProducts(auth, searchBar.getText().toString());
+        call.enqueue(new Callback<List<GetProductDTO>>() {
+            @Override
+            public void onResponse(Call<List<GetProductDTO>> call, Response<List<GetProductDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<GetProductDTO> searchResults = response.body();
+                    allProducts.clear();
+
+                    for (GetProductDTO dto : searchResults) {
+                        allProducts.add(new FavSolutionDTO(dto.getId(), dto.getName(),
+                                dto.getDescription(), dto.getMainImageUrl(), dto.getCity(),
+                                dto.getPrice(), dto.getDiscount(), dto.getCategoryName()));
+                    }
+                    loadPage(currentPage);  // reload the page with the filtered products
+                    adapter.notifyDataSetChanged();
+                }
+                else {
+                    Toast.makeText(requireContext(), "Error loading search results!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GetProductDTO>> call, Throwable t) {
+                Toast.makeText(requireContext(), "Failed to load search results!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+}

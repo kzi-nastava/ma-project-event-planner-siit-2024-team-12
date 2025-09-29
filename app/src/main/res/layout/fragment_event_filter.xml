@@ -1,0 +1,137 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_background">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filters"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"/>
+        <ImageButton
+            android:id="@+id/closeButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/exit_form"
+            android:contentDescription="@string/close"
+            android:padding="4dp"
+            android:scaleType="fitCenter"/>
+
+    </RelativeLayout>
+
+    <!-- City filter -->
+    <include layout="@layout/item_filter_row" android:id="@+id/cityFilter"/>
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="@android:color/darker_gray" android:layout_marginVertical="8dp"/>
+
+    <!-- Event type filter -->
+    <include layout="@layout/item_filter_row" android:id="@+id/eventTypeFilter"/>
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="@android:color/darker_gray" android:layout_marginVertical="8dp"/>
+
+    <!-- Rating filter -->
+    <include layout="@layout/item_filter_row" android:id="@+id/ratingFilter"/>
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="@android:color/darker_gray" android:layout_marginVertical="8dp"/>
+
+    <!-- Max Guests filter -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_max_guests"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <EditText
+            android:id="@+id/maxGuests"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_field"
+            android:ems="10"
+            android:hint="@string/max_guests"
+            android:inputType="number"
+            android:paddingStart="12dp"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginVertical="8dp"/>
+
+
+    <!-- Date filter -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/calendar_today"
+            android:layout_marginEnd="12dp"/>
+
+        <TextView
+            android:id="@+id/startDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/start_date"
+            android:paddingStart="12dp"
+            android:padding="12dp"/>
+
+        <TextView
+            android:id="@+id/endDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/end_date"
+            android:paddingStart="12dp"
+            android:layout_marginStart="26dp"
+            android:padding="12dp"/>
+    </LinearLayout>
+
+
+    <!-- Sort by filter -->
+    <include layout="@layout/item_filter_row" android:id="@+id/sortByFilter"/>
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="@android:color/darker_gray" android:layout_marginVertical="8dp"/>
+
+    <!-- Sort direction filter -->
+    <include layout="@layout/item_filter_row" android:id="@+id/sortDirectionFilter"/>
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="@android:color/darker_gray" android:layout_marginVertical="8dp"/>
+
+
+    <Button
+        android:id="@+id/filterBtn"
+        android:text="@string/apply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@drawable/form_button"
+        android:textColor="@color/white"/>
+</LinearLayout>
