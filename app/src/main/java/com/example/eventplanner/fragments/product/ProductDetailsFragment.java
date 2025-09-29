@@ -101,14 +101,21 @@ public class ProductDetailsFragment extends Fragment {
 
 
     private void openProductGallery() {
+        GalleryDisplayFragment galleryFragment = new GalleryDisplayFragment();
 
-        Intent intent = new Intent(requireActivity(), GalleryDisplayFragment.class);
-        intent.putExtra("type", "product");
-        intent.putExtra("id", currentProductId);
-        intent.putExtra("entityName", productName);
-        intent.putExtra("ownerEmail", loadedCompanyEmail);
-        intent.putExtra("currentCompanyEmail", currentCompanyEmail);
-        startActivity(intent);
+        Bundle args = new Bundle();
+        args.putString("type", "product");
+        args.putLong("id", currentProductId);
+        args.putString("entityName", productName);
+        args.putString("ownerEmail", loadedCompanyEmail);
+        args.putString("currentCompanyEmail", currentCompanyEmail);
+
+        galleryFragment.setArguments(args);
+
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_fragment_container, galleryFragment)
+                .commit();
 
     }
 
