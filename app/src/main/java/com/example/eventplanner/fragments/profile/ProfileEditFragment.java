@@ -22,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.dto.LocationDTO;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
@@ -165,10 +166,10 @@ public class ProfileEditFragment extends Fragment {
 
     private void setMainImage(GetUserDTO dto) {
         profileImage = view.findViewById(R.id.profileImage);
-        String imageUrl = dto.getImageUrl();
+        String imgUrl = dto.getImageUrl();
 
-        if (imageUrl != null && !imageUrl.isEmpty()) {
-            String fullUrl = "http://10.0.2.2:8080" + imageUrl;
+        if (imgUrl != null && !imgUrl.isEmpty()) {
+            String fullUrl = imgUrl.startsWith("http") ? imgUrl : "http://" + BuildConfig.IP_ADDR + ":8080" + imgUrl;
 
             Glide.with(this)
                     .load(fullUrl)

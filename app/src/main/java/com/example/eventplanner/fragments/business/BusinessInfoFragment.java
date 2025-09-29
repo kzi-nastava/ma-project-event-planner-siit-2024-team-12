@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.fragments.homepage.HomepageFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
@@ -96,9 +97,9 @@ public class BusinessInfoFragment extends Fragment {
 
     private void setMainImage(GetBusinessDTO getBusinessDTO) {
         ImageView mainImage = view.findViewById(R.id.mainImage);
-        String mainImageUrl = getBusinessDTO.getMainImageUrl();
+        String imgUrl = getBusinessDTO.getMainImageUrl();
 
-        String fullUrl = "http://10.0.2.2:8080" + mainImageUrl;
+        String fullUrl = imgUrl.startsWith("http") ? imgUrl : "http://" + BuildConfig.IP_ADDR + ":8080" + imgUrl;
 
         Glide.with(this)
                 .load(fullUrl)

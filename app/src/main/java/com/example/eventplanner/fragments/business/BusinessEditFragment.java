@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.fragments.gallery.GalleryDisplayFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
@@ -129,10 +130,10 @@ public class BusinessEditFragment extends Fragment {
 
     private void setMainImage(GetBusinessDTO dto) {
         ImageView mainImage = view.findViewById(R.id.mainImage);
-        String imagePath = dto.getMainImageUrl();
+        String imgUrl = dto.getMainImageUrl();
 
-        if (imagePath != null && !imagePath.isEmpty()) {
-            String fullUrl = "http://10.0.2.2:8080" + imagePath;
+        if (imgUrl != null && !imgUrl.isEmpty()) {
+            String fullUrl = imgUrl.startsWith("http") ? imgUrl : "http://" + BuildConfig.IP_ADDR + ":8080" + imgUrl;
 
             Glide.with(this)
                     .load(fullUrl)
