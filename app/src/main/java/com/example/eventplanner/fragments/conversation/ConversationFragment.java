@@ -164,7 +164,7 @@ public class ConversationFragment extends Fragment {
                 messageAdapter.addMessage(msg);
                 messagesRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
             }
-//            markConversationAsReadOnServer();
+            markConversationAsReadOnServer();
         });
     }
 
