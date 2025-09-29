@@ -33,4 +33,10 @@ public interface ConversationService {
             @Body RequestBody messageContent
     );
 
+    @GET("conversation/{solutionType}/{solutionId}")
+    Call<Long> getConversationIdForSolutionOwner(
+            @Header("Authorization") String authorization,
+            @Path("solutionType") String type,
+            @Path("solutionId") Long solutionId
+    );
 }

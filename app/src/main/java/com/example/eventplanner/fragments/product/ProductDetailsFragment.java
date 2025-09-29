@@ -24,6 +24,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.gallery.GalleryDisplayActivity;
+import com.example.eventplanner.activities.homepage.HomepageActivity;
+import com.example.eventplanner.dto.business.GetBusinessAndProviderDTO;
 import com.example.eventplanner.dto.event.AcceptedEventDTO;
 import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.dto.product.CreatedProductPurchaseDTO;
@@ -33,6 +35,7 @@ import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.product.GetProductDTO;
 import com.example.eventplanner.dto.product.UpdateProductDTO;
 import com.example.eventplanner.dto.product.UpdatedProductDTO;
+import com.example.eventplanner.fragments.conversation.ConversationFragment;
 import com.example.eventplanner.fragments.homepage.HomepageFragment;
 import com.example.eventplanner.fragments.profile.BusinessProviderDialogFragment;
 import com.example.eventplanner.utils.ClientUtils;
@@ -117,7 +120,119 @@ public class ProductDetailsFragment extends Fragment {
             }
         });
 
+        chatBtn.setOnClickListener(v -> {
+            startChatWithProvider();
+        });
+
         return view;
+    }
+
+    private void startChatWithProvider() {
+
+        SharedPreferences prefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        String organizerEmail = prefs.getString("email", "");
+        if (organizerEmail.isEmpty()) {
+            Toast.makeText(getContext(), "Please log in to start a chat.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final String type = "product";
+        final Long solutionId = currentProductId;
+        final String auth = ClientUtils.getAuthorization(requireContext());
+
+        if (auth.isEmpty() || solutionId == null) {
+            Toast.makeText(getContext(), "Authentication or product ID is missing.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Call<Long> call = ClientUtils.conversationService.getConversationIdForSolutionOwner(
+                auth,
+                type,
+                solutionId
+        );
+
+        call.enqueue(new Callback<Long>() {
+            @Override
+            public void onResponse(Call<Long> call, Response<Long> response) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200 && response.body() != null) {
+                        Long conversationId = response.body();
+                        openConversationFragment(conversationId);
+
+                    } else if (response.code() == 204) {
+                        Toast.makeText(getContext(), "Conversation not found.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Log.e("ChatAPI", "Failed to get conversation ID. HTTP " + response.code());
+                    String msg = "Error checking chat status: " + response.code();
+                    Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Long> call, Throwable t) {
+                Log.e("ChatAPI", "Network error: " + t.getMessage());
+                Toast.makeText(getContext(), "Network error: Failed to connect to chat service.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void openConversationFragment(Long conversationId) {
+
+        final String type = "product";
+        final Long solutionId = currentProductId;
+        final String auth = ClientUtils.getAuthorization(requireContext());
+
+        if (auth.isEmpty() || solutionId == null || conversationId == null) {
+            Toast.makeText(getContext(), "Missing data to open chat.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Call<GetBusinessAndProviderDTO> call = ClientUtils.userService.getBusinessProviderDetails(
+                auth,
+                type,
+                solutionId
+        );
+
+        call.enqueue(new Callback<GetBusinessAndProviderDTO>() {
+            @Override
+            public void onResponse(Call<GetBusinessAndProviderDTO> call, Response<GetBusinessAndProviderDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetBusinessAndProviderDTO dto = response.body();
+
+                    String otherUserEmail = dto.getProviderEmail();
+                    String otherUserName = dto.getProviderName() + " " + dto.getProviderSurname();
+
+                    if (otherUserEmail == null || otherUserEmail.isEmpty()) {
+                        Toast.makeText(getContext(), "Provider email missing.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    ConversationFragment chatFragment = ConversationFragment.newInstance(
+                            conversationId,
+                            otherUserName,
+                            otherUserEmail
+                    );
+
+                    requireActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.chat_fragment_container, chatFragment)
+                            .addToBackStack(null)
+                            .commit();
+                    if (requireActivity() instanceof HomepageActivity) {
+                        ((HomepageActivity) requireActivity()).openChatSidebar();
+                    }
+
+                } else {
+                    Toast.makeText(getContext(), "Failed to load provider details: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetBusinessAndProviderDTO> call, Throwable t) {
+                Log.e("Chat", "Network error getting provider details: " + t.getMessage());
+                Toast.makeText(getContext(), "Network error, cannot load chat.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

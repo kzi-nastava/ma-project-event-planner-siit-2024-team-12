@@ -499,6 +499,10 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
                 .commitAllowingStateLoss();
     }
 
+    public void openChatSidebar() {
+        drawerLayout.openDrawer(GravityCompat.END);
+    }
+
     public void openProfileAndCloseChat(String userEmail) {
         DrawerLayout drawerLayout = findViewById(R.id.navigationView);
         if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.END)) {
