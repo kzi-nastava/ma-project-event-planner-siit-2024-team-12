@@ -23,9 +23,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.gallery.GalleryDisplayActivity;
+import com.example.eventplanner.fragments.gallery.GalleryDisplayFragment;
 import com.example.eventplanner.dto.event.AcceptedEventDTO;
-import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.dto.product.CreatedProductPurchaseDTO;
 import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
@@ -33,7 +32,6 @@ import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.product.GetProductDTO;
 import com.example.eventplanner.dto.product.UpdateProductDTO;
 import com.example.eventplanner.dto.product.UpdatedProductDTO;
-import com.example.eventplanner.fragments.homepage.HomepageFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.utils.ValidationUtils;
 
@@ -104,7 +102,7 @@ public class ProductDetailsFragment extends Fragment {
 
     private void openProductGallery() {
 
-        Intent intent = new Intent(requireActivity(), GalleryDisplayActivity.class);
+        Intent intent = new Intent(requireActivity(), GalleryDisplayFragment.class);
         intent.putExtra("type", "product");
         intent.putExtra("id", currentProductId);
         intent.putExtra("entityName", productName);

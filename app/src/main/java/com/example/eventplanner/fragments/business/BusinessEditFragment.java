@@ -15,17 +15,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.example.eventplanner.activities.gallery.GalleryDisplayActivity;
+import com.example.eventplanner.fragments.gallery.GalleryDisplayFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
 import com.example.eventplanner.utils.ImageHelper;
@@ -83,14 +79,22 @@ public class BusinessEditFragment extends Fragment {
         SharedPreferences prefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String currentUser = prefs.getString("email", "");
 
-        Intent intent = new Intent(requireActivity(), GalleryDisplayActivity.class);
-        intent.putExtra("type", "company");
-        intent.putExtra("id", businessId);
-        intent.putExtra("entityName", businessName);
-        intent.putExtra("ownerEmail", currentUser);
-        startActivity(intent);
+        GalleryDisplayFragment galleryFragment = new GalleryDisplayFragment();
 
+        Bundle args = new Bundle();
+        args.putString("type", "company");
+        args.putLong("id", businessId);
+        args.putString("entityName", businessName);
+        args.putString("ownerEmail", currentUser);
+
+        galleryFragment.setArguments(args);
+
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_fragment_container, galleryFragment)
+                .commit();
     }
+
 
 
     private void openGalleryForImage() {

@@ -1,6 +1,7 @@
 package com.example.eventplanner.fragments.signup;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.dto.user.CreatedUserDTO;
 import com.example.eventplanner.dto.user.UpgradeUserDTO;
 import com.example.eventplanner.utils.ClientUtils;
@@ -209,9 +211,12 @@ public class SignUp3 extends Fragment {
 
                     Toast.makeText(getActivity(), "Role upgraded successfully!", Toast.LENGTH_SHORT).show();
 
-                    LoginFragment loginFragment = new LoginFragment();
-                    loginFragment.show(getParentFragmentManager(), "loginFragment");
+                    SharedPreferences sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+                    sharedPreferences.edit().putString("userRole", UserRole.ROLE_UNREGISTERED_USER.toString()).apply();
 
+                    Intent intent = new Intent(requireActivity(), HomepageActivity.class);
+                    intent.putExtra("showLogin", true);
+                    startActivity(intent);
 
                     if (getActivity() != null) {
                         getActivity().finish();

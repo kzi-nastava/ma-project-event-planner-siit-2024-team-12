@@ -24,7 +24,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activities.gallery.GalleryDisplayActivity"
+            android:name=".fragments.gallery.GalleryDisplayFragment"
             android:exported="false" />
         <activity
             android:name=".activities.service.ServiceEditActivity"
