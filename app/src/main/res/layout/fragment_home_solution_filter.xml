@@ -4,15 +4,17 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/dialog_background">
 
     <TextView
         android:id="@+id/textView14"
-        android:layout_width="236dp"
-        android:layout_height="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/filters"
         android:textSize="25sp"
         android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp"/>
 
     <include layout="@layout/item_filter_row" android:id="@+id/categoryFilter"/>

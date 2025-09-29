@@ -225,6 +225,7 @@ public class HomeSolutionFilterFragment extends DialogFragment {
         super.onStart();
         if (getDialog() != null) {
             Objects.requireNonNull(getDialog().getWindow()).setLayout(1000, ViewGroup.LayoutParams.WRAP_CONTENT);
+            getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
     }
 
