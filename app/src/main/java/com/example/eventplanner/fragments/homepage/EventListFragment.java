@@ -63,6 +63,9 @@ public class EventListFragment extends BaseListFragment<GetEventDTO, EventFilter
                 onlyFromMyCityBtn.setOnClickListener(v -> {
                     boolean currentIgnoreState = Boolean.TRUE.equals(filterViewModel.getIgnoreCityFilter().getValue());
                     filterViewModel.setIgnoreCityFilter(!currentIgnoreState);
+                    if (currentIgnoreState) {
+                        filterViewModel.setSelectedCities(null);
+                    }
                     filterViewModel.applyNow();
                 });
             }

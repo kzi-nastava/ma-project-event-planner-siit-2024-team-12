@@ -61,7 +61,7 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
                 onlyFromMyCityBtn.setOnClickListener(v -> {
                     boolean currentIgnoreState = Boolean.TRUE.equals(filterViewModel.getIgnoreCityFilter().getValue());
                     filterViewModel.setIgnoreCityFilter(!currentIgnoreState);
-                    if (!currentIgnoreState) {
+                    if (currentIgnoreState) {
                         filterViewModel.setSelectedLocation(null);
                     }
                     filterViewModel.applyNow();
