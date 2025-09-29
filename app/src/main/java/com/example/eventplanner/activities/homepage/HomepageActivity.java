@@ -77,6 +77,8 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     private DrawerArrowDrawable originalDrawerIcon;
     private boolean notificationsOpen = false;
 
+    private TextView messageBadge;
+
     private ConversationWebSocketService conversationWebSocketService;
 
 
@@ -106,6 +108,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
         String token = ClientUtils.getAuthorization(getApplicationContext());
         Log.d("TOKEN_CHECK", "Token: " + token);
+        messageBadge = findViewById(R.id.message_badge_text);
 
         if (token != null && !isSuspended) {
             notificationService = new NotificationWebSocketService();
@@ -169,6 +172,18 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         }
     }
 
+    private void updateMessageBadge(int count) {
+
+        if (messageBadge != null ) { // && !messagesOpen
+            if (count > 0) {
+                messageBadge.setText(String.valueOf(count));
+                messageBadge.setVisibility(View.VISIBLE);
+            } else {
+                messageBadge.setVisibility(View.GONE);
+            }
+        }
+    }
+
     @Override
     public void onUnreadCountChanged(int newCount) {
         runOnUiThread(() -> updateNotificationsBadge(newCount));
@@ -178,8 +193,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
     @Override
     public void onUnreadMessageCountChanged(int newCount) {
-        //TODO
-//        runOnUiThread(() -> updateNotificationsBadge(newCount));
+        runOnUiThread(() -> updateMessageBadge(newCount));
     }
 
 
@@ -503,6 +517,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
             chatButton.setOnClickListener(v -> {
                 loadChatFragment();
+                conversationWebSocketService.markAllAsRead();
                 drawerLayout.openDrawer(GravityCompat.END);
             });
         }

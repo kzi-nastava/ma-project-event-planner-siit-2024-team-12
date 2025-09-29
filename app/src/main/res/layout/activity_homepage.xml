@@ -24,17 +24,38 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/open_chat_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="20dp"
-            android:visibility="gone"
-            android:src="@drawable/ic_chat_icon"
-            app:backgroundTint="@color/light_gray" />
-        </FrameLayout>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/open_chat_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:contentDescription="Open Chat"
+                android:onClick="openChatSidebarOnClick"
+                android:src="@drawable/ic_chat_icon"
+                android:visibility="gone"
+                app:backgroundTint="@color/light_gray" />
 
+            <TextView
+                android:id="@+id/message_badge_text"
+                android:layout_width="wrap_content"
+                android:layout_height="22dp"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="60dp"
+                android:background="@drawable/notification_badge_background"
+                android:elevation="6dp"
+                android:gravity="center"
+                android:minWidth="22dp"
+                android:padding="3dp"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+        </FrameLayout>
 
     </LinearLayout>
 
