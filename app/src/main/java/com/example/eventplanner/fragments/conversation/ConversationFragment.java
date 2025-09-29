@@ -32,7 +32,10 @@ public class ConversationFragment extends Fragment {
 
     private static final String ARG_CONVERSATION_ID = "conversation_id";
     private static final String ARG_OTHER_USER_NAME = "other_user_name";
+    private static final String ARG_IS_NEW_CONVERSATION = "is_new_conversation";
 
+
+    private boolean isNewConversation;
     private Long conversationId;
     private String otherUserEmail;
     private RecyclerView messagesRecyclerView;
@@ -45,12 +48,13 @@ public class ConversationFragment extends Fragment {
     private Long otherUserId;
     private Long currentUserId;
 
-    public static ConversationFragment newInstance(Long conversationId, String otherUserName, String otherUserEmail) {
+    public static ConversationFragment newInstance(Long conversationId, String otherUserName, String otherUserEmail, boolean isNewConversation  ) {
         ConversationFragment fragment = new ConversationFragment();
         Bundle args = new Bundle();
         args.putLong(ARG_CONVERSATION_ID, conversationId);
         args.putString(ARG_OTHER_USER_NAME, otherUserName);
         args.putString("other_user_email", otherUserEmail);
+        args.putBoolean(ARG_IS_NEW_CONVERSATION, isNewConversation);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,6 +65,7 @@ public class ConversationFragment extends Fragment {
         if (getArguments() != null) {
             conversationId = getArguments().getLong(ARG_CONVERSATION_ID);
             otherUserEmail = getArguments().getString("other_user_email");
+            isNewConversation = getArguments().getBoolean(ARG_IS_NEW_CONVERSATION, false);
         }
     }
 
@@ -99,13 +104,28 @@ public class ConversationFragment extends Fragment {
 
         sendMessageButton.setOnClickListener(v -> sendMessage());
 
-        backButton.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
+        backButton.setOnClickListener(v -> {
+            if (!isNewConversation) {
+                requireActivity().getSupportFragmentManager().popBackStack();
+            } else {
+                closeSidebar();
+            }
+        });
 
         headerLayout.setOnClickListener(v -> navigateToUserProfile());
 
         return view;
     }
 
+    private void closeSidebar() {
+        if (requireActivity() instanceof HomepageActivity) {
+            ((HomepageActivity) requireActivity()).closeChatSidebar();
+
+        } else {
+            Log.e("ConversationFrag", "Parent Activity is not HomepageActivity. Cannot close sidebar.");
+            requireActivity().getSupportFragmentManager().popBackStack();
+        }
+    }
     private void loadMessages() {
         String authHeader = ClientUtils.getAuthorization(getContext());
         if (conversationId == null || authHeader.isEmpty()) return;

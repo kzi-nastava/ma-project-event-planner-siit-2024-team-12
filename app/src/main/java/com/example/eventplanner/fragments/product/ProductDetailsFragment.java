@@ -218,7 +218,8 @@ public class ProductDetailsFragment extends Fragment {
                     ConversationFragment chatFragment = ConversationFragment.newInstance(
                             conversationId,
                             otherUserName,
-                            otherUserEmail
+                            otherUserEmail,
+                            true
                     );
 
                     requireActivity().getSupportFragmentManager().beginTransaction()

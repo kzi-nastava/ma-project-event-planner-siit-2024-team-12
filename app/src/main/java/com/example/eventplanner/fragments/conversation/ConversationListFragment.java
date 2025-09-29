@@ -58,7 +58,8 @@ public class ConversationListFragment extends Fragment {
             ConversationFragment chatFragment = ConversationFragment.newInstance(
                     conversation.getId(),
                     otherUserName,
-                    otherUserEmail
+                    otherUserEmail,
+                    false
             );
 
             requireActivity().getSupportFragmentManager().beginTransaction()
