@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.R;
 import com.example.eventplanner.fragments.product.ProductDetailsFragment;
 import com.example.eventplanner.dto.product.GetProductDTO;
@@ -32,7 +33,7 @@ public class FavoriteProductsAdapter extends RecyclerView.Adapter<FavoriteProduc
     }
 
     private List<FavSolutionDTO> products;
-    private static final String BASE_IMAGE_URL = "http://10.0.2.2:8080";
+    private static final String BASE_IMAGE_URL = "http://" + BuildConfig.IP_ADDR + ":8080";
     private final OnProductClickListener listener;
 
 

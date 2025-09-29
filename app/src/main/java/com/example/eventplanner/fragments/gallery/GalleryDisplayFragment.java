@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.gallery.GalleryAdapter;
 import com.example.eventplanner.utils.ClientUtils;
@@ -35,7 +36,7 @@ public class GalleryDisplayFragment extends Fragment {
     private Long entityId;
     private GalleryAdapter adapter;
     private View view;
-    private static final String BASE_IMAGE_URL = "http://10.0.2.2:8080";
+    private static final String BASE_IMAGE_URL = "http://" + BuildConfig.IP_ADDR + ":8080";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

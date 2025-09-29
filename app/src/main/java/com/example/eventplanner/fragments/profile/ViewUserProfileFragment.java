@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.R;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.enumeration.UserRole;
@@ -187,9 +188,9 @@ public class ViewUserProfileFragment extends Fragment {
         setMainImage(user.getImageUrl());
     }
 
-    private void setMainImage(String imageUrl) {
+    private void setMainImage(String imgUrl) {
         if (getContext() != null) {
-            String fullUrl = "http://10.0.2.2:8080" + imageUrl;
+            String fullUrl = imgUrl.startsWith("http") ? imgUrl : "http://" + BuildConfig.IP_ADDR + ":8080" + imgUrl;
             Glide.with(getContext())
                     .load(fullUrl)
                     .placeholder(R.drawable.user_logo)

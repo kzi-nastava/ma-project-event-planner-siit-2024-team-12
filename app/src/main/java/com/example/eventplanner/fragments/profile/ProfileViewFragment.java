@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.fragments.auth.SignUpFragment;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.fragments.homepage.HomepageFragment;
@@ -192,7 +193,8 @@ public class ProfileViewFragment extends Fragment {
         ImageView mainImage = view.findViewById(R.id.mainImage);
         String mainImageUrl = getUserDTO.getImageUrl();
 
-        String fullUrl = "http://10.0.2.2:8080" + mainImageUrl;
+        String fullUrl = mainImageUrl.startsWith("http") ? mainImageUrl : "http://" + BuildConfig.IP_ADDR + ":8080" + mainImageUrl;
+
 
         Glide.with(this)
                 .load(fullUrl)
