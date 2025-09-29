@@ -386,6 +386,16 @@ public class ServiceDetailsFragment extends Fragment {
         String auth = ClientUtils.getAuthorization(getContext());
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("AppPrefs", getContext().MODE_PRIVATE);
         String userEmail = sharedPreferences.getString("email", "a");
+        String role = sharedPreferences.getString("userRole", "");
+
+        if(auth.isEmpty()){
+            Toast.makeText(requireActivity(), "Please log in first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(role.equals(UserRole.ROLE_AUTHENTICATED_USER.toString())){
+            Toast.makeText(requireActivity(), "Upgrade your role first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Call<ResponseBody> call = ClientUtils.userService.addFavoriteService(auth, userEmail, serviceId);
         call.enqueue(new Callback<ResponseBody>() {
@@ -414,6 +424,16 @@ public class ServiceDetailsFragment extends Fragment {
         String auth = ClientUtils.getAuthorization(getContext());
         SharedPreferences pref = getContext().getSharedPreferences("AppPrefs", getContext().MODE_PRIVATE);
         String email = pref.getString("email", "a");
+        String role = pref.getString("userRole", "");
+
+        if(auth.isEmpty()){
+            Toast.makeText(requireActivity(), "Please log in first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(role.equals(UserRole.ROLE_AUTHENTICATED_USER.toString())){
+            Toast.makeText(requireActivity(), "Upgrade your role first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Call<Void> call = ClientUtils.userService.removeFavoriteService(auth, email, serviceId);
         call.enqueue(new Callback<Void>() {

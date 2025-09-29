@@ -617,6 +617,16 @@ public class EventDetailsFragment extends Fragment {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String userEmail = sharedPreferences.getString("email", "a");
 
+        String role = sharedPreferences.getString("userRole", "");
+
+        if(auth.isEmpty()){
+            Toast.makeText(requireActivity(), "Please log in first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(role.equals(UserRole.ROLE_AUTHENTICATED_USER.toString())){
+            Toast.makeText(requireActivity(), "Upgrade your role first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (currentEventId == null) {
             return;
         }
@@ -679,6 +689,16 @@ public class EventDetailsFragment extends Fragment {
 
         SharedPreferences pref = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String email = pref.getString("email", "a");
+        String role = pref.getString("userRole", "");
+
+        if(auth.isEmpty()){
+            Toast.makeText(requireActivity(), "Please log in first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(role.equals(UserRole.ROLE_AUTHENTICATED_USER.toString())){
+            Toast.makeText(requireActivity(), "Upgrade your role first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (currentEventId == null) {
             return;

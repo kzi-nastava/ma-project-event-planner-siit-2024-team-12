@@ -37,8 +37,11 @@ public class BusinessProviderViewModel extends AndroidViewModel {
     public void fetchBusinessProviderDetails(String type, Long solutionId) {
         String auth = ClientUtils.getAuthorization(getApplication());
 
-        if (auth.isEmpty() || type == null || solutionId == null) {
-            errorMessage.setValue("Authentication or required parameters are missing.");
+        if(auth.isEmpty()){
+            errorMessage.setValue("Please log in first.");
+        }
+        if (type == null || solutionId == null) {
+            errorMessage.setValue("Required parameters are missing.");
             return;
         }
 
@@ -48,7 +51,6 @@ public class BusinessProviderViewModel extends AndroidViewModel {
             @Override
             public void onResponse(Call<GetBusinessAndProviderDTO> call, Response<GetBusinessAndProviderDTO> response) {
                 if (response.isSuccessful()) {
-                    // Uspešan odgovor (HTTP 200)
                     businessProviderDetails.setValue(response.body());
                 } else {
                     String errorMsg = "Failed to fetch details (HTTP " + response.code() + ").";
