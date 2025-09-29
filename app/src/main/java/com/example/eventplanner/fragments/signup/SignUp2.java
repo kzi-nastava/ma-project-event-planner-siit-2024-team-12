@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.utils.ValidationUtils;
-import com.example.eventplanner.activities.auth.SignUpActivity;
+import com.example.eventplanner.fragments.auth.SignUpFragment;
 import com.example.eventplanner.viewmodels.SignUpViewModel;
 
 public class SignUp2 extends Fragment {
@@ -40,8 +40,11 @@ public class SignUp2 extends Fragment {
         Button nextButton = view.findViewById(R.id.next2);
         Button backButton = view.findViewById(R.id.back2);
 
+        SignUpFragment parent = (SignUpFragment) getParentFragment();
+
         nextButton.setOnClickListener(v -> {
-            if (getActivity() instanceof SignUpActivity) {
+
+            if (parent != null) {
                 EditText nameField = view.findViewById(R.id.name);
                 EditText surnameField = view.findViewById(R.id.surname);
 
@@ -51,13 +54,13 @@ public class SignUp2 extends Fragment {
                 viewModel.updateSignUpAttributes("name", nameField.getText().toString());
                 viewModel.updateSignUpAttributes("surname", surnameField.getText().toString());
 
-                ((SignUpActivity) getActivity()).nextPage();
+                parent.nextPage();
             }
         });
 
         backButton.setOnClickListener(v -> {
-            if (getActivity() instanceof SignUpActivity) {
-                ((SignUpActivity) getActivity()).previousPage();
+            if (parent != null) {
+                parent.previousPage();
             }
         });
 

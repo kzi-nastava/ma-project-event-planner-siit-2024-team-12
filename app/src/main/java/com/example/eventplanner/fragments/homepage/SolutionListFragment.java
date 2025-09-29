@@ -61,7 +61,7 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
                 onlyFromMyCityBtn.setOnClickListener(v -> {
                     boolean currentIgnoreState = Boolean.TRUE.equals(filterViewModel.getIgnoreCityFilter().getValue());
                     filterViewModel.setIgnoreCityFilter(!currentIgnoreState);
-                    if (!currentIgnoreState) {
+                    if (currentIgnoreState) {
                         filterViewModel.setSelectedLocation(null);
                     }
                     filterViewModel.applyNow();
@@ -112,6 +112,7 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
         String bearer = token != null ? "Bearer " + token : null;
 
         String sortByParam = payload.getSortBy() != null ? payload.getSortBy().toLowerCase(Locale.getDefault()) : null;
+        boolean limitTo10 = payload.isLimitTo10();
 
         service.searchSolutions(
                 bearer,
@@ -130,7 +131,7 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
                 0, // page
                 100, // size
                 payload.getType(), // type
-                false, // limitTo10
+                limitTo10, // limitTo10
                 payload.isIgnoreCityFilter() // ignoreCityFilter
         ).enqueue(new Callback<List<GetHomepageSolutionDTO>>() {
             @Override
@@ -231,10 +232,16 @@ public class SolutionListFragment extends BaseListFragment<GetHomepageSolutionDT
                 filterViewModel.applyNow();
             });
         }
-        if (p.getSortBy() != null) {
-            String sortByText = p.getSortBy().substring(0, 1).toUpperCase() + p.getSortBy().substring(1) + " " + p.getSortDir();
+        if (p.sortBy != null && !p.sortBy.isEmpty()) {
+            String sortByText = p.getSortBy().toUpperCase(Locale.getDefault());
+
             addFilterChip("Sort: " + sortByText, () -> {
                 filterViewModel.setSortBy(null);
+                filterViewModel.applyNow();
+            });
+        }
+        if (p.sortDir != null && !p.sortDir.isEmpty()) {
+            addFilterChip("Dir: " + p.getSortDir(), () -> {
                 filterViewModel.setSortDir(null);
                 filterViewModel.applyNow();
             });

@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments;
+package com.example.eventplanner.fragments.others;
 
 import android.content.Context;
 import android.content.SharedPreferences;

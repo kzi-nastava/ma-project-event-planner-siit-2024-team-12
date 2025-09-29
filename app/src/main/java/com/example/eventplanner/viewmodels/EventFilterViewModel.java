@@ -29,6 +29,8 @@ public class EventFilterViewModel extends ViewModel {
 
     private final MutableLiveData<Integer> maxGuests = new MutableLiveData<>(null);
 
+    private final MutableLiveData<Boolean> limitTo10 = new MutableLiveData<>(false);
+
     public LiveData<Integer> getMaxGuests() { return maxGuests; }
     public void setMaxGuests(@Nullable Integer value) { maxGuests.setValue(value); }
 
@@ -45,6 +47,8 @@ public class EventFilterViewModel extends ViewModel {
     public LiveData<Boolean> getIgnoreCityFilter() { return ignoreCityFilter; }
     public void setIgnoreCityFilter(boolean ignore) { ignoreCityFilter.setValue(ignore); }
 
+    public void setLimitTo10(boolean limit) { limitTo10.setValue(limit); }
+
 
     public LiveData<List<String>> getSelectedCities() { return selectedCities; }
     public LiveData<List<String>> getSelectedEventTypes() { return selectedEventTypes; }
@@ -54,15 +58,16 @@ public class EventFilterViewModel extends ViewModel {
     public LiveData<String> getMinDate() { return minDate; }
     public LiveData<String> getMaxDate() { return maxDate; }
     public LiveData<FilterPayload> getAppliedFilters() { return appliedFilters; }
+    public LiveData<Boolean> getLimitTo10() { return limitTo10; }
 
 
     public void setSelectedCities(List<String> cities) {
         selectedCities.setValue(cities != null ? new ArrayList<>(cities) : new ArrayList<>());
     }
     public void setSelectedEventTypes(List<String> types) { selectedEventTypes.setValue(new ArrayList<>(types)); }
-    public void setSelectedRating(@Nullable Integer rating) { selectedRating.setValue(rating); } // NULL OK
+    public void setSelectedRating(@Nullable Integer rating) { selectedRating.setValue(rating); }
     public void setSelectedSortOptions(@Nullable String sortBy) { selectedSortOptions.setValue(sortBy); }
-    public void setSortDir(@Nullable String dir) { sortDir.setValue(dir); } // "ASC"/"DESC" ili null
+    public void setSortDir(@Nullable String dir) { sortDir.setValue(dir); } // "ASC"/"DESC"
     public void setMinDate(String date) { minDate.setValue(date == null ? "" : date); }
     public void setMaxDate(String date) { maxDate.setValue(date == null ? "" : date); }
 
@@ -81,17 +86,6 @@ public class EventFilterViewModel extends ViewModel {
         if (cur != null && cur.remove(type)) selectedEventTypes.setValue(new ArrayList<>(cur));
     }
 
-    public void clearFilters() {
-        searchQuery.setValue("");
-        selectedCities.setValue(new ArrayList<>());
-        selectedEventTypes.setValue(new ArrayList<>());
-        selectedRating.setValue(null);
-        selectedSortOptions.setValue("");
-        sortDir.setValue(null);
-        minDate.setValue("");
-        maxDate.setValue("");
-    }
-
     public void applyNow() {
         appliedFilters.setValue(buildPayload());
     }
@@ -107,7 +101,8 @@ public class EventFilterViewModel extends ViewModel {
                 minDate.getValue() == null ? "" : minDate.getValue(),
                 maxDate.getValue() == null ? "" : maxDate.getValue(),
                 Boolean.TRUE.equals(ignoreCityFilter.getValue()),
-                maxGuests.getValue()
+                maxGuests.getValue(),
+                Boolean.TRUE.equals(limitTo10.getValue())
         );
     }
 
@@ -126,8 +121,11 @@ public class EventFilterViewModel extends ViewModel {
 
         public final Integer maxGuests;
 
+        public final boolean limitTo10;
+
         public FilterPayload(String searchQuery, List<String> cities, List<String> eventTypes, Integer rating,
-                             String sortBy, String sortDir, String startDate, String endDate,  boolean ignoreCityFilter, @Nullable Integer maxGuests) {
+                             String sortBy, String sortDir, String startDate, String endDate,  boolean ignoreCityFilter,
+                             @Nullable Integer maxGuests, boolean limitTo10) {
             this.searchQuery = searchQuery == null ? "" : searchQuery;
             this.cities = cities;
             this.eventTypes = eventTypes;
@@ -138,19 +136,9 @@ public class EventFilterViewModel extends ViewModel {
             this.endDate = endDate;
             this.ignoreCityFilter = ignoreCityFilter;
             this.maxGuests = maxGuests;
+            this.limitTo10 = limitTo10;
         }
 
-        public Map<String, Object> toMap() {
-            Map<String, Object> m = new HashMap<>();
-            m.put("cities", cities);
-            m.put("eventTypes", eventTypes);
-            if (rating != null) m.put("rating", rating);
-            if (sortBy != null && !sortBy.isEmpty()) m.put("sortBy", sortBy);
-            if (sortDir != null && !sortDir.isEmpty()) m.put("sortDir", sortDir);
-            if (startDate != null && !startDate.isEmpty()) m.put("startDate", startDate);
-            if (endDate != null && !endDate.isEmpty()) m.put("endDate", endDate);
-            return m;
-        }
 
         public String getSearchQuery() { return searchQuery; }
 
@@ -178,20 +166,9 @@ public class EventFilterViewModel extends ViewModel {
         public boolean isIgnoreCityFilter() {
             return ignoreCityFilter;
         }
+        public boolean isLimitTo10() { return limitTo10; }
     }
 
-    public void clearAllFilters() {
-        selectedCities.setValue(new ArrayList<>());
-        selectedEventTypes.setValue(new ArrayList<>());
-        selectedRating.setValue(null);
-        selectedSortOptions.setValue(null);
-        sortDir.setValue(null);
-        minDate.setValue("");
-        maxDate.setValue("");
-        searchQuery.setValue("");
-
-        applyNow();
-    }
 
     public void resetFilters() {
         searchQuery.setValue(null);
@@ -204,6 +181,7 @@ public class EventFilterViewModel extends ViewModel {
         maxDate.setValue("");
         ignoreCityFilter.setValue(false);
         maxGuests.setValue(null);
+        limitTo10.setValue(false);
         applyNow();
     }
 

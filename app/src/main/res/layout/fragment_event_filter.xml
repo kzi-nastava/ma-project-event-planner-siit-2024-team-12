@@ -2,15 +2,34 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_background">
 
-    <TextView
-        android:text="@string/filters"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filters"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"/>
+        <ImageButton
+            android:id="@+id/closeButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/exit_form"
+            android:contentDescription="@string/close"
+            android:padding="4dp"
+            android:scaleType="fitCenter"/>
+
+    </RelativeLayout>
 
     <!-- City filter -->
     <include layout="@layout/item_filter_row" android:id="@+id/cityFilter"/>

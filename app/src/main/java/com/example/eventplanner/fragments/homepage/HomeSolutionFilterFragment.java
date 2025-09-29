@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,6 +65,10 @@ public class HomeSolutionFilterFragment extends DialogFragment {
 
         filterBtn = view.findViewById(R.id.filterBtn);
         filterBtn.setOnClickListener(v -> applyFilters());
+        ImageButton closeButton = view.findViewById(R.id.closeButton);
+        closeButton.setOnClickListener(v -> {
+            dismiss();
+        });
 
         filterViewModel.getIgnoreCityFilter().observe(getViewLifecycleOwner(), ignoreCity -> {
             Boolean privileged = filterViewModel.getIsPrivileged().getValue();
@@ -161,6 +166,7 @@ public class HomeSolutionFilterFragment extends DialogFragment {
         filterViewModel.setSortDir(selectedSortDirection != null ? selectedSortDirection.toUpperCase() : null);
 
         setUpPriceAndDiscountRange();
+        filterViewModel.setLimitTo10(true);
 
         filterViewModel.applyNow();
         dismiss();
@@ -224,6 +230,7 @@ public class HomeSolutionFilterFragment extends DialogFragment {
         super.onStart();
         if (getDialog() != null) {
             Objects.requireNonNull(getDialog().getWindow()).setLayout(1000, ViewGroup.LayoutParams.WRAP_CONTENT);
+            getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
     }
 

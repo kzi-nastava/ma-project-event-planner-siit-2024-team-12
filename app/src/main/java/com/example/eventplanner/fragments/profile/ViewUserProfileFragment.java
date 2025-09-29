@@ -280,7 +280,7 @@ public class ViewUserProfileFragment extends Fragment {
 
     private void showBlockConfirmationDialog() {
         if (getContext() == null) return;
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(getContext(), R.style.RoundedAlertDialogTheme)
                 .setTitle("Block User")
                 .setMessage("Are you sure you want to block this user? \nThis will prevent them from contacting you and interacting with your content.")
                 .setPositiveButton("Block", (dialog, which) -> {
@@ -293,7 +293,7 @@ public class ViewUserProfileFragment extends Fragment {
 
     private void showUnblockConfirmationDialog() {
         if (getContext() == null) return;
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(getContext(), R.style.RoundedAlertDialogTheme)
                 .setTitle("Unblock User")
                 .setMessage("Are you sure you want to unblock this user? \nThey will be able to contact you again and interact with your content.")
                 .setPositiveButton("Unblock", (dialog, which) -> {

@@ -1,18 +1,21 @@
-package com.example.eventplanner.activities.auth;
+package com.example.eventplanner.fragments.auth;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -35,29 +38,24 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginFragment extends DialogFragment {
 
     private Button loginButton;
+    private View view;
+    private TextView signUp;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_login);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        loginButton = findViewById(R.id.loginBtn);
+        view = inflater.inflate(R.layout.fragment_login, container, false);
+
+        loginButton = view.findViewById(R.id.loginBtn);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText emailField = findViewById(R.id.email);
-                EditText passwordField = findViewById(R.id.password);
+                EditText emailField = view.findViewById(R.id.email);
+                EditText passwordField = view.findViewById(R.id.password);
 
                 if (!ValidationUtils.isFieldValid(emailField, "Email is required!")) return;
                 if (!ValidationUtils.isEmailValid(emailField)) return;
@@ -66,23 +64,29 @@ public class LoginActivity extends AppCompatActivity {
                 logIn();
             }
         });
+
+        signUp = view.findViewById(R.id.signUpTxt);
+        signUp.setOnClickListener(this::openSignUp);
+
+        return view;
     }
 
+
     public void openSignUp(View view) {
-        Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-        startActivity(intent);
+        SignUpFragment signUpFragment = new SignUpFragment();
+        signUpFragment.show(getParentFragmentManager(), "signUpFragment");
     }
 
 
     public void openResetPassword(View view) {
         ResetPasswordFragment resetPasswordFragment = new ResetPasswordFragment();
-        resetPasswordFragment.show(getSupportFragmentManager(), "resetPasswordFragment");
+        resetPasswordFragment.show(getParentFragmentManager(), "resetPasswordFragment");
     }
 
 
     private LogInRequest getLogInRequest() {
-        EditText emailField = findViewById(R.id.email);
-        EditText passwordField = findViewById(R.id.password);
+        EditText emailField = view.findViewById(R.id.email);
+        EditText passwordField = view.findViewById(R.id.password);
 
         return new LogInRequest(emailField.getText().toString(), passwordField.getText().toString());
     }
@@ -105,18 +109,19 @@ public class LoginActivity extends AppCompatActivity {
                         String userRole = decodedJWT.getClaim("role").asString();
                         String email = decodedJWT.getClaim("sub").asString();
 
-                        SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("token", token);
                         editor.putString("userRole", userRole);
                         editor.putString("email", email);
                         editor.apply();
 
-                        Intent intent = new Intent(LoginActivity.this, HomepageActivity.class);
+                        Intent intent = new Intent(requireActivity(), HomepageActivity.class);
                         startActivity(intent);
-                        finish();
+                        requireActivity().finish();
+
                     } catch (IOException e) {
-                        Toast.makeText(LoginActivity.this, "Error parsing response.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), "Error parsing response.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     if (response.code() == 403) {
@@ -130,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
                             double hoursDouble = (double) suspensionData.get("hours");
                             double minutesDouble = (double) suspensionData.get("minutes");
 
-                            SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putBoolean("isSuspended", true);
                             editor.putString("suspensionDays", String.format("%.0f", daysDouble));
@@ -138,28 +143,41 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString("suspensionMinutes", String.format("%.0f", minutesDouble));
                             editor.apply();
 
-                            Intent intent = new Intent(LoginActivity.this, HomepageActivity.class);
+                            Intent intent = new Intent(requireActivity(), HomepageActivity.class);
                             startActivity(intent);
-                            finish();
+                            requireActivity().finish();
+
                         } catch (IOException e) {
-                            Toast.makeText(LoginActivity.this, "Error processing suspension data.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireActivity(), "Error processing suspension data.", Toast.LENGTH_SHORT).show();
                         }
                     } else if (response.code() == 401) {
-                        Toast.makeText(LoginActivity.this, "Wrong password!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), "Wrong password!", Toast.LENGTH_SHORT).show();
                     } else if (response.code() == 404) {
-                        Toast.makeText(LoginActivity.this, "Inactive account!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), "Inactive account!", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(LoginActivity.this, "Error!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), "Error!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+            getDialog().getWindow().setBackgroundDrawableResource(R.drawable.form_frame_white);
+
+        }
     }
 
 }

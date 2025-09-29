@@ -1,29 +1,34 @@
-package com.example.eventplanner.activities.business;
+package com.example.eventplanner.fragments.business.businessregistration;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.auth.BusinessRegPager;
 
-public class BusinessRegistrationActivity extends AppCompatActivity {
+public class BusinessRegistrationFragment extends Fragment {
 
     private ViewPager2 viewPager;
     private BusinessRegPager adapter;
+    private View view;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_business_registration);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_business_registration, container, false);
 
-        viewPager = findViewById(R.id.viewPager);
-        adapter = new BusinessRegPager(this);
+        viewPager = view.findViewById(R.id.viewPager);
+        adapter = new BusinessRegPager(requireActivity());
         viewPager.setAdapter(adapter);
+
+        return view;
     }
 
 

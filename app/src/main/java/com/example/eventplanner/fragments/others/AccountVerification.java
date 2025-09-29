@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.auth.LoginActivity;
+import com.example.eventplanner.fragments.auth.LoginFragment;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -54,7 +54,7 @@ public class AccountVerification extends DialogFragment {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getActivity(), "Successful account verification!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    Intent intent = new Intent(getActivity(), LoginFragment.class);
                     startActivity(intent);
 
                 }

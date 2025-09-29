@@ -23,9 +23,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.gallery.GalleryDisplayActivity;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.dto.business.GetBusinessAndProviderDTO;
+import com.example.eventplanner.fragments.gallery.GalleryDisplayFragment;
 import com.example.eventplanner.dto.event.AcceptedEventDTO;
 import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.dto.product.CreatedProductPurchaseDTO;
@@ -245,14 +245,21 @@ public class ProductDetailsFragment extends Fragment {
 
 
     private void openProductGallery() {
+        GalleryDisplayFragment galleryFragment = new GalleryDisplayFragment();
 
-        Intent intent = new Intent(requireActivity(), GalleryDisplayActivity.class);
-        intent.putExtra("type", "product");
-        intent.putExtra("id", currentProductId);
-        intent.putExtra("entityName", productName);
-        intent.putExtra("ownerEmail", loadedCompanyEmail);
-        intent.putExtra("currentCompanyEmail", currentCompanyEmail);
-        startActivity(intent);
+        Bundle args = new Bundle();
+        args.putString("type", "product");
+        args.putLong("id", currentProductId);
+        args.putString("entityName", productName);
+        args.putString("ownerEmail", loadedCompanyEmail);
+        args.putString("currentCompanyEmail", currentCompanyEmail);
+
+        galleryFragment.setArguments(args);
+
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_fragment_container, galleryFragment)
+                .commit();
 
     }
 
@@ -817,6 +824,11 @@ public class ProductDetailsFragment extends Fragment {
 
                     isEditable = false;
                     exitEditMode();
+
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, new ProvidedProductsFragment())
+                            .commit();
                 }
             }
 
@@ -870,7 +882,7 @@ public class ProductDetailsFragment extends Fragment {
 
                     requireActivity().getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.main_fragment_container, new HomepageFragment())
+                            .replace(R.id.main_fragment_container, new ProvidedProductsFragment())
                             .commit();
 
                 }

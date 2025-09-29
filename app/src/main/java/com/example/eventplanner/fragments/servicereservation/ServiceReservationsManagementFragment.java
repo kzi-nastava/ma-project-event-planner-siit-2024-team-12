@@ -15,8 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.adapters.ServiceReservationsAdapter;
 import com.example.eventplanner.dto.servicereservation.GetServiceReservationDTO;
+import com.example.eventplanner.fragments.notification.NotificationWebSocketService;
 import com.example.eventplanner.utils.ClientUtils;
 
 import java.time.LocalDate;
@@ -44,6 +46,13 @@ public class ServiceReservationsManagementFragment extends Fragment {
     private int totalPages = 0;
 
     private ServiceReservationsAdapter adapter;
+    private TextView emptyStateText;
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("current_page", currentPage);
+    }
 
     @Nullable
     @Override
@@ -55,6 +64,11 @@ public class ServiceReservationsManagementFragment extends Fragment {
         prevPageButton = v.findViewById(R.id.prevPageButton);
         nextPageButton = v.findViewById(R.id.nextPageButton);
         pageNumber = v.findViewById(R.id.pageNumber);
+        emptyStateText = v.findViewById(R.id.emptyStateText);
+
+        if (savedInstanceState != null) {
+            currentPage = savedInstanceState.getInt("current_page", 0);
+        }
 
         recyclerReservations.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -110,7 +124,6 @@ public class ServiceReservationsManagementFragment extends Fragment {
                             allReservations.clear();
                             allReservations.addAll(response.body());
 
-                            currentPage = 0;
                             displayCurrentPage();
                         } else {
                             android.util.Log.e("RESERVATIONS_API", "Error code: " + response.code());
@@ -135,24 +148,45 @@ public class ServiceReservationsManagementFragment extends Fragment {
             reservations.addAll(allReservations.subList(startIndex, endIndex));
         }
 
+        boolean isEmpty = allReservations.isEmpty();
+        if (emptyStateText != null) {
+            if (isEmpty) {
+                emptyStateText.setText(getString(R.string.no_reservations));
+                emptyStateText.setGravity(android.view.Gravity.CENTER);
+                emptyStateText.setTextColor(getResources().getColor(android.R.color.black));
+                emptyStateText.setTypeface(null, android.graphics.Typeface.ITALIC);
+            }
+            emptyStateText.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        }
+
+        recyclerReservations.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+
         adapter.notifyDataSetChanged();
         updatePaginationUI();
-        recyclerReservations.scrollToPosition(0);
+
+        if (!isEmpty) {
+            recyclerReservations.scrollToPosition(0);
+        }
     }
 
     private void updatePaginationUI() {
         totalPages = (int) Math.ceil((double) allReservations.size() / PAGE_SIZE);
 
-        if (totalPages == 0) totalPages = 1;
+        boolean isEmpty = allReservations.isEmpty();
+        if (isEmpty) {
+            totalPages = 1;
+            currentPage = 0;
+        }
+
 
         pageNumber.setText(String.format("%d/%d", currentPage + 1, totalPages));
 
         prevPageButton.setEnabled(currentPage > 0);
         nextPageButton.setEnabled(currentPage < totalPages - 1);
 
-        prevPageButton.setVisibility(totalPages > 1 ? View.VISIBLE : View.GONE);
-        nextPageButton.setVisibility(totalPages > 1 ? View.VISIBLE : View.GONE);
-        pageNumber.setVisibility(totalPages > 1 ? View.VISIBLE : View.GONE);
+        prevPageButton.setVisibility(View.VISIBLE);
+        nextPageButton.setVisibility(View.VISIBLE);
+        pageNumber.setVisibility(View.VISIBLE);
     }
 
     private void navigateToNextPage() {
