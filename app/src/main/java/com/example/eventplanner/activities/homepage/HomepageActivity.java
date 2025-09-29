@@ -38,7 +38,7 @@ import com.example.eventplanner.fragments.favorites.ExplorePageFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteEventsFragment;
 import com.example.eventplanner.fragments.favorites.FavoriteServicesFragment;
 import com.example.eventplanner.activities.profile.ProfileViewActivity;
-import com.example.eventplanner.activities.solutioncategory.CategoriesTableActivity;
+import com.example.eventplanner.fragments.solutioncategory.CategoriesTableFragment;
 import com.example.eventplanner.fragments.categories.CategoriesContainerFragment;
 import com.example.eventplanner.fragments.comment.CommentManagementFragment;
 import com.example.eventplanner.fragments.event.InvitedEventsListFragment;
@@ -344,7 +344,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             } else if (id == R.id.nav_view_profile) {
                 startActivity(new Intent(this, ProfileViewActivity.class));
             } else if (id == R.id.nav_categories) {
-                startActivity(new Intent(this, CategoriesTableActivity.class));
+                navigateToFragment(new CategoriesTableFragment());
             } else if (id == R.id.nav_event_types) {
                 navigateToFragment(new EventTypeTableFragment());
             } else if (id == R.id.nav_notifications) {

@@ -27,9 +27,6 @@
             android:name=".activities.gallery.GalleryDisplayActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.solutioncategory.CategoriesTableActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.profile.ProfileEditActivity"
             android:exported="false" />
         <activity

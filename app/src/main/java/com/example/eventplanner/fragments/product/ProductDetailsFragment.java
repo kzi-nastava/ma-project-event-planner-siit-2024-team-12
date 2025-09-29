@@ -647,6 +647,11 @@ public class ProductDetailsFragment extends Fragment {
 
                     isEditable = false;
                     exitEditMode();
+
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_fragment_container, new ProvidedProductsFragment())
+                            .commit();
                 }
             }
 
@@ -700,7 +705,7 @@ public class ProductDetailsFragment extends Fragment {
 
                     requireActivity().getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.main_fragment_container, new HomepageFragment())
+                            .replace(R.id.main_fragment_container, new ProvidedProductsFragment())
                             .commit();
 
                 }

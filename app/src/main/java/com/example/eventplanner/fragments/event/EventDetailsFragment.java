@@ -503,7 +503,6 @@ public class EventDetailsFragment extends Fragment {
 
 
     private void checkIfFavorite() {
-        isFavorite = false;
         String auth = ClientUtils.getAuthorization(requireContext());
 
         SharedPreferences pref = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
@@ -518,9 +517,11 @@ public class EventDetailsFragment extends Fragment {
 
                     if (Boolean.TRUE.equals(isFavorite)) {
                         fav.setVisibility(View.VISIBLE);
+                        favOutline.setVisibility(View.GONE);
                     }
                     else {
                         favOutline.setVisibility(View.VISIBLE);
+                        fav.setVisibility(View.GONE);
                     }
                 }
             }
