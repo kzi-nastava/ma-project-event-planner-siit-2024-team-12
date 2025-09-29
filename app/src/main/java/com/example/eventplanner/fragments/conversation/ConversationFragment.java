@@ -250,8 +250,6 @@ public class ConversationFragment extends Fragment {
             public void onResponse(Call<GetConversationDTO> call, Response<GetConversationDTO> response) {
                 if (response.isSuccessful()) {
                     Log.d("ConversationFrag", "Successfully marked conversation " + conversationId + " as read.");
-                    // Ovdje ne treba da ažuriramo listu poruka u adapteru,
-                    // jer je poruka već prikazana u handleNewNotification
                 } else {
                     Log.e("ConversationFrag", "Failed to mark as read: " + response.code());
                 }
@@ -263,23 +261,6 @@ public class ConversationFragment extends Fragment {
             }
         });
     }
-//    @Override
-//    public void onDestroyView() {
-//        super.onDestroyView();
-//        // UKOLIKO KONVERZACIJA NIJE BLOKIRANA:
-//        // Finalni poziv API-ju da osiguramo da je status "pročitano"
-//        // ažuriran pre nego što se fragment zatvori.
-//        markConversationAsReadOnServer();
-//
-//        // Obavezno uklonite listener za WebSocket
-//        if (getActivity() instanceof HomepageActivity) {
-//            ConversationWebSocketService service =
-//                    ((HomepageActivity) getActivity()).getConversationService();
-//            if (service != null) {
-//                service.removeConversationListener(this::handleNewNotification); // MORATE IMPLEMENTIRATI removeConversationListener U WS SERVICE
-//            }
-//        }
-//    }
     private void navigateToUserProfile() {
         if (otherUserEmail == null || getContext() == null) return;
         if (requireActivity() instanceof HomepageActivity) {

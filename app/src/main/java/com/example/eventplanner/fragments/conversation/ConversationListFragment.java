@@ -103,69 +103,14 @@ public class ConversationListFragment extends Fragment implements ConversationWe
                     .addToBackStack(null)
                     .commit();
 
-//            if (hasUnreadMessagesForCurrentUser(conversation)) {
-//                markAsReadAndUpdate(conversation);
-//            }
         }
     }
     @Override
     public void onResume() {
         super.onResume();
-        // Forsirajte ponovno učitavanje liste sa servera.
-        // Server će sada poslati DTO gde su poruke pročitane (jer ih je ConversationFragment pročitao),
-        // čime se uklanja obojena pozadina.
         Log.d("ConversationFragment", "onResume - Reloading conversations to ensure read status is updated.");
         loadConversations();
     }
-
-//    private boolean hasUnreadMessagesForCurrentUser(GetConversationDTO conversation) {
-//        List<GetChatMessageDTO> messages = conversation.getMessages();
-//        if (messages == null || messages.isEmpty() || loggedInUserEmail == null) {
-//            return false;
-//        }
-//
-//        for (GetChatMessageDTO message : messages) {
-//            // Nepročitana poruka koju je poslao drugi korisnik
-//            if (!message.isRead() && !message.getSenderEmail().equals(loggedInUserEmail)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
-
-//    private void markAsReadAndUpdate(GetConversationDTO conversation) {
-//        Long conversationId = conversation.getId();
-//        Log.d("ConversationFragment", "Marking conversation " + conversationId + " as read...");
-//        String authHeader = ClientUtils.getAuthorization(getContext());
-//
-//        // POZIV API-ja za označavanje kao pročitanog
-//        // Očekujemo da server vrati AŽURIRANI DTO gde su sve poruke u nizu označene kao pročitane (read: true)
-//        ClientUtils.conversationService.markAllAsRead(authHeader, conversationId).enqueue(new Callback<GetConversationDTO>() {
-//            @Override
-//            public void onResponse(Call<GetConversationDTO> call, Response<GetConversationDTO> response) {
-//                if (response.isSuccessful()) {
-//                    GetConversationDTO updated = response.body();
-//                    if (updated != null) {
-//                        // Ažuriramo adapter sa novim DTO-om
-//                        if (getActivity() != null && adapter != null) {
-//                            getActivity().runOnUiThread(() -> {
-//                                // updateAndMoveToTop će zameniti stari DTO novim
-//                                adapter.updateAndMoveToTop(updated);
-//                            });
-//                        }
-//                    }
-//                } else {
-//                    Log.e("ConversationListFrag", "Failed to mark as read: " + response.code());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<GetConversationDTO> call, Throwable t) {
-//                Log.e("ConversationListFrag", "Network error on markAsRead: " + t.getMessage());
-//            }
-//        });
-//    }
 
 
     private void loadConversations() {

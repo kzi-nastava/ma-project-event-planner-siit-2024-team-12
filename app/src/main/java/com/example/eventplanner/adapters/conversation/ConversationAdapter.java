@@ -57,7 +57,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
     public void updateAndMoveToTop(GetConversationDTO updatedConversation) {
         int existingPosition = -1;
-        // 1. Pronađi da li konverzacija već postoji u listi
         for (int i = 0; i < conversations.size(); i++) {
             if (conversations.get(i).getId().equals(updatedConversation.getId())) {
                 existingPosition = i;
@@ -65,22 +64,16 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             }
         }
 
-        // 2. Ako postoji, ukloni je sa stare pozicije
         if (existingPosition != -1) {
             conversations.remove(existingPosition);
         }
 
-        // 3. Dodaj ažuriranu (ili novu) konverzaciju na vrh liste
         conversations.add(0, updatedConversation);
 
-        // 4. Obavesti adapter o promenama na najefikasniji način
         if (existingPosition != -1) {
-            // Ako je postojala, premestili smo je
             notifyItemMoved(existingPosition, 0);
-            // I ažurirali njen sadržaj (poslednja poruka)
             notifyItemChanged(0);
         } else {
-            // Ako je potpuno nova, samo je dodajemo na vrh
             notifyItemInserted(0);
         }
     }
