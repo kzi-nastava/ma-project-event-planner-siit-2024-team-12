@@ -35,6 +35,7 @@ import com.example.eventplanner.fragments.calendar.CalendarFragment;
 import com.example.eventplanner.fragments.conversation.ConversationListFragment;
 import com.example.eventplanner.fragments.charts.AttendanceChartFragment;
 import com.example.eventplanner.fragments.charts.RatingsChartFragment;
+import com.example.eventplanner.fragments.conversation.ConversationWebSocketService;
 import com.example.eventplanner.fragments.event.eventcreation.EventCreationFragment;
 import com.example.eventplanner.fragments.eventtype.EventTypeTableFragment;
 import com.example.eventplanner.fragments.favorites.ExplorePageFragment;
@@ -60,7 +61,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 
-public class HomepageActivity extends AppCompatActivity implements NotificationWebSocketService.NotificationCountListener {
+public class HomepageActivity extends AppCompatActivity implements NotificationWebSocketService.NotificationCountListener, ConversationWebSocketService.ConversationCountListener {
 
     private DrawerLayout drawerLayout;
     private RecyclerView chatRecyclerView;
@@ -75,6 +76,8 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     private ActionBarDrawerToggle toggle;
     private DrawerArrowDrawable originalDrawerIcon;
     private boolean notificationsOpen = false;
+
+    private ConversationWebSocketService conversationWebSocketService;
 
 
 
@@ -108,6 +111,11 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             notificationService = new NotificationWebSocketService();
             notificationService.connect(token);
             notificationService.addListener(this);
+
+            conversationWebSocketService = new ConversationWebSocketService();
+            conversationWebSocketService.connect(token);
+            conversationWebSocketService.addListener(this);
+
         }
 
 
@@ -527,4 +535,9 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     public NotificationWebSocketService getNotificationService() {
         return notificationService;
     }
+
+    public ConversationWebSocketService getConversationService() {
+        return conversationWebSocketService;
+    }
+
 }

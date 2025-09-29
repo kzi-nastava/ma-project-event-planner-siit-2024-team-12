@@ -20,7 +20,10 @@ import com.example.eventplanner.dto.conversation.GetChatMessageDTO;
 import com.example.eventplanner.dto.conversation.GetConversationDTO;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.utils.ClientUtils;
+
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -116,6 +119,34 @@ public class ConversationFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view,
+                              @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getActivity() instanceof HomepageActivity) {
+            ConversationWebSocketService service =
+                    ((HomepageActivity) getActivity()).getConversationService();
+
+            if (service != null) {
+                service.addConversationListener(this::handleNewNotification);
+            }
+        }
+    }
+
+    private void handleNewNotification(List<GetChatMessageDTO> newMessages) {
+        if (getActivity() == null || newMessages == null || newMessages.isEmpty()) return;
+
+        requireActivity().runOnUiThread(() -> {
+            messageAdapter.setMessages(new ArrayList<>());
+            for (GetChatMessageDTO msg : newMessages) {
+                messageAdapter.addMessage(msg);
+                messagesRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+            }
+        });
+    }
+
 
     private void closeSidebar() {
         if (requireActivity() instanceof HomepageActivity) {
