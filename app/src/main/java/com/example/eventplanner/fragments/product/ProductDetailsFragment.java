@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import com.example.eventplanner.R;
 import com.example.eventplanner.fragments.gallery.GalleryDisplayFragment;
 import com.example.eventplanner.dto.event.AcceptedEventDTO;
+import com.example.eventplanner.dto.event.GetEventDTO;
 import com.example.eventplanner.dto.product.CreatedProductPurchaseDTO;
 import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.dto.business.GetBusinessDTO;
@@ -32,6 +33,8 @@ import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.product.GetProductDTO;
 import com.example.eventplanner.dto.product.UpdateProductDTO;
 import com.example.eventplanner.dto.product.UpdatedProductDTO;
+import com.example.eventplanner.fragments.homepage.HomepageFragment;
+import com.example.eventplanner.fragments.profile.BusinessProviderDialogFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.utils.ValidationUtils;
 
@@ -51,7 +54,7 @@ public class ProductDetailsFragment extends Fragment {
 
     private EditText name, availability, visibility, price, discount, category, description;
     private Button seeEventTypes, editBtn, deleteBtn, chatBtn;
-    private ImageView fav, favOutline, shoppingCart;
+    private ImageView fav, favOutline, shoppingCart, providerInfo;
     private Long currentProductId;
     private Boolean isFavorite, isEditable = false;
     private RadioGroup availabilityGroup, visibilityGroup;
@@ -94,6 +97,24 @@ public class ProductDetailsFragment extends Fragment {
         galleryBtn.setOnClickListener(v -> openProductGallery());
         shoppingCart.setOnClickListener(v -> {
             loadOrganizerEvents();
+        });
+
+        providerInfo = view.findViewById(R.id.providerInfo);
+        providerInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (currentProductId == null) {
+                    Toast.makeText(getContext(), "Product details not available.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                BusinessProviderDialogFragment dialogFragment =
+                        BusinessProviderDialogFragment.newInstance("product", currentProductId);
+
+                dialogFragment.show(getParentFragmentManager(), "BusinessProviderDialog");
+
+            }
         });
 
         return view;

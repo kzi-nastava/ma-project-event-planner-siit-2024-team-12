@@ -7,21 +7,25 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.budget.SolutionsAdapter;
 import com.example.eventplanner.dto.budget.GetPurchaseAndReservationForBudgetDTO;
+import com.example.eventplanner.fragments.product.ProductDetailsFragment;
+import com.example.eventplanner.fragments.servicecreation.ServiceDetailsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SolutionsListDialogFragment extends DialogFragment {
+public class SolutionsListDialogFragment extends DialogFragment implements SolutionsAdapter.OnSolutionClickListener{
 
     private static final String ARG_SOLUTIONS = "solutions";
 
@@ -52,11 +56,40 @@ public class SolutionsListDialogFragment extends DialogFragment {
         solutionsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         SolutionsAdapter adapter = new SolutionsAdapter(solutions);
+        adapter.setOnSolutionClickListener(this);
         solutionsRecyclerView.setAdapter(adapter);
         ImageView exitButton = view.findViewById(R.id.iv_exit_dialog);
         exitButton.setOnClickListener(v -> dismiss());
 
         return view;
+    }
+
+    @Override
+    public void onSolutionClick(String type, Long solutionId) {
+        dismiss();
+
+        if (solutionId == null) {
+            Toast.makeText(getContext(), "Solution ID is missing.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Fragment newFragment = null;
+
+        if ("product".equalsIgnoreCase(type)) {
+            newFragment = ProductDetailsFragment.newInstance(solutionId);
+        } else if ("service".equalsIgnoreCase(type)) {
+            newFragment = ServiceDetailsFragment.newInstance(solutionId);
+        } else {
+            Toast.makeText(getContext(), "Unknown solution type: " + type, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (newFragment != null) {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.main_fragment_container, newFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
     @Override
     public void onStart() {
