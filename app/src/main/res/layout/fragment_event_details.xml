@@ -37,6 +37,20 @@
             app:layout_constraintVertical_bias="1.0" />
 
         <Button
+            android:id="@+id/chatButton"
+            android:layout_width="90dp"
+            android:layout_height="33dp"
+            android:background="@drawable/form_button"
+            android:text="@string/chat_with_organizer"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.059"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
             android:id="@+id/editBtn"
             android:layout_width="84dp"
             android:layout_height="33dp"

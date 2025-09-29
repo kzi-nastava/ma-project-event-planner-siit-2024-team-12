@@ -87,7 +87,7 @@ public class EventDetailsFragment extends Fragment {
     private Boolean isFavorite, isEditable = false;
     private ImageView fav, favOutline, budget;
     private EventDetailsDTO eventDetailsDTO = new EventDetailsDTO();
-    private Button editBtn, seeAgendaButton, pdfBtn;
+    private Button editBtn, seeAgendaButton, pdfBtn, chatButton;
     private List<CreateActivityDTO> activities = new ArrayList<>();
     private CreateLocationDTO locationDTO = new CreateLocationDTO();
     private List<String> eventTypeNames = new ArrayList<>();
@@ -137,7 +137,42 @@ public class EventDetailsFragment extends Fragment {
         setupBudgetButton();
         setupBudgetButtonListener();
 
+        chatButton = view.findViewById(R.id.chatButton);
+        setupChatButton();
+
         return view;
+    }
+
+    private void setupChatButton(){
+        SharedPreferences prefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        String role = prefs.getString("userRole", "");
+        String userEmail = prefs.getString("email", null);
+
+        String auth = ClientUtils.getAuthorization(getContext());
+
+        if (userEmail == null || currentEventId == null || auth.isEmpty()) {
+            chatButton.setVisibility(View.GONE);
+            return;
+        }
+        if(UserRole.ROLE_ORGANIZER.toString().equals(role)){
+            checkOrganizerAccessToEvent(requireContext(), userEmail, currentEventId, new AccessCheckCallback() {
+                @Override
+                public void onAccessChecked(boolean hasAccess) {
+                    if (hasAccess) {
+                        chatButton.setVisibility(View.GONE);
+                    } else {
+                        chatButton.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+                    Log.e("ChatCheck", errorMessage);
+                    budget.setVisibility(View.GONE);
+                    Toast.makeText(requireContext(), "Error checking chat with organizer access.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private void setupBudgetButton() {
