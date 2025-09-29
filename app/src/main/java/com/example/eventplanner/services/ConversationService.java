@@ -39,4 +39,9 @@ public interface ConversationService {
             @Path("solutionType") String type,
             @Path("solutionId") Long solutionId
     );
+    @GET("conversation/{eventId}")
+    Call<Long> getConversationIdForEventOwner(
+            @Header("Authorization") String authorization,
+            @Path("eventId") Long eventId
+    );
 }

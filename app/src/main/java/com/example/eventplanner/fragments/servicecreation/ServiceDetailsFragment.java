@@ -207,11 +207,18 @@ public class ServiceDetailsFragment extends Fragment {
                     GetBusinessAndProviderDTO dto = response.body();
 
                     String otherUserEmail = dto.getProviderEmail();
-                    String otherUserName = dto.getProviderName() + " " + dto.getProviderSurname();
+                    String name = dto.getProviderName() != null ? dto.getProviderName() : "";
+                    String surname = dto.getProviderSurname() != null ? dto.getProviderSurname() : "";
+
+                    String otherUserName = (name + " " + surname).trim();
 
                     if (otherUserEmail == null || otherUserEmail.isEmpty()) {
                         Toast.makeText(getContext(), "Provider email missing.", Toast.LENGTH_SHORT).show();
                         return;
+                    }
+
+                    if (otherUserName.isEmpty()) {
+                        otherUserName = otherUserEmail;
                     }
 
                     ConversationFragment chatFragment = ConversationFragment.newInstance(

@@ -25,12 +25,15 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.eventplanner.activities.homepage.HomepageActivity;
+import com.example.eventplanner.dto.business.GetBusinessAndProviderDTO;
 import com.example.eventplanner.dto.event.UpdatedEventDTO;
 import com.example.eventplanner.dto.eventtype.GetEventTypeDTO;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.enumeration.PrivacyType;
 import com.example.eventplanner.enumeration.UserRole;
 import com.example.eventplanner.fragments.budgetplanning.Budget;
+import com.example.eventplanner.fragments.conversation.ConversationFragment;
 import com.example.eventplanner.fragments.event.eventcreation.agenda.AgendaEditFragment;
 import com.example.eventplanner.utils.ClientUtils;
 import com.example.eventplanner.R;
@@ -139,8 +142,110 @@ public class EventDetailsFragment extends Fragment {
 
         chatButton = view.findViewById(R.id.chatButton);
         setupChatButton();
+        chatButton.setOnClickListener(v -> {
+            startChatWithOrganizer();
+        });
 
         return view;
+    }
+
+    private void startChatWithOrganizer() {
+        final Long eventId = currentEventId;
+        final String auth = ClientUtils.getAuthorization(requireContext());
+
+        if (auth.isEmpty() || eventId == null) {
+            Toast.makeText(getContext(), "Authentication or event ID is missing.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Call<Long> call = ClientUtils.conversationService.getConversationIdForEventOwner(
+                auth,
+                eventId
+        );
+
+        call.enqueue(new Callback<Long>() {
+            @Override
+            public void onResponse(Call<Long> call, Response<Long> response) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200 && response.body() != null) {
+                        Long conversationId = response.body();
+                        openConversationFragment(conversationId);
+
+                    } else if (response.code() == 204) {
+                        Toast.makeText(getContext(), "Conversation not found.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Log.e("ChatAPI", "Failed to get conversation ID. HTTP " + response.code());
+                    String msg = "Error checking chat status: " + response.code();
+                    Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Long> call, Throwable t) {
+                Log.e("ChatAPI", "Network error: " + t.getMessage());
+                Toast.makeText(getContext(), "Network error: Failed to connect to chat service.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void openConversationFragment(Long conversationId) {
+
+        final String auth = ClientUtils.getAuthorization(requireContext());
+        final String otherUserEmail = eventDetailsDTO.getOrganizer();
+
+        if (auth.isEmpty() || conversationId == null || otherUserEmail == null || otherUserEmail.isEmpty()) {
+            Toast.makeText(getContext(), "Missing data to open chat.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Call<GetUserDTO> call = ClientUtils.userService.getUserProfile(
+                auth,
+                otherUserEmail
+        );
+
+        call.enqueue(new Callback<GetUserDTO>() {
+            @Override
+            public void onResponse(Call<GetUserDTO> call, Response<GetUserDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetUserDTO userDTO = response.body();
+
+                    String name = userDTO.getName() != null ? userDTO.getName() : "";
+                    String surname = userDTO.getSurname() != null ? userDTO.getSurname() : "";
+
+                    String otherUserName = (name + " " + surname).trim();
+
+                    if (otherUserName.isEmpty()) {
+                        otherUserName = otherUserEmail;
+                    }
+
+                    ConversationFragment chatFragment = ConversationFragment.newInstance(
+                            conversationId,
+                            otherUserName,
+                            otherUserEmail
+                    );
+
+                    requireActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.chat_fragment_container, chatFragment)
+                            .addToBackStack(null)
+                            .commit();
+
+                    if (requireActivity() instanceof HomepageActivity) {
+                        ((HomepageActivity) requireActivity()).openChatSidebar();
+                    }
+
+                } else {
+                    Log.e("Chat", "Failed to load user profile: " + response.code());
+                    Toast.makeText(getContext(), "Failed to load user details: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetUserDTO> call, Throwable t) {
+                Log.e("Chat", "Network error getting user profile: " + t.getMessage());
+                Toast.makeText(getContext(), "Network error, cannot load chat.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupChatButton(){
