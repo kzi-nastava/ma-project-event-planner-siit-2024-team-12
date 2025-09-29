@@ -35,6 +35,7 @@ import com.example.eventplanner.fragments.calendar.CalendarFragment;
 import com.example.eventplanner.fragments.conversation.ConversationListFragment;
 import com.example.eventplanner.fragments.charts.AttendanceChartFragment;
 import com.example.eventplanner.fragments.charts.RatingsChartFragment;
+import com.example.eventplanner.fragments.conversation.ConversationWebSocketService;
 import com.example.eventplanner.fragments.event.eventcreation.EventCreationFragment;
 import com.example.eventplanner.fragments.eventtype.EventTypeTableFragment;
 import com.example.eventplanner.fragments.favorites.ExplorePageFragment;
@@ -60,7 +61,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 
-public class HomepageActivity extends AppCompatActivity implements NotificationWebSocketService.NotificationCountListener {
+public class HomepageActivity extends AppCompatActivity implements NotificationWebSocketService.NotificationCountListener, ConversationWebSocketService.ConversationCountListener {
 
     private DrawerLayout drawerLayout;
     private RecyclerView chatRecyclerView;
@@ -75,6 +76,12 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     private ActionBarDrawerToggle toggle;
     private DrawerArrowDrawable originalDrawerIcon;
     private boolean notificationsOpen = false;
+
+    private TextView messageBadge;
+
+    private ConversationWebSocketService conversationWebSocketService;
+
+    private boolean conversationOpen;
 
 
 
@@ -103,11 +110,17 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
         String token = ClientUtils.getAuthorization(getApplicationContext());
         Log.d("TOKEN_CHECK", "Token: " + token);
+        messageBadge = findViewById(R.id.message_badge_text);
 
         if (token != null && !isSuspended) {
             notificationService = new NotificationWebSocketService();
             notificationService.connect(token);
             notificationService.addListener(this);
+
+            conversationWebSocketService = new ConversationWebSocketService();
+            conversationWebSocketService.connect(token);
+            conversationWebSocketService.addListener(this);
+
         }
 
 
@@ -167,9 +180,28 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         }
     }
 
+    private void updateMessageBadge(int count) {
+
+        if (messageBadge != null && !conversationOpen ) {
+            if (count > 0) {
+                messageBadge.setText(String.valueOf(count));
+                messageBadge.setVisibility(View.VISIBLE);
+            } else {
+                messageBadge.setVisibility(View.GONE);
+            }
+        }
+    }
+
     @Override
     public void onUnreadCountChanged(int newCount) {
         runOnUiThread(() -> updateNotificationsBadge(newCount));
+    }
+
+
+
+    @Override
+    public void onUnreadMessageCountChanged(int newCount) {
+        runOnUiThread(() -> updateMessageBadge(newCount));
     }
 
 
@@ -484,6 +516,17 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
             notificationsOpen = false;
         }
     }
+    public void onConversationOpened() {
+        if (toggle != null) {
+            conversationOpen = true;
+        }
+    }
+
+    public void onConversationClosed() {
+        if (toggle != null) {
+            conversationOpen = false;
+        }
+    }
 
     private void enableChatDrawer() {
         View chatDrawer = findViewById(R.id.chat_drawer_root);
@@ -495,6 +538,7 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
             chatButton.setOnClickListener(v -> {
                 loadChatFragment();
+                conversationWebSocketService.markAllAsRead();
                 drawerLayout.openDrawer(GravityCompat.END);
             });
         }
@@ -505,6 +549,10 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.chat_fragment_container, chatFragment)
                 .commitAllowingStateLoss();
+    }
+
+    public void openChatSidebar() {
+        drawerLayout.openDrawer(GravityCompat.END);
     }
 
     public void openProfileAndCloseChat(String userEmail) {
@@ -530,5 +578,9 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
     public NotificationWebSocketService getNotificationService() {
         return notificationService;
+    }
+
+    public ConversationWebSocketService getConversationService() {
+        return conversationWebSocketService;
     }
 }

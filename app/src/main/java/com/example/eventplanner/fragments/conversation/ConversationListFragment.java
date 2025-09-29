@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.homepage.HomepageActivity;
 import com.example.eventplanner.adapters.conversation.ConversationAdapter;
+import com.example.eventplanner.dto.conversation.GetChatMessageDTO;
 import com.example.eventplanner.dto.conversation.GetConversationDTO;
 import com.example.eventplanner.utils.ClientUtils;
 
@@ -26,19 +27,23 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class ConversationListFragment extends Fragment {
+public class ConversationListFragment extends Fragment implements ConversationWebSocketService.WebSocketUpdateListener {
 
     private RecyclerView recyclerView;
     private ConversationAdapter adapter;
     private View emptyStateLayout;
+    private ConversationWebSocketService webSocketService;
+    private String loggedInUserEmail;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_conversation_list, container, false);
+        loggedInUserEmail = ClientUtils.getCurrentUserEmail(getContext());
         recyclerView = view.findViewById(R.id.conversation_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ConversationAdapter(new ArrayList<>(), this::onConversationClicked);
+        adapter = new ConversationAdapter(new ArrayList<>(), this::onConversationClicked, loggedInUserEmail);
         recyclerView.setAdapter(adapter);
         ImageButton closeButton = view.findViewById(R.id.btn_close_sidebar);
         emptyStateLayout = view.findViewById(R.id.empty_state_layout);
@@ -47,6 +52,37 @@ public class ConversationListFragment extends Fragment {
 
         loadConversations();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getActivity() instanceof HomepageActivity) {
+            webSocketService = ((HomepageActivity) getActivity()).getConversationService();
+            if (webSocketService != null) {
+                webSocketService.addUpdateListener(this);
+            }
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Avoid memory leak
+        if (webSocketService != null) {
+            webSocketService.removeUpdateListener(this);
+        }
+    }
+
+    @Override
+    public void onConversationUpdated(GetConversationDTO updatedConversation) {
+        if (getActivity() != null && adapter != null) {
+            getActivity().runOnUiThread(() -> {
+                adapter.updateAndMoveToTop(updatedConversation);
+                recyclerView.scrollToPosition(0);
+            });
+        }
     }
 
     private void onConversationClicked(GetConversationDTO conversation) {
@@ -58,14 +94,22 @@ public class ConversationListFragment extends Fragment {
             ConversationFragment chatFragment = ConversationFragment.newInstance(
                     conversation.getId(),
                     otherUserName,
-                    otherUserEmail
+                    otherUserEmail,
+                    false
             );
 
             requireActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.chat_fragment_container, chatFragment)
                     .addToBackStack(null)
                     .commit();
+
         }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("ConversationFragment", "onResume - Reloading conversations to ensure read status is updated.");
+        loadConversations();
     }
 
 

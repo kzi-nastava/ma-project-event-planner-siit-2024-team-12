@@ -2,6 +2,7 @@ package com.example.eventplanner.fragments.servicecreation;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,8 +23,11 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.homepage.HomepageActivity;
+import com.example.eventplanner.dto.business.GetBusinessAndProviderDTO;
 import com.example.eventplanner.dto.solutionservice.GetServiceDTO;
 import com.example.eventplanner.enumeration.UserRole;
+import com.example.eventplanner.fragments.conversation.ConversationFragment;
 import com.example.eventplanner.fragments.profile.BusinessProviderDialogFragment;
 import com.example.eventplanner.fragments.servicereservation.ServiceReservationDialogFragment;
 import com.example.eventplanner.utils.ClientUtils;
@@ -97,8 +101,19 @@ public class ServiceDetailsFragment extends Fragment {
 
         fetchServiceDetails();
 
-        chatButton.setOnClickListener(v -> Toast.makeText(getContext(), "Chat feature not yet implemented.", Toast.LENGTH_SHORT).show());
+        SharedPreferences prefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        String role = prefs.getString("userRole", "");
 
+
+        if (role.equals(UserRole.ROLE_ORGANIZER.toString())) {
+            chatButton.setVisibility(View.VISIBLE);
+        }else{
+            chatButton.setVisibility(View.GONE);
+        }
+
+        chatButton.setOnClickListener(v -> {
+            startChatWithProvider();
+        });
         providerInfo = view.findViewById(R.id.providerInfo);
         providerInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,6 +133,121 @@ public class ServiceDetailsFragment extends Fragment {
         });
     }
 
+    private void startChatWithProvider() {
+
+        SharedPreferences prefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        String organizerEmail = prefs.getString("email", "");
+        if (organizerEmail.isEmpty()) {
+            Toast.makeText(getContext(), "Please log in to start a chat.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final String type = "service";
+        final Long solutionId = serviceId;
+        final String auth = ClientUtils.getAuthorization(requireContext());
+
+        if (auth.isEmpty() || solutionId == null) {
+            Toast.makeText(getContext(), "Authentication or product ID is missing.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Call<Long> call = ClientUtils.conversationService.getConversationIdForSolutionOwner(
+                auth,
+                type,
+                solutionId
+        );
+
+        call.enqueue(new Callback<Long>() {
+            @Override
+            public void onResponse(Call<Long> call, Response<Long> response) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200 && response.body() != null) {
+                        Long conversationId = response.body();
+                        openConversationFragment(conversationId);
+
+                    } else if (response.code() == 204) {
+                        Toast.makeText(getContext(), "Conversation not found.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Log.e("ChatAPI", "Failed to get conversation ID. HTTP " + response.code());
+                    String msg = "Error checking chat status: " + response.code();
+                    Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Long> call, Throwable t) {
+                Log.e("ChatAPI", "Network error: " + t.getMessage());
+                Toast.makeText(getContext(), "Network error: Failed to connect to chat service.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void openConversationFragment(Long conversationId) {
+
+        final String type = "service";
+        final Long solutionId = serviceId;
+        final String auth = ClientUtils.getAuthorization(requireContext());
+
+        if (auth.isEmpty() || solutionId == null || conversationId == null) {
+            Toast.makeText(getContext(), "Missing data to open chat.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Call<GetBusinessAndProviderDTO> call = ClientUtils.userService.getBusinessProviderDetails(
+                auth,
+                type,
+                solutionId
+        );
+
+        call.enqueue(new Callback<GetBusinessAndProviderDTO>() {
+            @Override
+            public void onResponse(Call<GetBusinessAndProviderDTO> call, Response<GetBusinessAndProviderDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetBusinessAndProviderDTO dto = response.body();
+
+                    String otherUserEmail = dto.getProviderEmail();
+                    String name = dto.getProviderName() != null ? dto.getProviderName() : "";
+                    String surname = dto.getProviderSurname() != null ? dto.getProviderSurname() : "";
+
+                    String otherUserName = (name + " " + surname).trim();
+
+                    if (otherUserEmail == null || otherUserEmail.isEmpty()) {
+                        Toast.makeText(getContext(), "Provider email missing.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (otherUserName.isEmpty()) {
+                        otherUserName = otherUserEmail;
+                    }
+
+                    ConversationFragment chatFragment = ConversationFragment.newInstance(
+                            conversationId,
+                            otherUserName,
+                            otherUserEmail,
+                            true
+                    );
+
+                    requireActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.chat_fragment_container, chatFragment)
+                            .addToBackStack(null)
+                            .commit();
+                    if (requireActivity() instanceof HomepageActivity) {
+                        ((HomepageActivity) requireActivity()).openChatSidebar();
+                    }
+
+                } else {
+                    Toast.makeText(getContext(), "Failed to load provider details: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetBusinessAndProviderDTO> call, Throwable t) {
+                Log.e("Chat", "Network error getting provider details: " + t.getMessage());
+                Toast.makeText(getContext(), "Network error, cannot load chat.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private void fetchServiceDetails() {
         if (serviceId != null) {
@@ -256,6 +386,20 @@ public class ServiceDetailsFragment extends Fragment {
         String auth = ClientUtils.getAuthorization(getContext());
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("AppPrefs", getContext().MODE_PRIVATE);
         String userEmail = sharedPreferences.getString("email", "a");
+        String role = sharedPreferences.getString("userRole", "");
+
+        if(auth.isEmpty()){
+            Toast.makeText(requireActivity(), "Please log in first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(role.equals(UserRole.ROLE_AUTHENTICATED_USER.toString())){
+            Toast.makeText(requireActivity(), "Upgrade your role first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(role.equals(UserRole.ROLE_ADMIN.toString())){
+            Toast.makeText(requireActivity(), "You are not allowed to add to favorites.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Call<ResponseBody> call = ClientUtils.userService.addFavoriteService(auth, userEmail, serviceId);
         call.enqueue(new Callback<ResponseBody>() {
@@ -284,6 +428,20 @@ public class ServiceDetailsFragment extends Fragment {
         String auth = ClientUtils.getAuthorization(getContext());
         SharedPreferences pref = getContext().getSharedPreferences("AppPrefs", getContext().MODE_PRIVATE);
         String email = pref.getString("email", "a");
+        String role = pref.getString("userRole", "");
+
+        if(auth.isEmpty()){
+            Toast.makeText(requireActivity(), "Please log in first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(role.equals(UserRole.ROLE_AUTHENTICATED_USER.toString())){
+            Toast.makeText(requireActivity(), "Upgrade your role first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(role.equals(UserRole.ROLE_ADMIN.toString())){
+            Toast.makeText(requireActivity(), "You are not allowed to remove from favorites.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Call<Void> call = ClientUtils.userService.removeFavoriteService(auth, email, serviceId);
         call.enqueue(new Callback<Void>() {

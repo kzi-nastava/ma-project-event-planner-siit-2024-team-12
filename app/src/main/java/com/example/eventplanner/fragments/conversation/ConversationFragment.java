@@ -20,7 +20,10 @@ import com.example.eventplanner.dto.conversation.GetChatMessageDTO;
 import com.example.eventplanner.dto.conversation.GetConversationDTO;
 import com.example.eventplanner.dto.user.GetUserDTO;
 import com.example.eventplanner.utils.ClientUtils;
+
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -32,7 +35,10 @@ public class ConversationFragment extends Fragment {
 
     private static final String ARG_CONVERSATION_ID = "conversation_id";
     private static final String ARG_OTHER_USER_NAME = "other_user_name";
+    private static final String ARG_IS_NEW_CONVERSATION = "is_new_conversation";
 
+
+    private boolean isNewConversation;
     private Long conversationId;
     private String otherUserEmail;
     private RecyclerView messagesRecyclerView;
@@ -45,12 +51,13 @@ public class ConversationFragment extends Fragment {
     private Long otherUserId;
     private Long currentUserId;
 
-    public static ConversationFragment newInstance(Long conversationId, String otherUserName, String otherUserEmail) {
+    public static ConversationFragment newInstance(Long conversationId, String otherUserName, String otherUserEmail, boolean isNewConversation  ) {
         ConversationFragment fragment = new ConversationFragment();
         Bundle args = new Bundle();
         args.putLong(ARG_CONVERSATION_ID, conversationId);
         args.putString(ARG_OTHER_USER_NAME, otherUserName);
         args.putString("other_user_email", otherUserEmail);
+        args.putBoolean(ARG_IS_NEW_CONVERSATION, isNewConversation);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,6 +68,7 @@ public class ConversationFragment extends Fragment {
         if (getArguments() != null) {
             conversationId = getArguments().getLong(ARG_CONVERSATION_ID);
             otherUserEmail = getArguments().getString("other_user_email");
+            isNewConversation = getArguments().getBoolean(ARG_IS_NEW_CONVERSATION, false);
         }
     }
 
@@ -99,13 +107,77 @@ public class ConversationFragment extends Fragment {
 
         sendMessageButton.setOnClickListener(v -> sendMessage());
 
-        backButton.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
+        backButton.setOnClickListener(v -> {
+            if (!isNewConversation) {
+                requireActivity().getSupportFragmentManager().popBackStack();
+            } else {
+                closeSidebar();
+            }
+        });
 
         headerLayout.setOnClickListener(v -> navigateToUserProfile());
 
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view,
+                              @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getActivity() instanceof HomepageActivity) {
+            ConversationWebSocketService service =
+                    ((HomepageActivity) getActivity()).getConversationService();
+
+            if (service != null) {
+                service.addConversationListener(this::handleNewNotification);
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    if (getActivity() instanceof HomepageActivity) {
+        ((HomepageActivity) getActivity()).onConversationOpened();
+    }
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (getActivity() instanceof HomepageActivity) {
+            ((HomepageActivity) getActivity()).onConversationClosed();
+        }
+    }
+
+
+
+    private void handleNewNotification(List<GetChatMessageDTO> newMessages) {
+        if (getActivity() == null || newMessages == null || newMessages.isEmpty()) return;
+
+        requireActivity().runOnUiThread(() -> {
+            messageAdapter.setMessages(new ArrayList<>());
+            for (GetChatMessageDTO msg : newMessages) {
+                messageAdapter.addMessage(msg);
+                messagesRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+            }
+            markConversationAsReadOnServer();
+        });
+    }
+
+
+    private void closeSidebar() {
+        if (requireActivity() instanceof HomepageActivity) {
+            ((HomepageActivity) requireActivity()).closeChatSidebar();
+
+        } else {
+            Log.e("ConversationFrag", "Parent Activity is not HomepageActivity. Cannot close sidebar.");
+            requireActivity().getSupportFragmentManager().popBackStack();
+        }
+    }
     private void loadMessages() {
         String authHeader = ClientUtils.getAuthorization(getContext());
         if (conversationId == null || authHeader.isEmpty()) return;
@@ -166,6 +238,26 @@ public class ConversationFragment extends Fragment {
             @Override
             public void onFailure(Call<GetChatMessageDTO> call, Throwable t) {
                 Log.e("ConversationFrag", "Network error sending message: " + t.getMessage());
+            }
+        });
+    }
+    private void markConversationAsReadOnServer() {
+        if (conversationId == null) return;
+        String authHeader = ClientUtils.getAuthorization(getContext());
+
+        ClientUtils.conversationService.markAllAsRead(authHeader, conversationId).enqueue(new Callback<GetConversationDTO>() {
+            @Override
+            public void onResponse(Call<GetConversationDTO> call, Response<GetConversationDTO> response) {
+                if (response.isSuccessful()) {
+                    Log.d("ConversationFrag", "Successfully marked conversation " + conversationId + " as read.");
+                } else {
+                    Log.e("ConversationFrag", "Failed to mark as read: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetConversationDTO> call, Throwable t) {
+                Log.e("ConversationFrag", "Network error on markAllAsRead: " + t.getMessage());
             }
         });
     }

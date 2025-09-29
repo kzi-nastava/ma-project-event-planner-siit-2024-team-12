@@ -4,8 +4,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
@@ -22,10 +24,12 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
     private List<GetConversationDTO> conversations;
     private final OnConversationClickListener listener;
+    private final String loggedInUserEmail;
 
-    public ConversationAdapter(List<GetConversationDTO> conversations, OnConversationClickListener listener) {
+    public ConversationAdapter(List<GetConversationDTO> conversations, OnConversationClickListener listener, String loggedInUserEmail) {
         this.conversations = conversations;
         this.listener = listener;
+        this.loggedInUserEmail = loggedInUserEmail;
     }
 
     public void setConversations(List<GetConversationDTO> conversations) {
@@ -43,7 +47,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ConversationViewHolder holder, int position) {
-        holder.bind(conversations.get(position), listener);
+        holder.bind(conversations.get(position), listener, loggedInUserEmail);
     }
 
     @Override
@@ -51,11 +55,35 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         return conversations != null ? conversations.size() : 0;
     }
 
+    public void updateAndMoveToTop(GetConversationDTO updatedConversation) {
+        int existingPosition = -1;
+        for (int i = 0; i < conversations.size(); i++) {
+            if (conversations.get(i).getId().equals(updatedConversation.getId())) {
+                existingPosition = i;
+                break;
+            }
+        }
+
+        if (existingPosition != -1) {
+            conversations.remove(existingPosition);
+        }
+
+        conversations.add(0, updatedConversation);
+
+        if (existingPosition != -1) {
+            notifyItemMoved(existingPosition, 0);
+            notifyItemChanged(0);
+        } else {
+            notifyItemInserted(0);
+        }
+    }
+
     static class ConversationViewHolder extends RecyclerView.ViewHolder {
         private final TextView userName;
         private final TextView lastMessage;
         private final TextView lastUpdated;
         private final ImageView profileImage;
+        private final LinearLayout conversationLayout;
 
         ConversationViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -63,6 +91,20 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             lastMessage = itemView.findViewById(R.id.conversation_last_message);
             lastUpdated = itemView.findViewById(R.id.conversation_last_updated);
             profileImage = itemView.findViewById(R.id.conversation_profile_image);
+            conversationLayout = itemView.findViewById(R.id.conversation_item_layout);
+        }
+        private boolean hasUnreadMessages(GetConversationDTO conversation, String currentEmail) {
+            List<GetChatMessageDTO> messages = conversation.getMessages();
+            if (messages == null || messages.isEmpty()) {
+                return false;
+            }
+
+            for (GetChatMessageDTO message : messages) {
+                if (!message.isRead() && !message.getSenderEmail().equals(currentEmail)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private String getDisplayName(GetConversationDTO conversation) {
@@ -85,7 +127,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             return "Unknown User";
         }
 
-        void bind(GetConversationDTO conversation, OnConversationClickListener listener) {
+        void bind(GetConversationDTO conversation, OnConversationClickListener listener, String loggedInUserEmail) {
             String displayName = getDisplayName(conversation);
             userName.setText(displayName);
 
@@ -100,6 +142,14 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             } else {
                 lastMessage.setText("No messages yet");
                 lastUpdated.setText("");
+            }
+
+            boolean unread = hasUnreadMessages(conversation, loggedInUserEmail);
+
+            if (unread) {
+                conversationLayout.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.activeButtonBackground));
+            } else {
+                conversationLayout.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.white));
             }
 
             itemView.setOnClickListener(v -> listener.onConversationClick(conversation));
