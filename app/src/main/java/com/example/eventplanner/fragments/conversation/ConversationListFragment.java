@@ -26,11 +26,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class ConversationListFragment extends Fragment {
+public class ConversationListFragment extends Fragment implements ConversationWebSocketService.WebSocketUpdateListener {
 
     private RecyclerView recyclerView;
     private ConversationAdapter adapter;
     private View emptyStateLayout;
+    private ConversationWebSocketService webSocketService;
+
 
     @Nullable
     @Override
@@ -47,6 +49,37 @@ public class ConversationListFragment extends Fragment {
 
         loadConversations();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getActivity() instanceof HomepageActivity) {
+            webSocketService = ((HomepageActivity) getActivity()).getConversationService();
+            if (webSocketService != null) {
+                webSocketService.addUpdateListener(this);
+            }
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Avoid memory leak
+        if (webSocketService != null) {
+            webSocketService.removeUpdateListener(this);
+        }
+    }
+
+    @Override
+    public void onConversationUpdated(GetConversationDTO updatedConversation) {
+        if (getActivity() != null && adapter != null) {
+            getActivity().runOnUiThread(() -> {
+                adapter.updateAndMoveToTop(updatedConversation);
+                recyclerView.scrollToPosition(0);
+            });
+        }
     }
 
     private void onConversationClicked(GetConversationDTO conversation) {

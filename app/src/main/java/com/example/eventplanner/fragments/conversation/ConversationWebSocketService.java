@@ -39,8 +39,31 @@ public class ConversationWebSocketService {
     private final List<ConversationCountListener> listeners = new ArrayList<>();
     private int unreadCount = 0;
 
+    public interface WebSocketUpdateListener {
+        void onConversationUpdated(GetConversationDTO conversation);
+    }
+
+    private final List<WebSocketUpdateListener> updateListeners = new ArrayList<>();
+
+    public void addUpdateListener(WebSocketUpdateListener listener) {
+        if (!updateListeners.contains(listener)) {
+            updateListeners.add(listener);
+        }
+    }
+
+    public void removeUpdateListener(WebSocketUpdateListener listener) {
+        updateListeners.remove(listener);
+    }
+
+    // Metod za obavestavanje novih listenera
+    private void notifyUpdateListeners(GetConversationDTO conversation) {
+        for (WebSocketUpdateListener listener : updateListeners) {
+            listener.onConversationUpdated(conversation);
+        }
+    }
+
     public interface ConversationCountListener {
-        void onUnreadCountChanged(int newCount);
+        void onUnreadMessageCountChanged(int newCount);
     }
 
     public void addListener(ConversationCountListener listener) {
@@ -55,7 +78,7 @@ public class ConversationWebSocketService {
 
     private void notifyListeners() {
         for (ConversationCountListener listener : listeners) {
-            listener.onUnreadCountChanged(unreadCount);
+            listener.onUnreadMessageCountChanged(unreadCount);
         }
     }
 
@@ -85,6 +108,7 @@ public class ConversationWebSocketService {
                     GetConversationDTO dto = gson.fromJson(stompMessage.getPayload(), GetConversationDTO.class);
                     List<GetChatMessageDTO> mssgs = dto.getMessages();
                     notifyListener(mssgs);
+                    notifyUpdateListeners(dto);
                 }, throwable -> {
                     Log.e(TAG, "Error on topic subscription", throwable);
                 });

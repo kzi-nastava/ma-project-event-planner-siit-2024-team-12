@@ -176,6 +176,14 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
 
 
 
+    @Override
+    public void onUnreadMessageCountChanged(int newCount) {
+        //TODO
+//        runOnUiThread(() -> updateNotificationsBadge(newCount));
+    }
+
+
+
     private void loadMainFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, fragment)
@@ -539,5 +547,4 @@ public class HomepageActivity extends AppCompatActivity implements NotificationW
     public ConversationWebSocketService getConversationService() {
         return conversationWebSocketService;
     }
-
 }
